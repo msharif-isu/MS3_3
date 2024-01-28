@@ -1,21 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    tools:context=".MainActivity"
-    android:layout_height="match_parent"
+    android:id="@+id/linearLayoutCompat"
     android:layout_width="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent"
+    android:background="#2e2e2e"
+    tools:context=".MainActivity">
 
     <TextView
         android:id="@+id/main_msg_txt"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
         android:layout_marginTop="100dp"
-        android:layout_marginBottom="50dp"
+        android:textColor="#b6b6b8"
         android:textSize="50dp"
-        android:textColor="#000000" >
-    </TextView>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"></TextView>
 
-</androidx.appcompat.widget.LinearLayoutCompat>
+    <Button
+        android:id="@+id/bBlue"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:layout_marginEnd="56dp"
+        android:text="Blue!"
+        android:textSize="25sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/main_msg_txt" />
+
+    <Button
+        android:id="@+id/bOrange"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="68dp"
+        android:layout_marginTop="100dp"
+        android:text="Orange!"
+        android:textSize="25sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/main_msg_txt" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
