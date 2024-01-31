@@ -7,13 +7,13 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-
 import org.w3c.dom.Text;
 
 public class MainActivity extends AppCompatActivity {
 
     private TextView messageText;     // define message textview variable
     private Button counterButton;     // define counter button variable
+    private Button randomButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,12 +23,13 @@ public class MainActivity extends AppCompatActivity {
         /* initialize UI elements */
         messageText = findViewById(R.id.main_msg_txt);      // link to message textview in the Main activity XML
         counterButton = findViewById(R.id.main_counter_btn);// link to counter button in the Main activity XML
+        randomButton = findViewById(R.id.main_random_btn);
 
         /* extract data passed into this activity from another activity */
         Bundle extras = getIntent().getExtras();
         if(extras == null) {
             messageText.setText("Intent Example");
-        } else {
+        } else{
             String number = extras.getString("NUM");  // this will come from LoginActivity
             messageText.setText("The number was " + number);
         }
@@ -40,6 +41,16 @@ public class MainActivity extends AppCompatActivity {
 
                 /* when counter button is pressed, use intent to switch to Counter Activity */
                 Intent intent = new Intent(MainActivity.this, CounterActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        randomButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                /* when counter button is pressed, use intent to switch to Random Activity */
+                Intent intent = new Intent(MainActivity.this, RandomActivity.class);
                 startActivity(intent);
             }
         });

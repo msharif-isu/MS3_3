@@ -9,36 +9,27 @@
     android:background="#f7f5f2">
 
     <TextView
-        android:id="@+id/number"
+        android:id="@+id/random_num"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="100dp"
         android:layout_gravity="center"
-        android:textSize="150sp"
-        android:textColor="#E91E63"
-        android:text="0" >
+        android:textSize="100sp"
+        android:textColor="#f27507"
+        android:text="0">
     </TextView>
 
     <Button
-        android:id="@+id/counter_increase_btn"
+        android:id="@+id/random_btn"
         android:layout_width="250dp"
         android:layout_height="80dp"
         android:layout_gravity="center"
         android:layout_marginTop="100dp"
-        android:text="Increase">
+        android:text="Generate Random Number!">
     </Button>
 
     <Button
-        android:id="@+id/counter_decrease_btn"
-        android:layout_width="250dp"
-        android:layout_height="80dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="10dp"
-        android:text="Decrease">
-    </Button>
-
-    <Button
-        android:id="@+id/counter_back_btn"
+        android:id="@+id/random_back_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

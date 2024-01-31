@@ -14,8 +14,8 @@ public class CounterActivity extends AppCompatActivity {
     private Button increaseBtn; // define increase button variable
     private Button decreaseBtn; // define decrease button variable
     private Button backBtn;     // define back button variable
-
     private int counter = 0;    // counter variable
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
