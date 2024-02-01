@@ -34,10 +34,12 @@ public class MainActivity extends AppCompatActivity {
             messageText.setText("Home Page");
             usernameText.setVisibility(View.INVISIBLE);             // set username text invisible initially
         } else {
-            messageText.setText("Welcome");
-            usernameText.setText(extras.getString("USERNAME")); // this will come from LoginActivity
+            messageText.setText("Howdy there,");
+            usernameText.setText(extras.getString("USERNAME") + "!"); // this will come from LoginActivity
             loginButton.setVisibility(View.INVISIBLE);              // set login button invisible
             signupButton.setVisibility(View.INVISIBLE);             // set signup button invisible
+            View v = this.getWindow().getDecorView();
+            v.setBackgroundColor(getColor(R.color.green));
         }
 
         /* click listener on login button pressed */
