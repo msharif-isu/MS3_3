@@ -23,8 +23,8 @@ public class MainActivity extends AppCompatActivity {
 
         /* initialize UI elements */
         messageText = findViewById(R.id.main_msg_txt);      // link to message textview in the Main activity XML
-        messageText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-        messageText.setText("Hello World! Justin was here!");
+        messageText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER); // align text to center of view
+        messageText.setText("Hello World! Justin was here!"); // set text
 
         //Instantiate buttons and change their colors
         bBlue = findViewById(R.id.bBlue);
@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         bOrange = findViewById(R.id.bOrange);
         bOrange.setBackgroundColor(getColor(R.color.orange));
 
-        //Set action listeners so that when either button is clicked, the text changes to their color
+        // If blue button is pressed, the click listener sets the text to blue
         bBlue.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // If orange button is pressed, the click listener sets the text to orange
         bOrange.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {

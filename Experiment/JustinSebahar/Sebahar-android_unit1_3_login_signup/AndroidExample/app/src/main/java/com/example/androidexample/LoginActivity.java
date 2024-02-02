@@ -47,7 +47,7 @@ public class LoginActivity extends AppCompatActivity {
                     startActivity(intent);  // go to MainActivity with the key-value data
                 }
                 else{
-                    Toast.makeText(getApplicationContext(), "Incorrect Password! Hint: 1234", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Incorrect Password! Hint: 1234", Toast.LENGTH_SHORT).show(); //Show message for incorrect password
                     passwordEditText.setBackgroundColor(getColor(R.color.red));
                 }
             }

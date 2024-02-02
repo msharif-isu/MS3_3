@@ -29,13 +29,15 @@ public class RandomActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_random);
 
-        // Initialize views
+        // Initialize views based on their XML ids
         text = findViewById(R.id.random_num);
         btnRandom = findViewById(R.id.random_btn);
         btnBack = findViewById(R.id.random_back_btn);
 
+        // Create new Random object to generate numbers
         rand = new Random();
 
+        // Set click listener for back button
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -46,6 +48,7 @@ public class RandomActivity extends AppCompatActivity {
             }
         });
 
+        // Set click listener for back button
         btnRandom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
