@@ -13,7 +13,7 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView messageText;     // define message textview variable
     private Button counterButton;     // define counter button variable
-    private Button randomButton;
+    private Button randomButton;      // define random button
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
         /* initialize UI elements */
         messageText = findViewById(R.id.main_msg_txt);      // link to message textview in the Main activity XML
         counterButton = findViewById(R.id.main_counter_btn);// link to counter button in the Main activity XML
-        randomButton = findViewById(R.id.main_random_btn);
+        randomButton = findViewById(R.id.main_random_btn);  // link the random button to its id
 
         /* extract data passed into this activity from another activity */
         Bundle extras = getIntent().getExtras();
@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        /* click listener for random button */
         randomButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
