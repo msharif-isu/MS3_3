@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
-public class MainActivity extends AppCompatActivity {
+public class    MainActivity extends AppCompatActivity {
 
     private TextView messageText;   // define message textview variable
     private TextView usernameText;  // define username textview variable
