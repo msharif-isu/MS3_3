@@ -4,15 +4,19 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.text.TextWatcher;
+import android.widget.EditText;
 
 import org.w3c.dom.Text;
 
 public class MainActivity extends AppCompatActivity {
 
     private TextView messageText;   // define message textview variable
+    private EditText introText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +25,24 @@ public class MainActivity extends AppCompatActivity {
 
         /* initialize UI elements */
         messageText = findViewById(R.id.main_msg_txt);      // link to message textview in the Main activity XML
-        messageText.setText("Hello World");
+        introText = findViewById(R.id.intro);
+
+        introText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                messageText.setText("Hello " + charSequence.toString() + "!");
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
     }
 }
