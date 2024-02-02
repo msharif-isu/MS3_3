@@ -15,6 +15,24 @@ public class MainActivity extends AppCompatActivity {
     private TextView messageText;     // define message textview variable
     private Button counterButton;     // define counter button variable
 
+    public static String evenORodd(String num){
+
+        String result;
+        int number = Math.abs(Integer.parseInt(num));
+
+
+        if(number%2  == 0){
+
+             result = "This is an even number";
+        }
+
+        else{
+
+            result = "This is an odd number";
+        }
+
+        return result;
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,10 +45,14 @@ public class MainActivity extends AppCompatActivity {
         /* extract data passed into this activity from another activity */
         Bundle extras = getIntent().getExtras();
         if(extras == null) {
-            messageText.setText("Intent Example");
+            messageText.setText("Number Counter Activity");
         } else {
             String number = extras.getString("NUM");  // this will come from LoginActivity
-            messageText.setText("The number was " + number);
+            String state = evenORodd(number);
+
+            messageText.setText("The number was " + number +". " + state);
+
+
         }
 
         /* click listener on counter button pressed */
