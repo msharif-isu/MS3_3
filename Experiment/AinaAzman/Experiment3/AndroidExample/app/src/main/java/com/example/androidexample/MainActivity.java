@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.w3c.dom.Text;
@@ -37,7 +38,9 @@ public class    MainActivity extends AppCompatActivity {
             messageText.setText("Welcome");
             usernameText.setText(extras.getString("USERNAME")); // this will come from LoginActivity
             loginButton.setVisibility(View.INVISIBLE);              // set login button invisible
-            signupButton.setVisibility(View.INVISIBLE);             // set signup button invisible
+            signupButton.setVisibility(View.INVISIBLE);
+
+            loadImageView();// set signup button invisible
         }
 
         /* click listener on login button pressed */
@@ -48,6 +51,7 @@ public class    MainActivity extends AppCompatActivity {
                 /* when login button is pressed, use intent to switch to Login Activity */
                 Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                 startActivity(intent);
+
             }
         });
 
@@ -61,5 +65,14 @@ public class    MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    private void loadImageView(){
+
+        ImageView mainImageView = findViewById(R.id.mainImageView);
+
+        mainImageView.setVisibility(View.VISIBLE);
+
+        mainImageView.setImageResource(R.drawable.meme);
     }
 }

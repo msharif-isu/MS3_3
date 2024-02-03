@@ -40,6 +40,8 @@ public class SignupActivity extends AppCompatActivity {
             }
         });
 
+
+
         /* click listener on signup button pressed */
         signupButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,13 +52,37 @@ public class SignupActivity extends AppCompatActivity {
                 String password = passwordEditText.getText().toString();
                 String confirm = confirmEditText.getText().toString();
 
-                if (password.equals(confirm)){
+                if (password.equals(confirm) && isPasswordValid(password)) {
                     Toast.makeText(getApplicationContext(), "Signing up", Toast.LENGTH_LONG).show();
-                }
-                else {
+                } else if(!password.equals(confirm)) {
                     Toast.makeText(getApplicationContext(), "Password don't match", Toast.LENGTH_LONG).show();
+                }
+
+                else{
+                    Toast.makeText(getApplicationContext(),"Password doesn't meet certain requirements.", Toast.LENGTH_LONG).show();
+
                 }
             }
         });
+    }
+
+    private boolean isPasswordValid (String pass){
+
+        //Check if password is at least 8 characters
+        if (pass.length() < 8) {
+            return false;
+        }
+
+        //Check if there is at least one number
+        if (!pass.matches(".*\\d.*")) {
+            return false;
+        }
+
+        //Check if there is at least one capital number
+        if (!pass.matches(".*[A-Z]*")) {
+            return false;
+        }
+
+        return true;
     }
 }
