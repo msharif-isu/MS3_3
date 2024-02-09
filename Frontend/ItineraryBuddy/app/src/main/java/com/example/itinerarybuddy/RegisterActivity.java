@@ -6,6 +6,9 @@ import android.view.*;
 import android.widget.*;
 import android.os.Bundle;
 
+/**
+ * This is where the users will register.
+ */
 public class RegisterActivity extends AppCompatActivity {
 
     @Override

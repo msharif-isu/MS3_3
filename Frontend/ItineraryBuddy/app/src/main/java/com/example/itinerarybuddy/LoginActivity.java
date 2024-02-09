@@ -6,6 +6,9 @@ import android.view.*;
 import android.widget.*;
 import android.os.Bundle;
 
+/**
+ * This is the login page.
+ */
 public class LoginActivity extends AppCompatActivity {
 
     private TextView test;
