@@ -11,14 +11,35 @@ import android.os.Bundle;
  */
 public class LoginActivity extends AppCompatActivity {
 
-    private TextView test;
+    /**
+     * Input field for username.
+     */
+    private EditText usernameInput;
+
+    /**
+     * Input field for password.
+     */
+    private EditText passwordInput;
+
+    /**
+     * Button for login.
+     */
+    private Button loginButton;
+
+    /**
+     * Button for sign up page.
+     */
+    private Button registerButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_activity);
 
-        test = findViewById(R.id.test_view);
-        test.setText("Test- this is the login page");
+        usernameInput = findViewById(R.id.username_input);
+        passwordInput = findViewById(R.id.password_input);
+        loginButton = findViewById(R.id.login_button);
+        registerButton = findViewById(R.id.create_account_button);
+
     }
 }
