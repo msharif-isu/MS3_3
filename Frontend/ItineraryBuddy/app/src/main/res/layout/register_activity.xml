@@ -5,6 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <View
+        android:id="@+id/register_gradient"
+        android:layout_width="fill_parent"
+        android:layout_height="55dp"
+        android:background="@drawable/login_register_gradient"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/username_register_text"
         android:layout_width="wrap_content"
@@ -14,6 +23,7 @@
         android:text="@string/username_text"
         android:textColor="@color/black"
         android:textSize="25sp"
+        android:fontFamily="sans-serif-condensed-medium"
         app:layout_constraintBottom_toTopOf="@+id/username_register_input"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.2"
@@ -28,6 +38,8 @@
         android:autofillHints="username"
         android:inputType="textPersonName"
         android:text=""
+        android:textSize="25sp"
+        android:fontFamily="sans-serif-condensed-medium"
         app:layout_constraintBottom_toTopOf="@+id/email_register_input"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -42,6 +54,7 @@
         android:text="@string/email_text"
         android:textColor="@color/black"
         android:textSize="25sp"
+        android:fontFamily="sans-serif-condensed-medium"
         app:layout_constraintBottom_toTopOf="@+id/email_register_input"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.163"
@@ -56,6 +69,8 @@
         android:background="@drawable/rounded_edittext"
         android:inputType="textEmailAddress"
         android:text=""
+        android:textSize="25sp"
+        android:fontFamily="sans-serif-condensed-medium"
         app:layout_constraintBottom_toTopOf="@+id/password_register_input"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -70,6 +85,7 @@
         android:text="@string/password_text"
         android:textColor="@color/black"
         android:textSize="25sp"
+        android:fontFamily="sans-serif-condensed-medium"
         app:layout_constraintBottom_toTopOf="@+id/password_register_input"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.197"
@@ -84,6 +100,8 @@
         android:background="@drawable/rounded_edittext"
         android:inputType="textPassword"
         android:text=""
+        android:textSize="25sp"
+        android:fontFamily="sans-serif-condensed-medium"
         app:layout_constraintBottom_toTopOf="@+id/password_confirm_input"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -98,6 +116,7 @@
         android:text="@string/confirm_password_text"
         android:textColor="@color/black"
         android:textSize="25sp"
+        android:fontFamily="sans-serif-condensed-medium"
         app:layout_constraintBottom_toTopOf="@+id/password_confirm_input"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.343"
@@ -107,18 +126,20 @@
         android:id="@+id/password_confirm_input"
         android:layout_width="300dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="16dp"
         android:autofillHints="password"
         android:background="@drawable/rounded_edittext"
+        android:fontFamily="sans-serif-condensed-medium"
         android:inputType="textPassword"
         android:text=""
-        app:layout_constraintBottom_toTopOf="@+id/button"
+        android:textSize="25sp"
+        app:layout_constraintBottom_toTopOf="@+id/register_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/register_button"
         android:layout_width="280dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
@@ -126,9 +147,38 @@
         android:text="@string/signup"
         android:textColor="@color/white"
         android:textSize="20sp"
+        android:fontFamily="sans-serif-condensed-medium"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/create_account_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:fontFamily="sans-serif-condensed-medium"
+        android:text="@string/create_account_text"
+        android:textColor="#7A9143"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/register_gradient" />
+
+    <Button
+        android:id="@+id/sign_in_here_button"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:fontFamily="sans-serif-condensed-medium"
+        android:text="@string/sign_in_here_text"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/create_account_text" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
