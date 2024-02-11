@@ -16,7 +16,16 @@ public class User {
 
     private String city;
 
-    public User(String email,String firstName,String lastName,String userName,String password,String state,String city){
+    private String userType;
+
+    private int numPosts;
+
+    private int numLikes;
+
+    private boolean canPost;
+
+    public User(String email,String firstName,String lastName,String userName,String password,String state,String city,
+                String userType){
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -24,6 +33,10 @@ public class User {
         this.password = password;
         this.state = state;
         this.city = city;
+        this.userType = userType;
+        this.numPosts = 0;
+        this.numLikes = 0;
+        this.canPost = true;
     }
 
     public void setUserName(String userName) {
@@ -81,4 +94,39 @@ public class User {
     public String getCity() {
         return city;
     }
+    public String getUserType() {
+        return userType;
+    }
+
+    public int getAccountLikes(){
+        return this.numLikes;
+    }
+
+    public void addAccountLikes(){
+        this.numLikes += 1;
+    }
+    public void addUserPosts(){
+        this.numPosts += 1;
+    }
+
+    public int getNumPosts() {
+        return this.numPosts;
+    }
+
+    public void blockPosts(){
+        this.canPost = false;
+    }
+
+    public boolean CanPost() {
+        return this.canPost;
+    }
+
+    public void upgradeUserToAmbassador(){
+        if(getNumPosts() > 10 && getAccountLikes() > 200) {
+            this.userType = "Ambassador";
+        }
+    }
+
+    
+
 }
