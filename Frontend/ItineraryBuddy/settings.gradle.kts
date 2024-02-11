@@ -15,4 +15,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "ItineraryBuddy"
 include(":app")
- 
+include(":personal_main")
