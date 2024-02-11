@@ -12,6 +12,7 @@
         android:layout_marginBottom="80dp"
         android:text="@string/itinerarybuddy_text"
         android:textSize="50sp"
+        android:textColor="@color/black"
         app:layout_constraintBottom_toTopOf="@+id/username_input"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -24,10 +25,11 @@
         android:layout_marginBottom="10dp"
         android:labelFor="@id/username_input"
         android:text="@string/username_text"
+        android:textColor="@color/black"
         android:textSize="25sp"
         app:layout_constraintBottom_toTopOf="@+id/username_input"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.201"
+        app:layout_constraintHorizontal_bias=".2"
         app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
@@ -38,7 +40,7 @@
         android:inputType="textPersonName"
         android:text=""
         android:autofillHints="username"
-        android:background="#929496"
+        android:background="@drawable/rounded_edittext"
         app:layout_constraintBottom_toTopOf="@+id/password_input"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -52,6 +54,7 @@
         android:labelFor="@id/password_input"
         android:text="@string/password_text"
         android:textSize="25sp"
+        android:textColor="@color/black"
         app:layout_constraintBottom_toTopOf="@+id/password_input"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.2"
@@ -63,7 +66,7 @@
         android:layout_height="48dp"
         android:layout_marginBottom="192dp"
         android:autofillHints="password"
-        android:background="#929496"
+        android:background="@drawable/rounded_edittext"
         android:inputType="textPassword"
         android:text=""
         app:layout_constraintBottom_toBottomOf="parent"
@@ -78,6 +81,7 @@
         android:layout_marginTop="28dp"
         android:text="@string/new_user_text"
         android:textSize="20sp"
+        android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/login_button" />
@@ -90,11 +94,13 @@
         android:background="@color/white"
         android:text="@string/create_account_text"
         android:textSize="20sp"
+        android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/new_user_text"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0"
+        style="?android:attr/borderlessButtonStyle"/>
 
     <Button
         android:id="@+id/login_button"
@@ -104,6 +110,7 @@
         android:text="@string/login_text"
         android:textSize="20sp"
         android:background="#7a9143"
+        android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"

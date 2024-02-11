@@ -6,4 +6,7 @@
     <string name="new_user_text">NEW USER?</string>
     <string name="itinerarybuddy_text">ItineraryBuddy</string>
     <string name="login_text">LOGIN</string>
+    <string name="signup">SIGNUP</string>
+    <string name="email_text">EMAIL</string>
+    <string name="confirm_password_text">CONFIRM PASSWORD</string>
 </resources>
