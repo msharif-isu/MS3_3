@@ -1,0 +1,26 @@
+[
+    {
+        "merged": "com.example.personal_main-mergeDebugResources-43:/layout/fragment_home.xml",
+        "source": "com.example.personal_main-main-46:/layout/fragment_home.xml"
+    },
+    {
+        "merged": "C:\\Users\\New HP\\.gradle\\daemon\\8.2\\com.example.personal_main-mergeDebugResources-43:\\layout\\fragment_home.xml",
+        "source": "C:\\Users\\New HP\\.gradle\\daemon\\8.2\\com.example.personal_main-main-46:\\layout\\fragment_home.xml"
+    },
+    {
+        "merged": "C:\\Users\\New HP\\.gradle\\daemon\\8.2\\com.example.personal_main-mergeDebugResources-43:\\layout\\fragment_notifications.xml",
+        "source": "C:\\Users\\New HP\\.gradle\\daemon\\8.2\\com.example.personal_main-main-46:\\layout\\fragment_notifications.xml"
+    },
+    {
+        "merged": "com.example.personal_main-mergeDebugResources-43:/layout/activity_main.xml",
+        "source": "com.example.personal_main-main-46:/layout/activity_main.xml"
+    },
+    {
+        "merged": "C:\\Users\\New HP\\.gradle\\daemon\\8.2\\com.example.personal_main-mergeDebugResources-43:\\layout\\fragment_dashboard.xml",
+        "source": "C:\\Users\\New HP\\.gradle\\daemon\\8.2\\com.example.personal_main-main-46:\\layout\\fragment_dashboard.xml"
+    },
+    {
+        "merged": "C:\\Users\\New HP\\.gradle\\daemon\\8.2\\com.example.personal_main-mergeDebugResources-43:\\layout\\activity_main.xml",
+        "source": "C:\\Users\\New HP\\.gradle\\daemon\\8.2\\com.example.personal_main-main-46:\\layout\\activity_main.xml"
+    }
+]
