@@ -23,7 +23,7 @@ public class LoginController {
      */
     HashMap<String, User> userHashMap = new  HashMap<>();
 
-    @PostMapping("/Users/CreateUser")
+    @PostMapping("/Users/Create")
     public  String createPerson(@RequestBody User person) {
         System.out.println(person);
         userHashMap.put(person.getUserName(), person);
@@ -44,6 +44,18 @@ public class LoginController {
         else {
             return false;
         }
+    }
+
+    @PutMapping("/Users/{userName}")
+    public String changeInfo(@PathVariable String userName,@RequestBody User person){
+        userHashMap.replace(userName, person);
+        return "User Info Changed";
+    }
+
+    @DeleteMapping("/Users/{userName}")
+    public String deleteUser(@PathVariable String userName){
+        userHashMap.remove(userName);
+        return "User Deleted";
     }
 
 }
