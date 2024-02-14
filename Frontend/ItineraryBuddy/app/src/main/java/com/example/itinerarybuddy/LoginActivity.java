@@ -27,29 +27,20 @@ import java.util.Map;
  */
 public class LoginActivity extends AppCompatActivity {
 
-    /**
-     * Input field for username.
-     */
+    /** JSON Object for user data to be passed into each activity. */
+    public JSONObject user;
+
+    /** Input field for username. */
     private EditText usernameInput;
 
-    /**
-     * Input field for password.
-     */
+    /** Input field for password. */
     private EditText passwordInput;
 
-    /**
-     * Button for login.
-     */
+    /** Button for login. */
     private Button loginButton;
 
-    /**
-     * Button for sign up page.
-     */
+    /** Button for sign up page. */
     private Button registerButton;
-
-    private RequestQueue q;
-
-    private static final String url = "https://443da8f0-75e2-4be2-8e84-834c5d63eda6.mock.pstmn.io/user";
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -61,13 +52,13 @@ public class LoginActivity extends AppCompatActivity {
         passwordInput = findViewById(R.id.password_input);
         loginButton = findViewById(R.id.login_button);
         registerButton = findViewById(R.id.create_account_button);
-        q = Volley.newRequestQueue(getApplicationContext());
+        User.requestQueue = Volley.newRequestQueue(getApplicationContext());
 
         // Set listener for login button
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getJsonData();
+                login();
             }
         });
 
@@ -84,17 +75,24 @@ public class LoginActivity extends AppCompatActivity {
     /**
      * Gets the JSON from the URL and assigns the username and password variables accordingly.
      */
-    public void getJsonData(){
+    public void login(){
+        //Get the inputted username and password and create a url to get a user
+        String enteredUsername = usernameInput.getText().toString();
+        String enteredPassword = passwordInput.getText().toString();
+        String url = "/Users/login/" + enteredUsername + "/" + enteredPassword;
+
         JsonObjectRequest jsonObj = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>(){
             @Override
             public void onResponse(JSONObject response) {
                 Log.d("Volley Response: ", response.toString());
                 try{
-                    // Extract correct data from JSON
+                    //Extract correct data from JSON
                     String username = response.getString("name");
                     String password = response.getString("password");
+                    if(enteredUsername.equals(username) && enteredPassword.equals(password)){
+                        //Set static user variable to the returned JSON object
+                        User.userInfo = response;
 
-                    if(usernameInput.getText().toString().equals(username) && passwordInput.getText().toString().equals(password)){
                         //If username and password are a match, proceed to main page.
                         startActivity(new Intent(LoginActivity.this, MainActivity.class));
                     }
@@ -112,31 +110,6 @@ public class LoginActivity extends AppCompatActivity {
                 Log.e("Volley Error: ", error.toString());
             }
         });
-        q.add(jsonObj);
-    }
-
-    public void postInputs(String url){
-        JSONObject data = null;
-        String info = "{\n\t\"username\": " + "\"" + usernameInput + "\",\n\"" +
-                "\"password\": " + "\"password\"\n}";
-        try{
-            data = new JSONObject(info);
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-
-        JsonObjectRequest jsonObj = new JsonObjectRequest(Request.Method.POST, url, data, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                Log.d("Volley Response: ", response.toString());
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("Volley Error: ", error.toString());
-            }
-        });
-        q.add(jsonObj);
+        User.requestQueue.add(jsonObj);
     }
 }
