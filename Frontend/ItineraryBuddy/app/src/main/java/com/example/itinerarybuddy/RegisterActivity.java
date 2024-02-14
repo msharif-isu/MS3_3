@@ -2,9 +2,18 @@ package com.example.itinerarybuddy;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
+import android.util.Log;
 import android.view.*;
 import android.widget.*;
 import android.os.Bundle;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+
+import org.json.JSONObject;
 
 /**
  * This is where the users will register.
@@ -22,6 +31,10 @@ public class RegisterActivity extends AppCompatActivity {
     private Button registerButton;
 
     private Button loginButton;
+
+    private final String REGISTER_URL = null;
+
+    private RequestQueue q;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -49,6 +62,7 @@ public class RegisterActivity extends AppCompatActivity {
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // Register the user
                 register();
             }
         });
@@ -58,6 +72,43 @@ public class RegisterActivity extends AppCompatActivity {
      * Extracts data from text inputs, forms it into a string, and is made into a JSON object and posted.
      */
     private void register(){
+        //Extract strings from the text fields
+        String username = usernameInput.getText().toString();
+        String email = emailInput.getText().toString();
+        String password = passwordInput.getText().toString();
+        String confirmPassword = usernameInput.getText().toString();
 
+        // Only execute if passwords match
+        if(password.equals(confirmPassword)){
+            //Form string for JSON object
+            String userString = "{\n" +
+                    "  \"username\": " + username + ",\n" +
+                    "  \"email\": " + email + ",\n" +
+                    "  \"password\": " + password + "\n" +
+                    "}";
+
+            JSONObject newUser;
+            try{
+                //Create the JSON object
+                newUser = new JSONObject(userString);
+
+                //Post the JSON object
+                JsonObjectRequest jsonObj = new JsonObjectRequest(Request.Method.POST, REGISTER_URL, newUser , new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("Volley Response: ", response.toString());
+
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("Volley Error: ", error.toString());
+                    }
+                });
+                q.add(jsonObj);
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+        }
     }
 }

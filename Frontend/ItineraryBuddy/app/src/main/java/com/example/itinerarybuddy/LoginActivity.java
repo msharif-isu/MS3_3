@@ -13,6 +13,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
@@ -48,7 +49,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private RequestQueue q;
 
-    private static final String url = "https://jsonplaceholder.typicode.com/users/1";
+    private static final String url = "https://443da8f0-75e2-4be2-8e84-834c5d63eda6.mock.pstmn.io/user";
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -90,8 +91,8 @@ public class LoginActivity extends AppCompatActivity {
                 Log.d("Volley Response: ", response.toString());
                 try{
                     // Extract correct data from JSON
-                    String username = response.getString("username");
-                    String password = response.getString("email");
+                    String username = response.getString("name");
+                    String password = response.getString("password");
 
                     if(usernameInput.getText().toString().equals(username) && passwordInput.getText().toString().equals(password)){
                         //If username and password are a match, proceed to main page.
@@ -114,7 +115,6 @@ public class LoginActivity extends AppCompatActivity {
         q.add(jsonObj);
     }
 
-    /*
     public void postInputs(String url){
         JSONObject data = null;
         String info = "{\n\t\"username\": " + "\"" + usernameInput + "\",\n\"" +
@@ -125,10 +125,11 @@ public class LoginActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        JsonObjectRequest jsonObj = new JsonObjectRequest(url, data, new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonObj = new JsonObjectRequest(Request.Method.POST, url, data, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 Log.d("Volley Response: ", response.toString());
+
             }
         }, new Response.ErrorListener() {
             @Override
@@ -138,5 +139,4 @@ public class LoginActivity extends AppCompatActivity {
         });
         q.add(jsonObj);
     }
-    */
 }
