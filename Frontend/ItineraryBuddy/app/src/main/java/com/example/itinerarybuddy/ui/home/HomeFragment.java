@@ -46,7 +46,7 @@ public class HomeFragment extends Fragment {
        /* final TextView textView = binding.textHome;
         homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);*/
 
-        itineraryAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1);
+        itineraryAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, homeViewModel.getItineraries());
         ListView list = root.findViewById(R.id.listViewItineraries);
         list.setAdapter(itineraryAdapter);
 
