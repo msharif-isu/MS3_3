@@ -32,8 +32,6 @@ public class RegisterActivity extends AppCompatActivity {
 
     private Button loginButton;
 
-    private final String REGISTER_URL = null;
-
     private RequestQueue q;
 
     @Override
@@ -72,6 +70,8 @@ public class RegisterActivity extends AppCompatActivity {
      * Extracts data from text inputs, forms it into a string, and is made into a JSON object and posted.
      */
     private void register(){
+        String url = "";
+
         //Extract strings from the text fields
         String username = usernameInput.getText().toString();
         String email = emailInput.getText().toString();
@@ -93,16 +93,17 @@ public class RegisterActivity extends AppCompatActivity {
                 newUser = new JSONObject(userString);
 
                 //Post the JSON object
-                JsonObjectRequest jsonObj = new JsonObjectRequest(Request.Method.POST, REGISTER_URL, newUser , new Response.Listener<JSONObject>() {
+                JsonObjectRequest jsonObj = new JsonObjectRequest(Request.Method.POST, url, newUser , new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         Log.d("Volley Response: ", response.toString());
-
+                        Toast.makeText(getApplicationContext(), "Success!", Toast.LENGTH_LONG).show();
                     }
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e("Volley Error: ", error.toString());
+                        Toast.makeText(getApplicationContext(), "There was an error.", Toast.LENGTH_LONG).show();
                     }
                 });
                 q.add(jsonObj);

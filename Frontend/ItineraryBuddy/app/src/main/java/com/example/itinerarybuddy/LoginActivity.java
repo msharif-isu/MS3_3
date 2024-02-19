@@ -1,5 +1,6 @@
 package com.example.itinerarybuddy;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.util.Log;
@@ -9,26 +10,18 @@ import android.os.Bundle;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * This is the login page.
- */
+/** This is the login page. */
 public class LoginActivity extends AppCompatActivity {
-
-    /** JSON Object for user data to be passed into each activity. */
-    public JSONObject user;
 
     /** Input field for username. */
     private EditText usernameInput;
@@ -43,7 +36,7 @@ public class LoginActivity extends AppCompatActivity {
     private Button registerButton;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState){
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_activity);
 
@@ -72,44 +65,49 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * Gets the JSON from the URL and assigns the username and password variables accordingly.
-     */
-    public void login(){
+    /** Creates the url given the entered username and password and creates a GET request for the corresponding JSON object. */
+    public void login() {
         //Get the inputted username and password and create a url to get a user
         String enteredUsername = usernameInput.getText().toString();
         String enteredPassword = passwordInput.getText().toString();
         String url = "/Users/login/" + enteredUsername + "/" + enteredPassword;
 
-        JsonObjectRequest jsonObj = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>(){
+        JsonObjectRequest json = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 Log.d("Volley Response: ", response.toString());
-                try{
-                    //Extract correct data from JSON
-                    String username = response.getString("name");
-                    String password = response.getString("password");
-                    if(enteredUsername.equals(username) && enteredPassword.equals(password)){
-                        //Set static user variable to the returned JSON object
-                        User.userInfo = response;
 
-                        //If username and password are a match, proceed to main page.
-                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                    }
-                    else{
-                        //Otherwise, show a login error
-                        Toast.makeText(getApplicationContext(), "Incorrect credentials!", Toast.LENGTH_SHORT).show();
-                    }
-                }catch(JSONException e){
-                    e.printStackTrace();
+                //Get the username and password from the returned JSON
+                String username;
+                String password;
+                try {
+                    username = response.getString("username");
+                    password = response.getString("password");
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+
+                //Make sure returned username and password match the input ones
+                if(username.equals(enteredUsername) && password.equals(enteredPassword)){
+                    //Set static user variable to the returned JSON object
+                    User.userInfo = response;
+
+                    //Start main page activity
+                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                }
+                else{
+                    //Incorrect login message
+                    Toast.makeText(getApplicationContext(), "Invalid credentials", Toast.LENGTH_LONG).show();
                 }
             }
-        }, new Response.ErrorListener(){
+        }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                //Log and display error toast
                 Log.e("Volley Error: ", error.toString());
+                Toast.makeText(getApplicationContext(), "There was an error.", Toast.LENGTH_LONG).show();
             }
         });
-        User.requestQueue.add(jsonObj);
+        User.requestQueue.add(json);
     }
 }

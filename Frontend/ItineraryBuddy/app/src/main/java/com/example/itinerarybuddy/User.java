@@ -24,7 +24,20 @@ public class User {
         return username;
     }
 
-    /** Extract the usertype from the stored JSON. */
+    /** Extract the username from the stored JSON. */
+    public static String getEmail(){
+        String email = null;
+        try{
+            email = userInfo.getString("email");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return email;
+    }
+
+    /** Extract the usertype from the stored JSON.
+     * "user", "ambassador", "admin"
+     */
     public static String getUsertype(){
         String usertype = null;
         try{
