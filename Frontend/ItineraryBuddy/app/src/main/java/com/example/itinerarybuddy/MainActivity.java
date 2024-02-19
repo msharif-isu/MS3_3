@@ -15,5 +15,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
+
+        TextView name = findViewById(R.id.username);
+        TextView email = findViewById(R.id.email);
+
+        name.setText(User.getUsername());
+        email.setText(User.getEmail());
     }
 }
