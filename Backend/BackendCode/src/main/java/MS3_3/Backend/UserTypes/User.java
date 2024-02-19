@@ -1,5 +1,9 @@
 package MS3_3.Backend.UserTypes;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+
+@Entity
 public class User {
 
     private String email;
@@ -8,6 +12,7 @@ public class User {
 
     private String lastName;
 
+    @Id
     private String userName;
 
     private String password;
@@ -37,6 +42,8 @@ public class User {
         this.numPosts = 0;
         this.numLikes = 0;
         this.canPost = true;
+    }
+    public User() {
     }
 
     public void setUserName(String userName) {
