@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">ItineraryBuddy</string>
+    <string name="username_text">USERNAME</string>
+    <string name="password_text">PASSWORD</string>
+    <string name="create_account_text">CREATE NEW ACCOUNT</string>
+    <string name="new_user_text">NEW USER?</string>
+    <string name="itinerarybuddy_text">ItineraryBuddy</string>
+    <string name="login_text">LOGIN</string>
+    <string name="signup">SIGNUP</string>
+    <string name="email_text">EMAIL</string>
+    <string name="confirm_password_text">CONFIRM PASSWORD</string>
+    <string name="sign_in_here_text">OR SIGN IN HERE</string>
 </resources>
