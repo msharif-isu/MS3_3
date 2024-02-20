@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">ItineraryBuddy</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="itemDay">Day</string>
+    <string name="itemDate">Date</string>
+    <string name="itemTime">Time</string>
+    <string name="itemPlaces">Places</string>
+    <string name="itemNote">Note</string>
 </resources>
