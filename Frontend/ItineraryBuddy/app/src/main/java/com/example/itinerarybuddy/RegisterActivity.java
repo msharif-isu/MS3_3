@@ -32,8 +32,6 @@ public class RegisterActivity extends AppCompatActivity {
 
     private Button loginButton;
 
-    private RequestQueue q;
-
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -93,7 +91,7 @@ public class RegisterActivity extends AppCompatActivity {
                 newUser = new JSONObject(userString);
 
                 //Post the JSON object
-                JsonObjectRequest jsonObj = new JsonObjectRequest(Request.Method.POST, url, newUser , new Response.Listener<JSONObject>() {
+                JsonObjectRequest json = new JsonObjectRequest(Request.Method.POST, url, newUser , new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         Log.d("Volley Response: ", response.toString());
@@ -106,7 +104,7 @@ public class RegisterActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "There was an error.", Toast.LENGTH_LONG).show();
                     }
                 });
-                q.add(jsonObj);
+                User.requestQueue.add(json);
             }catch(Exception e){
                 e.printStackTrace();
             }
