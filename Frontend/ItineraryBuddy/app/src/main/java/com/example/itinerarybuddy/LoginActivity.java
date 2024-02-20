@@ -23,8 +23,6 @@ import java.util.Map;
 /** This is the login page. */
 public class LoginActivity extends AppCompatActivity {
 
-<<<<<<< HEAD
-=======
     /** Input field for username. */
     private EditText usernameInput;
 
@@ -37,13 +35,10 @@ public class LoginActivity extends AppCompatActivity {
     /** Button for sign up page. */
     private Button registerButton;
 
->>>>>>> 0cbba7441b944c15f45e699fb11274ee73c6639c
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_activity);
-<<<<<<< HEAD
-=======
 
         //Instantiate needed fields by id
         usernameInput = findViewById(R.id.username_input);
@@ -114,6 +109,5 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
         User.requestQueue.add(json);
->>>>>>> 0cbba7441b944c15f45e699fb11274ee73c6639c
     }
 }
