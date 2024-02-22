@@ -104,6 +104,7 @@
                 android:clickable="true"
                 android:contentDescription="Add new itinerary"
                 android:src="@drawable/add_icon"
+                app:backgroundTint="#F8F5F5"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -130,7 +131,6 @@
             android:id="@+id/textHome"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
             tools:ignore="MissingConstraints" />
 
 
