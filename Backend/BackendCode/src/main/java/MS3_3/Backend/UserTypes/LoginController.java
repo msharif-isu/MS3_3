@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.HashMap;
 import java.util.List;
 
+
+//http://coms-309-035.class.las.iastate.edu:8080/Users
+
 @RestController
 public class LoginController {
     @Autowired
@@ -22,6 +25,16 @@ public class LoginController {
         return userRepository.findAll();
     }
 
+    @GetMapping("/Users/login/{userName}/{password}")
+    public boolean loginIn(@PathVariable String userName, @PathVariable String password){
+        if(userRepository.existsById(userName) && userRepository.findByUserName(userName).getPassword().equals(password)){
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
     @GetMapping("/Users/{userName}")
     public User getUser(@PathVariable String userName) {
         return userRepository.findByUserName(userName);
@@ -29,9 +42,8 @@ public class LoginController {
 
     @PostMapping("/Users/Create")
     public  String createPerson(@RequestBody User person) {
-        System.out.println(person);
         userRepository.save(person);
-        return "Account "+ person.getUserName() + " Created";
+        return "Account "+ userRepository.findByUserName(person.getUserName()).getUserName() + " Created";
     }
 
     @DeleteMapping("/Users/{userName}")
