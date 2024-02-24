@@ -3,6 +3,7 @@ package com.example.itinerarybuddy.ui.home;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,8 @@ import android.widget.ListView;
 import android.widget.DatePicker;
 import android.widget.TextView;
 
+
+import com.example.itinerarybuddy.data.Itinerary;
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
@@ -27,6 +30,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import java.sql.Time;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.HashSet;
 import java.util.Set;
@@ -34,9 +39,18 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.itinerarybuddy.R;
 import com.example.itinerarybuddy.databinding.FragmentHomeBinding;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import javax.xml.transform.ErrorListener;
 
@@ -45,8 +59,9 @@ public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
     private ArrayAdapter<String> itineraryAdapter;
-    private EditText startDateEditText;
-    private EditText endDateEditText;
+    private EditText startDateInput;
+    private EditText endDateInput;
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -62,7 +77,6 @@ public class HomeFragment extends Fragment {
         itineraryAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, homeViewModel.getItineraries());
         ListView list = root.findViewById(R.id.listViewItineraries);
         list.setAdapter(itineraryAdapter);
-
 
 
         FloatingActionButton fab = root.findViewById(R.id.addItinerary);
@@ -83,43 +97,41 @@ public class HomeFragment extends Fragment {
         binding = null;
     }
 
-    private void showAddItineraryDialog(){
+    private void showAddItineraryDialog() {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-       builder.setTitle("Add Itinerary");
+        builder.setTitle("Add Itinerary");
 
 
-       View dialogView = getLayoutInflater().inflate(R.layout.dialog_add_itinerary,null);
-       builder.setView(dialogView);
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_add_itinerary, null);
+        builder.setView(dialogView);
 
-       final EditText destinationEditText = dialogView.findViewById(R.id.destinationEditText);
-       startDateEditText = dialogView.findViewById(R.id.startDateEditText);
-       endDateEditText = dialogView.findViewById(R.id.endDateEditText);
+        final EditText destinationEditText = dialogView.findViewById(R.id.destinationEditText);
+        startDateInput = dialogView.findViewById(R.id.startDateEditText);
+        endDateInput = dialogView.findViewById(R.id.endDateEditText);
 
-       startDateEditText.setOnClickListener(new View.OnClickListener(){
+        startDateInput.setOnClickListener(new View.OnClickListener() {
 
-           public void onClick(View v){
-               showDatePickerDialog(startDateEditText);
-           }
-       });
+            public void onClick(View v) {
+                showDatePickerDialog(startDateInput);
+            }
+        });
 
-       endDateEditText.setOnClickListener(new View.OnClickListener(){
+        endDateInput.setOnClickListener(new View.OnClickListener() {
 
-           public void onClick(View v){
-               showDatePickerDialog(endDateEditText);
-           }
-       });
+            public void onClick(View v) {
+                showDatePickerDialog(endDateInput);
+            }
+        });
 
-       /* final EditText input = new EditText(requireContext());
-        builder.setView(input);*/
 
         builder.setPositiveButton("Continue", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String destination = destinationEditText.getText().toString();
                 String tripCode = generateUniqueTripCode();
-                String startDate = startDateEditText.getText().toString();
-                String endDate = endDateEditText.getText().toString();
+                String startDate = startDateInput.getText().toString();
+                String endDate = endDateInput.getText().toString();
 
                 createNewFrame(destination, tripCode, startDate, endDate);
             }
@@ -135,16 +147,16 @@ public class HomeFragment extends Fragment {
         builder.show();
     }
 
-    private String generateUniqueTripCode(){
+    private String generateUniqueTripCode() {
 
         Random rand = new Random(System.currentTimeMillis());
 
         Set<Integer> generatedNumbers = new HashSet<>();
 
-        while(true){
+        while (true) {
             int randomNum = rand.nextInt(10000000);
 
-            if(!generatedNumbers.contains(randomNum)){
+            if (!generatedNumbers.contains(randomNum)) {
                 generatedNumbers.add(randomNum);
                 return String.format("%08d", randomNum);
             }
@@ -166,16 +178,16 @@ public class HomeFragment extends Fragment {
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                         calendar.set(year, monthOfYear, dayOfMonth);
                         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-                        startDateEditText.setText(dateFormat.format(calendar.getTime()));
+                        startDateInput.setText(dateFormat.format(calendar.getTime()));
 
-                        showEndDatePickerDialog(calendar, endDateEditText);
+                        showEndDatePickerDialog(calendar, endDateInput);
                     }
                 }, year, month, day);
 
         datePickerDialog.show();
     }
 
-    private void showEndDatePickerDialog(final Calendar startDateCalendar, final EditText endDate){
+    private void showEndDatePickerDialog(final Calendar startDateCalendar, final EditText endDate) {
 
         int year = startDateCalendar.get(Calendar.YEAR);
         int month = startDateCalendar.get(Calendar.MONTH);
@@ -190,12 +202,10 @@ public class HomeFragment extends Fragment {
                         endDateCalendar.set(year, monthOfYear, dayOfMonth);
 
 
-                        if(endDateCalendar.before(startDateCalendar)){
+                        if (endDateCalendar.before(startDateCalendar)) {
 
-                           Toast.makeText(requireContext(), "End date cannot be before start date", Toast.LENGTH_SHORT).show();
-                        }
-
-                        else{
+                            Toast.makeText(requireContext(), "End date cannot be before start date", Toast.LENGTH_SHORT).show();
+                        } else {
 
                             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
                             endDate.setText(dateFormat.format(endDateCalendar.getTime()));
@@ -206,46 +216,82 @@ public class HomeFragment extends Fragment {
         endDatePickerDialog.show();
     }
 
-/*    void showErrorEndDate(String errorMessage){
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-
-        builder.setTitle("Error");
-        builder.setMessage(errorMessage);
-        builder.setIcon(android.R.drawable.ic_dialog_alert);
-
-        TextView messageText = new TextView(requireContext());
-
-        messageText.setText(errorMessage);
-        messageText.setTextColor(Color.RED);
-        messageText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
-        builder.setView(messageText);
-
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-                Vibrator vibrator = (Vibrator) requireContext().getSystemService(Context.VIBRATOR_SERVICE);
-
-                if(vibrator != null){
-                    vibrator.vibrate(200);
-                }
-
-                dialog.dismiss();
-            }
-        });
-    }*/
     private void createNewFrame(String destination, String tripCode, String startDate, String endDate) {
 
         String itineraryInfo =
                 "Destination: " + destination
-                + "\nTrip Code: " + tripCode
-                + "\nStart Date: " + startDate
-                + "\nEnd Date: " + endDate;
+                        + "\nTrip Code: " + tripCode
+                        + "\nStart Date: " + startDate
+                        + "\nEnd Date: " + endDate;
 
         //Save the info in itineraryAdapter
         itineraryAdapter.insert(itineraryInfo, 0);
 
         itineraryAdapter.notifyDataSetChanged();
+
+        //Make a network request using Volley
+       // String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary/Create";
+        String url = "https://5569939f-7918-4af9-937a-86edcfe9bc7f.mock.pstmn.io/Itinerary/Create";
+
+
+        RequestQueue queue = Volley.newRequestQueue(requireContext());
+
+        String tripData = "{\n" +
+                "\"destination\": \"" + destination + "\",\n" +
+                "\"tripCode\": \"" + tripCode + "\",\n" +
+                "\"start date\": \"" + startDate + "\",\n" +
+                "\"end date\": \"" + endDate + "\",\n"  +
+                "}";
+
+
+        JSONObject itineraryData;
+
+        try {
+
+            itineraryData = new JSONObject(tripData);
+
+            JsonObjectRequest jsonObject = new JsonObjectRequest(Request.Method.POST, url, itineraryData, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    Log.d("Volley Response: ", response.toString());
+                    Toast.makeText(requireContext(), "Itinerary created successfully", Toast.LENGTH_SHORT).show();
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e("Volley Error: ", error.toString());
+                    Toast.makeText(requireContext(), "Error creating itinerary", Toast.LENGTH_SHORT).show();
+                }
+
+        })
+
+            {
+
+               /* protected Map<String, String> getParams(){
+
+                HashMap<String, String> map = new HashMap<String, String>();
+
+                map.put("destination", destination);
+                map.put("tripCode", tripCode);
+                map.put("start date", startDate);
+                map.put("end date", endDate);
+
+                return map;
+            }*/
+
+            public Map<String, String> getHeaders(){
+                    HashMap<String, String> map = new HashMap<String, String>();
+                    return map;
+            }
+            };
+
+            Itinerary.requestQueue.add(jsonObject);
+
+
+    } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
+
 }
