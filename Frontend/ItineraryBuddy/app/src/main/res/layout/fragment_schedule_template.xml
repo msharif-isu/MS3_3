@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ScheduleTemplate">
+
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="10dp"
+        android:showDividers="beginning|middle|end"
+        android:divider="@drawable/table_divider"
+        android:stretchColumns="*">
+
+        <TableRow
+            android:id="@+id/headerRow"
+            android:visibility="visible"
+           >
+
+            <TextView
+                android:padding="8dp"
+                android:text="Day"
+                android:textStyle="bold"
+                android:gravity="center"
+                tools:visibility="visible"
+                android:textColor="@color/white"
+                android:background="#5b6732"/>
+
+            <TextView
+                android:padding="8dp"
+                android:text="Date"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:textColor="@color/black"/>
+
+            <TextView
+                android:padding="8dp"
+                android:text="Time"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:background="#5b6732"/>
+
+            <TextView
+                android:padding="8dp"
+                android:text="Places"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:textColor="@color/black"/>
+
+            <TextView
+                android:padding="8dp"
+                android:text="Note"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:background="#5b6732"/>
+
+
+
+        </TableRow>
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </TableLayout>
+</LinearLayout>
