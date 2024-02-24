@@ -1,6 +1,5 @@
-package com.example.itinerarybuddy;
+package com.example.itinerarybuddy.activities;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.util.Log;
@@ -14,7 +13,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import org.json.JSONException;
+import com.example.itinerarybuddy.R;
+import com.example.itinerarybuddy.data.User;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -29,16 +29,14 @@ public class LoginActivity extends AppCompatActivity {
     /** Input field for password. */
     private EditText passwordInput;
 
-    /** Button for login. */
-    private Button loginButton;
-
-    /** Button for sign up page. */
-    private Button registerButton;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_activity);
+
+        // Declare buttons
+        Button loginButton;
+        Button registerButton;
 
         //Instantiate needed fields by id
         usernameInput = findViewById(R.id.username_input);
@@ -51,7 +49,9 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                login();
+                // Attempt login if the inputs are non empty
+                if(!usernameInput.getText().toString().equals("") && !passwordInput.getText().toString().equals(""))
+                    login();
             }
         });
 
@@ -66,48 +66,43 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     /** Creates the url given the entered username and password and creates a GET request for the corresponding JSON object. */
-    public void login() {
-        //Get the inputted username and password and create a url to get a user
+    private void login() {
+        // Get the inputted username and password and create a url to get a user
         String enteredUsername = usernameInput.getText().toString();
         String enteredPassword = passwordInput.getText().toString();
-        String url = "/Users/login/" + enteredUsername + "/" + enteredPassword;
+        String url = "http://coms-309-035.class.las.iastate.edu:8080/Users/login/" + enteredUsername + "/" + enteredPassword;
 
         JsonObjectRequest json = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 Log.d("Volley Response: ", response.toString());
 
-                //Get the username and password from the returned JSON
-                String username;
-                String password;
-                try {
-                    username = response.getString("username");
-                    password = response.getString("password");
-                } catch (JSONException e) {
-                    throw new RuntimeException(e);
-                }
-
-                //Make sure returned username and password match the input ones
-                if(username.equals(enteredUsername) && password.equals(enteredPassword)){
-                    //Set static user variable to the returned JSON object
-                    User.userInfo = response;
-
-                    //Start main page activity
-                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                }
-                else{
-                    //Incorrect login message
-                    Toast.makeText(getApplicationContext(), "Invalid credentials", Toast.LENGTH_LONG).show();
-                }
+                // Save user JSON and proceed to homepage
+                User.userInfo = response;
+                startActivity(new Intent(LoginActivity.this, MainActivity.class));
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                //Log and display error toast
+                // Log and display error toast
                 Log.e("Volley Error: ", error.toString());
                 Toast.makeText(getApplicationContext(), "There was an error.", Toast.LENGTH_LONG).show();
             }
-        });
+        }){
+            @Override
+            protected Map<String, String> getParams(){
+                HashMap<String, String> map = new HashMap<>();
+                map.put("userName", enteredUsername);
+                map.put("password", enteredPassword);
+                return map;
+            }
+
+            @Override
+            public Map<String, String> getHeaders(){
+                HashMap<String, String> map = new HashMap<>();
+                return map;
+            }
+        };
         User.requestQueue.add(json);
     }
 }

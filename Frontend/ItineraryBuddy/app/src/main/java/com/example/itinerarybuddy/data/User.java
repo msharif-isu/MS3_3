@@ -1,4 +1,4 @@
-package com.example.itinerarybuddy;
+package com.example.itinerarybuddy.data;
 
 import com.android.volley.RequestQueue;
 import org.json.JSONException;
@@ -8,16 +8,16 @@ import org.json.JSONObject;
 public class User {
 
     /** JSON object to be used in the various activities. */
-    protected static JSONObject userInfo;
+    public static JSONObject userInfo;
 
     /** Queue for pushing JSON requests. */
-    protected static RequestQueue requestQueue;
+    public static RequestQueue requestQueue;
 
     /** Extract the username from the stored JSON. */
     public static String getUsername(){
         String username = null;
         try{
-           username = userInfo.getString("username");
+           username = userInfo.getString("userName");
         } catch (JSONException e) {
             e.printStackTrace();
         }

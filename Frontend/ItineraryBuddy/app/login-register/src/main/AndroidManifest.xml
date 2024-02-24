@@ -15,18 +15,18 @@
         android:theme="@style/Theme.ItineraryBuddy"
         tools:targetApi="31">
         <activity
-            android:name=".activities.MainActivity"
+            android:name="com.example.itinerarybuddy.activities.RegisterActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.RegisterActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.LoginActivity"
+            android:name="com.example.itinerarybuddy.activities.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.example.itinerarybuddy.activities.MainActivity"
+            android:exported="false" />
     </application>
 </manifest>
