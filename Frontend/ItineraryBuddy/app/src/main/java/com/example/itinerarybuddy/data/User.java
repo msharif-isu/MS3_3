@@ -10,8 +10,8 @@ public class User {
     /** JSON object to be used in the various activities. */
     public static JSONObject userInfo;
 
-    /** Queue for pushing JSON requests. */
-    public static RequestQueue requestQueue;
+    ///** Queue for pushing JSON requests. */
+    //public static RequestQueue requestQueue;
 
     /** Extract the username from the stored JSON. */
     public static String getUsername(){

@@ -6,17 +6,14 @@ import android.util.Log;
 import android.view.*;
 import android.widget.*;
 import android.os.Bundle;
-
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.itinerarybuddy.R;
 import com.example.itinerarybuddy.data.User;
+import com.example.itinerarybuddy.util.Singleton;
 import org.json.JSONObject;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,15 +40,15 @@ public class LoginActivity extends AppCompatActivity {
         passwordInput = findViewById(R.id.password_input);
         loginButton = findViewById(R.id.login_button);
         registerButton = findViewById(R.id.create_account_button);
-        User.requestQueue = Volley.newRequestQueue(getApplicationContext());
 
         // Set listener for login button
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // Attempt login if the inputs are non empty
-                if(!usernameInput.getText().toString().equals("") && !passwordInput.getText().toString().equals(""))
+                if(!usernameInput.getText().toString().equals("") && !passwordInput.getText().toString().equals("")) {
                     login();
+                }
             }
         });
 
@@ -100,9 +97,12 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public Map<String, String> getHeaders(){
                 HashMap<String, String> map = new HashMap<>();
+                map.put("Content-Type", "application/json");
                 return map;
             }
         };
-        User.requestQueue.add(json);
+
+        // Add request to Singleton request queue.
+        Singleton.getInstance(getApplicationContext()).addRequest(json);
     }
 }

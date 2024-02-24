@@ -8,7 +8,7 @@ import android.os.Bundle;
 import com.example.itinerarybuddy.data.User;
 
 /**
- * This is the home page.
+ * This is a placeholder to test the login. Will be replaced with correct homepage.
  */
 public class MainActivity extends AppCompatActivity {
 
