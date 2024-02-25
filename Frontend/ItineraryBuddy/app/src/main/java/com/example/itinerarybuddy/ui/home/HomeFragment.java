@@ -1,5 +1,6 @@
 package com.example.itinerarybuddy.ui.home;
 
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Vibrator;
@@ -14,7 +15,7 @@ import android.widget.ListView;
 import android.widget.DatePicker;
 import android.widget.TextView;
 
-
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.example.itinerarybuddy.data.Itinerary;
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -47,8 +48,10 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.itinerarybuddy.R;
 import com.example.itinerarybuddy.databinding.FragmentHomeBinding;
+import com.example.itinerarybuddy.util.Singleton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -68,8 +71,11 @@ public class HomeFragment extends Fragment {
         HomeViewModel homeViewModel =
                 new ViewModelProvider(this).get(HomeViewModel.class);
 
+        Itinerary.requestQueue = Volley.newRequestQueue(requireContext());
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+
 
        /* final TextView textView = binding.textHome;
         homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);*/
@@ -78,6 +84,7 @@ public class HomeFragment extends Fragment {
         ListView list = root.findViewById(R.id.listViewItineraries);
         list.setAdapter(itineraryAdapter);
 
+        fetchItineraryInformation();
 
         FloatingActionButton fab = root.findViewById(R.id.addItinerary);
 
@@ -161,7 +168,6 @@ public class HomeFragment extends Fragment {
                 return String.format("%08d", randomNum);
             }
         }
-
     }
 
 
@@ -218,7 +224,7 @@ public class HomeFragment extends Fragment {
 
     private void createNewFrame(String destination, String tripCode, String startDate, String endDate) {
 
-        String itineraryInfo =
+       String itineraryInfo =
                 "Destination: " + destination
                         + "\nTrip Code: " + tripCode
                         + "\nStart Date: " + startDate
@@ -229,27 +235,39 @@ public class HomeFragment extends Fragment {
 
         itineraryAdapter.notifyDataSetChanged();
 
-        //Make a network request using Volley
-       // String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary/Create";
-        String url = "https://5569939f-7918-4af9-937a-86edcfe9bc7f.mock.pstmn.io/Itinerary/Create";
+        POST_itinerary(destination, tripCode, startDate, endDate);
 
+        // saveItineraryToShared(destination, tripCode, startDate, endDate);
+
+    }
+
+    private void POST_itinerary(String destination, String tripCode, String startDate, String endDate){
+
+        //Make a network request using Volley
+        // String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary/Create";
+        String url = "https://5569939f-7918-4af9-937a-86edcfe9bc7f.mock.pstmn.io/Itinerary/Create";
 
         RequestQueue queue = Volley.newRequestQueue(requireContext());
 
+        //Convert itinerary information to JSON format
         String tripData = "{\n" +
                 "\"destination\": \"" + destination + "\",\n" +
                 "\"tripCode\": \"" + tripCode + "\",\n" +
                 "\"start date\": \"" + startDate + "\",\n" +
-                "\"end date\": \"" + endDate + "\",\n"  +
+                "\"end date\": \"" + endDate + "\"\n" +
                 "}";
 
+        Log.d("Volley Request Data: ", tripData);
 
+        //Declare JSONObject to hold the itinerary data
         JSONObject itineraryData;
 
         try {
 
+            //Create a JSONOnject from the tripData
             itineraryData = new JSONObject(tripData);
 
+            //JsonObjectRequest for the POST request
             JsonObjectRequest jsonObject = new JsonObjectRequest(Request.Method.POST, url, itineraryData, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
@@ -260,38 +278,137 @@ public class HomeFragment extends Fragment {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Log.e("Volley Error: ", error.toString());
+                    // Add more detailed logging for better error analysis
+                    if (error.networkResponse != null) {
+                        Log.e("Volley Error", "Status Code: " + error.networkResponse.statusCode);
+                        Log.e("Volley Error: ", "Error Response: " + new String(error.networkResponse.data));
+                    }
                     Toast.makeText(requireContext(), "Error creating itinerary", Toast.LENGTH_SHORT).show();
                 }
-
-        })
-
-            {
-
-               /* protected Map<String, String> getParams(){
-
+            })
+            {@Override
+            protected Map<String, String> getParams(){
                 HashMap<String, String> map = new HashMap<String, String>();
-
                 map.put("destination", destination);
                 map.put("tripCode", tripCode);
                 map.put("start date", startDate);
                 map.put("end date", endDate);
 
                 return map;
-            }*/
-
-            public Map<String, String> getHeaders(){
-                    HashMap<String, String> map = new HashMap<String, String>();
-                    return map;
             }
+                @Override
+                public Map<String, String> getHeaders(){
+                    HashMap<String, String> map = new HashMap<String, String>();
+                    map.put("Content-Type", "application/json");
+                    return map;
+                }
+
+
             };
 
+            //Add the JsonObjectRequest to the request queue
             Itinerary.requestQueue.add(jsonObject);
+            Singleton.getInstance(requireContext()).addRequest(jsonObject);
 
 
-    } catch (JSONException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
         }
 
+        //Saving the tripData locally
+        // saveItineraryToShared(destination, tripCode, startDate, endDate);
     }
+
+
+
+    private void saveItineraryToShared(String destination, String tripCode, String startDate, String endDate) {
+
+        SharedPreferences sharedPreferences = requireContext().getSharedPreferences("itinerary_preferences", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        //Create a unique key for each itinerary based on tripCode
+        String itineraryKey = "itinerary_" + tripCode;
+
+        String itineraryInfo =
+                "Destination: " + destination
+                        + "\nTrip Code: " + tripCode
+                        + "\nStart Date: " + startDate
+                        + "\nEnd Date: " + endDate;
+
+        editor.putString(itineraryKey, itineraryInfo);
+        editor.apply();
+
+    }
+
+
+    public void fetchItineraryInformation(){
+
+        loadSavedItineraries();
+
+        String getItineraryUrl = "https://5569939f-7918-4af9-937a-86edcfe9bc7f.mock.pstmn.io/Itinerary/GetInfo";
+
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, getItineraryUrl, null,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+
+                        //Parse the JSON array and update the adapter with itinerary information
+                        updateItineraryAdapter(response);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                        Log.e("Volley Error: ", error.toString());
+
+                        if(error.networkResponse != null){
+                        Log.e("Volley Error", "Status Code: " + error.networkResponse.statusCode);
+                        Log.e("Volley Error: ", "Error Response: " + new String(error.networkResponse.data));
+                        }
+                        Toast.makeText(requireContext(), "Error fetching itinerary info", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+        Itinerary.requestQueue.add(jsonArrayRequest);
+    }
+
+    private void loadSavedItineraries() {
+        SharedPreferences sharedPreferences = requireContext().getSharedPreferences("itinerary_preferences", Context.MODE_PRIVATE);
+
+        //Iterate through saved itineraries and update the adapter
+        Map<String, ?> allEntries = sharedPreferences.getAll();
+
+        for(Map.Entry<String, ?> entry:allEntries.entrySet()){
+
+            String itineraryInfo = entry.getValue().toString();
+            itineraryAdapter.insert(itineraryInfo,0);
+        }
+    }
+
+       private void updateItineraryAdapter(JSONArray itineraryArray) {
+        for (int i = 0; i < itineraryArray.length(); i++) {
+            try {
+                JSONObject itineraryObject = itineraryArray.getJSONObject(i);
+                String destination = itineraryObject.getString("destination");
+                String tripCode = itineraryObject.getString("tripCode");
+                String startDate = itineraryObject.getString("start date");  // Corrected key
+                String endDate = itineraryObject.getString("end date");      // Corrected key
+
+                String itineraryInfo = "Destination: " + destination +
+                        "\nTrip Code: " + tripCode +
+                        "\nStart Date: " + startDate +
+                        "\nEnd Date: " + endDate;
+
+                itineraryAdapter.insert(itineraryInfo, 0);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        itineraryAdapter.notifyDataSetChanged();
+    }
+
 
 }
