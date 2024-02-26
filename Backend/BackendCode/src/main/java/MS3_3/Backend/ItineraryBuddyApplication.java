@@ -11,40 +11,10 @@ import org.springframework.context.annotation.Bean;
 public class ItineraryBuddyApplication {
 
 	public static void main(String[] args) throws Exception {
-		//Runs on http://localhost:7070
+		//Runs on http://localhost:8080
+		//Or http://coms-309-035.class.las.iastate.edu:8080/Users
 		SpringApplication.run(ItineraryBuddyApplication.class, args);
 	}
 
-	/**
-	 * String email,String firstName,String lastName,String userName,String password,String state,String city,
-	 *                 String userType
-	 * @param userRepository
-	 * @return
-	 */
-
-	@Bean
-	CommandLineRunner initUser(UserRepository userRepository) {
-		return args -> {
-			User user1 = new User("@iastate1", "Jackson",
-					"Collalti", "Collalti1",
-					"C1",
-					"IL", "St Charles",
-					"Admin");
-            User user2 = new User("@iastate2", "Jack",
-					"Collalti", "Collalti2",
-					"C2",
-					"IL", "St Charles",
-					"Admin");
-			User user3 = new User("@iastate3", "J",
-					"Co", "Collalti3",
-					"C3",
-					"IL", "St Charles",
-					"Admin");
-			userRepository.save(user1);
-			userRepository.save(user2);
-			userRepository.save(user3);
-
-		};
-	}
 
 }
