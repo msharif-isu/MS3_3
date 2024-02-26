@@ -1,5 +1,7 @@
 package com.example.itinerarybuddy;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,16 +11,20 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.itinerarybuddy.data.ScheduleItem;
+
 import java.util.List;
 
+//To adapt a list of schedule data to a RecyclerView
 class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHolder> {
 
     private static final int VIEW_TYPE_HEADER = 0;
     private static final int VIEW_TYPE_DATA = 1;
-    public List<String> data;
 
-    public ScheduleAdapter(List<String> data) {
-        this.data = data;
+    private List<ScheduleItem> scheduleData;
+
+    public ScheduleAdapter(List<ScheduleItem> scheduleData) {
+        this.scheduleData = scheduleData;
     }
 
     @NonNull
@@ -27,11 +33,9 @@ class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHolder> {
 
         View view;
 
-        if(viewType == VIEW_TYPE_HEADER){
+        if (viewType == VIEW_TYPE_HEADER) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_schedule_header, parent, false);
-        }
-
-        else{
+        } else {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_schedule_data, parent, false);
         }
         return new ViewHolder(view);
@@ -40,20 +44,20 @@ class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        /*if(getItemViewType(position) == VIEW_TYPE_DATA){
-            String item = data.get(position-1);
+        if (getItemViewType(position) == VIEW_TYPE_DATA) {
+            ScheduleItem item = scheduleData.get(position - 1);
             holder.bindData(item);
-        }*/
+        }
     }
 
 
     @Override
     public int getItemCount() {
-        return data.size() + 1;
+        return scheduleData.size() + 1;
     }
 
     public int getItemViewType(int position) {
-        return position == 0 ? VIEW_TYPE_HEADER: VIEW_TYPE_DATA;
+        return position == 0 ? VIEW_TYPE_HEADER : VIEW_TYPE_DATA;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -89,40 +93,44 @@ class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHolder> {
                 dataEditTextTime = itemView.findViewById(R.id.dataEditTextTime);
                 dataEditTextPlaces = itemView.findViewById(R.id.dataEditTextPlaces);
                 dataEditTextNote = itemView.findViewById(R.id.dataEditTextNote);
+
+                dataEditTextDay.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                        if(getAdapterPosition() > 0 && getAdapterPosition() <= scheduleData.size()){
+
+                            ScheduleItem item = schedule.get(getAdapterPosition() - 1);
+                            item.setDay(Integer.parseInt(charSequence.toString()));
+                        }
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+
+                    }
+                });
+
+                public void bindData(ScheduleItem item){
+
+                    dataEditTextDay.setText(String.valueOf(item.getDay()));
+                    dataEditTextDate.setText(item.getDate());
+                    dataEditTextTime.setText(item.getTime());
+                    dataEditTextPlaces.setText(item.getPlaces());
+                    dataEditTextNote.setText(item.getNote());
+                }
+
             }
 
-           /* int initialWidth = itemView.getResources().getDisplayMetrics().widthPixels/5;
-
-            ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(
-                    initialWidth,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-            );
-
-            headerTextViewDay.setLayoutParams(params);
-            headerTextViewDate.setLayoutParams(params);
-            headerTextViewTime.setLayoutParams(params);
-            headerTextViewPlaces.setLayoutParams(params);
-            headerTextViewNote.setLayoutParams(params);
-
-            dataEditTextDay.setLayoutParams(params);
-            dataEditTextDate.setLayoutParams(params);
-            dataEditTextTime.setLayoutParams(params);
-            dataEditTextPlaces.setLayoutParams(params);
-            dataEditTextNote.setLayoutParams(params);*/
-        }
-
-        public void bindData(String item) {
-            if (dataEditTextDay != null) {
-                // Customize data binding logic based on your data model
-                // For simplicity, setting the same value to all columns
-                dataEditTextDay.setText(item);
-                dataEditTextDate.setText(item);
-                dataEditTextTime.setText(item);
-                dataEditTextPlaces.setText(item);
-                dataEditTextNote.setText(item);
-            }
         }
 
 
     }
 }
+
+
