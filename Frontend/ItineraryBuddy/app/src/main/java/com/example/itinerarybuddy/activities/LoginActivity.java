@@ -11,7 +11,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.itinerarybuddy.R;
-import com.example.itinerarybuddy.data.User;
+import com.example.itinerarybuddy.data.UserData;
 import com.example.itinerarybuddy.util.Singleton;
 import org.json.JSONObject;
 import java.util.HashMap;
@@ -75,7 +75,7 @@ public class LoginActivity extends AppCompatActivity {
                 Log.d("Volley Response: ", response.toString());
 
                 // Save user JSON and proceed to homepage
-                User.userInfo = response;
+                UserData.userInfo = response;
                 startActivity(new Intent(LoginActivity.this, MainActivity.class));
             }
         }, new Response.ErrorListener() {

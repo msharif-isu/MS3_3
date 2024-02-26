@@ -1,17 +1,13 @@
 package com.example.itinerarybuddy.data;
 
-import com.android.volley.RequestQueue;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 /** This class stores a static JSON object for the current app user. Includes getters for data. */
-public class User {
+public class UserData {
 
     /** JSON object to be used in the various activities. */
     public static JSONObject userInfo;
-
-    ///** Queue for pushing JSON requests. */
-    //public static RequestQueue requestQueue;
 
     /** Extract the username from the stored JSON. */
     public static String getUsername(){
