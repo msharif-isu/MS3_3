@@ -10,8 +10,8 @@
        android:id="@+id/recyclerView"
        android:layout_width="match_parent"
        android:layout_height="match_parent"
-       android:showDividers="beginning|middle|end"
        android:divider="@drawable/header_background"
+       android:showDividers="beginning|middle|end"
        android:stretchColumns="*" />
 
 </LinearLayout>

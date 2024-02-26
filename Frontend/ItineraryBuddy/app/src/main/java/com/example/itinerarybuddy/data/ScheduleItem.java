@@ -1,21 +1,22 @@
 package com.example.itinerarybuddy.data;
 
-import java.util.Map;
+import java.sql.Time;
+
 
 public class ScheduleItem {
 
     int day;
     String date;
-    Map<String, String> time;
-    Map<String, String> places;
-    Map<String, String> notes;
+    Time time;
+    String places;
+    String notes;
 
     //default constructor
     public ScheduleItem() {
     }
 
 
-    public ScheduleItem(int day, String date, Map<String, String> time, Map<String, String> places, Map<String, String> notes) {
+    public ScheduleItem(int day, String date, Time time, String places, String notes) {
 
         this.day = day;
         this.date = date;
@@ -44,29 +45,30 @@ public class ScheduleItem {
 
     }
 
-    public Map<String, String> getTime(){
+    public Time getTime() {
         return time;
     }
 
-    public void setTime(Map<String, String> time){
+
+    public void setTime(Time time){
 
         this.time = time;
     }
 
-    public Map<String, String> getPlaces(){
+    public String getPlaces(){
         return places;
     }
 
-    public void setPlaces(Map<String, String> places){
+    public void setPlaces(String places){
 
         this.places = places;
     }
 
-    public Map<String, String> getNotes(){
+    public String getNotes(){
         return notes;
     }
 
-    public void setNotes(Map<String, String> notes){
+    public void setNotes(String notes){
         this.notes = notes;
     }
 

@@ -6,30 +6,6 @@
     android:orientation="horizontal"
     >
 
-    <TextView
-        android:id="@+id/headerTextViewDay"
-        android:layout_width="0dp"
-        android:layout_height="40dp"
-        android:layout_weight="1"
-        android:background="@drawable/header_background"
-        android:gravity="center"
-        android:padding="8dp"
-        android:text="@string/itemDay"
-        android:textColor="@color/black"
-        android:textStyle="bold"
-        />
-
-    <TextView
-        android:id="@+id/headerTextViewDate"
-        android:layout_width="0dp"
-        android:layout_height="40dp"
-        android:layout_weight="1"
-        android:background="@drawable/header_background"
-        android:gravity="center"
-        android:padding="8dp"
-        android:text="@string/itemDate"
-        android:textColor="@color/black"
-        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/headerTextViewTime"
