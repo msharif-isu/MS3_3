@@ -11,7 +11,7 @@
     <string name="confirm_password_text">CONFIRM PASSWORD</string>
     <string name="sign_in_here_text">OR SIGN IN HERE</string>
     <string name="admin_dashboard_txt">Admin Dashboard</string>
-    <string name="enter_user_id">Enter user ID</string>
+    <string name="enter_user_id">Enter username</string>
     <string name="confirm">Confirm</string>
     <string name="enter_itinerary_id">Enter itinerary ID</string>
     <string name="delete_public_itinerary">Delete public itinerary</string>
