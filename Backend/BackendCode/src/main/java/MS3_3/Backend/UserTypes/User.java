@@ -110,7 +110,9 @@ public class User {
         if(getNumPosts() > 10 && getAccountLikes() > 200) {
             this.userType = "Ambassador";
         }
+
     }
+
 
     
 

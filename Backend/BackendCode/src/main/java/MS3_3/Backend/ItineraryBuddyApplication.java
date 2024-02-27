@@ -16,5 +16,4 @@ public class ItineraryBuddyApplication {
 		SpringApplication.run(ItineraryBuddyApplication.class, args);
 	}
 
-
 }
