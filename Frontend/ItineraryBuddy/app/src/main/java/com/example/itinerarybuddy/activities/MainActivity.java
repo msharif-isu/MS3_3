@@ -4,8 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.widget.*;
 import android.os.Bundle;
-
-import com.example.itinerarybuddy.data.User;
+import com.example.itinerarybuddy.data.UserData;
 
 /**
  * This is a placeholder to test the login. Will be replaced with correct homepage.
@@ -20,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
         TextView name = findViewById(com.example.itinerarybuddy.R.id.username);
         TextView email = findViewById(com.example.itinerarybuddy.R.id.email);
 
-        name.setText(User.getUsername());
-        email.setText(User.getEmail());
+        name.setText(UserData.getUsername());
+        email.setText(UserData.getEmail());
     }
 }
