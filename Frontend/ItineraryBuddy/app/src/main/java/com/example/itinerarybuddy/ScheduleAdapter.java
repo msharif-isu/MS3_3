@@ -31,6 +31,10 @@ class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHolder> {
         this.scheduleData = scheduleData;
     }
 
+    public List<ScheduleItem> getScheduleData(){
+        return scheduleData;
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
