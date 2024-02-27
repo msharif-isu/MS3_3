@@ -1,13 +1,14 @@
 package MS3_3.Backend.UserTypes;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+
+@Entity
 public class User {
 
     private String email;
 
-    private String firstName;
-
-    private String lastName;
-
+    @Id
     private String userName;
 
     private String password;
@@ -24,19 +25,17 @@ public class User {
 
     private boolean canPost;
 
-    public User(String email,String firstName,String lastName,String userName,String password,String state,String city,
+    public User(String email, String userName,String password,String state,String city,
                 String userType){
         this.email = email;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.userName = userName;
-        this.password = password;
         this.state = state;
         this.city = city;
         this.userType = userType;
         this.numPosts = 0;
         this.numLikes = 0;
         this.canPost = true;
+    }
+    public User() {
     }
 
     public void setUserName(String userName) {
@@ -47,13 +46,6 @@ public class User {
         return userName;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
 
     public void setPassword(String password) {
         this.password = password;
@@ -63,13 +55,6 @@ public class User {
         return password;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
 
     public void setEmail(String email) {
         this.email = email;
@@ -125,7 +110,9 @@ public class User {
         if(getNumPosts() > 10 && getAccountLikes() > 200) {
             this.userType = "Ambassador";
         }
+
     }
+
 
     
 
