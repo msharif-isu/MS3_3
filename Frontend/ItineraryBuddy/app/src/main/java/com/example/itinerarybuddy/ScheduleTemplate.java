@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.DownloadManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +17,11 @@ import android.widget.Toast;
 import com.example.itinerarybuddy.data.ScheduleItem;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.sql.Time;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +40,7 @@ import org.json.JSONObject;
 public class ScheduleTemplate extends AppCompatActivity {
 
     private boolean isFirstClick = true;
+    private ScheduleAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,10 +50,12 @@ public class ScheduleTemplate extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
+
         List<ScheduleItem> data = generateData();
-        ScheduleAdapter adapter = new ScheduleAdapter(data);
+        adapter = new ScheduleAdapter(data);
         recyclerView.setAdapter(adapter);
 
+        GET_schedule();
 
         FloatingActionButton btnSaveUpdate = findViewById(R.id.btnSaveUpdate);
 
@@ -72,6 +80,7 @@ public class ScheduleTemplate extends AppCompatActivity {
                 isFirstClick = false;
             }
         });
+
     }
 
     private void POST_schedule(List<ScheduleItem> scheduleData){
@@ -142,7 +151,7 @@ public class ScheduleTemplate extends AppCompatActivity {
 
     private void UPDATE_schedule(List<ScheduleItem> scheduleData){
 
-        String url = "https://c1ae4a21-9cb6-4e77-a7a2-a5d5066df0d7.mock.pstmn.io/Schedule/Update";
+        String url = "https://5569939f-7918-4af9-937a-86edcfe9bc7f.mock.pstmn.io/Schedule/Update";
         RequestQueue queue = Volley.newRequestQueue(this);
 
         //Convert ScheduleItem list to JSONArray
@@ -202,11 +211,78 @@ public class ScheduleTemplate extends AppCompatActivity {
         queue.add(jsonObject);
     }
 
+    private void GET_schedule(){
+
+        String url = "https://5569939f-7918-4af9-937a-86edcfe9bc7f.mock.pstmn.io/Schedule/Get";
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        //JsonObjectRequest for the GET request
+        JsonObjectRequest jsonObject = new JsonObjectRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+
+                            JSONArray scheduleDataArray = response.getJSONArray("scheduleData");
+                            List<ScheduleItem> scheduleItems = new ArrayList<>();
+
+                            for (int i = 0; i < scheduleDataArray.length(); i++) {
+                                JSONObject scheduleItemJson = scheduleDataArray.getJSONObject(i);
+
+                                //Extract properties from JSON and create scheduleItem
+                                String timeString = scheduleItemJson.getString("time");
+                                String places = scheduleItemJson.getString("place");
+                                String notes = scheduleItemJson.getString("note");
+
+                                //Parse time string to Time object
+                                SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+                                Date parsedDate = dateFormat.parse(timeString);
+                                Time time = new Time(parsedDate.getTime());
+
+
+                                ScheduleItem scheduleItem = new ScheduleItem();
+                                scheduleItem.setTime(time);
+                                scheduleItem.setPlaces(places);
+                                scheduleItem.setNotes(notes);
+
+                                scheduleItems.add(scheduleItem);
+                            }
+
+                            /*RecyclerView recyclerView = findViewById(R.id.recyclerView);
+                            ScheduleAdapter adapter = new ScheduleAdapter(scheduleItems);
+                            recyclerView.setAdapter(adapter);*/
+
+                            adapter.prependData(scheduleItems);
+
+                            Toast.makeText(ScheduleTemplate.this, "Data fetched!", Toast.LENGTH_SHORT).show();
+                        } catch (JSONException|ParseException e) {
+                            Toast.makeText(ScheduleTemplate.this, "Error parsing JSON", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                },
+
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                        if (error.networkResponse != null) {
+                            int statusCode = error.networkResponse.statusCode;
+                            Log.e("Volley Error", "HTTP Status Code: " + statusCode);
+                        }
+                        Toast.makeText(ScheduleTemplate.this, "Error fetching data", Toast.LENGTH_SHORT).show();
+
+                    }
+                });
+
+        queue.add(jsonObject);
+    }
+
     private List<ScheduleItem> generateData(){
 
         List<ScheduleItem> data = new ArrayList<>();
 
-        for(int i = 0; i <= 250; i++){
+        for(int i = 0; i <= 50; i++){
 
             ScheduleItem item = new ScheduleItem();
             data.add(item);

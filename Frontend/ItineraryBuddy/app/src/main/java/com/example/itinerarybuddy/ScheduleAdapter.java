@@ -70,6 +70,12 @@ class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHolder> {
         return position == 0 ? VIEW_TYPE_HEADER : VIEW_TYPE_DATA;
     }
 
+    public void prependData(List<ScheduleItem> newData){
+
+        scheduleData.addAll(0, newData);
+        notifyItemRangeInserted(0, newData.size());
+    }
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         private TextView headerTextViewTime;
