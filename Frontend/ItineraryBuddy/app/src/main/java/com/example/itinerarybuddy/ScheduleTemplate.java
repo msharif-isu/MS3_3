@@ -83,9 +83,12 @@ public class ScheduleTemplate extends AppCompatActivity {
 
     }
 
+    //POST the schedule datagit add .
+    
     private void POST_schedule(List<ScheduleItem> scheduleData){
 
-        String url = "https://5569939f-7918-4af9-937a-86edcfe9bc7f.mock.pstmn.io/Schedule/Post";
+        // String url = "http://coms-309-035.class.las.iastate.edu:8080/Schedule/Post";
+        String url = "https://7557e865-ef05-4e77-beaf-a69fca370355.mock.pstmn.io/Schedule/Post";
         RequestQueue queue = Volley.newRequestQueue(this);
 
         //Convert ScheduleItem list to JSONArray
@@ -149,9 +152,11 @@ public class ScheduleTemplate extends AppCompatActivity {
 
     }
 
+    //UPDATE the schedule data
     private void UPDATE_schedule(List<ScheduleItem> scheduleData){
 
-        String url = "https://5569939f-7918-4af9-937a-86edcfe9bc7f.mock.pstmn.io/Schedule/Update";
+        // String url = "http://coms-309-035.class.las.iastate.edu:8080/Schedule/Update";
+        String url = "https://7557e865-ef05-4e77-beaf-a69fca370355.mock.pstmn.io/Schedule/Update";
         RequestQueue queue = Volley.newRequestQueue(this);
 
         //Convert ScheduleItem list to JSONArray
@@ -211,9 +216,11 @@ public class ScheduleTemplate extends AppCompatActivity {
         queue.add(jsonObject);
     }
 
+    //GET the schedule data from the json file
     private void GET_schedule(){
 
-        String url = "https://5569939f-7918-4af9-937a-86edcfe9bc7f.mock.pstmn.io/Schedule/Get";
+        // String url = "http://coms-309-035.class.las.iastate.edu:8080/Schedule/Get";
+        String url = "https://7557e865-ef05-4e77-beaf-a69fca370355.mock.pstmn.io/Schedule/Get";
 
         RequestQueue queue = Volley.newRequestQueue(this);
 
