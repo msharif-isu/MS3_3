@@ -1,5 +1,8 @@
 package MS3_3.Backend.UserTypes;
 
+import MS3_3.Backend.AdminDashboard.Admin;
+import MS3_3.Backend.AdminDashboard.AdminRepository;
+import MS3_3.Backend.Ambassador.AmbassadorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,6 +37,10 @@ public class LoginController {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    AdminRepository adminRepository;
+    @Autowired
+    AmbassadorRepository ambassadorRepository;
 
     @GetMapping("/Users/All")
     public List<User> getAllUsers() {
@@ -58,12 +65,21 @@ public class LoginController {
     @PostMapping("/Users/Create")
     public  User createPerson(@RequestBody User person) {
         userRepository.save(person);
+        if (person.getUserType().equals("Admin")){
+            adminRepository.save(new Admin(userRepository.findByUserName(person.getUserName())));
+        }
         return userRepository.findByUserName(person.getUserName());
     }
 
     @DeleteMapping("/Users/{userName}")
-    public void deleteUser(@PathVariable String userName){
+    public String deleteUser(@PathVariable String userName){
         userRepository.deleteByUserName(userName);
+        if(adminRepository.existsById(userName) == true){
+            adminRepository.deleteByUserName(userName);
+        } else if (ambassadorRepository.existsById(userName) == true) {
+            ambassadorRepository.deleteByUserName(userName);
+        }
+        return "Account "+userName+" Deleted";
     }
 
     @PutMapping("/Users/{userName}")
