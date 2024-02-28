@@ -1,7 +1,9 @@
 package MS3_3.Backend.UserTypes;
 
+import MS3_3.Backend.AdminDashboard.Admin;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import org.antlr.v4.runtime.misc.LogManager;
 
 @Entity
 public class User {
@@ -34,6 +36,9 @@ public class User {
         this.numPosts = 0;
         this.numLikes = 0;
         this.canPost = true;
+        if(this.userType.equals("Admin")){
+
+        }
     }
     public User() {
     }

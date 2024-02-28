@@ -1,10 +1,10 @@
-package MS3_3.Backend.AdminDashboard;
+package MS3_3.Backend.Ambassador;
 
 import MS3_3.Backend.UserTypes.User;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 @Entity
-public class Admin{
+public class Ambassador{
     private String email;
 
     @Id
@@ -23,19 +23,19 @@ public class Admin{
     private int numLikes;
 
     private boolean canPost;
-    public Admin(User user){
+    public Ambassador(User user){
         this.userName = user.getUserName();
         this.email = user.getEmail();
         this.password = user.getPassword();
         this.state = user.getState();
         this.city = user.getCity();
-        this.userType = "Admin";
+        this.userType = "Ambassador";
         this.numPosts = user.getNumPosts();
         this.numLikes = user.getAccountLikes();
         this.canPost = true;
     }
 
-    public Admin() {
+    public Ambassador() {
     }
     public void setUserName(String userName) {
         this.userName = userName;

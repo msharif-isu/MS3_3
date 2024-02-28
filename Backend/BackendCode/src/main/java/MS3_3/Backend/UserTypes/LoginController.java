@@ -1,5 +1,7 @@
 package MS3_3.Backend.UserTypes;
 
+import MS3_3.Backend.AdminDashboard.Admin;
+import MS3_3.Backend.AdminDashboard.AdminRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,6 +36,8 @@ public class LoginController {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    AdminRepository adminRepository;
 
     @GetMapping("/Users/All")
     public List<User> getAllUsers() {
@@ -58,6 +62,9 @@ public class LoginController {
     @PostMapping("/Users/Create")
     public  User createPerson(@RequestBody User person) {
         userRepository.save(person);
+        if (person.getUserType().equals("Admin")){
+            adminRepository.save(new Admin(userRepository.findByUserName(person.getUserName())));
+        }
         return userRepository.findByUserName(person.getUserName());
     }
 
