@@ -58,7 +58,7 @@ public class AdminController {
         return userRepository.findByUserName(accountToDisable);
     }
 
-    @PutMapping("/Admin/EnablePosting/{adminUserName}/{accountToDisable}")
+    @PutMapping("/Admin/EnablePosting/{adminUserName}/{accountToEnable}")
     public User enablePosting(@PathVariable String adminUserName,@PathVariable String accountToEnable){
         if(adminRepository.existsById(adminUserName) == true){
             userRepository.findByUserName(accountToEnable).EnablePosting();
