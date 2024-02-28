@@ -2,6 +2,7 @@ package MS3_3.Backend.UserTypes;
 
 import MS3_3.Backend.AdminDashboard.Admin;
 import MS3_3.Backend.AdminDashboard.AdminRepository;
+import MS3_3.Backend.Ambassador.AmbassadorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,6 +39,8 @@ public class LoginController {
 
     @Autowired
     AdminRepository adminRepository;
+    @Autowired
+    AmbassadorRepository ambassadorRepository;
 
     @GetMapping("/Users/All")
     public List<User> getAllUsers() {
@@ -71,6 +74,11 @@ public class LoginController {
     @DeleteMapping("/Users/{userName}")
     public String deleteUser(@PathVariable String userName){
         userRepository.deleteByUserName(userName);
+        if(adminRepository.existsById(userName) == true){
+            adminRepository.deleteByUserName(userName);
+        } else if (ambassadorRepository.existsById(userName) == true) {
+            ambassadorRepository.deleteByUserName(userName);
+        }
         return "Account "+userName+" Deleted";
     }
 

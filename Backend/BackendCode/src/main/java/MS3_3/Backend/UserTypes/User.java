@@ -109,6 +109,10 @@ public class User {
         this.canPost = false;
     }
 
+    public void EnablePosting(){
+        this.canPost = true;
+    }
+
     public boolean CanPost() {
         return this.canPost;
     }

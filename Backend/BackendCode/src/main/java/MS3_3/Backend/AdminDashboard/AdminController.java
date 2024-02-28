@@ -25,12 +25,14 @@ public class AdminController {
         if(adminRepository.existsById(adminUserName) == true){
             adminRepository.deleteByUserName(userName);
             userRepository.findByUserName(userName).setUserType("User");
+            userRepository.save(userRepository.findByUserName(userName));
         }else{}
         return userRepository.findByUserName(userName);
     }
 
     @PostMapping("/Admin/Create")
     public  Admin createPerson(@RequestBody Admin person) {
+        person.setUserType("Ambassador");
         adminRepository.save(person);
         userRepository.save(new User(person.getEmail(), person.getUserName(),person.getPassword(),person.getState(),person.getCity(),
                 person.getUserType()));
@@ -41,22 +43,34 @@ public class AdminController {
     public Admin grantAdmin(@PathVariable String adminUserName, @PathVariable String userName){
         if(adminRepository.existsById(adminUserName) == true){
             userRepository.findByUserName(userName).setUserType("Admin");
+            userRepository.save(userRepository.findByUserName(userName));
             adminRepository.save(new Admin(userRepository.findByUserName(userName)));
         }else{}
         return adminRepository.findByUserName(userName);
     }
 
     @PutMapping("/Admin/DisablePosting/{adminUserName}/{accountToDisable}")
-    public Admin disablePosting(@PathVariable String adminUserName,@PathVariable String accountToDisable){
+    public User disablePosting(@PathVariable String adminUserName,@PathVariable String accountToDisable){
         if(adminRepository.existsById(adminUserName) == true){
             userRepository.findByUserName(accountToDisable).blockPosts();
+            userRepository.save(userRepository.findByUserName(accountToDisable));
         }else{}
-        return adminRepository.findByUserName(accountToDisable);
+        return userRepository.findByUserName(accountToDisable);
+    }
+
+    @PutMapping("/Admin/EnablePosting/{adminUserName}/{accountToDisable}")
+    public User enablePosting(@PathVariable String adminUserName,@PathVariable String accountToEnable){
+        if(adminRepository.existsById(adminUserName) == true){
+            userRepository.findByUserName(accountToEnable).EnablePosting();
+            userRepository.save(userRepository.findByUserName(accountToEnable));
+        }else{}
+        return userRepository.findByUserName(accountToEnable);
     }
 
     @PutMapping("/Users/FirstAdmin/{userName}")
     public Admin changeInfo(@PathVariable String userName){
         userRepository.findByUserName(userName).setUserType("Admin");
+        userRepository.save(userRepository.findByUserName(userName));
         adminRepository.save(new Admin(userRepository.findByUserName(userName)));
         return adminRepository.findByUserName(userName);
     }

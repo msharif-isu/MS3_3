@@ -19,8 +19,8 @@ public class AmbassadorController {
         @Autowired
         UserRepository userRepository;
 
-    @Autowired
-    AmbassadorRepository ambassadorRepository;
+        @Autowired
+        AmbassadorRepository ambassadorRepository;
 
         @PostMapping("/Ambassador/Create")
         public Ambassador createPerson(@RequestBody Ambassador person) {
@@ -31,12 +31,13 @@ public class AmbassadorController {
             return ambassadorRepository.findByUserName(person.getUserName());
         }
         @PutMapping("/Ambassador/Revoke/{adminUserName}/{userName}")
-        public Ambassador revokeAmbassador(@PathVariable String adminUserName, @PathVariable String userName){
+        public User revokeAmbassador(@PathVariable String adminUserName, @PathVariable String userName){
             if(adminRepository.existsById(adminUserName) == true){
                 ambassadorRepository.deleteByUserName(userName);
                 userRepository.findByUserName(userName).setUserType("User");
+                userRepository.save(userRepository.findByUserName(userName));
             }else{}
-            return ambassadorRepository.findByUserName(userName);
+            return userRepository.findByUserName(userName);
         }
 
 
@@ -45,6 +46,7 @@ public class AmbassadorController {
             if(adminRepository.existsById(adminUserName) == true){
                 userRepository.findByUserName(userName).setUserType("Ambassador");
                 ambassadorRepository.save(new Ambassador(userRepository.findByUserName(userName)));
+                userRepository.save(userRepository.findByUserName(userName));
             }else{}
             return ambassadorRepository.findByUserName(userName);
         }
@@ -53,6 +55,7 @@ public class AmbassadorController {
         public Ambassador changeInfo(@PathVariable String userName){
             userRepository.findByUserName(userName).setUserType("Ambassador");
             ambassadorRepository.save(new Ambassador(userRepository.findByUserName(userName)));
+            userRepository.save(userRepository.findByUserName(userName));
             return ambassadorRepository.findByUserName(userName);
         }
 
