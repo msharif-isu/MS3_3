@@ -7,6 +7,7 @@ import android.view.View;
 
 import android.widget.LinearLayout;
 
+import com.example.itinerarybuddy.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
