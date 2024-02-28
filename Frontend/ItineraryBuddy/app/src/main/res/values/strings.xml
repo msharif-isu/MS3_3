@@ -19,4 +19,6 @@
     <string name="revoke_ambassador_status">Revoke Ambassador Status</string>
     <string name="grant_ambassador_status">Grant Ambassador Status</string>
     <string name="return_home">RETURN HOME</string>
+    <string name="grant_admin_access">Grant Admin Access</string>
+    <string name="revoke_admin_access">Revoke Admin Access</string>
 </resources>
