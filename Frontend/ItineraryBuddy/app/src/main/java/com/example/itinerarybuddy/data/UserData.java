@@ -37,7 +37,7 @@ public class UserData {
     public static String getUsertype(){
         String usertype = null;
         try{
-            usertype = userInfo.getString("usertype");
+            usertype = userInfo.getString("userType");
         } catch (JSONException e) {
             e.printStackTrace();
         }
