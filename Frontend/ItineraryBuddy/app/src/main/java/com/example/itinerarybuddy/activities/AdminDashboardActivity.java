@@ -15,6 +15,8 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.itinerarybuddy.R;
 import com.example.itinerarybuddy.data.UserData;
 import com.example.itinerarybuddy.util.Singleton;
+
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /** Control panel where an admin will be able to moderate activity. */
@@ -70,8 +72,10 @@ public class AdminDashboardActivity extends AppCompatActivity {
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String admin = UserData.getUsername();
                 String username = input1.getText().toString();
-
+                updateData("http://coms-309-035.class.las.iastate.edu:8080/Ambassador/Revoke/" + admin + "/" + username, "is no longer an Ambassador.");
+                input1.setText("");
             }
         });
 
@@ -79,27 +83,32 @@ public class AdminDashboardActivity extends AppCompatActivity {
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String admin = UserData.getUsername();
                 String username = input2.getText().toString();
-
+                updateData("http://coms-309-035.class.las.iastate.edu:8080/Ambassador/Grant/" + admin + "/" + username, "is now an Ambassador.");
+                input2.setText("");
             }
         });
 
-        // Grant Admin status
+        // Revoke Admin status
         button3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String admin = UserData.getUsername();
                 String username = input3.getText().toString();
-                updateData("http://coms-309-035.class.las.iastate.edu:8080/Admin/Grant/" + admin + "/" +username);
+                String admin = UserData.getUsername();
+                updateData("http://coms-309-035.class.las.iastate.edu:8080/Admin/Revoke/" + admin + "/" + username, "is no longer an Admin.");
+                input3.setText("");
             }
         });
 
-        // Revoke admin status
+        // Grant admin status
         button4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String admin = UserData.getUsername();
                 String username = input4.getText().toString();
-                updateData("http://coms-309-035.class.las.iastate.edu:8080/Admin/Revoke/{adminUserName}/{username}");
+                updateData("http://coms-309-035.class.las.iastate.edu:8080/Admin/Grant/" + admin + "/" + username, "is now an Admin.");
+                input4.setText("");
             }
         });
 
@@ -108,26 +117,36 @@ public class AdminDashboardActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String username = input5.getText().toString();
-                updateData("http://coms-309-035.class.las.iastate.edu:8080/Admin/DisablePosting/{adminUserName}/{username}");
+                String admin = UserData.getUsername();
+                updateData("http://coms-309-035.class.las.iastate.edu:8080/Admin/DisablePosting/"+ admin + "/" + username, "can no longer post.");
+                input5.setText("");
             }
         });
 
-        // Delete public itinerary
+        // Enable user posting
         button6.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String username = input6.getText().toString();
+                String admin = UserData.getUsername();
+                updateData("http://coms-309-035.class.las.iastate.edu:8080/Admin/EnablePosting/"+ admin + "/" + username, "can now post.");
+                input6.setText("");
             }
         });
     }
 
     /** Update the users data given the admin dashboard commands. */
-    private void updateData(String url) {
+    private void updateData(String url, String change) {
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.PUT, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 Log.d("Volley: ", response.toString());
-                Toast.makeText(getApplicationContext(), "User successfully updated!.", Toast.LENGTH_LONG).show();
+                try {
+                    String user = response.getString("userName");
+                    Toast.makeText(getApplicationContext(), user + " " + change, Toast.LENGTH_LONG).show();
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }, new Response.ErrorListener() {
             @Override

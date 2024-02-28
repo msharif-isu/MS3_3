@@ -2,8 +2,6 @@ package com.example.itinerarybuddy.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
-import android.view.View;
 import android.widget.*;
 import android.os.Bundle;
 import com.example.itinerarybuddy.data.UserData;
@@ -20,16 +18,8 @@ public class MainActivity extends AppCompatActivity {
 
         TextView name = findViewById(com.example.itinerarybuddy.R.id.username);
         TextView email = findViewById(com.example.itinerarybuddy.R.id.email);
-        Button b = findViewById(com.example.itinerarybuddy.R.id.button);
 
         name.setText(UserData.getUsername());
-        email.setText(UserData.getUsertype());
-
-        b.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, AdminDashboardActivity.class));
-            }
-        });
+        email.setText(UserData.getEmail());
     }
 }

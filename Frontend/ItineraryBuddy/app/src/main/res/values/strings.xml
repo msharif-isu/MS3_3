@@ -15,10 +15,11 @@
     <string name="confirm">Confirm</string>
     <string name="enter_itinerary_id">Enter itinerary ID</string>
     <string name="delete_public_itinerary">Delete public itinerary</string>
-    <string name="disable_user_posting_permissions">Disable user posting permissions</string>
+    <string name="disable_user_posting_permissions">Disable User Posting Permissions</string>
     <string name="revoke_ambassador_status">Revoke Ambassador Status</string>
     <string name="grant_ambassador_status">Grant Ambassador Status</string>
     <string name="return_home">RETURN HOME</string>
     <string name="grant_admin_access">Grant Admin Access</string>
     <string name="revoke_admin_access">Revoke Admin Access</string>
+    <string name="enable_user_posting">Enable User Posting Permissions</string>
 </resources>
