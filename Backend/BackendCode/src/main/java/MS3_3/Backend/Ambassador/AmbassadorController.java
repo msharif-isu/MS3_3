@@ -1,6 +1,7 @@
 package MS3_3.Backend.Ambassador;
 
 
+import MS3_3.Backend.AdminDashboard.Admin;
 import MS3_3.Backend.AdminDashboard.AdminRepository;
 import MS3_3.Backend.UserTypes.User;
 import MS3_3.Backend.UserTypes.UserRepository;
@@ -11,11 +12,7 @@ import java.util.List;
 
 @RestController
 public class AmbassadorController {
-        //Class Requirements
-        //Revoke Ambassador by username,
-        //Grant Ambassador by username,
-        // Disable posting ability,
-        // Delete Public Itinerary
+
         @Autowired
         AdminRepository adminRepository;
 
@@ -25,39 +22,38 @@ public class AmbassadorController {
     @Autowired
     AmbassadorRepository ambassadorRepository;
 
-        @PutMapping("/Ambassador/Revoke/{AmbassadorUserName}/{userName}")
-        public void revokeAmbassador(@PathVariable String AmbassadorUserName, @PathVariable String userName){
-            if(ambassadorRepository.existsById(AmbassadorUserName) == true){
+        @PostMapping("/Ambassador/Create")
+        public Ambassador createPerson(@RequestBody Ambassador person) {
+            person.setUserType("Ambassador");
+            ambassadorRepository.save(person);
+            userRepository.save(new User(person.getEmail(), person.getUserName(),person.getPassword(),person.getState(),person.getCity(),
+                    person.getUserType()));
+            return ambassadorRepository.findByUserName(person.getUserName());
+        }
+        @PutMapping("/Ambassador/Revoke/{adminUserName}/{userName}")
+        public Ambassador revokeAmbassador(@PathVariable String adminUserName, @PathVariable String userName){
+            if(adminRepository.existsById(adminUserName) == true){
                 ambassadorRepository.deleteByUserName(userName);
                 userRepository.findByUserName(userName).setUserType("User");
             }else{}
+            return ambassadorRepository.findByUserName(userName);
         }
 
-        @PostMapping("/Ambassador/Create")
-        public User createPerson(@RequestBody Ambassador person) {
-            ambassadorRepository.save(person);
-            return ambassadorRepository.findByUserName(person.getUserName());
-        }
 
-        @PutMapping("/Ambassador/Grant/{AmbassadorUserName}/{userName}")
-        public void grantAmbassador(@PathVariable String AmbassadorUserName, @PathVariable String userName){
-            if(ambassadorRepository.existsById(AmbassadorUserName) == true){
+        @PutMapping("/Ambassador/Grant/{adminUserName}/{userName}")
+        public Ambassador grantAmbassador(@PathVariable String adminUserName, @PathVariable String userName){
+            if(adminRepository.existsById(adminUserName) == true){
                 userRepository.findByUserName(userName).setUserType("Ambassador");
                 ambassadorRepository.save(new Ambassador(userRepository.findByUserName(userName)));
             }else{}
-        }
-
-        @PutMapping("/Ambassador/DisablePosting/{AmbassadorUserName}/{accountToDisable}")
-        public void disablePosting(@PathVariable String AmbassadorUserName,@PathVariable String accountToDisable){
-            if(ambassadorRepository.existsById(AmbassadorUserName) == true){
-                userRepository.findByUserName(accountToDisable).blockPosts();
-            }else{}
+            return ambassadorRepository.findByUserName(userName);
         }
 
         @PutMapping("/Users/FirstAmbassador/{userName}")
-        public void changeInfo(@PathVariable String userName){
+        public Ambassador changeInfo(@PathVariable String userName){
             userRepository.findByUserName(userName).setUserType("Ambassador");
             ambassadorRepository.save(new Ambassador(userRepository.findByUserName(userName)));
+            return ambassadorRepository.findByUserName(userName);
         }
 
         @GetMapping("/Ambassador/All")
@@ -66,7 +62,9 @@ public class AmbassadorController {
         }
 
         @DeleteMapping("/Ambassador/Remove/{userName}")
-        public void deleteAmbassador(@PathVariable String userName){
+        public String deleteAmbassador(@PathVariable String userName){
+            userRepository.deleteByUserName(userName);
             ambassadorRepository.deleteByUserName(userName);
+            return "Ambassador "+userName+" Deleted";
         }
 }

@@ -69,8 +69,9 @@ public class LoginController {
     }
 
     @DeleteMapping("/Users/{userName}")
-    public void deleteUser(@PathVariable String userName){
+    public String deleteUser(@PathVariable String userName){
         userRepository.deleteByUserName(userName);
+        return "Account "+userName+" Deleted";
     }
 
     @PutMapping("/Users/{userName}")

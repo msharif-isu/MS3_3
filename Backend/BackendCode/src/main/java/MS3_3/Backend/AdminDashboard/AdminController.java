@@ -21,38 +21,44 @@ public class AdminController {
     UserRepository userRepository;
 
     @PutMapping("/Admin/Revoke/{adminUserName}/{userName}")
-    public void revokeAdmin(@PathVariable String adminUserName,@PathVariable String userName){
+    public User revokeAdmin(@PathVariable String adminUserName,@PathVariable String userName){
         if(adminRepository.existsById(adminUserName) == true){
             adminRepository.deleteByUserName(userName);
             userRepository.findByUserName(userName).setUserType("User");
         }else{}
+        return userRepository.findByUserName(userName);
     }
 
     @PostMapping("/Admin/Create")
-    public  User createPerson(@RequestBody Admin person) {
+    public  Admin createPerson(@RequestBody Admin person) {
         adminRepository.save(person);
+        userRepository.save(new User(person.getEmail(), person.getUserName(),person.getPassword(),person.getState(),person.getCity(),
+                person.getUserType()));
         return adminRepository.findByUserName(person.getUserName());
     }
 
     @PutMapping("/Admin/Grant/{adminUserName}/{userName}")
-    public void grantAdmin(@PathVariable String adminUserName, @PathVariable String userName){
+    public Admin grantAdmin(@PathVariable String adminUserName, @PathVariable String userName){
         if(adminRepository.existsById(adminUserName) == true){
             userRepository.findByUserName(userName).setUserType("Admin");
             adminRepository.save(new Admin(userRepository.findByUserName(userName)));
         }else{}
+        return adminRepository.findByUserName(userName);
     }
 
     @PutMapping("/Admin/DisablePosting/{adminUserName}/{accountToDisable}")
-    public void disablePosting(@PathVariable String adminUserName,@PathVariable String accountToDisable){
+    public Admin disablePosting(@PathVariable String adminUserName,@PathVariable String accountToDisable){
         if(adminRepository.existsById(adminUserName) == true){
             userRepository.findByUserName(accountToDisable).blockPosts();
         }else{}
+        return adminRepository.findByUserName(accountToDisable);
     }
 
     @PutMapping("/Users/FirstAdmin/{userName}")
-    public void changeInfo(@PathVariable String userName){
+    public Admin changeInfo(@PathVariable String userName){
         userRepository.findByUserName(userName).setUserType("Admin");
         adminRepository.save(new Admin(userRepository.findByUserName(userName)));
+        return adminRepository.findByUserName(userName);
     }
 
     @GetMapping("/Admin/All")
@@ -61,14 +67,16 @@ public class AdminController {
     }
 
     @DeleteMapping("/Admin/Remove/{userName}")
-    public void deleteAdmin(@PathVariable String userName){
+    public String deleteAdmin(@PathVariable String userName){
         adminRepository.deleteByUserName(userName);
+        userRepository.deleteByUserName(userName);
+        return "Account " + userName + " Deleted";
     }
 
     /**
      * Wait til Itinerary class is created
     @DeleteMapping
-    public void deleteItinerary(){
+    public Admin deleteItinerary(){
 
     }
     */

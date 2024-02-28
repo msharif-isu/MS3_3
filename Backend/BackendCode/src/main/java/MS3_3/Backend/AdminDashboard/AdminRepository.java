@@ -8,5 +8,5 @@ public interface AdminRepository extends JpaRepository<Admin,String> {
     @Transactional
     void deleteByUserName(String userName);
 
-    User findByUserName(String userName);
+    Admin findByUserName(String userName);
 }

@@ -8,5 +8,5 @@ public interface AmbassadorRepository extends JpaRepository<Ambassador,String> {
     @Transactional
     void deleteByUserName(String userName);
 
-    User findByUserName(String userName);
+    Ambassador findByUserName(String userName);
 }
