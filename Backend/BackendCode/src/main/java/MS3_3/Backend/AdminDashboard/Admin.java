@@ -1,21 +1,13 @@
-package MS3_3.Backend.UserTypes;
+package MS3_3.Backend.AdminDashboard;
 
-import MS3_3.Backend.Groups.Group;
-import jakarta.persistence.Column;
+import MS3_3.Backend.UserTypes.User;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-
-import java.util.ArrayList;
-import java.util.List;
-
 @Entity
-public class User {
-
+public class Admin{
     private String email;
 
     @Id
-    @Column(columnDefinition = "VARCHAR(255)")
     private String userName;
 
     private String password;
@@ -31,25 +23,20 @@ public class User {
     private int numLikes;
 
     private boolean canPost;
-
-    @OneToMany
-    private List<Group> groups;
-
-    public User(String email, String userName,String password,String state,String city,
-                String userType){
-        this.email = email;
-        this.state = state;
-        this.city = city;
-        this.userType = userType;
-        this.numPosts = 0;
-        this.numLikes = 0;
+    public Admin(User user){
+        this.userName = user.getUserName();
+        this.email = user.getEmail();
+        this.password = user.getPassword();
+        this.state = user.getState();
+        this.city = user.getCity();
+        this.userType = "Admin";
+        this.numPosts = user.getNumPosts();
+        this.numLikes = user.getAccountLikes();
         this.canPost = true;
-        groups = new ArrayList<>();
-    }
-    public User() {
-        groups = new ArrayList<>();
     }
 
+    public Admin() {
+    }
     public void setUserName(String userName) {
         this.userName = userName;
     }
@@ -114,24 +101,12 @@ public class User {
         this.canPost = false;
     }
 
-    public void EnablePosting(){
-        this.canPost = true;
-    }
-
-
     public boolean CanPost() {
         return this.canPost;
     }
 
-    public void upgradeUserToAmbassador(){
-        if(getNumPosts() > 10 && getAccountLikes() > 200) {
-            this.userType = "Ambassador";
-        }
-
+    public void setUserType(String userType) {
+        this.userType = userType;
     }
 
-
-    public void setUserType(String user) {
-        this.userType = user;
-    }
 }

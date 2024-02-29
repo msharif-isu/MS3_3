@@ -5,8 +5,8 @@
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>coms309</groupId>
-	<artifactId>backend225</artifactId>
-	<version>1.0.0</version>
+	<artifactId>backend229</artifactId>
+	<version>1.1.0</version>
 
 	<!-- To make it a spring boot project -->
 	<parent>
