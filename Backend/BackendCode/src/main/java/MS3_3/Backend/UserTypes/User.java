@@ -1,11 +1,16 @@
 package MS3_3.Backend.UserTypes;
 
+import MS3_3.Backend.AdminDashboard.Admin;
+import MS3_3.Backend.AdminDashboard.AdminRepository;
+import MS3_3.Backend.Ambassador.Ambassador;
+import MS3_3.Backend.Ambassador.AmbassadorRepository;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import org.antlr.v4.runtime.misc.LogManager;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Entity
 public class User {
-
     private String email;
 
     @Id
@@ -27,6 +32,8 @@ public class User {
 
     public User(String email, String userName,String password,String state,String city,
                 String userType){
+        this.userName = userName;
+        this.password = password;
         this.email = email;
         this.state = state;
         this.city = city;
@@ -102,6 +109,10 @@ public class User {
         this.canPost = false;
     }
 
+    public void EnablePosting(){
+        this.canPost = true;
+    }
+
     public boolean CanPost() {
         return this.canPost;
     }
@@ -113,7 +124,7 @@ public class User {
 
     }
 
-
-    
-
+    public void setUserType(String userType) {
+            this.userType = userType;
+    }
 }

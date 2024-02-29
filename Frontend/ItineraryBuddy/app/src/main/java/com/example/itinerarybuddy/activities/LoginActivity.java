@@ -27,8 +27,11 @@ public class LoginActivity extends AppCompatActivity {
     private EditText passwordInput;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        this.getSupportActionBar().hide();
         setContentView(R.layout.login_activity);
 
         // Declare buttons
@@ -57,7 +60,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // Go to the registration page
-                startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
+                startActivity(new Intent(getApplicationContext(), RegisterActivity.class));
             }
         });
     }
@@ -76,7 +79,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 // Save user JSON and proceed to homepage
                 UserData.userInfo = response;
-                startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                startActivity(new Intent(getApplicationContext(), personalPage1.class));
             }
         }, new Response.ErrorListener() {
             @Override
