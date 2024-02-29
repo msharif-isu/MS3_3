@@ -602,7 +602,7 @@ public class HomeFragment extends Fragment {
 
     private void updateItineraryAdapter(JSONArray itineraryArray) {
 
-        //itineraryAdapter.clear();
+        itineraryAdapter.clear();
 
         for (int i = 0; i < itineraryArray.length(); i++) {
             try {
