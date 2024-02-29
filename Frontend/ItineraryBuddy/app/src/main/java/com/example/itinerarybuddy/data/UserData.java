@@ -1,7 +1,10 @@
 package com.example.itinerarybuddy.data;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 /** This class stores a static JSON object for the current app user. Includes getters for data. */
 public class UserData {
@@ -64,5 +67,19 @@ public class UserData {
             e.printStackTrace();
         }
         return state;
+    }
+
+    /** Returns a list of groups the user is in. */
+    public static ArrayList<String> getGroupIds(){
+        ArrayList<String> groupIDs = new ArrayList<String>();
+        try{
+            JSONArray array = userInfo.getJSONArray("groups");
+            for(int i = 0; i < array.length(); i++){
+                groupIDs.add(array.getJSONObject(i).getString("id"));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return groupIDs;
     }
 }
