@@ -1,4 +1,4 @@
-package com.example.itinerarybuddy;
+package com.example.itinerarybuddy.activities;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

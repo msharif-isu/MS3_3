@@ -12,7 +12,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.itinerarybuddy.R;
 import com.example.itinerarybuddy.data.UserData;
-import com.example.itinerarybuddy.personalPage1;
 import com.example.itinerarybuddy.util.Singleton;
 import org.json.JSONObject;
 import java.util.HashMap;
@@ -30,6 +29,9 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        this.getSupportActionBar().hide();
         setContentView(R.layout.login_activity);
 
         // Declare buttons
@@ -58,7 +60,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // Go to the registration page
-                startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
+                startActivity(new Intent(getApplicationContext(), RegisterActivity.class));
             }
         });
     }
@@ -77,7 +79,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 // Save user JSON and proceed to homepage
                 UserData.userInfo = response;
-                startActivity(new Intent(LoginActivity.this, personalPage1.class));
+                startActivity(new Intent(getApplicationContext(), personalPage1.class));
             }
         }, new Response.ErrorListener() {
             @Override

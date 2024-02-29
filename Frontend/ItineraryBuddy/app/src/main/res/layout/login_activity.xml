@@ -13,7 +13,7 @@
         android:background="@drawable/login_register_gradient"
         app:layout_constraintBottom_toTopOf="@+id/username_input"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.666"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

@@ -33,7 +33,7 @@
             android:name=".activities.MainActivity"
             android:exported="false" />
         <activity
-            android:name=".personalPage1"
+            android:name=".activities.personalPage1"
             android:exported="true"
             android:label="@string/title_activity_personal_page1"/>
         <meta-data
