@@ -24,20 +24,21 @@ public class TravelGroupController {
     @PostMapping("/Group/Create")
     public TravelGroup createNewGroup(@RequestBody TravelGroup group) {
         travelGroupRepository.save(group);
-        return travelGroupRepository.findByTravelGroupName(group.getTravelGroupCode());
+        userRepository.findByUserName(group.getTravelGroupCreator()).addGroup(group);
+        return travelGroupRepository.findByTravelGroupCode(group.getTravelGroupCode());
     }
 
     @PutMapping("/Group/Update")
     public TravelGroup updateGroup(@RequestBody TravelGroup group) {
         travelGroupRepository.deleteById(group.getTravelGroupCode());
         travelGroupRepository.save(group);
-        return travelGroupRepository.findByTravelGroupName(group.getTravelGroupCode());
+        return travelGroupRepository.findByTravelGroupCode(group.getTravelGroupCode());
     }
 
     @PutMapping("/Group/AddUser/{groupId}/{UserAdded}")
     public TravelGroup addMember(@RequestParam String groupId, @RequestParam String username) {
-       // groupRepository.findByGroupId(groupId).addMembers(userRepository.findByUserName(username));
-        return travelGroupRepository.findByTravelGroupName(groupId);
+        //travelGroupRepository.findByGroupCode(groupId).addMembers(userRepository.findByUserName(username));
+        return travelGroupRepository.findByTravelGroupCode(groupId);
     }
 
 

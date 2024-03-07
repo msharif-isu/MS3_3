@@ -5,8 +5,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface TravelGroupRepository extends JpaRepository<TravelGroup, String> {
-    TravelGroup findByTravelGroupName(String travelGroupCode);
+    TravelGroup findByTravelGroupCode(String travelGroupCode);
 
     @Transactional
-    void deleteByTravelGroupName(String travelGroupCode);
+    void deleteByTravelGroupCode(String travelGroupCode);
 }

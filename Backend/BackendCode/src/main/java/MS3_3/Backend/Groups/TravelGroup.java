@@ -2,8 +2,14 @@ package MS3_3.Backend.Groups;
 
 
 
+import MS3_3.Backend.UserTypes.User;
+import MS3_3.Backend.UserTypes.UserRepository;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 
@@ -22,18 +28,26 @@ public class TravelGroup {
 
     private String travelGroupDescription;
 
+    @ManyToOne
+    @JoinColumn(name = "user_user_name")
+    @JsonIgnore
+    private User user;
+
+    //private ArrayList<User> members;
+
     public TravelGroup(String groupId, String groupName,String travelDestination,String groupCreator,String groupDescription){
         this.travelGroupCode= groupId;
         this.travelGroupName= groupName;
         this.travelGroupDestination = travelDestination;
         this.travelGroupCreator = groupCreator;
         this.travelGroupDescription = groupDescription;
-    }
-    public TravelGroup() {
-        //groups = new ArrayList<>();
+        //this.members = new ArrayList<>();
     }
 
-    /**
+    public TravelGroup() {
+        //this.members = new ArrayList<>();
+    }
+/**
     public ArrayList<User> getMembers() {
         return members;
     }
@@ -41,15 +55,12 @@ public class TravelGroup {
     public void addMembers(User userName) {
         this.members.add(userName);
     }
-    */
+*/
 
     public String getTravelGroupCode() {
         return travelGroupCode;
     }
 
-    public void setTravelGroupCode(String groupId) {
-        this.travelGroupCode = groupId;
-    }
 
     public String getTravelGroupName() {
         return travelGroupName;
@@ -71,9 +82,7 @@ public class TravelGroup {
         return travelGroupCreator;
     }
 
-    public void setTravelGroupCreator(String groupCreator) {
-        this.travelGroupCreator = groupCreator;
-    }
+
 
     public String getTravelGroupDescription() {
         return travelGroupDescription;

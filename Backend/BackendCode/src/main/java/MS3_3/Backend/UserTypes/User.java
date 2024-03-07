@@ -4,10 +4,8 @@ import MS3_3.Backend.AdminDashboard.Admin;
 import MS3_3.Backend.AdminDashboard.AdminRepository;
 import MS3_3.Backend.Ambassador.Ambassador;
 import MS3_3.Backend.Ambassador.AmbassadorRepository;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import MS3_3.Backend.Groups.TravelGroup;
+import jakarta.persistence.*;
 import org.antlr.v4.runtime.misc.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -34,11 +32,10 @@ public class User {
     private int numLikes;
 
     private boolean canPost;
-/**
-    @OneToMany
-    private List<Group> groups;
 
-*/
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<TravelGroup> groups;
+
     public User(String email, String userName,String password,String state,String city,
                 String userType){
         this.userName = userName;
@@ -50,24 +47,24 @@ public class User {
         this.numPosts = 0;
         this.numLikes = 0;
         this.canPost = true;
-        //this.groups = new ArrayList<>();
+        groups = new ArrayList<>();
     }
     public User() {
-        //groups = new ArrayList<>();
+        groups = new ArrayList<>();
     }
-/**
-    public List<Group> getPhones() {
+
+    public List<TravelGroup> getGroups() {
         return groups;
     }
 
-    public void setPhones(List<Group> group) {
+    public void setGroups(List<TravelGroup> group) {
         this.groups = group;
     }
 
-    public void addPhones(Group group){
+    public void addGroup(TravelGroup group){
         this.groups.add(group);
     }
-*/
+
     public void setUserName(String userName) {
         this.userName = userName;
     }

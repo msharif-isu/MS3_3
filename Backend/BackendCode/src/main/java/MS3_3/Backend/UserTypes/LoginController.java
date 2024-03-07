@@ -35,11 +35,6 @@ public class LoginController {
     UserRepository userRepository;
 
 
-    @GetMapping("/Users/All")
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
-    }
-
     @GetMapping("/Users/login/{userName}/{password}")
     public User loginIn(@PathVariable String userName, @PathVariable String password){
         if(userRepository.existsById(userName) && userRepository.findByUserName(userName).getPassword().equals(password)){
@@ -49,29 +44,5 @@ public class LoginController {
             return null;
         }
     }
-
-    @GetMapping("/Users/{userName}")
-    public User getUser(@PathVariable String userName) {
-        return userRepository.findByUserName(userName);
-    }
-
-    @PostMapping("/Users/Create")
-    public  User createPerson(@RequestBody User person) {
-        userRepository.save(person);
-        return userRepository.findByUserName(person.getUserName());
-    }
-
-    @DeleteMapping("/Users/{userName}")
-    public void deleteUser(@PathVariable String userName){
-        userRepository.deleteByUserName(userName);
-    }
-
-    @PutMapping("/Users/{userName}")
-    public User changeInfo(@PathVariable String userName,@RequestBody User person){
-        userRepository.deleteByUserName(userName);
-        userRepository.save(person);
-        return userRepository.findByUserName(person.getUserName());
-    }
-
 
 }
