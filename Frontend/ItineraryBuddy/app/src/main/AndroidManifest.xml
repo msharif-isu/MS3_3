@@ -39,6 +39,9 @@
         <activity
             android:name=".activities.TestGroup"
             android:exported="false" />
+        <activity
+            android:name=".activities.LoadGroup"
+            android:exported="false" />
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

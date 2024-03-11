@@ -1,9 +1,12 @@
 package com.example.itinerarybuddy.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -19,8 +22,12 @@ import com.example.itinerarybuddy.data.UserData;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 public class TestGroup extends AppCompatActivity {
+
+    public Group group;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -32,16 +39,31 @@ public class TestGroup extends AppCompatActivity {
 
         ListView list = findViewById(R.id.group_list);
 
+        ArrayAdapter<Group> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
         UserData.queue = Volley.newRequestQueue(getApplicationContext());
-        ArrayList<Group> groups = UserData.getGroups();
-        ArrayList<String> names = new ArrayList<String>();
-        //for(int i = 0; i < UserData.groups.size(); i++){
-            //names.add(UserData.groups.get(i).getTravelGroupName());
-        //}
-        TextView b = findViewById(R.id.groups_list_title);
-        //b.setText(groups.size());
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,android.R.layout.simple_list_item_1, names);
+        UserData.initializeGroups(adapter);
+
+        /*
+        adapter.sort(new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                return o2.compareTo(o1);
+            }
+        });
+        */
         list.setAdapter(adapter);
+
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent i = new Intent(getApplicationContext(), LoadGroup.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("POSITION", Integer.valueOf(position).toString());
+                i.putExtras(bundle);
+                startActivity(i);
+            }
+        });
+
 
     }
 }

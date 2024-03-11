@@ -4,12 +4,19 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import android.util.Log;
+import android.widget.ArrayAdapter;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /** This class stores a static JSON object for the current app user. Includes getters for data. */
 public class UserData {
@@ -17,7 +24,7 @@ public class UserData {
     /** JSON object to be used in the various activities. */
     public static JSONObject userInfo;
 
-    //public static ArrayList<Group> groups;
+    public static ArrayAdapter<Group> adapter;
 
     public static RequestQueue queue;
 
@@ -92,8 +99,8 @@ public class UserData {
         return groupIDs;
     }
 
-    public static ArrayList<Group> getGroups(){
-        ArrayList<Group> groups = new ArrayList<Group>();
+    public static void initializeGroups(ArrayAdapter<Group> a){
+        UserData.adapter = a;
         ArrayList<String> ids = UserData.getGroupIds();
         String url;
         String id;
@@ -104,12 +111,8 @@ public class UserData {
                 @Override
                 public void onResponse(JSONObject response) {
                     Log.d("Volley Response: ", response.toString());
-                    String groupName = getGroupName(response);
-                    String groupCode = getGroupCode(response);
-                    String groupDestination = getGroupDestination(response);
-                    String groupDescription = getGroupDescription(response);
-                    groups.add(new Group(groupName, groupCode, groupDestination, groupDescription));
-                    //Log.d(groups.get(groups.size()-1).toString(), response.toString());
+
+                    UserData.addGroup(response);
                 }
             }, new Response.ErrorListener() {
                 @Override
@@ -120,8 +123,15 @@ public class UserData {
             queue.add(req);
             //Log.d("Group: ", groups.get(i).toString());
         }
-        Log.d("Group: ", Integer.toString(groups.size()));
-        return groups;
+    }
+
+    private static void addGroup(JSONObject response){
+        String groupName = getGroupName(response);
+        String groupCode = getGroupCode(response);
+        String groupDestination = getGroupDestination(response);
+        String groupDescription = getGroupDescription(response);
+        Group g = new Group(groupName, groupCode, groupDestination, groupDescription);
+        UserData.adapter.add(g);
     }
 
     public static String getGroupName(JSONObject json){
