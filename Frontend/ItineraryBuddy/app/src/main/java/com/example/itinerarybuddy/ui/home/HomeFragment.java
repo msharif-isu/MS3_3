@@ -225,7 +225,7 @@ public class HomeFragment extends Fragment {
 
     private void createNewFrame(String destination, String tripCode, String startDate, String endDate) {
 
-       String itineraryInfo =
+        String itineraryInfo =
                 "Destination: " + destination
                         + "\nTrip Code: " + tripCode
                         + "\nStart Date: " + startDate
@@ -305,7 +305,7 @@ public class HomeFragment extends Fragment {
 
             //Add the JsonObjectRequest to the request queue
             Itinerary.requestQueue.add(jsonObject);
-           // Singleton.getInstance(requireContext()).addRequest(jsonObject);
+            // Singleton.getInstance(requireContext()).addRequest(jsonObject);
 
 
         } catch (JSONException e) {
@@ -546,9 +546,9 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-               String tripCode = getTripCodeFromAdapterPosition(position);
+                String tripCode = getTripCodeFromAdapterPosition(position);
 
-               //Remove the data from the adapter
+                //Remove the data from the adapter
                 itineraryAdapter.remove(itineraryAdapter.getItem(position));
                 itineraryAdapter.notifyDataSetChanged();
 
@@ -602,7 +602,7 @@ public class HomeFragment extends Fragment {
 
     private void updateItineraryAdapter(JSONArray itineraryArray) {
 
-        //itineraryAdapter.clear();
+        itineraryAdapter.clear();
 
         for (int i = 0; i < itineraryArray.length(); i++) {
             try {
