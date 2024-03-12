@@ -1,4 +1,4 @@
-package com.example.itinerarybuddy.activities;
+package com.example.itinerarybuddy.ui.dashboard;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,6 +16,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.toolbox.Volley;
 import com.example.itinerarybuddy.R;
+import com.example.itinerarybuddy.activities.LoadGroup;
+import com.example.itinerarybuddy.activities.personalPage1;
 import com.example.itinerarybuddy.data.Group;
 import com.example.itinerarybuddy.data.UserData;
 
@@ -26,8 +28,6 @@ import java.util.Comparator;
 import java.util.List;
 
 public class TestGroup extends AppCompatActivity {
-
-    public Group group;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -56,14 +56,12 @@ public class TestGroup extends AppCompatActivity {
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent i = new Intent(getApplicationContext(), LoadGroup.class);
+                Intent i = new Intent(getApplicationContext(), personalPage1.class);
                 Bundle bundle = new Bundle();
                 bundle.putString("POSITION", Integer.valueOf(position).toString());
                 i.putExtras(bundle);
                 startActivity(i);
             }
         });
-
-
     }
 }

@@ -2,8 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/action_view_group"
-        android:title="@string/view_group" />
+        android:id="@+id/action_view_members"
+        android:title="@string/view_members" />
 
     <item
         android:id="@+id/action_leave_group"

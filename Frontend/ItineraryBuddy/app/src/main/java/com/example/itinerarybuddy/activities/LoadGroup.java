@@ -2,11 +2,13 @@ package com.example.itinerarybuddy.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,6 +16,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.itinerarybuddy.R;
 import com.example.itinerarybuddy.data.Group;
 import com.example.itinerarybuddy.data.UserData;
+import com.example.itinerarybuddy.ui.dashboard.DashboardFragment;
+import com.example.itinerarybuddy.ui.dashboard.TestGroup;
 
 public class LoadGroup extends AppCompatActivity {
 
@@ -49,14 +53,39 @@ public class LoadGroup extends AppCompatActivity {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), TestGroup.class));
+                startActivity(new Intent(getApplicationContext(), personalPage1.class));
             }
         });
 
         groupOptions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: group options listener
+                PopupMenu menu = new PopupMenu(getApplicationContext(), v);
+                MenuInflater inflater = menu.getMenuInflater();
+
+                inflater.inflate(R.menu.group_settings_menu, menu.getMenu());
+
+                menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        if(item.getItemId() == R.id.action_view_members){
+                            //TODO: group member
+                            return true;
+                        }
+
+                        else if(item.getItemId() == R.id.action_leave_group){
+                            //TODO: leave group
+                            return true;
+                        }
+
+                        else{
+                            return false;
+                        }
+                    }
+                });
+
+                menu.show();
+
             }
         });
 
