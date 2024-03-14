@@ -1,0 +1,27 @@
+<!-- custom_list_item_layout.xml -->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/textViewItinerary"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textSize="18sp"
+        android:textColor="@android:color/black"
+        android:layout_gravity="center_vertical"
+        android:paddingEnd="16dp"
+        android:text="Itinerary Info" />
+
+    <ImageView
+        android:id="@+id/iconPopUp"
+        android:layout_width="wrap_content"
+        android:layout_height="25dp"
+        android:src="@drawable/ic_three_dots"
+        android:layout_gravity="center_vertical" />
+
+</LinearLayout>

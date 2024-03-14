@@ -53,10 +53,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickListener, CustomAdapter.OnDeleteClickListener {
 
     private FragmentHomeBinding binding;
-    private ArrayAdapter<String> itineraryAdapter;
+    private CustomAdapter itineraryAdapter;
     private EditText startDateInput;
     private EditText endDateInput;
 
@@ -72,18 +72,19 @@ public class HomeFragment extends Fragment {
        /* final TextView textView = binding.textHome;
         homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);*/
 
-        itineraryAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, homeViewModel.getItineraries());
+
         ListView list = root.findViewById(R.id.listViewItineraries);
+        itineraryAdapter = new CustomAdapter(requireContext(), R.layout. list_item_layout, homeViewModel.getItineraries(), this, this);
         list.setAdapter(itineraryAdapter);
 
         GET_itinerary();
 
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+       /* list.setOnItemClickListener(new AdapterView.OnItemClickListener(){
 
             public void onItemClick(AdapterView<?> parent, View view, int position, long id){
                 showPopupMenu(view, position);
             }
-        });
+        });*/
 
         FloatingActionButton fab = root.findViewById(R.id.addItinerary);
 
@@ -96,6 +97,8 @@ public class HomeFragment extends Fragment {
 
         return root;
     }
+
+
 
     @Override
     public void onDestroyView() {
@@ -340,7 +343,15 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    private void showPopupMenu(View view, int position){
+    public void onEditClicked(int position){
+        editItinerary(position);
+    }
+
+    public void onDeleteClicked(int position){
+        deleteItinerary(position);
+    }
+
+ /*   private void showPopupMenu(View view, int position){
 
         PopupMenu popupMenu = new PopupMenu(requireContext(), view);
         MenuInflater inflater = popupMenu.getMenuInflater();
@@ -366,7 +377,7 @@ public class HomeFragment extends Fragment {
         });
 
         popupMenu.show();
-    }
+    }*/
 
     private void editItinerary(final int position){
 
