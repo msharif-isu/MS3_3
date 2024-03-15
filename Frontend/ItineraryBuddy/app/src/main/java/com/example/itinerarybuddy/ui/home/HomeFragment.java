@@ -1,6 +1,7 @@
 package com.example.itinerarybuddy.ui.home;
 
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -64,7 +65,7 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
     private EditText startDateInput;
     private EditText endDateInput;
 
-    private int numOfDays;
+    public int numOfDays;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -85,12 +86,21 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
 
         GET_itinerary();
 
-       /* list.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener(){
 
             public void onItemClick(AdapterView<?> parent, View view, int position, long id){
-                showPopupMenu(view, position);
+                //Get the selected itinerary
+                String selectedItinerary = itineraryAdapter.getItem(position);
+
+                int days = extractNumOfDays(selectedItinerary);
+
+                Intent intent = new Intent(requireContext(), DayCard.class);
+
+                intent.putExtra("NUM_OF_DAYS", days);
+
+                startActivity(intent);
             }
-        });*/
+        });
 
         FloatingActionButton fab = root.findViewById(R.id.addItinerary);
 
@@ -264,6 +274,7 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
 
         POST_itinerary(destination, tripCode, startDate, endDate, numOfDays);
 
+
         // saveItineraryToShared(destination, tripCode, startDate, endDate);
 
     }
@@ -342,6 +353,28 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
 
 
 
+    }
+
+    private int extractNumOfDays(String itinerary){
+
+     String label = "Number of Days: ";
+
+     int labelIndex = itinerary.indexOf(label);
+
+     if(labelIndex != -1){
+
+         String numOfDaysString = itinerary.substring(labelIndex+label.length());
+
+         try{
+
+             return Integer.parseInt(numOfDaysString.trim());
+
+         }catch (NumberFormatException e){
+             e.printStackTrace();
+         }
+     }
+
+   return 0;
     }
 
 
@@ -475,6 +508,7 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
         itineraryAdapter.remove(itineraryAdapter.getItem(position));
         itineraryAdapter.insert(updatedItineraryInfo,0);
         itineraryAdapter.notifyDataSetChanged();
+
     }
 
     private String getTripCodeFromAdapterPosition(int position){
@@ -660,6 +694,7 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
                         "\nNumber of Days: " + numDays;
 
                 itineraryAdapter.add(itineraryInfo);
+
 
             } catch (JSONException e) {
                 e.printStackTrace();
