@@ -73,4 +73,20 @@ public class Itinerary {
         return endDate;
 
     }
+
+    public static String getDays(){
+
+        String days = "0";
+
+        try{
+
+            days = itineraryInfo.getString("days");
+
+        } catch (JSONException e){
+
+            e.printStackTrace();
+        }
+
+        return days;
+    }
 }

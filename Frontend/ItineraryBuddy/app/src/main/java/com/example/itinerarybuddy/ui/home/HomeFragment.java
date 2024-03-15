@@ -1,5 +1,6 @@
 package com.example.itinerarybuddy.ui.home;
 
+import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,6 +29,8 @@ import android.content.DialogInterface;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.text.ParseException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -36,6 +39,7 @@ import java.util.Set;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -59,6 +63,8 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
     private CustomAdapter itineraryAdapter;
     private EditText startDateInput;
     private EditText endDateInput;
+
+    private int numOfDays;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -228,24 +234,41 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
 
     private void createNewFrame(String destination, String tripCode, String startDate, String endDate) {
 
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        numOfDays = 0;
+
+        try{
+
+            Date startDateObj = dateFormat.parse(startDate);
+            Date endDateObj = dateFormat.parse(endDate);
+
+            long differenceInMilliseconds = endDateObj.getTime() - startDateObj.getTime();
+            numOfDays = (int) TimeUnit.DAYS.convert(differenceInMilliseconds, TimeUnit.MILLISECONDS);
+
+        }catch (ParseException e){
+            e.printStackTrace();
+        }
+
+
         String itineraryInfo =
                 "Destination: " + destination
                         + "\nTrip Code: " + tripCode
                         + "\nStart Date: " + startDate
-                        + "\nEnd Date: " + endDate;
+                        + "\nEnd Date: " + endDate
+                        + "\nNumber of Days: " + numOfDays;
 
         //Save the info in itineraryAdapter
         itineraryAdapter.insert(itineraryInfo, 0);
 
         itineraryAdapter.notifyDataSetChanged();
 
-        POST_itinerary(destination, tripCode, startDate, endDate);
+        POST_itinerary(destination, tripCode, startDate, endDate, numOfDays);
 
         // saveItineraryToShared(destination, tripCode, startDate, endDate);
 
     }
 
-    private void POST_itinerary(String destination, String tripCode, String startDate, String endDate){
+    private void POST_itinerary(String destination, String tripCode, String startDate, String endDate, int numOfDays){
 
         //Make a network request using Volley
         // String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary/Create";
@@ -259,6 +282,7 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
                 "\"tripCode\": \"" + tripCode + "\",\n" +
                 "\"start date\": \"" + startDate + "\",\n" +
                 "\"end date\": \"" + endDate + "\"\n" +
+                "\"number of days\": \"" + numOfDays + "\"\n" +
                 "}";
 
         Log.d("Volley Request Data: ", tripData);
@@ -293,6 +317,7 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
                 map.put("tripCode", tripCode);
                 map.put("start date", startDate);
                 map.put("end date", endDate);
+                map.put("number of days", String.valueOf(numOfDays));
 
                 return map;
             }
@@ -323,27 +348,13 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
     //PUT (Update and Edit itinerary function related)
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
-        inflater.inflate(R.menu.itinerary_menu,menu);
+        inflater.inflate(R.menu.itinerary_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item){
-
-        if(item.getItemId() == R.id.action_edit){
-            return true;
-        }
-
-        else if(item.getItemId() == R.id.action_delete){
-            return true;
-        }
-
-        else{
-            return false;
-        }
-    }
 
     public void onEditClicked(int position){
+
         editItinerary(position);
     }
 
@@ -441,10 +452,25 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
 
     private void updateItinerary(int position, String destination, String startDate, String endDate){
 
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        try{
+
+            Date startDateObj = dateFormat.parse(startDate);
+            Date endDateObj = dateFormat.parse(endDate);
+
+            long differenceInMilliseconds = endDateObj.getTime() - startDateObj.getTime();
+            numOfDays = (int) TimeUnit.DAYS.convert(differenceInMilliseconds, TimeUnit.MILLISECONDS);
+
+        }catch (ParseException e){
+            e.printStackTrace();
+        }
+
         String updatedItineraryInfo = "Destination: " + destination +
                 "\nTrip Code: " + getTripCodeFromAdapterPosition(position) +
                 "\nStart Date: " + startDate +
-                "\nEnd Date: " + endDate;
+                "\nEnd Date: " + endDate +
+                "\nNumber of Days: " + numOfDays;
 
         itineraryAdapter.remove(itineraryAdapter.getItem(position));
         itineraryAdapter.insert(updatedItineraryInfo,0);
@@ -495,6 +521,7 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
                 params.put("destination", destination);
                 params.put("start date", startDate);
                 params.put("end date", endDate);
+                params.put("number of days", String.valueOf(numOfDays));
                 return params;
             }
 
@@ -622,11 +649,15 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
                 String tripCode = itineraryObject.getString("tripCode");
                 String startDate = itineraryObject.getString("start date");
                 String endDate = itineraryObject.getString("end date");
+                String numOfDays = itineraryObject.getString("number of days");
+
+                int numDays = Integer.parseInt(numOfDays);
 
                 String itineraryInfo = "Destination: " + destination +
                         "\nTrip Code: " + tripCode +
                         "\nStart Date: " + startDate +
-                        "\nEnd Date: " + endDate;
+                        "\nEnd Date: " + endDate +
+                        "\nNumber of Days: " + numDays;
 
                 itineraryAdapter.add(itineraryInfo);
 

@@ -25,9 +25,6 @@ public class CustomAdapter extends ArrayAdapter<String> {
     private OnEditClickListener editClickListener;
     private OnDeleteClickListener deleteClickListener;
 
-    private static final int MENU_EDIT = 1;
-    private static final int MENU_DELETE = 2;
-
     public CustomAdapter(@NonNull Context context, int resource, @NonNull List<String> objects, OnEditClickListener editClickListener, OnDeleteClickListener deleteClickListener) {
         super(context, resource, objects);
         this.context = context;
@@ -81,15 +78,18 @@ public class CustomAdapter extends ArrayAdapter<String> {
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case MENU_EDIT:
-                        editClickListener.onEditClicked(position);
-                        return true;
-                    case MENU_DELETE:
-                        deleteClickListener.onDeleteClicked(position);
-                        return true;
-                    default:
-                        return false;
+
+                if(item.getItemId() == R.id.action_edit){
+                    editClickListener.onEditClicked(position);
+                    return true;
+                }
+
+                else if(item.getItemId() == R.id.action_delete){
+                    deleteClickListener.onDeleteClicked(position);
+                    return true;
+                }
+                else{
+                    return false;
                 }
             }
         });
@@ -97,6 +97,7 @@ public class CustomAdapter extends ArrayAdapter<String> {
     }
 
     public interface OnDeleteClickListener {
+
         void onDeleteClicked(int position);
     }
 
