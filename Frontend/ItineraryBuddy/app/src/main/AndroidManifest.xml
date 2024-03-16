@@ -37,10 +37,10 @@
             android:exported="true"
             android:label="@string/title_activity_personal_page1"/>
         <activity
-            android:name=".ui.dashboard.TestGroup"
+            android:name=".ui.dashboard.ListGroups"
             android:exported="false" />
         <activity
-            android:name=".activities.LoadGroup"
+            android:name=".ui.dashboard.LoadGroup"
             android:exported="false" />
         <meta-data
             android:name="preloaded_fonts"

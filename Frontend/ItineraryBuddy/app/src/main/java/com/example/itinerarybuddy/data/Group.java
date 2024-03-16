@@ -2,6 +2,8 @@ package com.example.itinerarybuddy.data;
 
 import androidx.annotation.NonNull;
 
+import java.util.ArrayList;
+
 /** Stores a list of JSON objects for a user. */
 public class Group {
 
@@ -13,11 +15,14 @@ public class Group {
 
     private String travelGroupDescription;
 
-    public Group(String name, String code, String destination, String description) {
+    private ArrayList<String> members;
+
+    public Group(String name, String code, String destination, String description, ArrayList<String> members) {
         this.travelGroupName = name;
         this.travelGroupCode = code;
         this.travelGroupDestination = destination;
         this.travelGroupDescription = description;
+        this.members = members;
     }
 
     public String getTravelGroupName() {

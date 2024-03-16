@@ -11,12 +11,8 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /** This class stores a static JSON object for the current app user. Includes getters for data. */
 public class UserData {
@@ -34,7 +30,7 @@ public class UserData {
         try{
            username = userInfo.getString("userName");
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e("Error: ", e.toString());
         }
         return username;
     }
@@ -45,7 +41,7 @@ public class UserData {
         try{
             email = userInfo.getString("email");
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e("Error: ", e.toString());
         }
         return email;
     }
@@ -58,7 +54,7 @@ public class UserData {
         try{
             usertype = userInfo.getString("userType");
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e("Error: ", e.toString());
         }
         return usertype;
     }
@@ -69,7 +65,7 @@ public class UserData {
         try{
             city = userInfo.getString("city");
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e("Error: ", e.toString());
         }
         return city;
     }
@@ -80,7 +76,7 @@ public class UserData {
         try{
             state = userInfo.getString("username");
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e("Error: ", e.toString());
         }
         return state;
     }
@@ -94,7 +90,7 @@ public class UserData {
                 groupIDs.add(array.getJSONObject(i).getString("travelGroupCode"));
             }
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e("Error: ", e.toString());
         }
         return groupIDs;
     }
@@ -112,7 +108,7 @@ public class UserData {
                 public void onResponse(JSONObject response) {
                     Log.d("Volley Response: ", response.toString());
 
-                    UserData.addGroup(response);
+                    UserData.appendAdapter(response);
                 }
             }, new Response.ErrorListener() {
                 @Override
@@ -121,16 +117,16 @@ public class UserData {
                 }
             });
             queue.add(req);
-            //Log.d("Group: ", groups.get(i).toString());
         }
     }
 
-    private static void addGroup(JSONObject response){
+    public static void appendAdapter(JSONObject response){
         String groupName = getGroupName(response);
         String groupCode = getGroupCode(response);
         String groupDestination = getGroupDestination(response);
         String groupDescription = getGroupDescription(response);
-        Group g = new Group(groupName, groupCode, groupDestination, groupDescription);
+        ArrayList<String> members = getGroupMembers(response);
+        Group g = new Group(groupName, groupCode, groupDestination, groupDescription, members);
         UserData.adapter.add(g);
     }
 
@@ -139,7 +135,7 @@ public class UserData {
         try{
             groupName = json.getString("travelGroupName");
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e("Error: ", e.toString());
         }
         return groupName;
     }
@@ -149,7 +145,7 @@ public class UserData {
         try{
             groupCode = json.getString("travelGroupCode");
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e("Error: ", e.toString());
         }
         return groupCode;
     }
@@ -159,7 +155,7 @@ public class UserData {
         try{
             groupDestination = json.getString("travelGroupDestination");
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e("Error: ", e.toString());
         }
         return groupDestination;
     }
@@ -169,8 +165,21 @@ public class UserData {
         try{
             groupDescription = json.getString("travelGroupDescription");
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e("Error: ", e.toString());
         }
         return groupDescription;
+    }
+
+    public static ArrayList<String> getGroupMembers(JSONObject json){
+        ArrayList<String> groupMembers = new ArrayList<String>();
+        try{
+            JSONArray array = json.getJSONArray("travelGroupMembers");
+            for(int i = 0; i < array.length(); i++){
+                groupMembers.add(array.getJSONObject(i).getString("userName"));
+            }
+        } catch (JSONException e) {
+            Log.e("Error: ", e.toString());
+        }
+        return groupMembers;
     }
 }
