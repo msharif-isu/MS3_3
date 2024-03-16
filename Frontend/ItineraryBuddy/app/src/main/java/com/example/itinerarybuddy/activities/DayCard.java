@@ -1,10 +1,11 @@
-package com.example.itinerarybuddy.ui.home;
+package com.example.itinerarybuddy.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.view.View;
 
 import com.example.itinerarybuddy.R;
 
@@ -39,4 +40,6 @@ public class DayCard extends AppCompatActivity {
         recyclerView.setAdapter(dayCardAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
+
+
 }

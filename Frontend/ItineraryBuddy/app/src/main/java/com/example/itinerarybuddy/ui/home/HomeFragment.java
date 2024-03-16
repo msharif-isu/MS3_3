@@ -1,23 +1,20 @@
 package com.example.itinerarybuddy.ui.home;
 
-import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.DatePicker;
-import android.widget.PopupMenu;
 
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
+import com.example.itinerarybuddy.activities.DayCard;
 import com.example.itinerarybuddy.data.Itinerary;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -25,7 +22,6 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -50,7 +46,6 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.itinerarybuddy.R;
 import com.example.itinerarybuddy.databinding.FragmentHomeBinding;
-import com.example.itinerarybuddy.util.Singleton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;

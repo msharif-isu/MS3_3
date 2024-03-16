@@ -1,6 +1,7 @@
-package com.example.itinerarybuddy.ui.home;
+package com.example.itinerarybuddy.activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,9 +15,9 @@ import java.util.ArrayList;
 
 public class DayCardAdapter extends RecyclerView.Adapter<DayCardAdapter.ViewHolder> {
 
+    private Context context;
     private ArrayList<String> dayTitles;
     private ArrayList<String> dayContents;
-    private Context context;
 
     public DayCardAdapter(Context context, ArrayList<String> dayTitles, ArrayList<String> dayContents) {
         this.context = context;
@@ -33,7 +34,8 @@ public class DayCardAdapter extends RecyclerView.Adapter<DayCardAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.bind(dayTitles.get(position), dayContents.get(position));
+        holder.titleTextView.setText(dayTitles.get(position));
+        holder.contentTextView.setText(dayContents.get(position));
     }
 
     @Override
@@ -41,20 +43,29 @@ public class DayCardAdapter extends RecyclerView.Adapter<DayCardAdapter.ViewHold
         return dayTitles.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-
-        private TextView textViewDayTitle;
-        private TextView textViewDayContent;
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        TextView titleTextView;
+        TextView contentTextView;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            textViewDayTitle = itemView.findViewById(R.id.textViewDayTitle);
-            textViewDayContent = itemView.findViewById(R.id.textViewDayContent);
+            titleTextView = itemView.findViewById(R.id.textViewDayTitle);
+            contentTextView = itemView.findViewById(R.id.textViewDayContent);
+
+            // Set click listener on itemView
+            itemView.setOnClickListener(this);
         }
 
-        public void bind(String dayTitle, String dayContent) {
-            textViewDayTitle.setText(dayTitle);
-            textViewDayContent.setText(dayContent);
+        @Override
+        public void onClick(View v) {
+            int position = getAdapterPosition();
+            if (position != RecyclerView.NO_POSITION) {
+                String title = dayTitles.get(position);
+                Intent intent = new Intent(context, ScheduleTemplate.class);
+                intent.putExtra("TITLE", title);
+                context.startActivity(intent);
+            }
         }
     }
 }
+

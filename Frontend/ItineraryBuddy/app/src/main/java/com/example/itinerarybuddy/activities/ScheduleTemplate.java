@@ -1,19 +1,15 @@
-package com.example.itinerarybuddy;
+package com.example.itinerarybuddy.activities;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.DownloadManager;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.itinerarybuddy.R;
 import com.example.itinerarybuddy.data.ScheduleItem;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -46,13 +42,14 @@ public class ScheduleTemplate extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_schedule_template);
 
+        String day = getIntent().getStringExtra("TITLE");
+
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-
         List<ScheduleItem> data = generateData();
-        adapter = new ScheduleAdapter(data);
+        adapter = new ScheduleAdapter(data, day);
         recyclerView.setAdapter(adapter);
 
         GET_schedule();
@@ -67,13 +64,13 @@ public class ScheduleTemplate extends AppCompatActivity {
 
                 if(isFirstClick){
 
-                    POST_schedule(scheduleItems);
+                    POST_schedule(day, scheduleItems);
                     Toast.makeText(ScheduleTemplate.this, "Data saved!", Toast.LENGTH_SHORT).show();
                 }
 
                 else{
 
-                    UPDATE_schedule(scheduleItems);
+                    UPDATE_schedule(day, scheduleItems);
                     Toast.makeText(ScheduleTemplate.this, "Data updated!", Toast.LENGTH_SHORT).show();
                 }
 
@@ -85,10 +82,10 @@ public class ScheduleTemplate extends AppCompatActivity {
 
     //POST the schedule datagit add .
     
-    private void POST_schedule(List<ScheduleItem> scheduleData){
+    private void POST_schedule(String day, List<ScheduleItem> scheduleData){
 
         // String url = "http://coms-309-035.class.las.iastate.edu:8080/Schedule/Post";
-        String url = "https://7557e865-ef05-4e77-beaf-a69fca370355.mock.pstmn.io/Schedule/Post";
+        String url = "https://7557e865-ef05-4e77-beaf-a69fca370355.mock.pstmn.io/Schedule/Post" + day;
         RequestQueue queue = Volley.newRequestQueue(this);
 
         //Convert ScheduleItem list to JSONArray
@@ -153,10 +150,10 @@ public class ScheduleTemplate extends AppCompatActivity {
     }
 
     //UPDATE the schedule data
-    private void UPDATE_schedule(List<ScheduleItem> scheduleData){
+    private void UPDATE_schedule(String day, List<ScheduleItem> scheduleData){
 
         // String url = "http://coms-309-035.class.las.iastate.edu:8080/Schedule/Update";
-        String url = "https://7557e865-ef05-4e77-beaf-a69fca370355.mock.pstmn.io/Schedule/Update";
+        String url = "https://7557e865-ef05-4e77-beaf-a69fca370355.mock.pstmn.io/Schedule/Update" + day;
         RequestQueue queue = Volley.newRequestQueue(this);
 
         //Convert ScheduleItem list to JSONArray
