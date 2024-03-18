@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".activities.ScheduleTemplate">
+
+   <androidx.recyclerview.widget.RecyclerView
+       android:id="@+id/recyclerView"
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"
+       android:showDividers="beginning|middle|end"
+       android:divider="@drawable/header_background"
+       android:stretchColumns="*" />
+
+   <!-- FloatingActionButton for the Save/Update button -->
+   <com.google.android.material.floatingactionbutton.FloatingActionButton
+       android:id="@+id/btnSaveUpdate"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_gravity="bottom|end"
+       android:layout_margin="16dp"
+       android:background="@drawable/header_background"
+       android:src="@drawable/ic_save"
+       app:backgroundTint="#6E8033"
+       app:borderWidth="0dp"
+       app:elevation="6dp"
+       tools:ignore="SpeakableTextPresentCheck" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+

@@ -1,0 +1,148 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/frameLayout"
+            android:layout_width="412dp"
+            android:layout_height="188dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/imageViewPersonal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scaleType="centerCrop"
+                android:src="@drawable/airplane_trip"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="100dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="99dp"
+                android:layout_marginBottom="119dp"
+                android:gravity="center"
+                android:letterSpacing="0.8"
+                android:text="TRIPS"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="42dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="192dp"
+                android:layout_height="34dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="98dp"
+                android:fontFamily="@font/dm_sans"
+                android:text="Enter trip code:"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/imageViewPersonal"
+                app:layout_constraintTop_toTopOf="@+id/imageViewPersonal" />
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="213dp"
+                android:layout_height="47dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="151dp"
+                android:layout_marginEnd="183dp"
+                android:fontFamily="@font/dm_sans"
+                android:text="Create a new itinerary"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/imageViewPersonal" />
+
+            <Button
+                android:id="@+id/button2"
+                android:layout_width="100dp"
+                android:layout_height="48dp"
+                android:layout_marginTop="84dp"
+                android:layout_marginEnd="16dp"
+                android:text="Enter"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <EditText
+                android:id="@+id/editTextNumber"
+                android:layout_width="148dp"
+                android:layout_height="48dp"
+                android:layout_marginEnd="116dp"
+                android:layout_marginBottom="48dp"
+                android:ems="10"
+                android:hint="********"
+                android:inputType="number"
+                android:textColorHint="#CDC6C6"
+                app:layout_constraintBottom_toBottomOf="@+id/imageViewPersonal"
+                app:layout_constraintEnd_toEndOf="@+id/imageViewPersonal" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/addItinerary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="132dp"
+                android:layout_marginEnd="60dp"
+                android:clickable="true"
+                android:contentDescription="Add new itinerary"
+                android:src="@drawable/add_icon"
+                app:backgroundTint="#F8F5F5"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="311dp"
+            android:layout_height="60dp"
+            android:layout_marginStart="55dp"
+            android:layout_marginTop="19dp"
+            android:gravity="center"
+            android:letterSpacing="0.5"
+            android:text="ITINERARY"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textHome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:ignore="MissingConstraints" />
+
+
+    <ListView
+        android:id="@+id/listViewItineraries"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:divider="@android:color/darker_gray"
+        android:dividerHeight="1dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"></ListView>
+
+
+</LinearLayout>

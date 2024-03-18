@@ -1,3 +1,42 @@
 <resources>
     <string name="app_name">ItineraryBuddy</string>
+
+    <string name="username_text">USERNAME</string>
+    <string name="password_text">PASSWORD</string>
+    <string name="create_account_text">CREATE NEW ACCOUNT</string>
+    <string name="new_user_text">NEW USER?</string>
+    <string name="itinerarybuddy_text">ItineraryBuddy</string>
+    <string name="login_text">LOGIN</string>
+    <string name="signup">SIGNUP</string>
+    <string name="email_text">EMAIL</string>
+    <string name="confirm_password_text">CONFIRM PASSWORD</string>
+    <string name="sign_in_here_text">OR SIGN IN HERE</string>
+
+    <string name="admin_dashboard_txt">Admin Dashboard</string>
+    <string name="confirm">Confirm</string>
+    <string name="enter_user_id">Enter Username</string>
+    <string name="delete_public_itinerary">Delete public itinerary</string>
+    <string name="disable_user_posting_permissions">Disable user posting permissions</string>
+    <string name="revoke_ambassador_status">Revoke Ambassador Status</string>
+    <string name="grant_ambassador_status">Grant Ambassador Status</string>
+    <string name="return_home">RETURN HOME</string>
+    <string name="grant_admin_access">Grant Admin Access</string>
+    <string name="revoke_admin_access">Revoke Admin Access</string>
+    <string name="enable_user_posting">Enable User Posting Permissions</string>
+
+    <string name="title_activity_personal_page1">personalPage1</string>
+    <string name="title_personal">Personal</string>
+    <string name="title_community">Community</string>
+    <string name="title_ambassador">Ambassador</string>
+    <string name="title_appName">ItineraryBuddy</string>
+    <string name="title_dashboard">Boo 2</string>
+    <string name="title_notifications">Boo 3</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="itemDay">Day</string>
+    <string name="itemDate">Date</string>
+    <string name="itemTime">Time</string>
+    <string name="itemPlaces">Places</string>
+    <string name="itemNote">Note</string>
+
 </resources>
