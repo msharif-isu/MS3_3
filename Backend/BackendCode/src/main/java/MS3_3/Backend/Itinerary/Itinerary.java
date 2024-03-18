@@ -1,6 +1,7 @@
-package MS3_3.Backend;
+package MS3_3.Backend.Itinerary;
 
 import java.util.ArrayList;
+import MS3_3.Backend.Places.Place;
 
 public class Itinerary {
     private String name;

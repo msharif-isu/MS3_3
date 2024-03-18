@@ -1,22 +1,22 @@
-package MS3_3.Backend;
+package MS3_3.Backend.Places;
 
 public class Place {
-    private String place;
+    private String placeName;
     private int startDate;
     private int endDate;
     private int startTime;
     private int endTime;
 
-    public Place(String place, int startDate, int endDate, int startTime, int endTime) {
-        this.place = place;
+    public Place(String placeName, int startDate, int endDate, int startTime, int endTime) {
+        this.placeName = placeName;
         this.startDate = startDate;
         this.endDate = endDate;
         this.startTime = startTime;
         this.endTime = endTime;
     }
 
-    public String getPlace() {
-        return place;
+    public String getPlaceName() {
+        return placeName;
     }
 
     public int getStartDate() {
@@ -35,7 +35,7 @@ public class Place {
         return endTime;
     }
 
-    public void setPlace(String place) { this.place = place; }
+    public void setPlaceName(String placeName) { this.placeName = placeName; }
 
     public void setStartDate(int startDate) { this.startDate = startDate; }
 
