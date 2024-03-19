@@ -1,52 +1,43 @@
 package MS3_3.Backend.Itinerary;
 
-import java.util.ArrayList;
-import MS3_3.Backend.Places.Place;
+import java.util.List;
+
+import MS3_3.Backend.Day.Day;
 
 public class Itinerary {
-    private String name;
-
-    private boolean isPublic;
-
+    private String itineraryName;
     private String shareCode;
+    private String startDate;
+    private String endDate;
+    private List<Day> days;
 
-    private ArrayList<Place> places;
-
-    public Itinerary(String name, boolean isPublic, String shareCode, ArrayList<Place> places) {
-        this.name = name;
-        this.isPublic = isPublic;
+    public Itinerary(String itineraryName, String shareCode, String startDate, String endDate, List<Day> days) {
+        this.itineraryName = itineraryName;
         this.shareCode = shareCode;
-        this.places = places;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.days = days;
     }
 
-    public ArrayList<Place> getPlaces() {
-        return places;
-    }
+    public String getItineraryName() { return itineraryName; }
+    public String getShareCode() { return shareCode; }
+    public String getStartDate() { return startDate; }
+    public String getEndDate() { return endDate; }
+    public List<Day> getDays() { return days; }
 
-    public void setPlaces(ArrayList<Place> places) {
-        this.places = places;
+    public void setDays(List<Day> days) {
+        this.days = days;
     }
-
-    public String getShareCode() {
-        return shareCode;
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
     }
-
-    public void changeShareCode(String shareCode) {
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
+    }
+    public void setItineraryName(String itineraryName) {
+        this.itineraryName = itineraryName;
+    }
+    public void setShareCode(String shareCode) {
         this.shareCode = shareCode;
-    }
-
-    public boolean getPublic() {
-        return isPublic;
-    }
-
-    public void changePublic(boolean isPublic) {
-        this.isPublic = isPublic;
-    }
-
-    public String getName() {
-        return name;
-    }
-    public void changeName(String name) {
-        this.name = name;
     }
 }
