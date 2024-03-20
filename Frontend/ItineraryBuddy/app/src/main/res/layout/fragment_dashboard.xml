@@ -1,139 +1,31 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- fragment_dashboard.xml -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="8dp">
+    android:layout_height="match_parent">
 
-    <LinearLayout
+    <ImageView
+        android:id="@+id/postContent"
+        android:layout_width="wrap_content"
+        android:layout_height="35dp"
+        android:src="@drawable/ic_post"
+        android:layout_marginLeft="320dp"
+        android:layout_gravity="center_vertical"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewPost"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@color/dark_green">
+        android:layout_height="match_parent"
+        android:layout_below="@id/postContent"
+        android:paddingTop="8dp"
+        android:orientation="vertical" />
 
-        <ImageView
-            android:id="@+id/postContent"
-            android:layout_width="wrap_content"
-            android:layout_height="35dp"
-            android:src="@drawable/ic_post"
-            android:paddingStart="320dp"
-            android:layout_gravity="center_vertical"/>
+</RelativeLayout>
 
 
-    </LinearLayout>
 
-    <!-- Post Header Section -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="15dp">
 
-        <!-- Profile Image -->
-        <ImageView
-            android:id="@+id/image_profile"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:src="@drawable/ic_default_pp"
-            android:scaleType="centerCrop"/>
 
-        <!-- Username and Time Posted -->
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:layout_marginStart="8dp">
 
-            <TextView
-                android:id="@+id/text_username"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="username"
-                android:textStyle="bold"
-                android:textSize="16sp"/>
 
-            <TextView
-                android:id="@+id/text_time_posted"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="1 hour ago"
-                android:textColor="@android:color/darker_gray"
-                android:textSize="12sp"/>
-        </LinearLayout>
 
-        <!-- More Options Button -->
-        <ImageView
-            android:id="@+id/image_more"
-            android:layout_width="wrap_content"
-            android:layout_height="25dp"
-            android:src="@drawable/ic_three_dots"
-            android:layout_gravity="center_vertical"/>
 
-    </LinearLayout>
-
-    <!-- Post File -->
-    <TextView
-        android:id="@+id/text_post_file"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Post File Name"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:layout_marginTop="8dp"
-        android:padding="10dp"/>
-
-    <!-- Interaction Buttons (Like, Comment, Save) -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="25dp"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:layout_marginTop="8dp"
-        >
-
-        <ImageView
-            android:id="@+id/image_like"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_like_after"
-            android:layout_marginEnd="8dp"/>
-
-        <ImageView
-            android:id="@+id/image_comment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_comment"
-            android:layout_marginEnd="8dp"/>
-
-        <ImageView
-            android:id="@+id/image_save"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_bookmark_bfr"/>
-
-    </LinearLayout>
-
-    <!-- Caption and Comments Section -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="8dp">
-
-        <TextView
-            android:id="@+id/text_caption"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Caption"
-            android:textSize="16sp"
-            android:textStyle="bold"/>
-
-        <TextView
-            android:id="@+id/text_comments"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="View all 10 comments"
-            android:textSize="14sp"
-            android:textColor="@android:color/darker_gray"/>
-    </LinearLayout>
-
-</LinearLayout>
