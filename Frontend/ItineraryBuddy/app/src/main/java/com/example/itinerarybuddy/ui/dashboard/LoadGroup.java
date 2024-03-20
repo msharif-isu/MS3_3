@@ -1,7 +1,6 @@
 package com.example.itinerarybuddy.ui.dashboard;
 
 import android.app.AlertDialog;
-import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,26 +9,19 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.EditText;
+import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 
 import com.example.itinerarybuddy.R;
-import com.example.itinerarybuddy.activities.personalPage1;
 import com.example.itinerarybuddy.data.Group;
 import com.example.itinerarybuddy.data.UserData;
-import com.example.itinerarybuddy.databinding.ActivityPersonalPage1Binding;
-import com.example.itinerarybuddy.databinding.FragmentGroupPageBinding;
-import com.example.itinerarybuddy.ui.dashboard.DashboardFragment;
-import com.example.itinerarybuddy.ui.dashboard.ListGroups;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.example.itinerarybuddy.databinding.DialogGroupDetailsBinding;
 
 public class LoadGroup extends AppCompatActivity {
 
@@ -85,18 +77,23 @@ public class LoadGroup extends AppCompatActivity {
                 menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
-
-                        if(item.getItemId() == R.id.action_group_details){
-                            showGroupDetails();
-
+                        if(item.getItemId() == R.id.action_group_members){
+                            showGroupMembers();
                             return true;
                         }
-
-                        else if(item.getItemId() == R.id.action_leave_group){
+                        else if(item.getItemId() == R.id.action_edit_group){
                             //TODO: leave group
                             return true;
                         }
-
+                        else if(item.getItemId() == R.id.action_edit_group){
+                            if(UserData.getUsertype().equals("User")){
+                                Toast.makeText(getApplicationContext(), "Only Travel Ambassadors can edit the group.", Toast.LENGTH_LONG).show();
+                            }
+                            else{
+                                editGroup();
+                            }
+                            return true;
+                        }
                         else{
                             return false;
                         }
@@ -118,7 +115,27 @@ public class LoadGroup extends AppCompatActivity {
 
     }
 
-    private void showGroupDetails(){
+    private void showGroupMembers(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.layout.dialog_group_details);
+        builder.setTitle("Travel Group Members");
+
+        View v = DialogGroupDetailsBinding.inflate(getLayoutInflater()).getRoot();
+        builder.setView(v);
+
+        ListView members = v.findViewById(R.id.group_members_list);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, group.getTravelGroupMembers());
+        members.setAdapter(adapter);
+        builder.setNegativeButton("Back", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
+    }
+
+    private void editGroup(){
 
     }
 }

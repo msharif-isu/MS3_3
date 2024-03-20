@@ -57,6 +57,10 @@ public class Group {
         this.travelGroupDescription = travelGroupDescription;
     }
 
+    public ArrayList<String> getTravelGroupMembers() {
+        return members;
+    }
+
     @NonNull
     @Override
     public String toString() {

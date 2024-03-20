@@ -46,12 +46,18 @@
     <string name="options_button">options_button</string>
     <string name="chat_button">chat button</string>
     <string name="group_overview">Group Overview</string>
-    <string name="find_groups">Find Groups</string>
+    <string name="find_groups">Join Group</string>
     <string name="add_group">add group</string>
     <string name="travel_groups">Travel Groups</string>
-    <string name="view_group_details">Group Details</string>
+    <string name="view_group_members">View Group Members</string>
     <string name="enter_group_code">Enter Travel Group Code</string>
     <string name="group_code">Group Code</string>
     <string name="travel_groups_nav">Travel Groups</string>
+    <string name="create_group">Create Group</string>
+    <string name="group_name">Enter Group Name</string>
+    <string name="enter_group_destination">Enter Group Destination</string>
+    <string name="enter_group_description">Enter Group Description</string>
+    <string name="group_members">Group Members</string>
+    <string name="edit_travel_group">Edit Travel Group</string>
 
 </resources>
