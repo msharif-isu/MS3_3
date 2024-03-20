@@ -43,7 +43,7 @@ public class ItineraryController {
         return itineraryRepository.findByShareCode(shareCode);
     }
 
-    @GetMapping("/Itinerary")
+    @GetMapping("/Itinerary/List")
     public List<Itinerary> getAllItineraries() {
         return itineraryRepository.findAll();
     }

@@ -16,15 +16,15 @@ public class PlaceController {
         return place;
     }
 
-    @DeleteMapping("/Place/delete/{placeName}")
-    public String deletePlace(@PathVariable String placeName) {
-        placeRepository.deleteById(placeName);
-        return "Place with name " + placeName + " successfully deleted";
+    @DeleteMapping("/Place/delete/{uniqueCode}")
+    public String deletePlace(@PathVariable String uniqueCode) {
+        placeRepository.deleteByUniqueCode(uniqueCode);
+        return "Place with name " + uniqueCode + " successfully deleted";
     }
 
-    @PutMapping("/Place/Update/{placeName}")
-    public Place updatePlace(@PathVariable String placeName, @RequestBody Place updatedPlace) {
-        Place existingPlace = placeRepository.findById(placeName).orElse(null);
+    @PutMapping("/Place/Update/{uniqueCode}")
+    public Place updatePlace(@PathVariable String uniqueCode, @RequestBody Place updatedPlace) {
+        Place existingPlace = placeRepository.findByUniqueCode(uniqueCode);
         if (existingPlace != null) {
             existingPlace.setStartTime(updatedPlace.getStartTime());
             existingPlace.setEndTime(updatedPlace.getEndTime());
@@ -35,9 +35,9 @@ public class PlaceController {
         }
     }
 
-    @GetMapping("/Place/{placeName}")
-    public Place getPlace(@PathVariable String placeName) {
-        return placeRepository.findById(placeName).orElse(null);
+    @GetMapping("/Place/{uniqueCode}")
+    public Place getPlace(@PathVariable String uniqueCode) {
+        return placeRepository.findByUniqueCode(uniqueCode);
     }
 
     @GetMapping("/Place/List")

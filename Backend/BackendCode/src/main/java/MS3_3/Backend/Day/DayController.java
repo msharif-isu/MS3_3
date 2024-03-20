@@ -16,15 +16,15 @@ public class DayController {
         return day;
     }
 
-    @DeleteMapping("/Day/Delete/{destination}")
-    public String deleteDay(@PathVariable String destination) {
-        dayRepository.deleteById(destination);
-        return "Day with destination " + destination + " successfully deleted";
+    @DeleteMapping("/Day/Delete/{uniqueCode}")
+    public String deleteDay(@PathVariable String uniqueCode) {
+        dayRepository.deleteByUniqueCode(uniqueCode);
+        return "Day with Unique Code " + uniqueCode + " successfully deleted";
     }
 
-    @PutMapping("/Day/Update/{destination}")
+    @PutMapping("/Day/Update/{uniqueCode}")
     public Day updateDay(@PathVariable String uniqueCode, @RequestBody Day updatedDay) {
-        Day existingDay = dayRepository.findById(uniqueCode).orElse(null);
+        Day existingDay = dayRepository.findByUniqueCode(uniqueCode);
         if (existingDay != null) {
             existingDay.setPlaces(updatedDay.getPlaces());
             dayRepository.save(existingDay);
@@ -34,9 +34,9 @@ public class DayController {
         }
     }
 
-    @GetMapping("/Day/{destination}")
-    public Day getDay(@PathVariable String destination) {
-        return dayRepository.findById(destination).orElse(null);
+    @GetMapping("/Day/{uniqueCode}")
+    public Day getDay(@PathVariable String uniqueCode) {
+        return dayRepository.findByUniqueCode(uniqueCode);
     }
 
     @GetMapping("/Day/List")
