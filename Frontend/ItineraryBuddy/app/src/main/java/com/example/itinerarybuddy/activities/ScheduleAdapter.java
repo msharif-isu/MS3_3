@@ -1,4 +1,4 @@
-package com.example.itinerarybuddy;
+package com.example.itinerarybuddy.activities;
 
 import android.app.TimePickerDialog;
 import android.text.Editable;
@@ -13,6 +13,7 @@ import android.widget.TimePicker;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.itinerarybuddy.R;
 import com.example.itinerarybuddy.data.ScheduleItem;
 
 import java.sql.Time;
@@ -25,10 +26,12 @@ class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHolder> {
     private static final int VIEW_TYPE_HEADER = 0;
     private static final int VIEW_TYPE_DATA = 1;
 
+    private String dayTitle;
     private static List<ScheduleItem> scheduleData;
 
-    public ScheduleAdapter(List<ScheduleItem> scheduleData) {
+    public ScheduleAdapter(List<ScheduleItem> scheduleData, String dayTitle) {
         this.scheduleData = scheduleData;
+        this.dayTitle = dayTitle;
     }
 
     public List<ScheduleItem> getScheduleData(){
@@ -43,22 +46,33 @@ class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHolder> {
 
         if (viewType == VIEW_TYPE_HEADER) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_schedule_header, parent, false);
+
+            TextView dayTitleTV = view.findViewById(R.id.DayTitle);
+
+            if(dayTitleTV != null){
+                dayTitleTV.setText(dayTitle);
+            }
+
+
         } else {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_schedule_data, parent, false);
         }
-        return new ViewHolder(view);
+        return new ViewHolder(view, dayTitle);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         int viewType = getItemViewType(position);
-        if (viewType == VIEW_TYPE_DATA) {
+        if (viewType == VIEW_TYPE_HEADER) {
+            holder.setDayTitle(dayTitle);
+        } else if (viewType == VIEW_TYPE_DATA) {
             if (position > 0 && position <= scheduleData.size()) {
                 ScheduleItem item = scheduleData.get(position - 1);
                 holder.bindData(item);
             }
         }
     }
+
 
 
     @Override
@@ -82,12 +96,16 @@ class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHolder> {
         private TextView headerTextViewPlaces;
         private TextView headerTextViewNote;
 
+        private TextView dayTitleTextView;
+
         private EditText dataEditTextTime;
         private EditText dataEditTextPlaces;
         private EditText dataEditTextNote;
 
-        public ViewHolder(@NonNull View itemView) {
+        public ViewHolder(@NonNull View itemView, String dayTitle) {
             super(itemView);
+
+            dayTitleTextView = itemView.findViewById(R.id.DayTitle);
 
 
             if (itemView.findViewById(R.id.headerTextViewTime) != null) {
@@ -100,27 +118,6 @@ class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHolder> {
                 dataEditTextTime = itemView.findViewById(R.id.dataEditTextTime);
                 dataEditTextPlaces = itemView.findViewById(R.id.dataEditTextPlaces);
                 dataEditTextNote = itemView.findViewById(R.id.dataEditTextNote);
-
-               /* dataEditTextTime.addTextChangedListener(new TextWatcher() {
-                    @Override
-                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                    }
-
-                    @Override
-                    public void onTextChanged(CharSequence s, int start, int before, int count) {
-                        if (getAdapterPosition() > 0 && getAdapterPosition() <= scheduleData.size()) {
-                            ScheduleItem item = scheduleData.get(getAdapterPosition() - 1);
-                            item.setTime(s.toString());
-
-
-
-                        }
-                    }
-
-                    @Override
-                    public void afterTextChanged(Editable s) {
-                    }
-                });*/
 
                 dataEditTextTime.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -198,6 +195,11 @@ class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHolder> {
             timePickerDialog.show();
         }
 
+        public void setDayTitle(String title) {
+            if (dayTitleTextView != null) {
+                dayTitleTextView.setText(title);
+            }
+        }
 
         public void bindData(ScheduleItem item) {
             if (item != null) {
@@ -206,6 +208,7 @@ class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHolder> {
                     headerTextViewTime.setText("Time");
                     headerTextViewPlaces.setText("Places");
                     headerTextViewNote.setText("Note");
+
                 } else {
                     // This is a data view
                     if (dataEditTextTime != null) {
