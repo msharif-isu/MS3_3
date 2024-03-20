@@ -18,6 +18,10 @@ public class Itinerary {
     @OneToMany(mappedBy = "itinerary", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Day> days;
 
+    public Itinerary() {
+        
+    }
+
     public Itinerary(String itineraryName, String shareCode, String startDate, String endDate, List<Day> days) {
         this.itineraryName = itineraryName;
         this.shareCode = shareCode;
@@ -25,6 +29,7 @@ public class Itinerary {
         this.endDate = endDate;
         this.days = days;
     }
+
 
     public String getItineraryName() { return itineraryName; }
     public String getShareCode() { return shareCode; }

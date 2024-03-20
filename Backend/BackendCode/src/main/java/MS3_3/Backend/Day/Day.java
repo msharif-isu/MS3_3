@@ -16,6 +16,9 @@ public class Day {
     @Id
     private String uniqueCode;
 
+    public Day() {
+
+    }
     public Day(String destination, List<Place> places, Itinerary itinerary, String uniqueCode) {
         this.destination = destination;
         this.places = places;

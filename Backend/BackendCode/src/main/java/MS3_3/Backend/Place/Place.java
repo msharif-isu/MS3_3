@@ -17,6 +17,9 @@ public class Place {
     @Id
     private String uniqueCode;
 
+    public Place() {
+
+    }
     public Place(String placeName, String startTime, String endTime, Day day, String uniqueCode) {
         this.placeName = placeName;
         this.startTime = startTime;
