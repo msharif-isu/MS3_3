@@ -10,7 +10,7 @@ import jakarta.persistence.*;
 public class Itinerary {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String shareCode;
+    private int shareCode;
 
     @OneToMany(mappedBy = "itinerary", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Day> days;
@@ -33,7 +33,7 @@ public class Itinerary {
         this.days = days;
     }
 
-    public String getShareCode() { return shareCode; }
+    public int getShareCode() { return shareCode; }
 
     public List<Day> getDays() { return days; }
 
@@ -44,7 +44,7 @@ public class Itinerary {
     public String getEndDate() { return endDate; }
 
 
-    public void setShareCode(String shareCode) {
+    public void setShareCode(int shareCode) {
         this.shareCode = shareCode;
     }
 

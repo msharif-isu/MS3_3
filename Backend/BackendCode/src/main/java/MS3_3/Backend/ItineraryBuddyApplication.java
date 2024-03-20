@@ -24,7 +24,7 @@ public class ItineraryBuddyApplication {
 	 * @return
 	 */
 /**
-
+	@Bean
 	CommandLineRunner initUser(UserRepository userRepository, AdminRepository adminRepository) {
 		return args -> {
 			User user1 = new User("@iastate1", "Collalti1",

@@ -17,13 +17,13 @@ public class PlaceController {
     }
 
     @DeleteMapping("/Place/delete/{uniqueCode}")
-    public String deletePlace(@PathVariable String uniqueCode) {
+    public String deletePlace(@PathVariable int uniqueCode) {
         placeRepository.deleteByUniqueCode(uniqueCode);
         return "Place with name " + uniqueCode + " successfully deleted";
     }
 
     @PutMapping("/Place/Update/{uniqueCode}")
-    public Place updatePlace(@PathVariable String uniqueCode, @RequestBody Place updatedPlace) {
+    public Place updatePlace(@PathVariable int uniqueCode, @RequestBody Place updatedPlace) {
         Place existingPlace = placeRepository.findByUniqueCode(uniqueCode);
         if (existingPlace != null) {
             existingPlace.setStartTime(updatedPlace.getStartTime());
@@ -36,7 +36,7 @@ public class PlaceController {
     }
 
     @GetMapping("/Place/{uniqueCode}")
-    public Place getPlace(@PathVariable String uniqueCode) {
+    public Place getPlace(@PathVariable int uniqueCode) {
         return placeRepository.findByUniqueCode(uniqueCode);
     }
 

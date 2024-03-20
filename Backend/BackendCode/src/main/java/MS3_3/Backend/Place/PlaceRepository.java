@@ -1,9 +1,9 @@
 package MS3_3.Backend.Place;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
-public interface PlaceRepository extends JpaRepository<Place, String> {
+public interface PlaceRepository extends JpaRepository<Place,Integer> {
     @Transactional
-    void deleteByUniqueCode(String uniqueCode);
+    void deleteByUniqueCode(int uniqueCode);
 
-    Place findByUniqueCode(String uniqueCode);
+    Place findByUniqueCode(int uniqueCode);
 }

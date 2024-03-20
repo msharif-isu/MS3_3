@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 public class Place {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String uniqueCode;
+    private int uniqueCode;
 
     @ManyToOne
     @JoinColumn(name = "day_id")
@@ -29,7 +29,7 @@ public class Place {
     }
 
 
-    public String getUniqueCode() {
+    public int getUniqueCode() {
         return uniqueCode;
     }
 
@@ -44,7 +44,7 @@ public class Place {
     public String getEndTime() { return endTime; }
 
 
-    public void setUniqueCode(String uniqueCode) {
+    public void setUniqueCode(int uniqueCode) {
         this.uniqueCode = uniqueCode;
     }
     public void setDay(Day day) {

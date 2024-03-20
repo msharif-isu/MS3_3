@@ -10,7 +10,7 @@ import java.util.List;
 public class Day {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String uniqueCode;
+    private int uniqueCode;
 
     @OneToMany(mappedBy = "day", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Place> places;
@@ -32,7 +32,7 @@ public class Day {
     }
 
 
-    public String getUniqueCode() {
+    public int getUniqueCode() {
         return uniqueCode;
     }
 
@@ -45,7 +45,7 @@ public class Day {
     public String getDestination() { return destination; }
 
 
-    public void setUniqueCode(String uniqueCode) {
+    public void setUniqueCode(int uniqueCode) {
         this.uniqueCode = uniqueCode;
     }
     

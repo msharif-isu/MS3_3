@@ -17,14 +17,14 @@ public class ItineraryController {
     }
 
     @DeleteMapping("/Itinerary/Delete/{shareCode}")
-    public String deleteItinerary(@PathVariable String shareCode) {
+    public String deleteItinerary(@PathVariable int shareCode) {
         String name = itineraryRepository.findByShareCode(shareCode).getItineraryName();
         itineraryRepository.deleteByShareCode(shareCode);
         return "Itinerary " + name + " successfully deleted";
     }
 
     @PutMapping("/Itinerary/Update/{shareCode}")
-    public Itinerary updateItinerary(@PathVariable String shareCode, @RequestBody Itinerary updatedItinerary) {
+    public Itinerary updateItinerary(@PathVariable int shareCode, @RequestBody Itinerary updatedItinerary) {
         Itinerary existingItinerary = itineraryRepository.findByShareCode(shareCode);
         if (existingItinerary != null) {
             existingItinerary.setItineraryName(updatedItinerary.getItineraryName());
@@ -39,7 +39,7 @@ public class ItineraryController {
     }
 
     @GetMapping("/Itinerary/{shareCode}")
-    public Itinerary getItinerary(@PathVariable String shareCode) {
+    public Itinerary getItinerary(@PathVariable int shareCode) {
         return itineraryRepository.findByShareCode(shareCode);
     }
 
