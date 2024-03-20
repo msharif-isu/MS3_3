@@ -1,45 +1,55 @@
 package MS3_3.Backend.Place;
 
 import MS3_3.Backend.Day.Day;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 
 @Entity
 public class Place {
-    private String placeName;
-    private String startTime;
-    private String endTime;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private String uniqueCode;
+
     @ManyToOne
     @JoinColumn(name = "day_id")
     private Day day;
-    @Id
-    private String uniqueCode;
 
-    public Place() {
+    private String placeName;
 
-    }
-    public Place(String placeName, String startTime, String endTime, Day day, String uniqueCode) {
+    private String startTime;
+
+    private String endTime;
+
+
+    public Place() {}
+    public Place(String placeName, String startTime, String endTime, Day day) {
         this.placeName = placeName;
         this.startTime = startTime;
         this.endTime = endTime;
         this.day = day;
-        this.uniqueCode = uniqueCode;
     }
 
-    public String getPlaceName() { return placeName; }
-    public String getStartTime() { return startTime; }
-    public String getEndTime() { return endTime; }
-
-    public Day getDay() {
-        return day;
-    }
 
     public String getUniqueCode() {
         return uniqueCode;
     }
 
+    public Day getDay() {
+        return day;
+    }
+
+    public String getPlaceName() { return placeName; }
+
+    public String getStartTime() { return startTime; }
+
+    public String getEndTime() { return endTime; }
+
+
+    public void setUniqueCode(String uniqueCode) {
+        this.uniqueCode = uniqueCode;
+    }
+    public void setDay(Day day) {
+        this.day = day;
+    }
     public void setPlaceName(String placeName) {
         this.placeName = placeName;
     }
@@ -48,13 +58,5 @@ public class Place {
     }
     public void setEndTime(String endTime) {
         this.endTime = endTime;
-    }
-
-    public void setUniqueCode(String uniqueCode) {
-        this.uniqueCode = uniqueCode;
-    }
-
-    public void setDay(Day day) {
-        this.day = day;
     }
 }
