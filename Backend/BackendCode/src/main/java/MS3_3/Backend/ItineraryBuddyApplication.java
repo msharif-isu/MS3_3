@@ -1,6 +1,10 @@
 package MS3_3.Backend;
 
+import MS3_3.Backend.AdminDashboard.Admin;
 import MS3_3.Backend.AdminDashboard.AdminRepository;
+import MS3_3.Backend.Day.DayRepository;
+import MS3_3.Backend.Itinerary.ItineraryRepository;
+import MS3_3.Backend.Place.PlaceRepository;
 import MS3_3.Backend.UserTypes.User;
 import MS3_3.Backend.UserTypes.UserRepository;
 import org.springframework.boot.CommandLineRunner;
@@ -23,7 +27,7 @@ public class ItineraryBuddyApplication {
 	 * @param userRepository
 	 * @return
 	 */
-/**
+
 	@Bean
 	CommandLineRunner initUser(UserRepository userRepository, AdminRepository adminRepository) {
 		return args -> {
@@ -39,12 +43,18 @@ public class ItineraryBuddyApplication {
 					"C3",
 					"IL", "St Charles",
 					"User");
-			adminRepository.save(user1);
+			adminRepository.save(new Admin(user1));
 			userRepository.save(user2);
 			userRepository.save(user3);
 
 		};
 	}
-*/
+
+	@Bean
+	CommandLineRunner initItinerary(ItineraryRepository itineraryRepository, DayRepository dayRepository, PlaceRepository placeRepository) {
+		return args -> {
+
+		}
+	}
 
 }

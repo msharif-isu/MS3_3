@@ -25,6 +25,12 @@ public class Day {
     public Day() {
         places = new ArrayList<Place>();
     }
+
+    public Day(String destination, Itinerary itinerary) {
+        this.destination = destination;
+        this.places = new ArrayList<Place>();
+        this.itinerary = itinerary;
+    }
     public Day(String destination, List<Place> places, Itinerary itinerary) {
         this.destination = destination;
         this.places = places;

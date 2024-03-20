@@ -26,6 +26,13 @@ public class Itinerary {
         days = new ArrayList<Day>();
     }
 
+    public Itinerary(String itineraryName, String startDate, String endDate) {
+        this.itineraryName = itineraryName;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        days = new ArrayList<Day>();
+    }
+
     public Itinerary(String itineraryName, String startDate, String endDate, List<Day> days) {
         this.itineraryName = itineraryName;
         this.startDate = startDate;
