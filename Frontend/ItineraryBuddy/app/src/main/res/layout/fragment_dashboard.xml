@@ -4,11 +4,28 @@
     android:orientation="vertical"
     android:padding="8dp">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/dark_green">
+
+        <ImageView
+            android:id="@+id/postContent"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:src="@drawable/ic_post"
+            android:paddingStart="320dp"
+            android:layout_gravity="center_vertical"/>
+
+
+    </LinearLayout>
+
     <!-- Post Header Section -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:padding="15dp">
 
         <!-- Profile Image -->
         <ImageView
@@ -61,7 +78,8 @@
         android:text="Post File Name"
         android:textSize="16sp"
         android:textStyle="bold"
-        android:layout_marginTop="8dp"/>
+        android:layout_marginTop="8dp"
+        android:padding="10dp"/>
 
     <!-- Interaction Buttons (Like, Comment, Save) -->
     <LinearLayout
@@ -69,7 +87,8 @@
         android:layout_height="25dp"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:layout_marginTop="8dp">
+        android:layout_marginTop="8dp"
+        >
 
         <ImageView
             android:id="@+id/image_like"
