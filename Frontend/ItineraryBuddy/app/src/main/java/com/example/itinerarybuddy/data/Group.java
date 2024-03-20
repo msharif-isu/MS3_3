@@ -15,6 +15,8 @@ public class Group {
 
     private String travelGroupDescription;
 
+    private String travelGroupCreator;
+
     private ArrayList<String> members;
 
     public Group(String name, String code, String destination, String description, ArrayList<String> members) {
@@ -57,8 +59,20 @@ public class Group {
         this.travelGroupDescription = travelGroupDescription;
     }
 
-    public ArrayList<String> getTravelGroupMembers() {
+    public String getTravelGroupCreator() {
+        return travelGroupCreator;
+    }
+
+    public void setTravelGroupCreator(String travelGroupCreator) {
+        this.travelGroupCreator = travelGroupCreator;
+    }
+
+    public ArrayList<String> getMembers() {
         return members;
+    }
+
+    public void setMembers(ArrayList<String> members) {
+        this.members = members;
     }
 
     @NonNull

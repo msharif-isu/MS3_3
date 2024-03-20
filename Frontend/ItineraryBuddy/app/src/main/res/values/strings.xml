@@ -49,7 +49,7 @@
     <string name="find_groups">Join Group</string>
     <string name="add_group">add group</string>
     <string name="travel_groups">Travel Groups</string>
-    <string name="view_group_members">View Group Members</string>
+    <string name="view_group_members">View Group Details</string>
     <string name="enter_group_code">Enter Travel Group Code</string>
     <string name="group_code">Group Code</string>
     <string name="travel_groups_nav">Travel Groups</string>

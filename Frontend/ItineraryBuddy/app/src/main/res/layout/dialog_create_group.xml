@@ -9,42 +9,45 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textSize="16sp"
         android:text="@string/group_name" />
 
     <EditText
         android:id="@+id/group_name_input"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/group_name"
-        android:focusable="true"
-        android:clickable="true"
+        android:layout_height="50dp"
         android:autofillHints="name"
+        android:clickable="true"
+        android:focusable="true"
+        android:hint="@string/group_name"
         android:inputType="textPersonName" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textSize="16sp"
         android:text="@string/enter_group_destination" />
 
     <EditText
         android:id="@+id/group_destination_input"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/enter_group_destination"
-        android:focusable="true"
-        android:clickable="true"
+        android:layout_height="50dp"
         android:autofillHints="name"
+        android:clickable="true"
+        android:focusable="true"
+        android:hint="@string/enter_group_destination"
         android:inputType="textPersonName" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textSize="16sp"
         android:text="@string/enter_group_description" />
 
     <EditText
         android:id="@+id/group_description_input"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:autofillHints="name"
         android:clickable="true"
         android:focusable="true"
