@@ -1,22 +1,46 @@
 package MS3_3.Backend.Day;
 
+import MS3_3.Backend.Itinerary.Itinerary;
 import MS3_3.Backend.Place.Place;
-import java.util.ArrayList;
+import jakarta.persistence.*;
 
+import java.util.List;
+@Entity
 public class Day {
     private String destination;
-    private ArrayList<Place> places;
+    @OneToMany(mappedBy = "day", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Place> places;
+    @ManyToOne
+    @JoinColumn(name = "itinerary_id")
+    private Itinerary itinerary;
+    @Id
+    private String uniqueCode;
 
-    public Day(String destination, ArrayList<Place> places) {
+    public Day(String destination, List<Place> places, Itinerary itinerary, String uniqueCode) {
         this.destination = destination;
         this.places = places;
+        this.itinerary = itinerary;
+        this.uniqueCode = uniqueCode;
     }
 
     public String getDestination() { return destination; }
-    public ArrayList<Place> getPlaces() { return places; }
+    public List<Place> getPlaces() { return places; }
+
+    public Itinerary getItinerary() {
+        return itinerary;
+    }
+    public String getUniqueCode() {
+        return uniqueCode;
+    }
 
     public void setDestination(String destination) { this.destination = destination; };
-    public void setPlaces(ArrayList<Place> places) { this.places = places; }
+    public void setPlaces(List<Place> places) { this.places = places; }
 
+    public void setItinerary(Itinerary itinerary) {
+        this.itinerary = itinerary;
+    }
 
+    public void setUniqueCode(String uniqueCode) {
+        this.uniqueCode = uniqueCode;
+    }
 }

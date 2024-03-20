@@ -3,12 +3,19 @@ package MS3_3.Backend.Itinerary;
 import java.util.List;
 
 import MS3_3.Backend.Day.Day;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 
+@Entity
 public class Itinerary {
     private String itineraryName;
+    @Id
     private String shareCode;
     private String startDate;
     private String endDate;
+    @OneToMany(mappedBy = "itinerary", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Day> days;
 
     public Itinerary(String itineraryName, String shareCode, String startDate, String endDate, List<Day> days) {

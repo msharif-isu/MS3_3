@@ -13,7 +13,7 @@ public class ItineraryBuddyApplication {
 
 	public static void main(String[] args) throws Exception {
 		//Runs on http://localhost:8080
-		//Or http://coms-309-035.class.las.iastate.edu:8080/Users
+		//http://coms-309-035.class.las.iastate.edu:8080/Users
 		SpringApplication.run(ItineraryBuddyApplication.class, args);
 	}
 
@@ -24,7 +24,7 @@ public class ItineraryBuddyApplication {
 	 * @return
 	 */
 /**
-	@Bean
+
 	CommandLineRunner initUser(UserRepository userRepository, AdminRepository adminRepository) {
 		return args -> {
 			User user1 = new User("@iastate1", "Collalti1",
