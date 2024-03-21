@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import MS3_3.Backend.Day.Day;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -58,6 +59,8 @@ public class Itinerary {
     public void setDays(List<Day> days) {
         this.days = days;
     }
+
+    public void addDay(Day day) { days.add(day); }
 
     public void setItineraryName(String itineraryName) {
         this.itineraryName = itineraryName;

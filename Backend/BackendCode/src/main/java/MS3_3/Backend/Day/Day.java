@@ -2,6 +2,7 @@ package MS3_3.Backend.Day;
 
 import MS3_3.Backend.Itinerary.Itinerary;
 import MS3_3.Backend.Place.Place;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ public class Day {
 
     @ManyToOne
     @JoinColumn(name = "itinerary_id")
+    @JsonIgnore
     private Itinerary itinerary;
 
     private String destination;
@@ -56,6 +58,8 @@ public class Day {
     }
     
     public void setPlaces(List<Place> places) { this.places = places; }
+
+    public void addPlace(Place place) { places.add(place); }
 
     public void setItinerary(Itinerary itinerary) {
         this.itinerary = itinerary;

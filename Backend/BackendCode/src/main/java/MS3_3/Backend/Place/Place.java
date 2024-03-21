@@ -1,6 +1,7 @@
 package MS3_3.Backend.Place;
 
 import MS3_3.Backend.Day.Day;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -11,6 +12,7 @@ public class Place {
 
     @ManyToOne
     @JoinColumn(name = "day_id")
+    @JsonIgnore
     private Day day;
 
     private String placeName;
