@@ -1,0 +1,82 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+
+    namespace "com.example.itinerarybuddy"
+    compileSdkVersion 34
+
+    defaultConfig {
+        applicationId = "com.example.itinerarybuddy"
+        minSdkVersion 24
+        targetSdkVersion 34
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+                targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    buildFeatures {
+        viewBinding true
+    }
+}
+
+task javadoc(type: Javadoc) {
+    doFirst {
+        configurations.implementation.each { dependency ->
+            if (dependency.name.endsWith('.aar')) {
+                copy {
+                    from zipTree(dependency)
+                    include '**/classes.jar'
+                    into "${buildDir}/tmp/aarsToJars/${dependency.name.replace('.aar', '')}/"
+                }
+            }
+        }
+    }
+
+    configurations.implementation.canBeResolved = true
+    source android.sourceSets.main.java.srcDirs
+            classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    classpath += configurations.implementation
+    classpath += fileTree(dir: "${buildDir}/tmp/aarsToJars/")
+
+    android.applicationVariants.all { variant ->
+        if (variant.name == 'release') {
+            classpath += variant.javaCompileProvider.get().classpath
+        }
+    }
+
+    destinationDir = file("${project.buildDir}/outputs/javadoc/")
+    options.memberLevel = JavadocMemberLevel.PRIVATE
+    failOnError = false
+    exclude '**/BuildConfig.java'
+    exclude '**/R.java'
+}
+
+dependencies {
+    implementation 'org.java-websocket:Java-WebSocket:1.5.1'
+    implementation "androidx.appcompat:appcompat:1.6.1"
+    implementation "com.google.android.material:material:1.11.0"
+    implementation "com.android.volley:volley:1.2.1"
+    implementation "androidx.constraintlayout:constraintlayout:2.1.4"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.7.0"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0"
+    implementation "androidx.navigation:navigation-fragment:2.7.7"
+    implementation "androidx.navigation:navigation-ui:2.7.7"
+
+    testImplementation "junit:junit:4.13.2"
+    androidTestImplementation "androidx.test.ext:junit:1.1.5"
+    androidTestImplementation "androidx.test.espresso:espresso-core:3.5.1"
+}
