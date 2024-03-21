@@ -44,9 +44,18 @@ public class UserController {
         userRepository.save(person);
         return userRepository.findByUserName(person.getUserName());
     }
-
+/**
     @GetMapping("/Users/Groups/{userName}")
     public List<TravelGroup> showGroups(@PathVariable String userName) {
-        return userRepository.findByUserName(userName).getGroups();
+        List<TravelGroup> userGroups;
+        int i = 0;
+        while(travelGroupRepository.findById(i) != null){
+            if(travelGroupRepository.findById(i).getMembers().contains(userName)){
+
+            }
+            i++;
+        }
+        return userGroups;
     }
+*/
 }

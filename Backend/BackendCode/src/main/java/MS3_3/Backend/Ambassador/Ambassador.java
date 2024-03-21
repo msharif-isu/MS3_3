@@ -1,8 +1,16 @@
 package MS3_3.Backend.Ambassador;
 
+import MS3_3.Backend.Groups.TravelGroup;
 import MS3_3.Backend.UserTypes.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 public class Ambassador{
     private String email;
@@ -23,6 +31,7 @@ public class Ambassador{
     private int numLikes;
 
     private boolean canPost;
+
     public Ambassador(User user){
         this.userName = user.getUserName();
         this.email = user.getEmail();
@@ -33,14 +42,25 @@ public class Ambassador{
         this.numPosts = user.getNumPosts();
         this.numLikes = user.getAccountLikes();
         this.canPost = true;
+        //groupsCreated = new ArrayList<>();
     }
 
     public Ambassador() {
+        //groupsCreated = new ArrayList<>();
     }
+/**
+    public List<TravelGroup> getGroupsCreated() {
+        //return groupsCreated;
+    }
+
+    public void setGroupsCreated(List<TravelGroup> groupsCreated) {
+        //this.groupsCreated = groupsCreated;
+    }
+
     public void setUserName(String userName) {
         this.userName = userName;
     }
-
+*/
     public String getUserName() {
         return userName;
     }

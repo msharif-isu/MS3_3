@@ -6,6 +6,7 @@ import org.antlr.v4.runtime.tree.pattern.ParseTreePattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -16,31 +17,48 @@ public class TravelGroupController {
     @Autowired
     TravelGroupRepository travelGroupRepository;
 
-    @GetMapping("/Group/All")
+    @GetMapping("/Group")
     public List<TravelGroup> getAllGroups() {
         return travelGroupRepository.findAll();
     }
 
-    @PostMapping("/Group/Create")
+    @GetMapping("/Group/{GroupId}")
+    public TravelGroup getGroupsById(@RequestParam int groupId) {
+        return travelGroupRepository.findById(groupId);
+    }
+
+    @PostMapping("/Group")
     public TravelGroup createNewGroup(@RequestBody TravelGroup group) {
         travelGroupRepository.save(group);
-        userRepository.findByUserName(group.getTravelGroupCreator()).addGroup(group);
-        return travelGroupRepository.findByTravelGroupCode(group.getTravelGroupCode());
+        User Creator = userRepository.findByUserName(group.getTravelGroupLeader());
+        travelGroupRepository.findById(group.getTravelGroupId()).addNewMember(Creator);
+        return travelGroupRepository.findById(group.getTravelGroupId());
     }
 
-    @PutMapping("/Group/Update")
+    @PutMapping("/Group")
     public TravelGroup updateGroup(@RequestBody TravelGroup group) {
-        travelGroupRepository.deleteById(group.getTravelGroupCode());
+        travelGroupRepository.deleteById(group.getTravelGroupId());
         travelGroupRepository.save(group);
-        return travelGroupRepository.findByTravelGroupCode(group.getTravelGroupCode());
+        return travelGroupRepository.findById(group.getTravelGroupId());
     }
 
-    @PutMapping("/Group/AddUser/{groupId}/{UserAdded}")
-    public TravelGroup addMember(@RequestParam String groupId, @RequestParam String username) {
-        //travelGroupRepository.findByGroupCode(groupId).addMembers(userRepository.findByUserName(username));
-        return travelGroupRepository.findByTravelGroupCode(groupId);
+    @PutMapping("/Group/AddUser/{groupId}/{username}")
+    public TravelGroup addMember(@PathVariable int groupId, @PathVariable String username) {
+        User newUser = userRepository.findByUserName(username);
+        List<User> newMembers = travelGroupRepository.findById(groupId).getMembers();
+        newMembers.add(newUser);
+        travelGroupRepository.findById(groupId).setMembers(newMembers);
+        travelGroupRepository.save(travelGroupRepository.findById(groupId));
+        return travelGroupRepository.findById(groupId);
     }
 
-
-
+    @PutMapping("/Group/RemoveUser/{groupId}/{username}")
+    public TravelGroup removeMember(@PathVariable int groupId, @PathVariable String username) {
+        User newUser = userRepository.findByUserName(username);
+        List<User> newMembers = travelGroupRepository.findById(groupId).getMembers();
+        newMembers.remove(newUser);
+        travelGroupRepository.findById(groupId).setMembers(newMembers);
+        travelGroupRepository.save(travelGroupRepository.findById(groupId));
+        return travelGroupRepository.findById(groupId);
+    }
 }

@@ -1,8 +1,15 @@
 package MS3_3.Backend.AdminDashboard;
 
+import MS3_3.Backend.Groups.TravelGroup;
 import MS3_3.Backend.UserTypes.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+
+import java.util.List;
+
 @Entity
 public class Admin{
     private String email;
@@ -23,6 +30,7 @@ public class Admin{
     private int numLikes;
 
     private boolean canPost;
+
     public Admin(User user){
         this.userName = user.getUserName();
         this.email = user.getEmail();

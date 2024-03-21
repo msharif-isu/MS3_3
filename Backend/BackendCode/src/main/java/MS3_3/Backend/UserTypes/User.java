@@ -5,6 +5,7 @@ import MS3_3.Backend.AdminDashboard.AdminRepository;
 import MS3_3.Backend.Ambassador.Ambassador;
 import MS3_3.Backend.Ambassador.AmbassadorRepository;
 import MS3_3.Backend.Groups.TravelGroup;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.antlr.v4.runtime.misc.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,8 +34,11 @@ public class User {
 
     private boolean canPost;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<TravelGroup> groups;
+    @ManyToOne
+    @JoinColumn(name = "travel_group_id")
+    @JsonIgnore
+    private TravelGroup travelGroup;
+
 
     public User(String email, String userName,String password,String state,String city,
                 String userType){
@@ -47,12 +51,12 @@ public class User {
         this.numPosts = 0;
         this.numLikes = 0;
         this.canPost = true;
-        groups = new ArrayList<>();
+        //groups = new ArrayList<>();
     }
     public User() {
-        groups = new ArrayList<>();
+        //groups = new ArrayList<>();
     }
-
+/**
     public List<TravelGroup> getGroups() {
         return groups;
     }
@@ -65,6 +69,10 @@ public class User {
         this.groups.add(group);
     }
 
+    public void removeGroup(TravelGroup group){
+        this.groups.remove(group);
+    }
+*/
     public void setUserName(String userName) {
         this.userName = userName;
     }

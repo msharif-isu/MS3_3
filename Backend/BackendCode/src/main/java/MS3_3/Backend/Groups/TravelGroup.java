@@ -2,63 +2,63 @@ package MS3_3.Backend.Groups;
 
 
 
+import MS3_3.Backend.Ambassador.Ambassador;
+import MS3_3.Backend.Ambassador.AmbassadorRepository;
 import MS3_3.Backend.UserTypes.User;
 import MS3_3.Backend.UserTypes.UserRepository;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class TravelGroup {
 
-
     private String travelGroupName;
 
     @Id
-    private String travelGroupCode;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
     private String travelGroupDestination;
 
-    private String travelGroupCreator;
+    private String travelGroupLeader;
 
     private String travelGroupDescription;
 
-    @ManyToOne
-    @JoinColumn(name = "user_user_name")
-    @JsonIgnore
-    private User user;
+    @OneToMany
+    private List<User> members;
 
-    //private ArrayList<User> members;
 
-    public TravelGroup(String groupId, String groupName,String travelDestination,String groupCreator,String groupDescription){
-        this.travelGroupCode= groupId;
+
+    public TravelGroup(String groupName,String userName,String travelDestination,String groupDescription){
         this.travelGroupName= groupName;
         this.travelGroupDestination = travelDestination;
-        this.travelGroupCreator = groupCreator;
+        this.travelGroupLeader = userName;
         this.travelGroupDescription = groupDescription;
-        //this.members = new ArrayList<>();
+        members = new ArrayList<>();
     }
 
     public TravelGroup() {
-        //this.members = new ArrayList<>();
+        members = new ArrayList<>();
     }
-/**
-    public ArrayList<User> getMembers() {
+
+    public List<User> getMembers() {
         return members;
     }
 
-    public void addMembers(User userName) {
-        this.members.add(userName);
+    public void setMembers(List<User> newMembers) {
+        this.members = newMembers;
     }
-*/
 
-    public String getTravelGroupCode() {
-        return travelGroupCode;
+    public void addNewMember(User user){
+        this.members.add(user);
+    }
+
+    public int getTravelGroupId() {
+        return id;
     }
 
 
@@ -78,10 +78,9 @@ public class TravelGroup {
         this.travelGroupDestination = groupDestination;
     }
 
-    public String getTravelGroupCreator() {
-        return travelGroupCreator;
+    public String getTravelGroupLeader() {
+        return travelGroupLeader;
     }
-
 
 
     public String getTravelGroupDescription() {
@@ -93,84 +92,3 @@ public class TravelGroup {
     }
 
 }
-
-
-/**
-@Entity
-public class Group {
-
-    @Id
-    private String groupId;
-
-    private String groupName;
-
-    private String groupDestination;
-
-    private String groupCreator;
-
-    private String groupDescription;
-
-
-    public Group(String groupId, String groupName,String travelDestination,String groupCreator,String groupDescription){
-
-        this.groupId= groupId;
-        this.groupName= groupName;
-       this.groupDestination = travelDestination;
-       this.groupCreator = groupCreator;
-       this.groupDescription = groupDescription;
-    }
-
-
-    public ArrayList<User> getMembers() {
-        return members;
-    }
-
-    public void addMembers(User userName) {
-        this.members.add(userName);
-    }
-
-    public String getGroupId() {
-        return groupId;
-    }
-
-    public String getGroupName() {
-        return groupName;
-    }
-
-    public void setGroupName(String groupName) {
-        this.groupName = groupName;
-    }
-
-    public String getGroupDestination() {
-        return groupDestination;
-    }
-
-    public void setGroupDestination(String groupDestination) {
-        this.groupDestination = groupDestination;
-    }
-
-    public String getGroupCreator() {
-        return groupCreator;
-    }
-
-    public void setGroupCreator(String groupCreator) {
-        this.groupCreator = groupCreator;
-    }
-
-    public String getGroupDescription() {
-        return groupDescription;
-    }
-
-    public void setGroupDescription(String groupDescription) {
-        this.groupDescription = groupDescription;
-    }
-    **/
-/**
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
- */

@@ -4,9 +4,9 @@ import MS3_3.Backend.UserTypes.User;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface TravelGroupRepository extends JpaRepository<TravelGroup, String> {
-    TravelGroup findByTravelGroupCode(String travelGroupCode);
+public interface TravelGroupRepository extends JpaRepository<TravelGroup, Long> {
+    TravelGroup findById(int id);
 
     @Transactional
-    void deleteByTravelGroupCode(String travelGroupCode);
+    void deleteById(int id);
 }
