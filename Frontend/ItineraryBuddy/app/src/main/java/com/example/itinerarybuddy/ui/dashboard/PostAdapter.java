@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -33,6 +34,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         public TextView captionTextView;
         public TextView commentsTextView;
 
+        public TextView likeCountView;
+        public ImageView likeImageView;
+
+        public TextView saveCountView;
+        public ImageView saveImageView;
+
         public PostViewHolder(View itemView) {
             super(itemView);
             usernameTextView = itemView.findViewById(R.id.text_username);
@@ -40,6 +47,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             postFileTextView = itemView.findViewById(R.id.text_post_file);
             captionTextView = itemView.findViewById(R.id.text_caption);
             commentsTextView = itemView.findViewById(R.id.text_comments);
+
+            likeImageView = itemView.findViewById(R.id.icon_like);
+            likeCountView = itemView.findViewById(R.id.like_count);
+
+            saveImageView = itemView.findViewById(R.id.icon_save);
+            saveCountView = itemView.findViewById(R.id.save_count);
         }
     }
 
@@ -64,6 +77,69 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         holder.postFileTextView.setText(post.getPostFile());
         holder.captionTextView.setText(post.getCaption());
         //holder.commentsTextView.setText(post.getComments());
+
+
+        holder.likeCountView.setText(String.valueOf(post.getLikeCount()));
+        if (post.isLiked()) {
+            holder.likeImageView.setImageResource(R.drawable.ic_like_after);
+        } else {
+            holder.likeImageView.setImageResource(R.drawable.ic_like_before);
+        }
+
+        holder.likeImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(post.isLiked()){
+
+                    post.setLiked(false);
+                    post.decreaseLikeCount();
+                    holder.likeCountView.setText("Liked: " + String.valueOf(post.getLikeCount()));
+                    holder.likeImageView.setImageResource(R.drawable.ic_like_before);
+                }
+
+                else{
+
+                    post.setLiked(true);
+                    post.increaseLikeCount();
+                    holder.likeCountView.setText("Liked: " + String.valueOf(post.getLikeCount()));
+                    holder.likeImageView.setImageResource(R.drawable.ic_like_after);
+
+                }
+            }
+        });
+
+
+        holder.saveCountView.setText(String.valueOf(post.getSavedCount()));
+        if (post.isSaved()) {
+            holder.saveImageView.setImageResource(R.drawable.ic_bookmark_aftr);
+        } else {
+            holder.saveImageView.setImageResource(R.drawable.ic_bookmark_bfr);
+        }
+
+        holder.saveImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(post.isSaved()){
+
+                    post.setSaved(false);
+                    post.decreaseSaveCount();
+                    holder.saveCountView.setText("Saved: " + String.valueOf(post.getSavedCount()));
+                    holder.saveImageView.setImageResource(R.drawable.ic_bookmark_bfr);
+                }
+
+                else{
+
+                    post.setSaved(true);
+                    post.increaseSaveCount();
+                    holder.saveCountView.setText("Saved: " + String.valueOf(post.getSavedCount()));
+                    holder.saveImageView.setImageResource(R.drawable.ic_bookmark_aftr);
+
+                }
+            }
+        });
+
     }
 
     // Return the size of your dataset (invoked by the layout manager)

@@ -37,6 +37,18 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.example.itinerarybuddy.data.UserData;
+
+import android.os.Handler;
+import android.os.Looper;
+import android.text.format.DateUtils;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 public class DashboardFragment extends Fragment {
 
     private FragmentDashboardBinding binding;
@@ -45,6 +57,8 @@ public class DashboardFragment extends Fragment {
 
     private List<String> destinations = new ArrayList<>();
     private List<Post_Itinerary> posts = new ArrayList<>();
+    private Handler handler;
+    private Runnable updateTimeRunnable;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -71,6 +85,9 @@ public class DashboardFragment extends Fragment {
 
         fetchDestinations();
         loadPosts();
+
+
+        startUpdateTimeTimer();
 
         return root;
     }
@@ -127,9 +144,16 @@ public class DashboardFragment extends Fragment {
     }
 
 
+    private void createPost(String selectedItinerary, String caption){
 
+        //Post_Itinerary newPost = new Post_Itinerary(UserData.getUsername(),"Just Now", selectedItinerary,caption );
 
-    private void createPost(String selectedItinerary, String caption){}
+        Post_Itinerary newPost = new Post_Itinerary("Aina", "Just Now", selectedItinerary, caption );
+        posts.add(0, newPost);
+        postAdapter.notifyItemInserted(0);
+
+    }
+
 
 
     private void fetchDestinations(){
@@ -182,4 +206,64 @@ public class DashboardFragment extends Fragment {
         // Notify adapter of data change
         postAdapter.notifyDataSetChanged();
     }
+
+
+    private void startUpdateTimeTimer() {
+        handler = new Handler(Looper.getMainLooper());
+        updateTimeRunnable = new Runnable() {
+            @Override
+            public void run() {
+                updatePostTimestamps();
+                handler.postDelayed(this, DateUtils.MINUTE_IN_MILLIS);
+            }
+        };
+        handler.post(updateTimeRunnable);
+    }
+
+    private void updatePostTimestamps() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy hh:mm:ss a");
+        for (int i = 0; i < posts.size(); i++) {
+            Post_Itinerary post = posts.get(i);
+            String timestamp = post.getTimePosted();
+
+            try {
+                Date date = dateFormat.parse(timestamp);
+                long diffMillis = new Date().getTime() - date.getTime();
+                long diffSeconds = TimeUnit.SECONDS.toSeconds(diffMillis);
+                long diffMinutes = TimeUnit.MILLISECONDS.toMinutes(diffMillis);
+                long diffHours = TimeUnit.MINUTES.toHours(diffMinutes);
+
+                if(diffSeconds < 60){
+
+                    post.setTimePosted(DateUtils.getRelativeTimeSpanString(date.getTime(), System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS).toString());
+                }
+               else if (diffHours < 1) {
+                    // Update time with minute intervals
+                    post.setTimePosted(DateUtils.getRelativeTimeSpanString(date.getTime(), System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS).toString());
+                } else if (diffHours < 24) {
+                    // Update time with hour intervals
+                    post.setTimePosted(DateUtils.getRelativeTimeSpanString(date.getTime(), System.currentTimeMillis(), DateUtils.HOUR_IN_MILLIS).toString());
+                } else if (diffHours < 168) {
+                    // Update time with day intervals
+                    post.setTimePosted(DateUtils.getRelativeTimeSpanString(date.getTime(), System.currentTimeMillis(), DateUtils.DAY_IN_MILLIS).toString());
+                } else {
+                    // If more than a week, show the date
+                    post.setTimePosted(dateFormat.format(date));
+                }
+                postAdapter.notifyItemChanged(i);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        // Stop the timer when the fragment is destroyed
+        if (handler != null && updateTimeRunnable != null) {
+            handler.removeCallbacks(updateTimeRunnable);
+        }
+    }
+
 }

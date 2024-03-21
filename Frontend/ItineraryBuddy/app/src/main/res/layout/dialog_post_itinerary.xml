@@ -10,6 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Select Itinerary:"
+        android:textColor="@color/black"
         android:textSize="16sp"
         android:textStyle="bold" />
 
@@ -18,7 +19,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:minHeight="48dp" />
+        android:minHeight="48dp"
+        />
 
     <TextView
         android:id="@+id/captionLabelTextView"
@@ -27,6 +29,7 @@
         android:layout_marginTop="16dp"
         android:text="Enter Caption (max 50 words):"
         android:textSize="16sp"
+        android:textColor="@color/black"
         android:textStyle="bold" />
 
     <EditText

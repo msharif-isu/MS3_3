@@ -10,7 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="15dp">
+        android:padding="15dp"
+        >
 
         <!-- Profile Image -->
         <ImageView
@@ -66,6 +67,36 @@
         android:layout_marginTop="8dp"
         android:padding="10dp"/>
 
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="8dp">
+
+        <!-- Like Count TextView -->
+        <TextView
+            android:id="@+id/like_count"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingLeft="10dp"
+            android:textSize="14sp" />
+
+        <!-- Save Count TextView -->
+        <TextView
+            android:id="@+id/save_count"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingLeft="10dp"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+
+
     <!-- Interaction Buttons (Like, Comment, Save) -->
     <LinearLayout
         android:layout_width="match_parent"
@@ -76,21 +107,21 @@
         >
 
         <ImageView
-            android:id="@+id/image_like"
+            android:id="@+id/icon_like"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_like_after"
+            android:src="@drawable/ic_like_before"
             android:layout_marginEnd="8dp"/>
 
         <ImageView
-            android:id="@+id/image_comment"
+            android:id="@+id/icon_comment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_comment"
             android:layout_marginEnd="8dp"/>
 
         <ImageView
-            android:id="@+id/image_save"
+            android:id="@+id/icon_save"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_bookmark_bfr"/>
