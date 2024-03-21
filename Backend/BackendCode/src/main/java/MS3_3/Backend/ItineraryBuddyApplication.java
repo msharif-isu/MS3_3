@@ -20,7 +20,7 @@ public class ItineraryBuddyApplication {
 
 	public static void main(String[] args) throws Exception {
 		//Runs on http://localhost:8080
-		//http://coms-309-035.class.las.iastate.edu:8080/Users
+		//Or http://coms-309-035.class.las.iastate.edu:8080/Users
 		SpringApplication.run(ItineraryBuddyApplication.class, args);
 	}
 
