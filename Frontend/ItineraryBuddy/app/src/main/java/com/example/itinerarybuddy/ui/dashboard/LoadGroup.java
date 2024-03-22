@@ -250,8 +250,6 @@ public class LoadGroup extends AppCompatActivity {
             }
         };
         Singleton.getInstance(getApplicationContext()).addRequest(req);
-
-        recreate();
     }
 
     private void leaveGroupDialog(){
@@ -276,6 +274,25 @@ public class LoadGroup extends AppCompatActivity {
     }
 
     private void leaveGroup(){
-
+        String user = UserData.getUsername();
+        String groupCode = group.getTravelGroupCode();
+        String url = "http://coms-309-035.class.las.iastate.edu:8080/Group/RemoveUser/" + group + "/" + user;
+        JsonObjectRequest req = new JsonObjectRequest(Request.Method.PUT, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                //TODO: fix data on update
+                Log.d("Volley Response: ", response.toString());
+                UserData.updateUserData();
+                startActivity(new Intent(getApplicationContext(), ListGroups.class));
+                //Toast.makeText(getApplicationContext(), "Group Removed", Toast.LENGTH_LONG).show();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("Volley Error: ", error.toString());
+                Toast.makeText(getApplicationContext(), "Error Leaving Group!", Toast.LENGTH_LONG).show();
+            }
+        });
+        Singleton.getInstance(getApplicationContext()).addRequest(req);
     }
 }

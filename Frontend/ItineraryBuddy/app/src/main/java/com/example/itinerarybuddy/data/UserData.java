@@ -182,4 +182,22 @@ public class UserData {
         }
         return groupMembers;
     }
+
+    public static void updateUserData(){
+        String url = "http://coms-309-035.class.las.iastate.edu:8080/Users/" + getUsername();
+        JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d("Volley Response: ", response.toString());
+
+                userInfo = response;
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("Volley Error: ", error.toString());
+            }
+        });
+        queue.add(req);
+    }
 }

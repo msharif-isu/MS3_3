@@ -183,16 +183,16 @@ public class ListGroups extends AppCompatActivity {
 
     private void joinGroup(String code){
         String user = UserData.getUsername();
-        String url = "http://coms-309-035.class.las.iastate.edu:8080/Group/AddUser/" + code + "/" + user;
+        final String url = "http://coms-309-035.class.las.iastate.edu:8080/Group/AddUser/" + code + "/" + user;
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.PUT, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 //TODO: fix data on update
                 Log.d("Volley Response: ", response.toString());
-                UserData.appendAdapter(response);
-                adapter.notifyDataSetChanged();
+                UserData.updateUserData();
+                //recreate();
 
-                Toast.makeText(getApplicationContext(), "Group Joined!", Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(), "Group Joined!", Toast.LENGTH_LONG).show();
             }
         }, new Response.ErrorListener() {
             @Override
@@ -226,7 +226,7 @@ public class ListGroups extends AppCompatActivity {
         }
 
         // Make the post request given the url and group json
-        final String url = "http://coms-309-035.class.las.iastate.edu:8080/Group/Create";
+        final String url = "http://coms-309-035.class.las.iastate.edu:8080/Group";
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, url, group, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
