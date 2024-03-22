@@ -43,10 +43,10 @@ public class LoadGroup extends AppCompatActivity {
 
     private Group group;
 
+    private int index;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
 
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -56,13 +56,12 @@ public class LoadGroup extends AppCompatActivity {
 
         ImageButton back = findViewById(R.id.back_button);
         ImageButton groupOptions = findViewById(R.id.options_button);
-        ImageButton groupChat = findViewById(R.id.chat_button);
+        ImageButton chat = findViewById(R.id.chat_button);
 
         Bundle bundle = getIntent().getExtras();
-        int position;
         if(bundle != null) {
-            position = Integer.parseInt(bundle.getString("POSITION"));
-            group = ListGroups.adapter.getItem(position);
+            index = Integer.parseInt(bundle.getString("POSITION"));
+            group = ListGroups.adapter.getItem(index);
 
             TextView name = findViewById(R.id.group_title);
             TextView description = findViewById(R.id.group_description);
@@ -79,6 +78,17 @@ public class LoadGroup extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getApplicationContext(), ListGroups.class));
+            }
+        });
+
+        chat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getApplicationContext(), GroupChatActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("POSITION", Integer.valueOf(index).toString());
+                i.putExtras(bundle);
+                startActivity(i);
             }
         });
 
@@ -120,15 +130,6 @@ public class LoadGroup extends AppCompatActivity {
 
             }
         });
-
-        groupChat.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //TODO: group chat listener
-            }
-        });
-
-
     }
 
     private void showGroupDetails(){

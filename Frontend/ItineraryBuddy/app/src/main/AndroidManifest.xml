@@ -46,6 +46,9 @@
             android:name=".ui.dashboard.LoadGroup"
             android:exported="false" />
         <activity
+            android:name=".ui.dashboard.GroupChatActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.ScheduleTemplate"
             android:exported="false"/>
 
