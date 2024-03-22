@@ -6,7 +6,9 @@ import MS3_3.Backend.Ambassador.Ambassador;
 import MS3_3.Backend.Ambassador.AmbassadorRepository;
 import MS3_3.Backend.UserTypes.User;
 import MS3_3.Backend.UserTypes.UserRepository;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -24,26 +26,78 @@ public class TravelGroup {
 
     private String travelGroupDestination;
 
+    private String travelGroupCode;
+
     private String travelGroupAmbassador;
 
     private String travelGroupDescription;
 
-    @ManyToMany(mappedBy = "groups")
+    @ManyToMany(mappedBy = "groupCodes")
     private List<User> members;
+
+
+    //private List<User> activeMembers;
 
     @ManyToOne
     @JoinColumn(name = "ambassador_user_name")
     @JsonIgnore
     private Ambassador group_creator;
 
-    public TravelGroup(String groupName,String userName,String travelDestination,String groupDescription){
+
+    public TravelGroup(String groupName,String groupCode, String userName,String travelDestination,String groupDescription){
         this.travelGroupName= groupName;
+        this.travelGroupCode = groupCode;
         this.travelGroupDestination = travelDestination;
         this.travelGroupAmbassador = userName;
         this.travelGroupDescription = groupDescription;
         this.members = new ArrayList<>();
+        //this.activeMembers = new ArrayList<>();
     }
 
+    public TravelGroup() {
+        this.members = new ArrayList<>();
+        //this.activeMembers = new ArrayList<>();
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("TravelGroup{");
+        sb.append("groupName='").append(travelGroupName).append('\'');
+        sb.append(", groupCode='").append(travelGroupCode).append('\'');
+        sb.append(", travelDestination='").append(travelGroupDestination).append('\'');
+        sb.append(", travelGroupAmbassador='").append(travelGroupAmbassador).append('\'');
+        sb.append(", travelGroupDescription='").append(travelGroupDescription).append('\'');
+        sb.append(", members=[");
+        for (User member : members) {
+            sb.append(member.getUserName()).append(", ");
+        }
+        // Remove the trailing comma and space
+        if (!members.isEmpty()) {
+            sb.setLength(sb.length() - 2);
+        }
+        sb.append("]");
+        sb.append('}');
+        return sb.toString();
+    }
+
+/**
+    public List<User> getActiveMembers() {
+        //return activeMembers;
+    }
+
+    public void setActiveMembers(List<User> activeMembers) {
+        //this.activeMembers = activeMembers;
+    }
+
+    public void addActiveMember(User user){
+        this.activeMembers.add(user);
+    }
+
+    public void removeActiveMember(User user){
+        this.activeMembers.remove(user);
+    }
+*/
     public void setTravelGroupAmbassador(String travelGroupAmbassador) {
         this.travelGroupAmbassador = travelGroupAmbassador;
     }
@@ -52,12 +106,16 @@ public class TravelGroup {
         return group_creator;
     }
 
-    public void setGroup_creator(Ambassador group_creator) {
-        this.group_creator = group_creator;
+    public String getTravelGroupCode() {
+        return travelGroupCode;
     }
 
-    public TravelGroup() {
-        this.members = new ArrayList<>();
+    public void setTravelGroupCode(String travelGroupCode) {
+        this.travelGroupCode = travelGroupCode;
+    }
+
+    public void setGroup_creator(Ambassador group_creator) {
+        this.group_creator = group_creator;
     }
 
     public String getTravelGroupAmbassador() {

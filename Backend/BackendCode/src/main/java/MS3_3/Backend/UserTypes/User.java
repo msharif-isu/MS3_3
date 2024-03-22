@@ -6,6 +6,7 @@ import MS3_3.Backend.Ambassador.Ambassador;
 import MS3_3.Backend.Ambassador.AmbassadorRepository;
 import MS3_3.Backend.Groups.TravelGroup;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import org.antlr.v4.runtime.misc.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,12 +35,18 @@ public class User {
 
     private boolean canPost;
 
-  @ManyToMany
-      @JoinTable(name = "group_members", joinColumns = @JoinColumn(name = "user_name"), inverseJoinColumns = @JoinColumn(name = "id"))
-  @JsonIgnore
-  private List<TravelGroup> groups;
 
+    @ManyToMany
+    @JoinTable(
+            name = "group_members",
+            joinColumns = @JoinColumn(name = "id"),
+            inverseJoinColumns = @JoinColumn(name = "user_name")
+    )
+    @JsonIgnore
+    private List<TravelGroup> groupCodes;
 
+    @ElementCollection
+    private List<String> userCodes;
 
     public User(String email, String userName,String password,String state,String city,
                 String userType){
@@ -52,26 +59,45 @@ public class User {
         this.numPosts = 0;
         this.numLikes = 0;
         this.canPost = true;
-        this.groups = new ArrayList<>();
+        this.userCodes = new ArrayList<>();
+        this.groupCodes = new ArrayList<>();
     }
     public User() {
-        this.groups = new ArrayList<>();
+        this.userCodes = new ArrayList<>();
+        this.groupCodes = new ArrayList<>();
     }
 
-    public List<TravelGroup> getGroups() {
-        return this.groups;
+    public List<String> getUserCodes() {
+        return userCodes;
     }
 
-    public void setGroups(List<TravelGroup> groupNames) {
-        this.groups = groupNames;
+    public void setUserCodes(List<String> groupCodes) {
+        this.userCodes = groupCodes;
     }
 
-    public void addGroup(TravelGroup groupName){
-        this.groups.add(groupName);
+    public void addUserCodes(String groupCode){
+        this.userCodes.add(groupCode);
     }
 
-    public void removeGroup(TravelGroup groupName){
-        this.groups.remove(groupName);
+    public void removeUserCodes(String groupCode){
+        this.userCodes.remove(groupCode);
+    }
+
+
+    public List<TravelGroup> getGroupCodes() {
+        return groupCodes;
+    }
+
+    public void setGroupCodes(List<TravelGroup> groupCodes) {
+        this.groupCodes = groupCodes;
+    }
+
+    public void addGroupCodes(TravelGroup groupName){
+        this.groupCodes.add(groupName);
+    }
+
+    public void removeGroupCodes(TravelGroup groupName){
+        this.groupCodes.remove(groupName);
     }
 
     public void setUserName(String userName) {

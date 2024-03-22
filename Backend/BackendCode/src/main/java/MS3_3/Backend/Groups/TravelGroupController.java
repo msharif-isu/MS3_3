@@ -41,8 +41,9 @@ public class TravelGroupController {
             Ambassador groupLeader = ambassadorRepository.findByUserName(group.getTravelGroupAmbassador());
             User groupLeaderUserAccount = userRepository.findByUserName(group.getTravelGroupAmbassador());
             savedGroup.addNewMember(groupLeaderUserAccount);
-            groupLeaderUserAccount.addGroup(savedGroup);
+            groupLeaderUserAccount.addUserCodes(group.getTravelGroupCode());
             groupLeader.addGroup(savedGroup);
+
             ambassadorRepository.save(groupLeader);
             userRepository.save(groupLeaderUserAccount);
             return savedGroup;
@@ -55,6 +56,7 @@ public class TravelGroupController {
     public TravelGroup updateGroup(@PathVariable int groupId,@RequestBody TravelGroup group) {
         TravelGroup existingGroup = travelGroupRepository.findById(groupId);
             existingGroup.setTravelGroupName(group.getTravelGroupName());
+        existingGroup.setTravelGroupCode(group.getTravelGroupCode());
             existingGroup.setTravelGroupDescription(group.getTravelGroupDescription());
             existingGroup.setTravelGroupDestination(group.getTravelGroupDestination());
             existingGroup.setMembers(group.getMembers());
@@ -66,11 +68,9 @@ public class TravelGroupController {
     public TravelGroup addMember(@PathVariable int groupId, @PathVariable String username) {
         TravelGroup group = travelGroupRepository.findById(groupId);
         User user = userRepository.findByUserName(username);
-        if(group.getMembers().contains(username)) {}
-        else{
             group.addNewMember(user);
-            user.addGroup(group);
-        }
+        user.addUserCodes(group.getTravelGroupCode());
+
         userRepository.save(user);
         travelGroupRepository.save(group);
         return group;
@@ -81,7 +81,9 @@ public class TravelGroupController {
         TravelGroup group = travelGroupRepository.findById(groupId);
         User user = userRepository.findByUserName(username);
         group.removeNewMember(user);
-        user.removeGroup(group);
+        //group.removeActiveMember(user);
+        //user.removeGroup(group);
+        user.removeUserCodes(group.getTravelGroupCode());
         userRepository.save(user);
         travelGroupRepository.save(group);
         return group;
