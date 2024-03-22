@@ -1,17 +1,11 @@
 package MS3_3.Backend.AdminDashboard;
 
-import MS3_3.Backend.Groups.TravelGroup;
 import MS3_3.Backend.UserTypes.User;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-
-import java.util.List;
 
 @Entity
-public class Admin{
+public class Admin {
     private String email;
 
     @Id
@@ -31,7 +25,7 @@ public class Admin{
 
     private boolean canPost;
 
-    public Admin(User user){
+    public Admin(User user) {
         this.userName = user.getUserName();
         this.email = user.getEmail();
         this.password = user.getPassword();
@@ -45,6 +39,7 @@ public class Admin{
 
     public Admin() {
     }
+
     public void setUserName(String userName) {
         this.userName = userName;
     }
@@ -86,18 +81,20 @@ public class Admin{
     public String getCity() {
         return city;
     }
+
     public String getUserType() {
         return userType;
     }
 
-    public int getAccountLikes(){
+    public int getAccountLikes() {
         return this.numLikes;
     }
 
-    public void addAccountLikes(){
+    public void addAccountLikes() {
         this.numLikes += 1;
     }
-    public void addUserPosts(){
+
+    public void addUserPosts() {
         this.numPosts += 1;
     }
 
@@ -105,7 +102,7 @@ public class Admin{
         return this.numPosts;
     }
 
-    public void blockPosts(){
+    public void blockPosts() {
         this.canPost = false;
     }
 

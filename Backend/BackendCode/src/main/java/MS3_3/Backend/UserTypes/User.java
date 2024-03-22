@@ -1,15 +1,8 @@
 package MS3_3.Backend.UserTypes;
 
-import MS3_3.Backend.AdminDashboard.Admin;
-import MS3_3.Backend.AdminDashboard.AdminRepository;
-import MS3_3.Backend.Ambassador.Ambassador;
-import MS3_3.Backend.Ambassador.AmbassadorRepository;
 import MS3_3.Backend.Groups.TravelGroup;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import org.antlr.v4.runtime.misc.LogManager;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,17 +32,17 @@ public class User {
     @ManyToMany
     @JoinTable(
             name = "group_members",
-            joinColumns = @JoinColumn(name = "id"),
-            inverseJoinColumns = @JoinColumn(name = "user_name")
+            joinColumns = @JoinColumn(name = "user_name"),
+            inverseJoinColumns = @JoinColumn(name = "id")
     )
     @JsonIgnore
     private List<TravelGroup> groupCodes;
 
     @ElementCollection
-    private List<String> userCodes;
+    private List<Integer> MemberOf;
 
-    public User(String email, String userName,String password,String state,String city,
-                String userType){
+    public User(String email, String userName, String password, String state, String city,
+                String userType) {
         this.userName = userName;
         this.password = password;
         this.email = email;
@@ -59,28 +52,29 @@ public class User {
         this.numPosts = 0;
         this.numLikes = 0;
         this.canPost = true;
-        this.userCodes = new ArrayList<>();
+        this.MemberOf = new ArrayList<>();
         this.groupCodes = new ArrayList<>();
     }
+
     public User() {
-        this.userCodes = new ArrayList<>();
+        this.MemberOf = new ArrayList<>();
         this.groupCodes = new ArrayList<>();
     }
 
-    public List<String> getUserCodes() {
-        return userCodes;
+    public List<Integer> getUserCodes() {
+        return MemberOf;
     }
 
-    public void setUserCodes(List<String> groupCodes) {
-        this.userCodes = groupCodes;
+    public void setUserCodes(List<Integer> groupCodes) {
+        this.MemberOf = groupCodes;
     }
 
-    public void addUserCodes(String groupCode){
-        this.userCodes.add(groupCode);
+    public void addUserCodes(Integer groupCode) {
+        this.MemberOf.add(groupCode);
     }
 
-    public void removeUserCodes(String groupCode){
-        this.userCodes.remove(groupCode);
+    public void removeUserCodes(Integer groupCode) {
+        this.MemberOf.remove(groupCode);
     }
 
 
@@ -92,11 +86,11 @@ public class User {
         this.groupCodes = groupCodes;
     }
 
-    public void addGroupCodes(TravelGroup groupName){
+    public void addGroupCodes(TravelGroup groupName) {
         this.groupCodes.add(groupName);
     }
 
-    public void removeGroupCodes(TravelGroup groupName){
+    public void removeGroupCodes(TravelGroup groupName) {
         this.groupCodes.remove(groupName);
     }
 
@@ -141,18 +135,20 @@ public class User {
     public String getCity() {
         return city;
     }
+
     public String getUserType() {
         return userType;
     }
 
-    public int getAccountLikes(){
+    public int getAccountLikes() {
         return this.numLikes;
     }
 
-    public void addAccountLikes(){
+    public void addAccountLikes() {
         this.numLikes += 1;
     }
-    public void addUserPosts(){
+
+    public void addUserPosts() {
         this.numPosts += 1;
     }
 
@@ -160,11 +156,11 @@ public class User {
         return this.numPosts;
     }
 
-    public void blockPosts(){
+    public void blockPosts() {
         this.canPost = false;
     }
 
-    public void EnablePosting(){
+    public void EnablePosting() {
         this.canPost = true;
     }
 
@@ -172,8 +168,8 @@ public class User {
         return this.canPost;
     }
 
-    public void upgradeUserToAmbassador(){
-        if(getNumPosts() > 10 && getAccountLikes() > 200) {
+    public void upgradeUserToAmbassador() {
+        if (getNumPosts() > 10 && getAccountLikes() > 200) {
             this.userType = "Ambassador";
         }
 
