@@ -32,6 +32,10 @@ public class Ambassador{
 
     private boolean canPost;
 
+    @OneToMany
+    private List<TravelGroup> groups_created;
+
+
     public Ambassador(User user){
         this.userName = user.getUserName();
         this.email = user.getEmail();
@@ -42,25 +46,29 @@ public class Ambassador{
         this.numPosts = user.getNumPosts();
         this.numLikes = user.getAccountLikes();
         this.canPost = true;
-        //groupsCreated = new ArrayList<>();
+        this.groups_created = new ArrayList<>();
     }
 
     public Ambassador() {
-        //groupsCreated = new ArrayList<>();
-    }
-/**
-    public List<TravelGroup> getGroupsCreated() {
-        //return groupsCreated;
+        this.groups_created = new ArrayList<>();
     }
 
-    public void setGroupsCreated(List<TravelGroup> groupsCreated) {
-        //this.groupsCreated = groupsCreated;
+    public List<TravelGroup> getGroups_created() {
+        return this.groups_created;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void addGroup(TravelGroup groupName){
+        this.groups_created.add(groupName);
     }
-*/
+
+    public void removeGroup(TravelGroup groupName){
+        this.groups_created.remove(groupName);
+    }
+
+    public void setGroups_created(List<TravelGroup> groups_created) {
+        this.groups_created = groups_created;
+    }
+
     public String getUserName() {
         return userName;
     }

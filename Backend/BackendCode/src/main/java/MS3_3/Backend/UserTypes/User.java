@@ -34,10 +34,11 @@ public class User {
 
     private boolean canPost;
 
-    @ManyToOne
-    @JoinColumn(name = "travel_group_id")
-    @JsonIgnore
-    private TravelGroup travelGroup;
+  @ManyToMany
+      @JoinTable(name = "group_members", joinColumns = @JoinColumn(name = "user_name"), inverseJoinColumns = @JoinColumn(name = "id"))
+  @JsonIgnore
+  private List<TravelGroup> groups;
+
 
 
     public User(String email, String userName,String password,String state,String city,
@@ -51,28 +52,28 @@ public class User {
         this.numPosts = 0;
         this.numLikes = 0;
         this.canPost = true;
-        //groups = new ArrayList<>();
+        this.groups = new ArrayList<>();
     }
     public User() {
-        //groups = new ArrayList<>();
+        this.groups = new ArrayList<>();
     }
-/**
+
     public List<TravelGroup> getGroups() {
-        return groups;
+        return this.groups;
     }
 
-    public void setGroups(List<TravelGroup> group) {
-        this.groups = group;
+    public void setGroups(List<TravelGroup> groupNames) {
+        this.groups = groupNames;
     }
 
-    public void addGroup(TravelGroup group){
-        this.groups.add(group);
+    public void addGroup(TravelGroup groupName){
+        this.groups.add(groupName);
     }
 
-    public void removeGroup(TravelGroup group){
-        this.groups.remove(group);
+    public void removeGroup(TravelGroup groupName){
+        this.groups.remove(groupName);
     }
-*/
+
     public void setUserName(String userName) {
         this.userName = userName;
     }

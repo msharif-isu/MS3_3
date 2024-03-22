@@ -24,29 +24,50 @@ public class TravelGroup {
 
     private String travelGroupDestination;
 
-    private String travelGroupLeader;
+    private String travelGroupAmbassador;
 
     private String travelGroupDescription;
 
-    @OneToMany
+    @ManyToMany(mappedBy = "groups")
     private List<User> members;
 
-
+    @ManyToOne
+    @JoinColumn(name = "ambassador_user_name")
+    @JsonIgnore
+    private Ambassador group_creator;
 
     public TravelGroup(String groupName,String userName,String travelDestination,String groupDescription){
         this.travelGroupName= groupName;
         this.travelGroupDestination = travelDestination;
-        this.travelGroupLeader = userName;
+        this.travelGroupAmbassador = userName;
         this.travelGroupDescription = groupDescription;
-        members = new ArrayList<>();
+        this.members = new ArrayList<>();
+    }
+
+    public void setTravelGroupAmbassador(String travelGroupAmbassador) {
+        this.travelGroupAmbassador = travelGroupAmbassador;
+    }
+
+    public Ambassador getGroup_creator() {
+        return group_creator;
+    }
+
+    public void setGroup_creator(Ambassador group_creator) {
+        this.group_creator = group_creator;
     }
 
     public TravelGroup() {
-        members = new ArrayList<>();
+        this.members = new ArrayList<>();
     }
 
+    public String getTravelGroupAmbassador() {
+        return travelGroupAmbassador;
+    }
+
+
+
     public List<User> getMembers() {
-        return members;
+        return this.members;
     }
 
     public void setMembers(List<User> newMembers) {
@@ -55,6 +76,10 @@ public class TravelGroup {
 
     public void addNewMember(User user){
         this.members.add(user);
+    }
+
+    public void removeNewMember(User user){
+        this.members.remove(user);
     }
 
     public int getTravelGroupId() {
@@ -78,10 +103,6 @@ public class TravelGroup {
         this.travelGroupDestination = groupDestination;
     }
 
-    public String getTravelGroupLeader() {
-        return travelGroupLeader;
-    }
-
 
     public String getTravelGroupDescription() {
         return travelGroupDescription;
@@ -90,5 +111,7 @@ public class TravelGroup {
     public void setTravelGroupDescription(String groupDescription) {
         this.travelGroupDescription = groupDescription;
     }
+
+
 
 }
