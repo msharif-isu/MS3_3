@@ -12,10 +12,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.itinerarybuddy.R;
 import com.example.itinerarybuddy.data.Group;
+import com.example.itinerarybuddy.util.WebsocketListener;
 
 import java.util.Objects;
 
-public class GroupChatActivity extends AppCompatActivity {
+public class GroupChatActivity extends AppCompatActivity implements WebsocketListener {
 
     private Group group;
 
