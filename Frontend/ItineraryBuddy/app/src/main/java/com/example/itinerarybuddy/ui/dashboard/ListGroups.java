@@ -34,8 +34,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.sql.Time;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
 
 public class ListGroups extends AppCompatActivity {
 
@@ -43,6 +45,8 @@ public class ListGroups extends AppCompatActivity {
      * Adapter for groups list.
      */
     protected static ArrayAdapter<Group> adapter;
+
+    private ListView list;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -52,10 +56,10 @@ public class ListGroups extends AppCompatActivity {
         this.getSupportActionBar().hide();
         setContentView(R.layout.fragment_group_list);
 
-        ListView list = findViewById(R.id.group_list);
+        list = findViewById(R.id.group_list);
 
         // Initialize adapter by configuring it with group data from UserData class
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
+        adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1);
         UserData.queue = Volley.newRequestQueue(getApplicationContext());
         UserData.initializeGroups(adapter);
 
@@ -132,8 +136,8 @@ public class ListGroups extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 EditText codeInput = v.findViewById(R.id.group_code_input);
-                String code = codeInput.getText().toString();
-                joinGroup(code);
+                String id = codeInput.getText().toString();
+                joinGroup(id);
             }
         });
 
@@ -183,16 +187,15 @@ public class ListGroups extends AppCompatActivity {
 
     private void joinGroup(String code){
         String user = UserData.getUsername();
-        String url = "http://coms-309-035.class.las.iastate.edu:8080/Group/AddUser/" + code + "/" + user;
+        final String url = "http://coms-309-035.class.las.iastate.edu:8080/Group/AddUser/" + code + "/" + user;
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.PUT, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 //TODO: fix data on update
                 Log.d("Volley Response: ", response.toString());
-                UserData.appendAdapter(response);
-                adapter.notifyDataSetChanged();
-
+                UserData.updateUserData();
                 Toast.makeText(getApplicationContext(), "Group Joined!", Toast.LENGTH_LONG).show();
+                startActivity(new Intent(getApplicationContext(), ListGroups.class));
             }
         }, new Response.ErrorListener() {
             @Override
@@ -218,20 +221,22 @@ public class ListGroups extends AppCompatActivity {
             group.put("travelGroupName", name);
             group.put("travelGroupCode", "null");
             group.put("travelGroupDestination", destination);
-            group.put("travelGroupCreator", UserData.getUsername());
+            group.put("travelGroupAmbassador", UserData.getUsername());
             group.put("travelGroupDescription", description);
-            group.put("travelGroupMembers", members);
+            group.put("members", members);
         }catch(JSONException e){
             Log.e("JSON Error: ", e.toString());
         }
 
         // Make the post request given the url and group json
-        final String url = "http://coms-309-035.class.las.iastate.edu:8080/Group/Create";
+        final String url = "http://coms-309-035.class.las.iastate.edu:8080/Group";
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, url, group, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 Log.d("Volley Response: ", response.toString());
-                Toast.makeText(getApplicationContext(), "Group Created!", Toast.LENGTH_LONG).show();
+                UserData.updateUserData();
+                updateList();
+                //startActivity(new Intent(getApplicationContext(), ListGroups.class));
             }
         }, new Response.ErrorListener() {
             @Override
@@ -262,5 +267,12 @@ public class ListGroups extends AppCompatActivity {
         Singleton.getInstance(getApplicationContext()).addRequest(req);
 
         recreate();
+    }
+
+    private void updateList(){
+        adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1);
+        UserData.initializeGroups(adapter);
+        list.setAdapter(adapter);
+
     }
 }
