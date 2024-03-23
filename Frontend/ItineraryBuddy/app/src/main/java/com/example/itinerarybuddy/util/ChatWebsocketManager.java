@@ -8,12 +8,12 @@ import java.net.URI;
 
 public class ChatWebsocketManager {
 
-    private WebsocketListener listener;
+    private final WebsocketListener listener;
 
     private ChatWebsocketClient client;
 
-    public ChatWebsocketManager(WebsocketListener websocketListener){
-        this.listener = websocketListener;
+    public ChatWebsocketManager(WebsocketListener listener){
+        this.listener = listener;
     }
 
     public void connect(String url){
@@ -27,7 +27,9 @@ public class ChatWebsocketManager {
     }
 
     public void sendMessage(String msg){
-        client.send(msg);
+        if(client.isOpen()) {
+            client.send(msg);
+        }
     }
 
     private class ChatWebsocketClient extends WebSocketClient{
