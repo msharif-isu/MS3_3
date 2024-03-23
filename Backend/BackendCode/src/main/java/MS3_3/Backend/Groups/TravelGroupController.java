@@ -20,8 +20,6 @@ public class TravelGroupController {
     @Autowired
     AmbassadorRepository ambassadorRepository;
 
-    private User tempUser;
-
     @GetMapping("/Group")
     public List<TravelGroup> getAllGroups() {
         return travelGroupRepository.findAll();
@@ -79,7 +77,7 @@ public class TravelGroupController {
         TravelGroup group = travelGroupRepository.findById(groupId);
         User user = userRepository.findByUserName(username);
         group.removeNewMember(user);
-        user.addGroupCodes(group);
+        user.removeGroupCodes(group);
         user.removeUserCodes(group.getTravelGroupId());
         userRepository.save(user);
         travelGroupRepository.save(group);
