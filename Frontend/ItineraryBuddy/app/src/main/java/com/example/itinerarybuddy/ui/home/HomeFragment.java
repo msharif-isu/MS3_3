@@ -1,21 +1,20 @@
 package com.example.itinerarybuddy.ui.home;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.DatePicker;
-import android.widget.PopupMenu;
 
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
+import com.example.itinerarybuddy.activities.DayCard;
 import com.example.itinerarybuddy.data.Itinerary;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -23,11 +22,12 @@ import androidx.lifecycle.ViewModelProvider;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.text.ParseException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -36,6 +36,7 @@ import java.util.Set;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -45,7 +46,6 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.itinerarybuddy.R;
 import com.example.itinerarybuddy.databinding.FragmentHomeBinding;
-import com.example.itinerarybuddy.util.Singleton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
@@ -53,12 +53,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickListener, CustomAdapter.OnDeleteClickListener {
 
     private FragmentHomeBinding binding;
-    private ArrayAdapter<String> itineraryAdapter;
+    private CustomAdapter itineraryAdapter;
     private EditText startDateInput;
     private EditText endDateInput;
+
+    public int numOfDays;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -72,8 +74,9 @@ public class HomeFragment extends Fragment {
        /* final TextView textView = binding.textHome;
         homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);*/
 
-        itineraryAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, homeViewModel.getItineraries());
+
         ListView list = root.findViewById(R.id.listViewItineraries);
+        itineraryAdapter = new CustomAdapter(requireContext(), R.layout. list_item_layout, homeViewModel.getItineraries(), this, this);
         list.setAdapter(itineraryAdapter);
 
         GET_itinerary();
@@ -81,7 +84,16 @@ public class HomeFragment extends Fragment {
         list.setOnItemClickListener(new AdapterView.OnItemClickListener(){
 
             public void onItemClick(AdapterView<?> parent, View view, int position, long id){
-                showPopupMenu(view, position);
+                //Get the selected itinerary
+                String selectedItinerary = itineraryAdapter.getItem(position);
+
+                int days = extractNumOfDays(selectedItinerary);
+
+                Intent intent = new Intent(requireContext(), DayCard.class);
+
+                intent.putExtra("NUM_OF_DAYS", days);
+
+                startActivity(intent);
             }
         });
 
@@ -96,6 +108,8 @@ public class HomeFragment extends Fragment {
 
         return root;
     }
+
+
 
     @Override
     public void onDestroyView() {
@@ -225,24 +239,42 @@ public class HomeFragment extends Fragment {
 
     private void createNewFrame(String destination, String tripCode, String startDate, String endDate) {
 
-       String itineraryInfo =
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        numOfDays = 0;
+
+        try{
+
+            Date startDateObj = dateFormat.parse(startDate);
+            Date endDateObj = dateFormat.parse(endDate);
+
+            long differenceInMilliseconds = endDateObj.getTime() - startDateObj.getTime();
+            numOfDays = (int) TimeUnit.DAYS.convert(differenceInMilliseconds, TimeUnit.MILLISECONDS);
+
+        }catch (ParseException e){
+            e.printStackTrace();
+        }
+
+
+        String itineraryInfo =
                 "Destination: " + destination
                         + "\nTrip Code: " + tripCode
                         + "\nStart Date: " + startDate
-                        + "\nEnd Date: " + endDate;
+                        + "\nEnd Date: " + endDate
+                        + "\nNumber of Days: " + numOfDays;
 
         //Save the info in itineraryAdapter
         itineraryAdapter.insert(itineraryInfo, 0);
 
         itineraryAdapter.notifyDataSetChanged();
 
-        POST_itinerary(destination, tripCode, startDate, endDate);
+        POST_itinerary(destination, tripCode, startDate, endDate, numOfDays);
+
 
         // saveItineraryToShared(destination, tripCode, startDate, endDate);
 
     }
 
-    private void POST_itinerary(String destination, String tripCode, String startDate, String endDate){
+    private void POST_itinerary(String destination, String tripCode, String startDate, String endDate, int numOfDays){
 
         //Make a network request using Volley
         // String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary/Create";
@@ -256,6 +288,7 @@ public class HomeFragment extends Fragment {
                 "\"tripCode\": \"" + tripCode + "\",\n" +
                 "\"start date\": \"" + startDate + "\",\n" +
                 "\"end date\": \"" + endDate + "\"\n" +
+                "\"number of days\": \"" + numOfDays + "\"\n" +
                 "}";
 
         Log.d("Volley Request Data: ", tripData);
@@ -290,6 +323,7 @@ public class HomeFragment extends Fragment {
                 map.put("tripCode", tripCode);
                 map.put("start date", startDate);
                 map.put("end date", endDate);
+                map.put("number of days", String.valueOf(numOfDays));
 
                 return map;
             }
@@ -305,7 +339,7 @@ public class HomeFragment extends Fragment {
 
             //Add the JsonObjectRequest to the request queue
             Itinerary.requestQueue.add(jsonObject);
-           // Singleton.getInstance(requireContext()).addRequest(jsonObject);
+            // Singleton.getInstance(requireContext()).addRequest(jsonObject);
 
 
         } catch (JSONException e) {
@@ -316,31 +350,47 @@ public class HomeFragment extends Fragment {
 
     }
 
+    private int extractNumOfDays(String itinerary){
+
+     String label = "Number of Days: ";
+
+     int labelIndex = itinerary.indexOf(label);
+
+     if(labelIndex != -1){
+
+         String numOfDaysString = itinerary.substring(labelIndex+label.length());
+
+         try{
+
+             return Integer.parseInt(numOfDaysString.trim());
+
+         }catch (NumberFormatException e){
+             e.printStackTrace();
+         }
+     }
+
+   return 0;
+    }
+
 
     //PUT (Update and Edit itinerary function related)
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
-        inflater.inflate(R.menu.itinerary_menu,menu);
+        inflater.inflate(R.menu.itinerary_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item){
 
-        if(item.getItemId() == R.id.action_edit){
-            return true;
-        }
+    public void onEditClicked(int position){
 
-        else if(item.getItemId() == R.id.action_delete){
-            return true;
-        }
-
-        else{
-            return false;
-        }
+        editItinerary(position);
     }
 
-    private void showPopupMenu(View view, int position){
+    public void onDeleteClicked(int position){
+        deleteItinerary(position);
+    }
+
+ /*   private void showPopupMenu(View view, int position){
 
         PopupMenu popupMenu = new PopupMenu(requireContext(), view);
         MenuInflater inflater = popupMenu.getMenuInflater();
@@ -366,7 +416,7 @@ public class HomeFragment extends Fragment {
         });
 
         popupMenu.show();
-    }
+    }*/
 
     private void editItinerary(final int position){
 
@@ -430,14 +480,30 @@ public class HomeFragment extends Fragment {
 
     private void updateItinerary(int position, String destination, String startDate, String endDate){
 
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        try{
+
+            Date startDateObj = dateFormat.parse(startDate);
+            Date endDateObj = dateFormat.parse(endDate);
+
+            long differenceInMilliseconds = endDateObj.getTime() - startDateObj.getTime();
+            numOfDays = (int) TimeUnit.DAYS.convert(differenceInMilliseconds, TimeUnit.MILLISECONDS);
+
+        }catch (ParseException e){
+            e.printStackTrace();
+        }
+
         String updatedItineraryInfo = "Destination: " + destination +
                 "\nTrip Code: " + getTripCodeFromAdapterPosition(position) +
                 "\nStart Date: " + startDate +
-                "\nEnd Date: " + endDate;
+                "\nEnd Date: " + endDate +
+                "\nNumber of Days: " + numOfDays;
 
         itineraryAdapter.remove(itineraryAdapter.getItem(position));
         itineraryAdapter.insert(updatedItineraryInfo,0);
         itineraryAdapter.notifyDataSetChanged();
+
     }
 
     private String getTripCodeFromAdapterPosition(int position){
@@ -484,6 +550,7 @@ public class HomeFragment extends Fragment {
                 params.put("destination", destination);
                 params.put("start date", startDate);
                 params.put("end date", endDate);
+                params.put("number of days", String.valueOf(numOfDays));
                 return params;
             }
 
@@ -546,9 +613,9 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-               String tripCode = getTripCodeFromAdapterPosition(position);
+                String tripCode = getTripCodeFromAdapterPosition(position);
 
-               //Remove the data from the adapter
+                //Remove the data from the adapter
                 itineraryAdapter.remove(itineraryAdapter.getItem(position));
                 itineraryAdapter.notifyDataSetChanged();
 
@@ -602,7 +669,7 @@ public class HomeFragment extends Fragment {
 
     private void updateItineraryAdapter(JSONArray itineraryArray) {
 
-        //itineraryAdapter.clear();
+        itineraryAdapter.clear();
 
         for (int i = 0; i < itineraryArray.length(); i++) {
             try {
@@ -611,13 +678,18 @@ public class HomeFragment extends Fragment {
                 String tripCode = itineraryObject.getString("tripCode");
                 String startDate = itineraryObject.getString("start date");
                 String endDate = itineraryObject.getString("end date");
+                String numOfDays = itineraryObject.getString("number of days");
+
+                int numDays = Integer.parseInt(numOfDays);
 
                 String itineraryInfo = "Destination: " + destination +
                         "\nTrip Code: " + tripCode +
                         "\nStart Date: " + startDate +
-                        "\nEnd Date: " + endDate;
+                        "\nEnd Date: " + endDate +
+                        "\nNumber of Days: " + numDays;
 
                 itineraryAdapter.add(itineraryInfo);
+
 
             } catch (JSONException e) {
                 e.printStackTrace();
