@@ -1,6 +1,7 @@
 package com.example.itinerarybuddy.ui.dashboard;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -12,13 +13,20 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.itinerarybuddy.R;
 import com.example.itinerarybuddy.data.Group;
+import com.example.itinerarybuddy.util.ChatWebsocketManager;
 import com.example.itinerarybuddy.util.WebsocketListener;
+
+import org.java_websocket.handshake.ServerHandshake;
 
 import java.util.Objects;
 
 public class GroupChatActivity extends AppCompatActivity implements WebsocketListener {
 
     private Group group;
+
+    private TextView chat;
+
+    private EditText message;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +39,8 @@ public class GroupChatActivity extends AppCompatActivity implements WebsocketLis
         setContentView(R.layout.fragment_group_chat);
 
         TextView title = findViewById(R.id.chat_title);
-        EditText message = findViewById(R.id.message_input);
+        chat = findViewById(R.id.chat_text);
+        message = findViewById(R.id.message_input);
         ImageButton send = findViewById(R.id.send_button);
 
         Bundle bundle = getIntent().getExtras();
@@ -45,11 +54,44 @@ public class GroupChatActivity extends AppCompatActivity implements WebsocketLis
             title.setText(text);
         }
 
+        ChatWebsocketManager websocket = new ChatWebsocketManager(GroupChatActivity.this);
+        websocket.connect("ws://10.0.2.2:8080/chat/");
+
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                String text = message.getText().toString();
+                try {
+                    websocket.sendMessage(text);
+                }catch(Exception e){
+                    Log.e("Message error: ", e.toString());
+                }
             }
         });
     }
+
+    @Override
+    public void onOpen(ServerHandshake handshake) {
+
+    }
+
+    @Override
+    public void onMessage(String msg) {
+        runOnUiThread(() -> {
+            String text = chat.getText().toString() + "\n" + message;
+            chat.setText(text);
+        });
+
+    }
+
+    @Override
+    public void onClose(int code, String reason, boolean remote) {
+
+    }
+
+    @Override
+    public void onError(Exception ex) {
+
+    }
+
 }
