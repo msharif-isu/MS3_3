@@ -194,6 +194,7 @@ public class LoadGroup extends AppCompatActivity {
         // Create JSON for group, along with array for group members
         JSONObject groupData = new JSONObject();
         JSONArray memberData = new JSONArray();
+        /*
         ArrayList<String> members = group.getMembers();
         for(int i = 0; i < members.size(); i++){
             JSONObject json = new JSONObject();
@@ -204,19 +205,21 @@ public class LoadGroup extends AppCompatActivity {
                 Log.e("JSON Error: ", e.toString());
             }
         }
+        */
+
         try {
             groupData.put("travelGroupName", name);
-            groupData.put("travelGroupCode", group.getTravelGroupCode());
+            groupData.put("travelGroupCode", "null");
             groupData.put("travelGroupDestination", destination);
-            groupData.put("travelGroupCreator", group.getTravelGroupCreator());
+            groupData.put("travelGroupAmbassador", UserData.getUsername());
             groupData.put("travelGroupDescription", description);
-            groupData.put("travelGroupMembers", memberData);
+            groupData.put("members", memberData);
         }catch(JSONException e){
             Log.e("JSON Error: ", e.toString());
         }
 
         // Make the post request given the url and group json
-        final String url = "http://coms-309-035.class.las.iastate.edu:8080/Group/Update";
+        final String url = "http://coms-309-035.class.las.iastate.edu:8080/Group/" + group.getTravelGroupCode();
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.PUT, url, groupData, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -275,8 +278,8 @@ public class LoadGroup extends AppCompatActivity {
 
     private void leaveGroup(){
         String user = UserData.getUsername();
-        String groupCode = group.getTravelGroupCode();
-        String url = "http://coms-309-035.class.las.iastate.edu:8080/Group/RemoveUser/" + group + "/" + user;
+        String groupId = group.getTravelGroupCode();
+        String url = "http://coms-309-035.class.las.iastate.edu:8080/Group/RemoveUser/" + groupId + "/" + user;
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.PUT, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
