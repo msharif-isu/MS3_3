@@ -1,4 +1,4 @@
-package com.example.itinerarybuddy.util;
+package com.example.itinerarybuddy.util.ChatWebSockets;
 import android.util.Log;
 
 import org.java_websocket.client.WebSocketClient;

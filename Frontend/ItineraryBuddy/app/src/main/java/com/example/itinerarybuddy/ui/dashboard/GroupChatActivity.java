@@ -16,16 +16,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.itinerarybuddy.R;
 import com.example.itinerarybuddy.data.Group;
 import com.example.itinerarybuddy.data.UserData;
-import com.example.itinerarybuddy.util.ChatWebsocketManager;
-import com.example.itinerarybuddy.util.WebsocketListener;
+import com.example.itinerarybuddy.util.ChatWebSockets.ChatWebsocketManager;
+import com.example.itinerarybuddy.util.ChatWebSockets.WebsocketListener;
 
 import org.java_websocket.handshake.ServerHandshake;
 
 import java.util.Objects;
 
 public class GroupChatActivity extends AppCompatActivity implements WebsocketListener {
-
-    private Group group;
 
     private ListView chatText;
 
@@ -35,8 +33,6 @@ public class GroupChatActivity extends AppCompatActivity implements WebsocketLis
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -55,10 +51,10 @@ public class GroupChatActivity extends AppCompatActivity implements WebsocketLis
         int position;
         if (bundle != null) {
             position = Integer.parseInt(Objects.requireNonNull(bundle.getString("POSITION")));
-            group = ListGroups.adapter.getItem(position);
+            Group group = ListGroups.adapter.getItem(position);
 
             assert group != null;
-            String text = group.getTravelGroupName() + " Chat";
+            String text = group.getTravelGroupName() + "Group Chat";
             title.setText(text);
         }
 
