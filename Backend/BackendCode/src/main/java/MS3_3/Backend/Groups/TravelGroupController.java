@@ -4,6 +4,8 @@ import MS3_3.Backend.Ambassador.Ambassador;
 import MS3_3.Backend.Ambassador.AmbassadorRepository;
 import MS3_3.Backend.UserTypes.User;
 import MS3_3.Backend.UserTypes.UserRepository;
+import MS3_3.Backend.chat.Message;
+import MS3_3.Backend.chat.MessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +21,8 @@ public class TravelGroupController {
 
     @Autowired
     AmbassadorRepository ambassadorRepository;
+    @Autowired
+    MessageRepository messageRepository;
 
     @GetMapping("/Group")
     public List<TravelGroup> getAllGroups() {
@@ -28,6 +32,11 @@ public class TravelGroupController {
     @GetMapping("/Group/{GroupId}")
     public TravelGroup getGroupsById(@PathVariable int GroupId) {
         return travelGroupRepository.findById(GroupId);
+    }
+
+    @GetMapping("/Group/Chat/{GroupId}")
+    public List<Message> getGroupChat(@PathVariable int GroupId) {
+        return travelGroupRepository.findById(GroupId).getChatMessages();
     }
 
     @PostMapping("/Group")
@@ -57,6 +66,13 @@ public class TravelGroupController {
         existingGroup.setTravelGroupDescription(group.getTravelGroupDescription());
         existingGroup.setTravelGroupDestination(group.getTravelGroupDestination());
         travelGroupRepository.save(existingGroup);
+        return travelGroupRepository.findById(groupId);
+    }
+
+    @PutMapping("/Group/chat/{groupId}")
+    public TravelGroup updateGroupChat(@PathVariable int groupId) {
+        travelGroupRepository.findById(groupId).setChatMessages(messageRepository.findAllByGroupId(groupId));
+        travelGroupRepository.save(travelGroupRepository.findById(groupId));
         return travelGroupRepository.findById(groupId);
     }
 

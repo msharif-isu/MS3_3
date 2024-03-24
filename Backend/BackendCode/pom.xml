@@ -5,7 +5,7 @@
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>coms309</groupId>
-	<artifactId>backend228</artifactId>
+	<artifactId>WebSocketTest</artifactId>
 	<version>1.0.0</version>
 
 	<!-- To make it a spring boot project -->
@@ -52,6 +52,19 @@
 			<artifactId>mysql-connector-java</artifactId>
 			<version>8.0.22</version>
 			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-websocket</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-websocket</artifactId>
+			<version>6.1.3</version>
 		</dependency>
 
 
