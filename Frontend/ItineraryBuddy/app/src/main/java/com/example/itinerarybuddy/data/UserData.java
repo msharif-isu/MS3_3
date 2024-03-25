@@ -94,41 +94,6 @@ public class UserData {
         return groupIDs;
     }
 
-    public static void initializeGroups(ArrayAdapter<Group> a){
-        ArrayList<String> ids = UserData.getGroupIds();
-        String url;
-        String id;
-        for(int i = 0; i < ids.size(); i++){
-            id = ids.get(i);
-            //url = "https://443da8f0-75e2-4be2-8e84-834c5d63eda6.mock.pstmn.io/group?travelGroupCode=" + id; //TODO: fix url.
-            url = "http://coms-309-035.class.las.iastate.edu:8080/Group/" + id;
-            JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject response) {
-                    Log.d("Volley Response: ", response.toString());
-
-                    UserData.appendAdapter(response, a);
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.e("Volley Error: ", error.toString());
-                }
-            });
-            queue.add(req);
-        }
-    }
-
-    public static void appendAdapter(JSONObject response, ArrayAdapter<Group> a){
-        String groupName = getGroupName(response);
-        String groupCode = getGroupCode(response);
-        String groupDestination = getGroupDestination(response);
-        String groupDescription = getGroupDescription(response);
-        ArrayList<String> members = getGroupMembers(response);
-        Group g = new Group(groupName, groupCode, groupDestination, groupDescription, members);
-        a.add(g);
-    }
-
     public static String getGroupName(JSONObject json){
         String groupName = null;
         try{

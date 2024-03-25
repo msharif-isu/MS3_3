@@ -35,35 +35,38 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class LoadGroup extends AppCompatActivity {
 
+    /**
+     * This is the travel group object that this page represents. Passed in from the ListGroups list adapter and displayed here.
+     */
     private Group group;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         this.getSupportActionBar().hide();
         setContentView(R.layout.fragment_group_page);
 
+        // Instantiate buttons
         ImageButton back = findViewById(R.id.back_button);
         ImageButton groupOptions = findViewById(R.id.options_button);
         ImageButton groupChat = findViewById(R.id.chat_button);
 
+        // Extract the group from the previous activity using bundle
         Bundle bundle = getIntent().getExtras();
         int position;
         if(bundle != null) {
-            position = Integer.parseInt(bundle.getString("POSITION"));
+            position = Integer.parseInt(Objects.requireNonNull(bundle.getString("POSITION")));
             group = ListGroups.adapter.getItem(position);
 
+            // Instantiate text views
             TextView name = findViewById(R.id.group_title);
             TextView description = findViewById(R.id.group_description);
             TextView destination = findViewById(R.id.group_destination);
@@ -75,6 +78,7 @@ public class LoadGroup extends AppCompatActivity {
             destination.setText(destinationText);
         }
 
+        // Set click listener for back button
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,14 +86,17 @@ public class LoadGroup extends AppCompatActivity {
             }
         });
 
+        // Set click listener for options button
         groupOptions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Display a menu with three options given XML resource
                 PopupMenu menu = new PopupMenu(getApplicationContext(), v);
                 MenuInflater inflater = menu.getMenuInflater();
 
                 inflater.inflate(R.menu.group_settings_menu, menu.getMenu());
 
+                // Set click listener for each option
                 menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
@@ -115,9 +122,7 @@ public class LoadGroup extends AppCompatActivity {
                         }
                     }
                 });
-
                 menu.show();
-
             }
         });
 
@@ -131,13 +136,18 @@ public class LoadGroup extends AppCompatActivity {
 
     }
 
+    /**
+     * Initiates a dialog popup that displays the details of the group, such as members and the group code.
+     */
     private void showGroupDetails(){
+        // Create new alert dialog
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.layout.dialog_group_details);
         builder.setTitle("Travel Group Details");
 
         View v = DialogGroupDetailsBinding.inflate(getLayoutInflater()).getRoot();
         builder.setView(v);
 
+        // Set text elements
         ListView members = v.findViewById(R.id.group_members_list);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, group.getMembers());
         members.setAdapter(adapter);
@@ -156,6 +166,9 @@ public class LoadGroup extends AppCompatActivity {
         builder.show();
     }
 
+    /**
+     * Initiates a dialog popup where the user may enter edits to the group information, such as name etc.
+     */
     private void editGroup(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.layout.dialog_create_group);
         builder.setTitle("Edit Travel Group");
@@ -190,22 +203,16 @@ public class LoadGroup extends AppCompatActivity {
         builder.show();
     }
 
+    /**
+     * Helper method for editGroup() that makes a PUT request for the given modifications to the group.
+     * @param name
+     * @param destination
+     * @param description
+     */
     private void updateGroup(String name, String destination, String description){
         // Create JSON for group, along with array for group members
         JSONObject groupData = new JSONObject();
         JSONArray memberData = new JSONArray();
-        /*
-        ArrayList<String> members = group.getMembers();
-        for(int i = 0; i < members.size(); i++){
-            JSONObject json = new JSONObject();
-            try {
-                json.put("userName", members.get(i));
-                memberData.put(i, json);
-            }catch(JSONException e){
-                Log.e("JSON Error: ", e.toString());
-            }
-        }
-        */
 
         try {
             groupData.put("travelGroupName", name);
@@ -224,7 +231,9 @@ public class LoadGroup extends AppCompatActivity {
             @Override
             public void onResponse(JSONObject response) {
                 Log.d("Volley Response: ", response.toString());
-                Toast.makeText(getApplicationContext(), "Group Created!", Toast.LENGTH_LONG).show();
+                UserData.updateUserData();
+                Toast.makeText(getApplicationContext(), "Group Successfully Modified!", Toast.LENGTH_LONG).show();
+                startActivity(new Intent(getApplicationContext(), ListGroups.class));
             }
         }, new Response.ErrorListener() {
             @Override
@@ -255,6 +264,9 @@ public class LoadGroup extends AppCompatActivity {
         Singleton.getInstance(getApplicationContext()).addRequest(req);
     }
 
+    /**
+     * Initiates a dialog popup to prompt the user if they want to leave the travel group.
+     */
     private void leaveGroupDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Are you sure you want to leave this travel group?");
@@ -276,6 +288,9 @@ public class LoadGroup extends AppCompatActivity {
         builder.show();
     }
 
+    /**
+     * Helper method for leaveGroupDialog() to make a PUT request to remove the user from the group.
+     */
     private void leaveGroup(){
         String user = UserData.getUsername();
         String groupId = group.getTravelGroupCode();
@@ -283,11 +298,11 @@ public class LoadGroup extends AppCompatActivity {
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.PUT, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                //TODO: fix data on update
                 Log.d("Volley Response: ", response.toString());
                 UserData.updateUserData();
+                Toast.makeText(getApplicationContext(), "You have left the group!", Toast.LENGTH_LONG).show();
+                deleteGroup();
                 startActivity(new Intent(getApplicationContext(), ListGroups.class));
-                //Toast.makeText(getApplicationContext(), "Group Removed", Toast.LENGTH_LONG).show();
             }
         }, new Response.ErrorListener() {
             @Override
@@ -297,5 +312,13 @@ public class LoadGroup extends AppCompatActivity {
             }
         });
         Singleton.getInstance(getApplicationContext()).addRequest(req);
+    }
+
+    /**
+     * Helper method for leaveGroup() to remove the travel group locally from the group list.
+     */
+    private void deleteGroup(){
+        ListGroups.adapter.remove(group);
+        ListGroups.adapter.notifyDataSetChanged();
     }
 }
