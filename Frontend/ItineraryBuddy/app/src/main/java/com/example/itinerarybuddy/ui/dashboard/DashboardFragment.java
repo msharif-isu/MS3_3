@@ -18,7 +18,6 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -26,10 +25,15 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.example.itinerarybuddy.R;
+import com.example.itinerarybuddy.activities.WebSocketListener;
+import com.example.itinerarybuddy.activities.WebSocketManager;
 import com.example.itinerarybuddy.data.Itinerary;
 import com.example.itinerarybuddy.data.Post_Itinerary;
+import com.example.itinerarybuddy.data.UserData;
 import com.example.itinerarybuddy.databinding.FragmentDashboardBinding;
 
+import org.java_websocket.WebSocket;
+import org.java_websocket.handshake.ServerHandshake;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,7 +41,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.example.itinerarybuddy.data.UserData;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -46,20 +49,19 @@ import android.text.format.DateUtils;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class DashboardFragment extends Fragment {
+public class DashboardFragment extends Fragment implements WebSocketListener {
 
+    private WebSocketManager webSocketManager;
     private FragmentDashboardBinding binding;
     private RecyclerView recyclerView;
     private PostAdapter postAdapter;
-
     private List<String> destinations = new ArrayList<>();
     private List<Post_Itinerary> posts = new ArrayList<>();
     private Handler handler;
     private Runnable updateTimeRunnable;
-
+    private String BASE_URL = "ws://localhost:8080/post/";
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -75,6 +77,10 @@ public class DashboardFragment extends Fragment {
         postAdapter = new PostAdapter(posts, requireContext());
         recyclerView.setAdapter(postAdapter);
 
+        connectWebSocket();
+
+        WebSocketManager.getInstance().setWebSocketListener(DashboardFragment.this);
+
         ImageView postButton = root.findViewById(R.id.postContent);
         postButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,10 +92,41 @@ public class DashboardFragment extends Fragment {
         fetchDestinations();
         loadPosts();
 
-
         startUpdateTimeTimer();
 
         return root;
+    }
+
+    private void connectWebSocket() {
+        String serverUrl = BASE_URL + "Aina"; // Adjust this based on your requirements
+        WebSocketManager.getInstance().connectWebSocket(serverUrl);
+    }
+
+
+    // Function to parse a Post_Itinerary object from a WebSocket message
+    private Post_Itinerary parsePostFromMessage(String message) {
+        // Parse the message and construct a Post_Itinerary object
+        // This will depend on the format of the message sent by your server
+        // Replace this with actual parsing logic based on your server's message format
+        try {
+            JSONObject jsonObject = new JSONObject(message);
+            String username = jsonObject.getString("username");
+            String timePosted = jsonObject.getString("timePosted");
+            String itinerary = jsonObject.getString("itinerary");
+            String caption = jsonObject.getString("caption");
+            return new Post_Itinerary(username, timePosted, itinerary, caption);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    // Function to send a post to the server (if needed)
+    private void sendPostToServer(Post_Itinerary post) {
+        // You can implement this if you need to send posts to the server
+        // For example, if users can post new content from the app
+        // You can use WebSocket to send the post to the server
+        // Example: webSocket.send("Your message to the server");
     }
 
     // Function to show the dialog for posting
@@ -126,7 +163,14 @@ public class DashboardFragment extends Fragment {
                         return;
                     }
 
-                    createPost(selectedItinerary, caption);
+                    //Post_Itinerary newPost = new Post_Itinerary(UserData.getUsername(),"Just Now", selectedItinerary,caption );
+                    Post_Itinerary newPost = new Post_Itinerary("Aina", "Just Now", selectedItinerary, caption );
+
+                    WebSocketManager.getInstance().sendPost(newPost);
+
+                    posts.add(0, newPost);
+                    postAdapter.notifyItemInserted(0);
+
                 } else {
                     Log.e("DashboardFragment", "itinerarySpinner is null");
                 }
@@ -144,15 +188,15 @@ public class DashboardFragment extends Fragment {
     }
 
 
-    private void createPost(String selectedItinerary, String caption){
+   /* private void createPost(String selectedItinerary, String caption){
 
         //Post_Itinerary newPost = new Post_Itinerary(UserData.getUsername(),"Just Now", selectedItinerary,caption );
 
         Post_Itinerary newPost = new Post_Itinerary("Aina", "Just Now", selectedItinerary, caption );
         posts.add(0, newPost);
         postAdapter.notifyItemInserted(0);
-
     }
+    */
 
 
 
@@ -164,19 +208,20 @@ public class DashboardFragment extends Fragment {
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
-
-                        for (int i = 0; i < response.length(); i++) {
-
-                            try {
-
-                                JSONObject itineraryObj = response.getJSONObject(i);
-                                String destination = itineraryObj.getString("destination");
-                                destinations.add(destination);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                        // Check if the fragment is attached to a context
+                        if (getContext() != null) {
+                            for (int i = 0; i < response.length(); i++) {
+                                try {
+                                    JSONObject itineraryObj = response.getJSONObject(i);
+                                    String destination = itineraryObj.getString("destination");
+                                    destinations.add(destination);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
                             }
+                        } else {
+                            Log.e("DashboardFragment", "Fragment is not attached to a context");
                         }
-
                     }
 
                 }, new Response.ErrorListener() {
@@ -257,12 +302,50 @@ public class DashboardFragment extends Fragment {
         }
     }
 
+
+    @Override
+    public void onWebSocketOpen(ServerHandshake handshakedata) {
+
+        Toast.makeText(requireContext(), "WebSocket connected successfully", Toast.LENGTH_LONG).show();
+
+    }
+
+    @Override
+    public void onWebSocketMessage(String message) {
+        handleWebSocketMessage(message);
+    }
+
+    private void handleWebSocketMessage(String message) {
+        // Parse the message received from the WebSocket server
+        Post_Itinerary newPost = parsePostFromMessage(message);
+        if (newPost != null) {
+            // Add the new post to the list and notify the adapter
+            posts.add(0, newPost);
+            postAdapter.notifyItemInserted(0);
+        }
+    }
+
+
+    @Override
+    public void onWebSocketClose(int code, String reason, boolean remote){
+
+    }
+
+    @Override
+    public void onWebSocketError(Exception ex){}
+
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         // Stop the timer when the fragment is destroyed
         if (handler != null && updateTimeRunnable != null) {
             handler.removeCallbacks(updateTimeRunnable);
+        }
+
+        //Remove the WebSocketListener when the fragment is destroyed
+        if(webSocketManager != null){
+            webSocketManager.removeWebSocketListener();
         }
     }
 

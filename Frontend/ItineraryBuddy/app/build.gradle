@@ -5,12 +5,12 @@ plugins {
 android {
 
     namespace "com.example.itinerarybuddy"
-    compileSdkVersion 34
+    compileSdk 34
 
     defaultConfig {
-        applicationId = "com.example.itinerarybuddy"
-        minSdkVersion 24
-        targetSdkVersion 34
+        applicationId "com.example.itinerarybuddy"
+        minSdk 24
+        targetSdk 34
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -33,37 +33,41 @@ android {
     }
 }
 
+
 task javadoc(type: Javadoc) {
+
     doFirst {
-        configurations.implementation.each { dependency ->
-            if (dependency.name.endsWith('.aar')) {
-                copy {
-                    from zipTree(dependency)
-                    include '**/classes.jar'
-                    into "${buildDir}/tmp/aarsToJars/${dependency.name.replace('.aar', '')}/"
+        configurations.implementation
+                .filter { it.name.endsWith('.aar') }
+                .each { aar ->
+                    copy {
+                        from zipTree(aar)
+                        include "**/classes.jar"
+                        into "$buildDir/tmp/aarsToJars/${aar.name.replace('.aar', '')}/"
+                    }
                 }
-            }
-        }
     }
 
-    configurations.implementation.canBeResolved = true
-    source android.sourceSets.main.java.srcDirs
-            classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    configurations.implementation.setCanBeResolved(true)
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
     classpath += configurations.implementation
-    classpath += fileTree(dir: "${buildDir}/tmp/aarsToJars/")
+    classpath += fileTree(dir: "$buildDir/tmp/aarsToJars/")
 
     android.applicationVariants.all { variant ->
         if (variant.name == 'release') {
-            classpath += variant.javaCompileProvider.get().classpath
+            owner.classpath += variant.javaCompileProvider.get().classpath
         }
     }
 
     destinationDir = file("${project.buildDir}/outputs/javadoc/")
     options.memberLevel = JavadocMemberLevel.PRIVATE
-    failOnError = false
+    failOnError false
     exclude '**/BuildConfig.java'
     exclude '**/R.java'
 }
+
+
 
 dependencies {
     implementation 'org.java-websocket:Java-WebSocket:1.5.1'
