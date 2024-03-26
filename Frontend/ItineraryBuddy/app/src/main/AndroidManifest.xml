@@ -40,10 +40,10 @@
             android:exported="true"
             android:label="@string/title_activity_personal_page1"/>
         <activity
-            android:name=".ui.dashboard.ListGroups"
+            android:name=".ui.home.ListGroups"
             android:exported="false" />
         <activity
-            android:name=".ui.dashboard.LoadGroup"
+            android:name=".ui.home.LoadGroup"
             android:exported="false" />
         <activity
             android:name=".activities.ScheduleTemplate"

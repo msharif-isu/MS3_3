@@ -1,4 +1,4 @@
-package com.example.itinerarybuddy.ui.dashboard;
+package com.example.itinerarybuddy.ui.home;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -29,6 +29,7 @@ import com.example.itinerarybuddy.data.Group;
 import com.example.itinerarybuddy.data.UserData;
 import com.example.itinerarybuddy.databinding.DialogCreateGroupBinding;
 import com.example.itinerarybuddy.databinding.DialogGroupDetailsBinding;
+import com.example.itinerarybuddy.ui.home.ListGroups;
 import com.example.itinerarybuddy.util.Singleton;
 
 import org.json.JSONArray;
@@ -132,8 +133,6 @@ public class LoadGroup extends AppCompatActivity {
                 //TODO: group chat listener
             }
         });
-
-
     }
 
     /**
@@ -153,7 +152,7 @@ public class LoadGroup extends AppCompatActivity {
         members.setAdapter(adapter);
 
         TextView code = v.findViewById(R.id.group_code_label);
-        String codeText = "Group Code: " + group.getTravelGroupCode() + "\n(Share this code with others to join this group)";
+        String codeText = "Group Code: " + group.getTravelGroupID() + "\n(Share this code with others to join this group)";
         code.setText(codeText);
 
         builder.setNegativeButton("Back", new DialogInterface.OnClickListener() {
@@ -205,9 +204,9 @@ public class LoadGroup extends AppCompatActivity {
 
     /**
      * Helper method for editGroup() that makes a PUT request for the given modifications to the group.
-     * @param name
-     * @param destination
-     * @param description
+     * @param name of the group.
+     * @param destination of the group.
+     * @param description of the group.
      */
     private void updateGroup(String name, String destination, String description){
         // Create JSON for group, along with array for group members
@@ -226,7 +225,7 @@ public class LoadGroup extends AppCompatActivity {
         }
 
         // Make the post request given the url and group json
-        final String url = "http://coms-309-035.class.las.iastate.edu:8080/Group/" + group.getTravelGroupCode();
+        final String url = "http://coms-309-035.class.las.iastate.edu:8080/Group/" + group.getTravelGroupID();
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.PUT, url, groupData, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -246,9 +245,9 @@ public class LoadGroup extends AppCompatActivity {
             protected Map<String, String> getParams(){
                 HashMap<String, String> g = new HashMap<>();
                 g.put("travelGroupName", name);
-                g.put("travelGroupCode", group.getTravelGroupCode());
+                g.put("travelGroupCode", group.getTravelGroupID());
                 g.put("travelGroupDestination", destination);
-                g.put("travelGroupCreator", group.getTravelGroupCreator());
+                g.put("travelGroupCreator", group.getTravelGroupAmbassador());
                 g.put("travelGroupDescription", description);
                 g.put("travelGroupMembers", "\"travelGroupMembers\": []");
                 return g;
@@ -293,7 +292,7 @@ public class LoadGroup extends AppCompatActivity {
      */
     private void leaveGroup(){
         String user = UserData.getUsername();
-        String groupId = group.getTravelGroupCode();
+        String groupId = group.getTravelGroupID();
         String url = "http://coms-309-035.class.las.iastate.edu:8080/Group/RemoveUser/" + groupId + "/" + user;
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.PUT, url, null, new Response.Listener<JSONObject>() {
             @Override

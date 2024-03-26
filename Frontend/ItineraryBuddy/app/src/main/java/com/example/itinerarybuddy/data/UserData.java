@@ -4,7 +4,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import android.util.Log;
-import android.widget.ArrayAdapter;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -94,59 +93,9 @@ public class UserData {
         return groupIDs;
     }
 
-    public static String getGroupName(JSONObject json){
-        String groupName = null;
-        try{
-            groupName = json.getString("travelGroupName");
-        } catch (JSONException e) {
-            Log.e("Error: ", e.toString());
-        }
-        return groupName;
-    }
-
-    public static String getGroupCode(JSONObject json){
-        String groupCode = null;
-        try{
-            groupCode = json.getString("travelGroupId");
-        } catch (JSONException e) {
-            Log.e("Error: ", e.toString());
-        }
-        return groupCode;
-    }
-
-    public static String getGroupDestination(JSONObject json){
-        String groupDestination = null;
-        try{
-            groupDestination = json.getString("travelGroupDestination");
-        } catch (JSONException e) {
-            Log.e("Error: ", e.toString());
-        }
-        return groupDestination;
-    }
-
-    public static String getGroupDescription(JSONObject json){
-        String groupDescription = null;
-        try{
-            groupDescription = json.getString("travelGroupDescription");
-        } catch (JSONException e) {
-            Log.e("Error: ", e.toString());
-        }
-        return groupDescription;
-    }
-
-    public static ArrayList<String> getGroupMembers(JSONObject json){
-        ArrayList<String> groupMembers = new ArrayList<String>();
-        try{
-            JSONArray array = json.getJSONArray("members");
-            for(int i = 0; i < array.length(); i++){
-                groupMembers.add(array.getJSONObject(i).getString("userName"));
-            }
-        } catch (JSONException e) {
-            Log.e("Error: ", e.toString());
-        }
-        return groupMembers;
-    }
-
+    /**
+     * Used to make a request to the server to update the current user's data by resetting the userInfo field.
+     */
     public static void updateUserData(){
         String url = "http://coms-309-035.class.las.iastate.edu:8080/Users/" + getUsername();
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {

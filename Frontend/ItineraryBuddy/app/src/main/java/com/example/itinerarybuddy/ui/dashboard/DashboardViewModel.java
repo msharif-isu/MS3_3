@@ -1,32 +1,19 @@
 package com.example.itinerarybuddy.ui.dashboard;
 
-import android.annotation.SuppressLint;
-import android.view.View;
-
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 public class DashboardViewModel extends ViewModel {
 
-    @SuppressLint("StaticFieldLeak")
-    private View view;
-
-    private boolean initialized;
+    private final MutableLiveData<String> mText;
 
     public DashboardViewModel() {
-        initialized = false;
+        mText = new MutableLiveData<>();
+        mText.setValue("This is dashboard fragment");
     }
 
-    public View getView(){
-        return view;
-    }
-
-    public void setView(View v){
-        view = v;
-    }
-
-    public boolean isInitialized(){
-        return initialized;
+    public LiveData<String> getText() {
+        return mText;
     }
 }

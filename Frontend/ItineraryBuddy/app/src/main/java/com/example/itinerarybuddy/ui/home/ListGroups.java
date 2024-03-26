@@ -1,4 +1,4 @@
-package com.example.itinerarybuddy.ui.dashboard;
+package com.example.itinerarybuddy.ui.home;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -34,11 +34,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Timer;
 
 public class ListGroups extends AppCompatActivity {
 
@@ -47,6 +45,9 @@ public class ListGroups extends AppCompatActivity {
      */
     protected static ArrayAdapter<Group> adapter;
 
+    /**
+     * List to display the groups.
+     */
     private ListView list;
 
     @Override
@@ -64,14 +65,6 @@ public class ListGroups extends AppCompatActivity {
         UserData.queue = Volley.newRequestQueue(getApplicationContext());
         initializeGroups();
 
-        /*
-        adapter.sort(new Comparator<String>() {
-            @Override
-            public int compare(String o1, String o2) {
-                return o2.compareTo(o1);
-            }
-        });
-        */
         list.setAdapter(adapter);
 
         // Click on any group listed to load its unique page
@@ -145,13 +138,18 @@ public class ListGroups extends AppCompatActivity {
         }
     }
 
+    /**
+     * Helper method for initializeGroups() to create a group object and add it to the list adapter.
+     * @param response JSON object to read in the data from.
+     */
     protected static void appendAdapter(JSONObject response){
-        String groupName = UserData.getGroupName(response);
-        String groupCode = UserData.getGroupCode(response);
-        String groupDestination = UserData.getGroupDestination(response);
-        String groupDescription = UserData.getGroupDescription(response);
-        ArrayList<String> members = UserData.getGroupMembers(response);
-        Group g = new Group(groupName, groupCode, groupDestination, groupDescription, members);
+        String groupName = Group.getGroupName(response);
+        String groupCode = Group.getGroupID(response);
+        String groupDestination = Group.getGroupDestination(response);
+        String groupDescription = Group.getGroupDescription(response);
+        String groupCreator = Group.getGroupAmbassador(response);
+        ArrayList<String> members = Group.getGroupMembers(response);
+        Group g = new Group(groupName, groupCode, groupDestination, groupDescription, groupCreator, members);
         adapter.add(g);
     }
 
