@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:text="@string/group_name" />
+
+    <EditText
+        android:id="@+id/group_name_input"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:autofillHints="name"
+        android:clickable="true"
+        android:focusable="true"
+        android:hint="@string/group_name"
+        android:inputType="textPersonName" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:text="@string/enter_group_destination" />
+
+    <EditText
+        android:id="@+id/group_destination_input"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:autofillHints="name"
+        android:clickable="true"
+        android:focusable="true"
+        android:hint="@string/enter_group_destination"
+        android:inputType="textPersonName" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:text="@string/enter_group_description" />
+
+    <EditText
+        android:id="@+id/group_description_input"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:autofillHints="name"
+        android:clickable="true"
+        android:focusable="true"
+        android:hint="@string/enter_group_description"
+        android:inputType="textPersonName" />
+
+
+</LinearLayout>
