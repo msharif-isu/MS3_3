@@ -33,29 +33,46 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * The ScheduleTemplate class represents the activity for managing and displaying the schedule template.
+ * It allows users to input and save schedule data for a specific day.
+ */
 public class ScheduleTemplate extends AppCompatActivity {
 
     private boolean isFirstClick = true;
     private ScheduleAdapter adapter;
+
+    /**
+     * Called when the activity is starting. This is where most initialization should go.
+     *
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down,
+     *                           this Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle).
+     *                           Otherwise, it is null.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_schedule_template);
 
+        // Retrieve the day title from the intent
         String day = getIntent().getStringExtra("TITLE");
 
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
+        // Generate sample schedule data
         List<ScheduleItem> data = generateData();
+
+        // Create and set the adapter for the RecyclerView
         adapter = new ScheduleAdapter(data, day);
         recyclerView.setAdapter(adapter);
 
+        // Fetch schedule data from the server
         GET_schedule();
 
+        // Set click listener for the save/update button
         FloatingActionButton btnSaveUpdate = findViewById(R.id.btnSaveUpdate);
-
         btnSaveUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -63,13 +80,13 @@ public class ScheduleTemplate extends AppCompatActivity {
                 List<ScheduleItem> scheduleItems = adapter.getScheduleData();
 
                 if(isFirstClick){
-
+                    // Perform POST request to save schedule data
                     POST_schedule(day, scheduleItems);
                     Toast.makeText(ScheduleTemplate.this, "Data saved!", Toast.LENGTH_SHORT).show();
                 }
 
                 else{
-
+                    // Perform PUT request to update schedule data
                     UPDATE_schedule(day, scheduleItems);
                     Toast.makeText(ScheduleTemplate.this, "Data updated!", Toast.LENGTH_SHORT).show();
                 }
@@ -80,8 +97,12 @@ public class ScheduleTemplate extends AppCompatActivity {
 
     }
 
-    //POST the schedule datagit add .
-    
+    /**
+     * Sends a POST request to save schedule data for the specified day.
+     *
+     * @param day The day for which the schedule data is being saved.
+     * @param scheduleData The list of schedule items to be saved.
+     */
     private void POST_schedule(String day, List<ScheduleItem> scheduleData){
 
         // String url = "http://coms-309-035.class.las.iastate.edu:8080/Schedule/Post";
@@ -149,7 +170,13 @@ public class ScheduleTemplate extends AppCompatActivity {
 
     }
 
-    //UPDATE the schedule data
+
+    /**
+     * Sends a PUT request to update schedule data for the specified day.
+     *
+     * @param day The day for which the schedule data is being updated.
+     * @param scheduleData The list of schedule items to be updated.
+     */
     private void UPDATE_schedule(String day, List<ScheduleItem> scheduleData){
 
         // String url = "http://coms-309-035.class.las.iastate.edu:8080/Schedule/Update";
@@ -213,15 +240,19 @@ public class ScheduleTemplate extends AppCompatActivity {
         queue.add(jsonObject);
     }
 
-    //GET the schedule data from the json file
+    /**
+     * Retrieves schedule data from the server using a GET request.
+     * Parses the JSON response and updates the RecyclerView with the fetched data.
+     */
     private void GET_schedule(){
 
         // String url = "http://coms-309-035.class.las.iastate.edu:8080/Schedule/Get";
         String url = "https://7557e865-ef05-4e77-beaf-a69fca370355.mock.pstmn.io/Schedule/Get";
 
+        // Initialize a RequestQueue for the Volley library
         RequestQueue queue = Volley.newRequestQueue(this);
 
-        //JsonObjectRequest for the GET request
+        // Create a JsonObjectRequest for the GET request
         JsonObjectRequest jsonObject = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -282,6 +313,11 @@ public class ScheduleTemplate extends AppCompatActivity {
         queue.add(jsonObject);
     }
 
+    /**
+     * Generates dummy schedule data for testing purposes.
+     *
+     * @return A list of ScheduleItem objects containing dummy data.
+     */
     private List<ScheduleItem> generateData(){
 
         List<ScheduleItem> data = new ArrayList<>();
