@@ -1,19 +1,19 @@
 package com.example.itinerarybuddy.data;
 
+import java.util.ArrayList;
+
 public class Post_Itinerary {
 
     public String username;
     public String timePosted;
     public String postFile;
     public String caption;
-
     public int likeCount;
-
     public boolean likeValue;
-
     public int saveCount;
-
     public boolean saveValue;
+
+    private ArrayList<String> comments;
     public Post_Itinerary(String username, String timePosted, String postFile, String caption){
 
         this.username = username;
@@ -24,9 +24,10 @@ public class Post_Itinerary {
         this.likeCount = 0;
         this.likeValue = false;
 
-
         this.saveCount = 0;
         this.saveValue = false;
+
+        this.comments = new ArrayList<>();
     }
 
     public String getUsername(){
@@ -100,5 +101,15 @@ public class Post_Itinerary {
     public int getSavedCount() {
 
         return saveCount;
+    }
+
+    public ArrayList<String> getComments() {
+
+        return comments;
+
+    }
+
+    public void addComment(String comment) {
+        comments.add(comment);
     }
 }

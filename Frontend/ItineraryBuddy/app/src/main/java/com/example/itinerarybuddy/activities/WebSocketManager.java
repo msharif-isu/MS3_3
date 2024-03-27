@@ -42,6 +42,7 @@ public class WebSocketManager {
             webSocketClient.connect();
         }
         catch (Exception e){
+            Log.e("Exception ", e.toString());
             e.printStackTrace();
         }
     }

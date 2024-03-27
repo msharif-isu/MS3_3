@@ -12,14 +12,11 @@ public class DashboardViewModel extends ViewModel {
 
     private final MutableLiveData<List<Post_Itinerary>> postsLiveData;
     private final MutableLiveData<List<String>> destinationsLiveData;
-    private final PostRepository postRepository;
-    private final DestinationRepository destinationRepository;
+
 
     public DashboardViewModel() {
         postsLiveData = new MutableLiveData<List<Post_Itinerary>>();
         destinationsLiveData = new MutableLiveData<>();
-        postRepository = new PostRepository();
-        destinationRepository = new DestinationRepository();
         // Load initial data when ViewModel is created
         loadPosts();
         loadDestinations();

@@ -31,6 +31,7 @@
 
             <TextView
                 android:id="@+id/text_username"
+                android:textColor="@color/black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="username"
@@ -63,6 +64,9 @@
         android:layout_height="wrap_content"
         android:text="Post File Name"
         android:textSize="16sp"
+        android:background="@color/dark_green"
+        android:textColor="@color/white"
+        android:textAlignment="center"
         android:textStyle="bold"
         android:layout_marginTop="8dp"
         android:padding="10dp"/>
@@ -80,6 +84,7 @@
             android:id="@+id/like_count"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:text="Liked: "
             android:layout_weight="1"
             android:paddingLeft="10dp"
             android:textSize="14sp" />
@@ -89,6 +94,7 @@
             android:id="@+id/save_count"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:text="Saved: "
             android:layout_weight="1"
             android:paddingLeft="10dp"
             android:textSize="14sp" />
@@ -141,7 +147,7 @@
             android:layout_height="wrap_content"
             android:text="Caption"
             android:textSize="16sp"
-            android:textStyle="bold"/>
+            android:textColor="@color/black"/>
 
         <TextView
             android:id="@+id/text_comments"
@@ -149,7 +155,7 @@
             android:layout_height="wrap_content"
             android:text="View all 10 comments"
             android:textSize="14sp"
-            android:textColor="@android:color/darker_gray"/>
+            android:textColor="@android:color/black"/>
     </LinearLayout>
 
 </LinearLayout>

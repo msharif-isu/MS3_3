@@ -346,9 +346,9 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
             e.printStackTrace();
         }
 
-
-
     }
+
+
 
     private int extractNumOfDays(String itinerary){
 
