@@ -38,6 +38,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Represents the activity where a user's groups will be displayed. They can also join/create a group here.
+ * @author Justin Sebahar
+ */
 public class ListGroups extends AppCompatActivity {
 
     /**
@@ -115,6 +119,9 @@ public class ListGroups extends AppCompatActivity {
 
     }
 
+    /**
+     * This method is called to retrieve each group a user is in and add it the the group adapter.
+     */
     private void initializeGroups(){
         ArrayList<String> ids = UserData.getGroupIds();
         String url;
@@ -217,6 +224,10 @@ public class ListGroups extends AppCompatActivity {
         builder.show();
     }
 
+    /**
+     * PUTs a request to add a user to a group and then refresh the group list.
+     * @param code
+     */
     private void joinGroup(String code){
         String user = UserData.getUsername();
         final String url = "http://coms-309-035.class.las.iastate.edu:8080/Group/AddUser/" + code + "/" + user;
@@ -298,6 +309,10 @@ public class ListGroups extends AppCompatActivity {
         Singleton.getInstance(getApplicationContext()).addRequest(req);
     }
 
+    /**
+     * Refreshes the adapter and list when a group needs to be added or removed.
+     * @param response JSON.
+     */
     protected void updateList(JSONObject response){
         appendAdapter(response);
         adapter.notifyDataSetChanged();

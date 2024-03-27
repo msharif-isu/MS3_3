@@ -10,7 +10,9 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-/** Represents a travel group object that the user may be a member of. All fields are final because the group objects are all recreated upon modification. */
+/** Represents a travel group object that the user may be a member of. All fields are final because the group objects are all recreated upon modification.
+ * @author Justin Sebahar
+ */
 public class Group {
 
     /**

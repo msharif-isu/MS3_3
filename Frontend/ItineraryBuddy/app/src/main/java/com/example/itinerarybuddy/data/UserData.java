@@ -13,7 +13,9 @@ import com.android.volley.toolbox.JsonObjectRequest;
 
 import java.util.ArrayList;
 
-/** This class stores a static JSON object for the current app user. Includes getters for data. */
+/** This class stores a static JSON object for the current app user. Includes getters for data.
+ * @author Justin Sebahar
+ */
 public class UserData {
 
     /** JSON object to be used in the various activities. */
