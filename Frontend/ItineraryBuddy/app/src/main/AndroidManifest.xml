@@ -20,7 +20,12 @@
             android:exported="false" />
         <activity
             android:name=".activities.LoginActivity"
-            android:exported="false" />
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".activities.RegisterActivity"
             android:exported="false" />
@@ -33,19 +38,16 @@
         <activity
             android:name=".activities.personalPage1"
             android:exported="true"
-            android:label="@string/title_activity_personal_page1">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
+            android:label="@string/title_activity_personal_page1"/>
+        <activity
+            android:name=".ui.home.ListGroups"
+            android:exported="false" />
+        <activity
+            android:name=".ui.home.LoadGroup"
+            android:exported="false" />
         <activity
             android:name=".activities.ScheduleTemplate"
-            android:exported="false">
-        </activity>
-
+            android:exported="false"/>
 
         <meta-data
             android:name="preloaded_fonts"

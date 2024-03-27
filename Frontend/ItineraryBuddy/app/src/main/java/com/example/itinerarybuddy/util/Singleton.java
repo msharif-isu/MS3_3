@@ -5,7 +5,9 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 
-/** Create a singleton class to ensure only one instantiation for our request queue given the context. */
+/** Create a singleton class for volley calls to ensure only one instantiation for our request queue given the context.
+ * @author Justin Sebahar
+ */
 public class Singleton {
 
     /** Saves the instance of our one class. */

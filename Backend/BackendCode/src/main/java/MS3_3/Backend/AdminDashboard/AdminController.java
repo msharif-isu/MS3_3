@@ -21,54 +21,58 @@ public class AdminController {
     UserRepository userRepository;
 
     @PutMapping("/Admin/Revoke/{adminUserName}/{userName}")
-    public User revokeAdmin(@PathVariable String adminUserName,@PathVariable String userName){
-        if(adminRepository.existsById(adminUserName) == true){
+    public User revokeAdmin(@PathVariable String adminUserName, @PathVariable String userName) {
+        if (adminRepository.existsById(adminUserName)) {
             adminRepository.deleteByUserName(userName);
             userRepository.findByUserName(userName).setUserType("User");
             userRepository.save(userRepository.findByUserName(userName));
-        }else{}
+        } else {
+        }
         return userRepository.findByUserName(userName);
     }
 
     @PostMapping("/Admin/Create")
-    public  Admin createPerson(@RequestBody Admin person) {
+    public Admin createPerson(@RequestBody Admin person) {
         person.setUserType("Ambassador");
         adminRepository.save(person);
-        userRepository.save(new User(person.getEmail(), person.getUserName(),person.getPassword(),person.getState(),person.getCity(),
+        userRepository.save(new User(person.getEmail(), person.getUserName(), person.getPassword(), person.getState(), person.getCity(),
                 person.getUserType()));
         return adminRepository.findByUserName(person.getUserName());
     }
 
     @PutMapping("/Admin/Grant/{adminUserName}/{userName}")
-    public Admin grantAdmin(@PathVariable String adminUserName, @PathVariable String userName){
-        if(adminRepository.existsById(adminUserName) == true){
+    public Admin grantAdmin(@PathVariable String adminUserName, @PathVariable String userName) {
+        if (adminRepository.existsById(adminUserName)) {
             userRepository.findByUserName(userName).setUserType("Admin");
             userRepository.save(userRepository.findByUserName(userName));
             adminRepository.save(new Admin(userRepository.findByUserName(userName)));
-        }else{}
+        } else {
+        }
         return adminRepository.findByUserName(userName);
     }
 
     @PutMapping("/Admin/DisablePosting/{adminUserName}/{accountToDisable}")
-    public User disablePosting(@PathVariable String adminUserName,@PathVariable String accountToDisable){
-        if(adminRepository.existsById(adminUserName) == true){
+    public User disablePosting(@PathVariable String adminUserName, @PathVariable String accountToDisable) {
+        if (adminRepository.existsById(adminUserName)) {
             userRepository.findByUserName(accountToDisable).blockPosts();
             userRepository.save(userRepository.findByUserName(accountToDisable));
-        }else{}
+        } else {
+        }
         return userRepository.findByUserName(accountToDisable);
     }
 
     @PutMapping("/Admin/EnablePosting/{adminUserName}/{accountToEnable}")
-    public User enablePosting(@PathVariable String adminUserName,@PathVariable String accountToEnable){
-        if(adminRepository.existsById(adminUserName) == true){
+    public User enablePosting(@PathVariable String adminUserName, @PathVariable String accountToEnable) {
+        if (adminRepository.existsById(adminUserName)) {
             userRepository.findByUserName(accountToEnable).EnablePosting();
             userRepository.save(userRepository.findByUserName(accountToEnable));
-        }else{}
+        } else {
+        }
         return userRepository.findByUserName(accountToEnable);
     }
 
     @PutMapping("/Users/FirstAdmin/{userName}")
-    public Admin changeInfo(@PathVariable String userName){
+    public Admin changeInfo(@PathVariable String userName) {
         userRepository.findByUserName(userName).setUserType("Admin");
         userRepository.save(userRepository.findByUserName(userName));
         adminRepository.save(new Admin(userRepository.findByUserName(userName)));
@@ -81,7 +85,7 @@ public class AdminController {
     }
 
     @DeleteMapping("/Admin/Remove/{userName}")
-    public String deleteAdmin(@PathVariable String userName){
+    public String deleteAdmin(@PathVariable String userName) {
         adminRepository.deleteByUserName(userName);
         userRepository.deleteByUserName(userName);
         return "Account " + userName + " Deleted";
@@ -89,10 +93,9 @@ public class AdminController {
 
     /**
      * Wait til Itinerary class is created
-    @DeleteMapping
-    public Admin deleteItinerary(){
+     @DeleteMapping public Admin deleteItinerary(){
 
-    }
-    */
+     }
+     */
 
 }
