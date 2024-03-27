@@ -5,7 +5,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
-import android.view.View;
 
 import com.example.itinerarybuddy.R;
 
@@ -19,11 +18,22 @@ public class DayCard extends AppCompatActivity {
     private ArrayList<String> dayContents;
 
 
+    /**
+     * Called when the activity is starting.
+     * <p>
+     * Initializes the activity layout, retrieves the number of days from the intent extra,
+     * generates day titles and contents, and sets up the RecyclerView with the adapter.
+     *
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down,
+     *                           this Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle).
+     *                           Otherwise, it is null.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_day_card);
 
+        // Retrieve the number of days from the intent extra
         int numOfDays = getIntent().getIntExtra("NUM_OF_DAYS", 0);
 
         recyclerView = findViewById(R.id.recyclerViewDayCard);
@@ -31,11 +41,13 @@ public class DayCard extends AppCompatActivity {
         dayTitles = new ArrayList<>();
         dayContents = new ArrayList<>();
 
+        // Generate day titles and contents
         for(int i = 1; i <= numOfDays; i++){
             dayTitles.add("Day " + i);
             dayContents.add("Schedule Content for Day " + i);
         }
 
+        // Initialize and set up the RecyclerView adapter
         dayCardAdapter = new DayCardAdapter(this, dayTitles, dayContents);
         recyclerView.setAdapter(dayCardAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
