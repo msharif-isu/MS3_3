@@ -115,6 +115,10 @@ public class Post_Itinerary {
         comments.add(comment1);
     }
 
+    public void setCaption(String newCaption) {
+
+        caption = newCaption;
+    }
 
     //Inner class to represent a comment with username
     public static class Comment{

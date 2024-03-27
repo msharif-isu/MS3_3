@@ -29,10 +29,8 @@ import com.example.itinerarybuddy.activities.WebSocketListener;
 import com.example.itinerarybuddy.activities.WebSocketManager;
 import com.example.itinerarybuddy.data.Itinerary;
 import com.example.itinerarybuddy.data.Post_Itinerary;
-import com.example.itinerarybuddy.data.UserData;
 import com.example.itinerarybuddy.databinding.FragmentDashboardBinding;
 
-import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ServerHandshake;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -51,7 +49,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-public class DashboardFragment extends Fragment implements WebSocketListener {
+public class DashboardFragment extends Fragment implements WebSocketListener, OnItemClickListener {
 
     private WebSocketManager webSocketManager;
     private FragmentDashboardBinding binding;
@@ -74,7 +72,7 @@ public class DashboardFragment extends Fragment implements WebSocketListener {
         LinearLayoutManager layoutManager = new LinearLayoutManager(requireContext());
         recyclerView.setLayoutManager(layoutManager);
 
-        postAdapter = new PostAdapter(posts, requireContext());
+        postAdapter = new PostAdapter(posts, requireContext(), this);
         recyclerView.setAdapter(postAdapter);
 
         connectWebSocket();
@@ -199,16 +197,68 @@ public class DashboardFragment extends Fragment implements WebSocketListener {
         builder.show();
     }
 
-
-   /* private void createPost(String selectedItinerary, String caption){
-
-        //Post_Itinerary newPost = new Post_Itinerary(UserData.getUsername(),"Just Now", selectedItinerary,caption );
-
-        Post_Itinerary newPost = new Post_Itinerary("Aina", "Just Now", selectedItinerary, caption );
-        posts.add(0, newPost);
-        postAdapter.notifyItemInserted(0);
+    @Override
+    public void onEditClicked(int position) {
+        // Call EditClicked method in DashboardFragment
+        EditClicked(position);
     }
-    */
+
+    @Override
+    public void onDeleteClicked(int position) {
+        // Call DeleteClicked method in DashboardFragment
+        DeleteClicked(position);
+    }
+
+
+    public void EditClicked(int position) {
+        // Get the post at the specified position
+        Post_Itinerary post = posts.get(position);
+
+        // Show a dialog for editing the caption
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Edit Caption");
+
+        EditText editText = new EditText(requireContext());
+        editText.setText(post.getCaption());
+        
+        builder.setView(editText);
+        builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Update the caption of the post
+                String newCaption = editText.getText().toString();
+                post.setCaption(newCaption);
+
+                // Update the RecyclerView
+                postAdapter.notifyItemChanged(position);
+
+                // You may want to send the updated post to the server here
+                // sendPostToServer(post);
+
+                dialog.dismiss();
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.show();
+    }
+
+    public void DeleteClicked(int position) {
+        // Remove the post from the list
+        posts.remove(position);
+
+        // Update the RecyclerView
+        postAdapter.notifyItemRemoved(position);
+
+        // You may want to send a delete request to the server here
+        // For example: sendDeleteRequest(postId);
+
+        Toast.makeText(requireContext(), "Post deleted", Toast.LENGTH_SHORT).show();
+    }
 
 
     private void fetchDestinations(){

@@ -1,14 +1,17 @@
 package com.example.itinerarybuddy.ui.dashboard;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.text.Html;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 
@@ -18,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.itinerarybuddy.R;
 import com.example.itinerarybuddy.data.Post_Itinerary;
 import com.example.itinerarybuddy.data.UserData;
+import com.example.itinerarybuddy.ui.home.CustomAdapter;
 
 import java.util.List;
 
@@ -26,10 +30,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     private List<Post_Itinerary> posts;
     private Context context;
 
+    private DashboardFragment fragment;
+
     // Constructor to initialize the adapter with a list of posts
-    public PostAdapter(List<Post_Itinerary> posts, Context context) {
+    public PostAdapter(List<Post_Itinerary> posts, Context context, DashboardFragment fragment) {
         this.posts = posts;
         this.context = context;
+        this.fragment = fragment;
     }
 
     // ViewHolder class to hold the views for each post item
@@ -44,11 +51,16 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         public ImageView commentIcon;
         public TextView moreComments;
 
+
         public TextView likeCountView;
         public ImageView likeImageView;
 
+
         public TextView saveCountView;
         public ImageView saveImageView;
+
+        public ImageView moreView;
+
 
 
         public PostViewHolder(View itemView) {
@@ -67,6 +79,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
             saveImageView = itemView.findViewById(R.id.icon_save);
             saveCountView = itemView.findViewById(R.id.save_count);
+
+            moreView = itemView.findViewById(R.id.icon_more);
+
         }
     }
 
@@ -79,7 +94,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     }
 
     @Override
-    public void onBindViewHolder(@NonNull PostViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull PostViewHolder holder, @SuppressLint("RecyclerView") int position) {
         // Get the data model based on position
         Post_Itinerary post = posts.get(position);
 
@@ -94,7 +109,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         StringBuilder seeComment = new StringBuilder();
         List<Post_Itinerary.Comment> showComment = post.getComments();
         int numCommentsToShow = Math.min(2, showComment.size());
-        for(int i = 0; i < numCommentsToShow; i++) {
+        for (int i = 0; i < numCommentsToShow; i++) {
             Post_Itinerary.Comment comment = showComment.get(i);
             seeComment.append("<b>")
                     .append(comment.getUsername())
@@ -105,7 +120,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         holder.commentsTextView.setText(android.text.Html.fromHtml(seeComment.toString()));
 
         // If there are more than 2 comments, show "View more comments" text
-        if(showComment.size() > 2) {
+        if (showComment.size() > 2) {
             holder.moreComments.setVisibility(View.VISIBLE);
             holder.moreComments.setText("View all comments");
         } else {
@@ -118,7 +133,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             public void onClick(View v) {
                 // Show all comments
                 StringBuilder allCommentsText = new StringBuilder();
-                for(Post_Itinerary.Comment comment: showComment) {
+                for (Post_Itinerary.Comment comment : showComment) {
                     allCommentsText.append("<b>")
                             .append(comment.getUsername())
                             .append("</b>  ")
@@ -165,19 +180,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             }
         });
 
-        // Inside onBindViewHolder method
-       /* StringBuilder commentsText = new StringBuilder();
-        for (Post_Itinerary.Comment comment : post.getComments()) {
-            // Append username in bold
-            commentsText.append("<b>")
-                    .append(comment.getUsername())
-                    .append("</b> ")
-                    .append(comment.getCommentText())
-                    .append("<br>"); // Add new line after each comment
-        }
-        holder.commentsTextView.setText(android.text.Html.fromHtml(commentsText.toString()));*/
-
-
         holder.saveCountView.setText(String.valueOf(post.getSavedCount()));
         if (post.isSaved()) {
             holder.saveImageView.setImageResource(R.drawable.ic_bookmark_aftr);
@@ -206,6 +208,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             }
         });
 
+        holder.moreView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showPopupMenu(v, position);
+            }
+        });
+
     }
 
     // Return the size of your dataset (invoked by the layout manager)
@@ -225,7 +234,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                 String commentText = input.getText().toString().trim();
                 if (!commentText.isEmpty()) {
 
-                   //String username = UserData.getUsername();
+                    //String username = UserData.getUsername();
                     String username = "Aina";
                     post.addComment(username, commentText);
                     notifyDataSetChanged();
@@ -244,10 +253,38 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         builder.show();
     }
 
+    private void showPopupMenu(View view, int position) {
+        PopupMenu popupMenu = new PopupMenu(context, view);
+        popupMenu.getMenuInflater().inflate(R.menu.itinerary_menu, popupMenu.getMenu());
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+
+                if (item.getItemId() == R.id.action_edit) {
+                    fragment.EditClicked(position);
+                    return true;
+                } else if (item.getItemId() == R.id.action_delete) {
+                    fragment.DeleteClicked(position);
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        });
+        popupMenu.show();
+    }
+
     @Override
     public int getItemCount() {
         return posts.size();
     }
 
+    public interface OnItemClickListener {
+        void onEditClicked(int position);
+        void onDeleteClicked(int position);
+    }
+
 }
+
+
 
