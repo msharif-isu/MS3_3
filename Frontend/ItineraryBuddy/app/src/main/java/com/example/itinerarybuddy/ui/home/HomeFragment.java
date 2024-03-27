@@ -9,8 +9,6 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.DatePicker;
 
@@ -118,14 +116,6 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
             @Override
             public void onClick(View v) {
                 showAddItineraryDialog();
-            }
-        });
-
-        ImageButton toGroups = root.findViewById(R.id.group_button);
-        toGroups.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(requireContext(), ListGroups.class));
             }
         });
 

@@ -1,27 +1,13 @@
 package com.example.itinerarybuddy.data;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import android.util.Log;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-
-import java.util.ArrayList;
-
-/** This class stores a static JSON object for the current app user. Includes getters for data.
- * @author Justin Sebahar
- */
+/** This class stores a static JSON object for the current app user. Includes getters for data. */
 public class UserData {
 
     /** JSON object to be used in the various activities. */
     public static JSONObject userInfo;
-
-    public static RequestQueue queue;
 
     /** Extract the username from the stored JSON. */
     public static String getUsername(){
@@ -29,7 +15,7 @@ public class UserData {
         try{
            username = userInfo.getString("userName");
         } catch (JSONException e) {
-            Log.e("Error: ", e.toString());
+            e.printStackTrace();
         }
         return username;
     }
@@ -40,7 +26,7 @@ public class UserData {
         try{
             email = userInfo.getString("email");
         } catch (JSONException e) {
-            Log.e("Error: ", e.toString());
+            e.printStackTrace();
         }
         return email;
     }
@@ -53,7 +39,7 @@ public class UserData {
         try{
             usertype = userInfo.getString("userType");
         } catch (JSONException e) {
-            Log.e("Error: ", e.toString());
+            e.printStackTrace();
         }
         return usertype;
     }
@@ -64,7 +50,7 @@ public class UserData {
         try{
             city = userInfo.getString("city");
         } catch (JSONException e) {
-            Log.e("Error: ", e.toString());
+            e.printStackTrace();
         }
         return city;
     }
@@ -75,44 +61,8 @@ public class UserData {
         try{
             state = userInfo.getString("username");
         } catch (JSONException e) {
-            Log.e("Error: ", e.toString());
+            e.printStackTrace();
         }
         return state;
-    }
-
-    /** Returns a list of groups the user is in. */
-    public static ArrayList<String> getGroupIds(){
-        ArrayList<String> groupIDs = new ArrayList<String>();
-        try{
-            JSONArray array = userInfo.getJSONArray("userCodes");
-            for(int i = 0; i < array.length(); i++){
-                groupIDs.add(array.getString(i));
-                Log.d("Group found: ", array.getString(i));
-            }
-        } catch (JSONException e) {
-            Log.e("Error: ", e.toString());
-        }
-        return groupIDs;
-    }
-
-    /**
-     * Used to make a request to the server to update the current user's data by resetting the userInfo field.
-     */
-    public static void updateUserData(){
-        String url = "http://coms-309-035.class.las.iastate.edu:8080/Users/" + getUsername();
-        JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                Log.d("Volley Response: ", response.toString());
-
-                userInfo = response;
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("Volley Error: ", error.toString());
-            }
-        });
-        queue.add(req);
     }
 }

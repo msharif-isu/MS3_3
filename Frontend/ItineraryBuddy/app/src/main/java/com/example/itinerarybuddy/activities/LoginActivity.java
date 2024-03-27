@@ -17,9 +17,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-/** This is the login page.
- * @author Justin Sebahar
- */
+/** This is the login page. */
 public class LoginActivity extends AppCompatActivity {
 
     /** Input field for username. */
@@ -73,7 +71,7 @@ public class LoginActivity extends AppCompatActivity {
         String enteredUsername = usernameInput.getText().toString();
         String enteredPassword = passwordInput.getText().toString();
         String url = "http://coms-309-035.class.las.iastate.edu:8080/Users/login/" + enteredUsername + "/" + enteredPassword;
-        //String url = "https://443da8f0-75e2-4be2-8e84-834c5d63eda6.mock.pstmn.io/user?username=Justin123&password=J1";
+
         JsonObjectRequest json = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {

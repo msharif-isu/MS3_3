@@ -1,16 +1,10 @@
 package MS3_3.Backend.Ambassador;
 
-import MS3_3.Backend.Groups.TravelGroup;
 import MS3_3.Backend.UserTypes.User;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-
-import java.util.ArrayList;
-import java.util.List;
-
 @Entity
-public class Ambassador {
+public class Ambassador{
     private String email;
 
     @Id
@@ -29,12 +23,7 @@ public class Ambassador {
     private int numLikes;
 
     private boolean canPost;
-
-    @OneToMany
-    private List<TravelGroup> groups_created;
-
-
-    public Ambassador(User user) {
+    public Ambassador(User user){
         this.userName = user.getUserName();
         this.email = user.getEmail();
         this.password = user.getPassword();
@@ -44,27 +33,12 @@ public class Ambassador {
         this.numPosts = user.getNumPosts();
         this.numLikes = user.getAccountLikes();
         this.canPost = true;
-        this.groups_created = new ArrayList<>();
     }
 
     public Ambassador() {
-        this.groups_created = new ArrayList<>();
     }
-
-    public List<TravelGroup> getGroups_created() {
-        return this.groups_created;
-    }
-
-    public void addGroup(TravelGroup groupName) {
-        this.groups_created.add(groupName);
-    }
-
-    public void removeGroup(TravelGroup groupName) {
-        this.groups_created.remove(groupName);
-    }
-
-    public void setGroups_created(List<TravelGroup> groups_created) {
-        this.groups_created = groups_created;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getUserName() {
@@ -104,20 +78,18 @@ public class Ambassador {
     public String getCity() {
         return city;
     }
-
     public String getUserType() {
         return userType;
     }
 
-    public int getAccountLikes() {
+    public int getAccountLikes(){
         return this.numLikes;
     }
 
-    public void addAccountLikes() {
+    public void addAccountLikes(){
         this.numLikes += 1;
     }
-
-    public void addUserPosts() {
+    public void addUserPosts(){
         this.numPosts += 1;
     }
 
@@ -125,7 +97,7 @@ public class Ambassador {
         return this.numPosts;
     }
 
-    public void blockPosts() {
+    public void blockPosts(){
         this.canPost = false;
     }
 
