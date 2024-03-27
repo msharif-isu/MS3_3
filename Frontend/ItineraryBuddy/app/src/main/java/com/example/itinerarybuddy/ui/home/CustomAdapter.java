@@ -18,27 +18,13 @@ import com.example.itinerarybuddy.R;
 
 import java.util.List;
 
-/**
- * CustomAdapter is an ArrayAdapter implementation for displaying a list of itineraries
- * in a ListView with customized layout.
- */
 public class CustomAdapter extends ArrayAdapter<String> {
 
-    private List<String> itineraries; //List of itineraries to display
-    private Context context;          //Context of the application
-    private OnEditClickListener editClickListener; //Listener for edit button click events
-    private OnDeleteClickListener deleteClickListener; //Listener for delete button click events
+    private List<String> itineraries;
+    private Context context;
+    private OnEditClickListener editClickListener;
+    private OnDeleteClickListener deleteClickListener;
 
-    /**
-     * Constructor for CustomAdapter.
-     *
-     * @param context            The context of the calling activity or fragment.
-     * @param resource           The resource ID for a layout file containing a TextView to use when
-     *                           instantiating views.
-     * @param objects            The objects to represent in the ListView.
-     * @param editClickListener Listener for edit button click events.
-     * @param deleteClickListener Listener for delete button click events.
-     */
     public CustomAdapter(@NonNull Context context, int resource, @NonNull List<String> objects, OnEditClickListener editClickListener, OnDeleteClickListener deleteClickListener) {
         super(context, resource, objects);
         this.context = context;
@@ -47,14 +33,6 @@ public class CustomAdapter extends ArrayAdapter<String> {
         this.deleteClickListener = deleteClickListener;
     }
 
-    /**
-     * Provides a view for an AdapterView (ListView, GridView, etc.).
-     *
-     * @param position    The position of the item within the adapter's data set of the item whose view we want.
-     * @param convertView The old view to reuse, if possible.
-     * @param parent      The parent that this view will eventually be attached to.
-     * @return A View corresponding to the data at the specified position.
-     */
     @NonNull
     @Override
     public View getView(int position, View convertView, @NonNull ViewGroup parent) {
@@ -94,12 +72,6 @@ public class CustomAdapter extends ArrayAdapter<String> {
         return convertView;
     }
 
-    /**
-     * Displays a popup menu when the icon is clicked.
-     *
-     * @param view     The anchor view for the popup menu.
-     * @param position The position of the item clicked.
-     */
     private void showPopupMenu(View view, int position) {
         PopupMenu popupMenu = new PopupMenu(context, view);
         popupMenu.getMenuInflater().inflate(R.menu.itinerary_menu, popupMenu.getMenu());
@@ -124,28 +96,18 @@ public class CustomAdapter extends ArrayAdapter<String> {
         popupMenu.show();
     }
 
-    /**
-     * Interface definition for a callback to be invoked when a delete button is clicked.
-     */
     public interface OnDeleteClickListener {
 
         void onDeleteClicked(int position);
     }
 
-    /**
-     * Interface definition for a callback to be invoked when an edit button is clicked.
-     */
     public interface OnEditClickListener {
         void onEditClicked(int position);
     }
 
-
-    /**
-     * ViewHolder class to hold views to avoid unnecessary calls to findViewById().
-     */
     private static class ViewHolder {
-        TextView textViewItinerary; // TextView to display itinerary information
-        ImageView imageViewIcon;  // ImageView for popup menu
+        TextView textViewItinerary;
+        ImageView imageViewIcon;
     }
 }
 

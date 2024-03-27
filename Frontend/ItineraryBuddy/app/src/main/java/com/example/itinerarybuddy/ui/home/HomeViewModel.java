@@ -9,27 +9,23 @@ import java.util.ArrayList;
 
 public class HomeViewModel extends ViewModel {
 
+    /*private final MutableLiveData<String> mText;
 
-    /**
-     * The list of itineraries stored in the ViewModel.
-     */
+    public HomeViewModel() {
+        mText = new MutableLiveData<>();
+        mText.setValue("This is home fragment");
+    }
+
+    public LiveData<String> getText() {
+        return mText;
+    }*/
+
     private final List<String> itineraries = new ArrayList<>();
 
-    /**
-     * Retrieves the list of itineraries.
-     *
-     * @return The list of itineraries stored in the ViewModel.
-     */
     public List<String> getItineraries(){
         return itineraries;
     }
 
-    /**
-     * Adds a new itinerary to the list.
-     * The new itinerary is added to the beginning of the list, making it the most recent itinerary.
-     *
-     * @param itinerary The itinerary to add to the list.
-     */
     public void addItinerary(String itinerary){
         itineraries.add(0, itinerary);
     }
