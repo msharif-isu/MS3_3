@@ -13,7 +13,7 @@ public class Post_Itinerary {
     public int saveCount;
     public boolean saveValue;
 
-    private ArrayList<String> comments;
+    private ArrayList<Comment> comments;
     public Post_Itinerary(String username, String timePosted, String postFile, String caption){
 
         this.username = username;
@@ -103,13 +103,38 @@ public class Post_Itinerary {
         return saveCount;
     }
 
-    public ArrayList<String> getComments() {
+    public ArrayList<Comment> getComments() {
 
         return comments;
 
     }
 
-    public void addComment(String comment) {
-        comments.add(comment);
+    public void addComment(String username, String comment) {
+
+        Comment comment1 = new Comment(username, comment);
+        comments.add(comment1);
     }
+
+
+    //Inner class to represent a comment with username
+    public static class Comment{
+
+        private String username;
+        private String commentText;
+
+        public Comment(String username, String commentText){
+
+            this.username = username;
+            this.commentText = commentText;
+        }
+
+        public String getUsername(){
+            return username;
+        }
+
+        public String getCommentText(){
+            return commentText;
+        }
+    }
+
 }

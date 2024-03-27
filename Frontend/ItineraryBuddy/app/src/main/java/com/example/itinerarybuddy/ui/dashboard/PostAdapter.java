@@ -3,6 +3,7 @@ package com.example.itinerarybuddy.ui.dashboard;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,11 +11,13 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.itinerarybuddy.R;
 import com.example.itinerarybuddy.data.Post_Itinerary;
+import com.example.itinerarybuddy.data.UserData;
 
 import java.util.List;
 
@@ -39,15 +42,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
         public TextView commentsTextView;
         public ImageView commentIcon;
+        public TextView moreComments;
 
         public TextView likeCountView;
         public ImageView likeImageView;
 
         public TextView saveCountView;
         public ImageView saveImageView;
-
-
-
 
 
         public PostViewHolder(View itemView) {
@@ -59,6 +60,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
             commentIcon = itemView.findViewById(R.id.icon_comment);
             commentsTextView = itemView.findViewById(R.id.text_comments);
+            moreComments = itemView.findViewById(R.id.more_comments);
 
             likeImageView = itemView.findViewById(R.id.icon_like);
             likeCountView = itemView.findViewById(R.id.like_count);
@@ -88,6 +90,46 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         holder.captionTextView.setText(post.getCaption());
         holder.commentsTextView.setText(post.getComments().toString());
 
+        // Show only first 2 comments initially
+        StringBuilder seeComment = new StringBuilder();
+        List<Post_Itinerary.Comment> showComment = post.getComments();
+        int numCommentsToShow = Math.min(2, showComment.size());
+        for(int i = 0; i < numCommentsToShow; i++) {
+            Post_Itinerary.Comment comment = showComment.get(i);
+            seeComment.append("<b>")
+                    .append(comment.getUsername())
+                    .append("</b>  ")
+                    .append(comment.getCommentText())
+                    .append("<br>");
+        }
+        holder.commentsTextView.setText(android.text.Html.fromHtml(seeComment.toString()));
+
+        // If there are more than 2 comments, show "View more comments" text
+        if(showComment.size() > 2) {
+            holder.moreComments.setVisibility(View.VISIBLE);
+            holder.moreComments.setText("View all comments");
+        } else {
+            holder.moreComments.setVisibility(View.GONE);
+        }
+
+        // Set click listener for "View More Comments" text
+        holder.moreComments.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Show all comments
+                StringBuilder allCommentsText = new StringBuilder();
+                for(Post_Itinerary.Comment comment: showComment) {
+                    allCommentsText.append("<b>")
+                            .append(comment.getUsername())
+                            .append("</b>  ")
+                            .append(comment.getCommentText())
+                            .append("<br>");
+                }
+                holder.commentsTextView.setText(android.text.Html.fromHtml(allCommentsText.toString()));
+                holder.moreComments.setVisibility(View.GONE); // Hide "View more comments" text after showing all comments
+            }
+        });
+
         holder.likeCountView.setText(String.valueOf(post.getLikeCount()));
         if (post.isLiked()) {
             holder.likeImageView.setImageResource(R.drawable.ic_like_after);
@@ -99,15 +141,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             @Override
             public void onClick(View v) {
 
-                if(post.isLiked()){
+                if (post.isLiked()) {
 
                     post.setLiked(false);
                     post.decreaseLikeCount();
-                    holder.likeCountView.setText("Liked: "+String.valueOf(post.getLikeCount()));
+                    holder.likeCountView.setText("Liked: " + String.valueOf(post.getLikeCount()));
                     holder.likeImageView.setImageResource(R.drawable.ic_like_before);
-                }
-
-                else{
+                } else {
 
                     post.setLiked(true);
                     post.increaseLikeCount();
@@ -125,6 +165,18 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             }
         });
 
+        // Inside onBindViewHolder method
+       /* StringBuilder commentsText = new StringBuilder();
+        for (Post_Itinerary.Comment comment : post.getComments()) {
+            // Append username in bold
+            commentsText.append("<b>")
+                    .append(comment.getUsername())
+                    .append("</b> ")
+                    .append(comment.getCommentText())
+                    .append("<br>"); // Add new line after each comment
+        }
+        holder.commentsTextView.setText(android.text.Html.fromHtml(commentsText.toString()));*/
+
 
         holder.saveCountView.setText(String.valueOf(post.getSavedCount()));
         if (post.isSaved()) {
@@ -137,15 +189,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             @Override
             public void onClick(View v) {
 
-                if(post.isSaved()){
+                if (post.isSaved()) {
 
                     post.setSaved(false);
                     post.decreaseSaveCount();
                     holder.saveCountView.setText("Saved: " + String.valueOf(post.getSavedCount()));
                     holder.saveImageView.setImageResource(R.drawable.ic_bookmark_bfr);
-                }
-
-                else{
+                } else {
 
                     post.setSaved(true);
                     post.increaseSaveCount();
@@ -159,31 +209,26 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     }
 
     // Return the size of your dataset (invoked by the layout manager)
-    @Override
-    public int getItemCount() {
-        return posts.size();
-    }
-
-    //Method to show comment dialog
-    private void showCommentDialog(PostViewHolder holder, Post_Itinerary post){
-
-        AlertDialog.Builder builder= new AlertDialog.Builder(context);
+    private void showCommentDialog(PostViewHolder holder, Post_Itinerary post) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("Add Comment");
 
-        //Set the input
+        // Set the input field
         final EditText input = new EditText(context);
         input.setHint("Enter your comment");
         builder.setView(input);
-
 
         // Set up the buttons
         builder.setPositiveButton("Post", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                String comment = input.getText().toString().trim();
-                if (!comment.isEmpty()) {
-                    post.addComment(comment);
-                    holder.commentsTextView.setText(post.getComments().toString());
+                String commentText = input.getText().toString().trim();
+                if (!commentText.isEmpty()) {
+
+                   //String username = UserData.getUsername();
+                    String username = "Aina";
+                    post.addComment(username, commentText);
+                    notifyDataSetChanged();
                 }
                 dialog.dismiss();
             }
@@ -198,5 +243,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
         builder.show();
     }
+
+    @Override
+    public int getItemCount() {
+        return posts.size();
+    }
+
 }
 

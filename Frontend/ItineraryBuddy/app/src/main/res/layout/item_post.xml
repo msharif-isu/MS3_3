@@ -147,15 +147,25 @@
             android:layout_height="wrap_content"
             android:text="Caption"
             android:textSize="16sp"
-            android:textColor="@color/black"/>
+            android:textColor="@color/black"
+           />
+
+        <TextView
+            android:id="@+id/more_comments"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="@android:color/darker_gray"/>
 
         <TextView
             android:id="@+id/text_comments"
+            android:layout_marginTop="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="View all 10 comments"
             android:textSize="14sp"
             android:textColor="@android:color/black"/>
+
     </LinearLayout>
 
 </LinearLayout>

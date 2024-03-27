@@ -144,9 +144,20 @@ public class DashboardFragment extends Fragment implements WebSocketListener {
         Spinner itinerarySpinner = dialogView.findViewById(R.id.itinerarySpinner);
 
         if (itinerarySpinner != null) {
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, destinations);
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            itinerarySpinner.setAdapter(adapter);
+
+            if (destinations.size() < 1) {
+                // If no itineraries, set a hint message
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, new String[]{"No Personal Itinerary to be Posted"});
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                itinerarySpinner.setAdapter(adapter);
+                itinerarySpinner.setEnabled(false); // Disable the spinner
+            } else {
+                // If there are itineraries, populate the spinner with destinations
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, destinations);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                itinerarySpinner.setAdapter(adapter);
+                itinerarySpinner.setEnabled(true); // Enable the spinner
+            }
         } else {
             Log.e("DashboardFragment", "itinerarySpinner is null");
         }
@@ -154,6 +165,7 @@ public class DashboardFragment extends Fragment implements WebSocketListener {
         builder.setPositiveButton("Post", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+
                 if (itinerarySpinner != null) {
                     String selectedItinerary = itinerarySpinner.getSelectedItem().toString();
                     String caption = captionEditText.getText().toString();
@@ -197,7 +209,6 @@ public class DashboardFragment extends Fragment implements WebSocketListener {
         postAdapter.notifyItemInserted(0);
     }
     */
-
 
 
     private void fetchDestinations(){
