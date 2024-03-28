@@ -40,10 +40,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-/**
- * This is the activity where a specific group will be displayed. The member can look at the group details, itinerary or join the chat.
- * @author Justin Sebahar
- */
 public class LoadGroup extends AppCompatActivity {
 
     /**

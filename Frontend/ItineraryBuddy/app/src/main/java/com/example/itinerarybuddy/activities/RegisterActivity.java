@@ -17,9 +17,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-/** This is where the users will register.
- * @author Justin Sebahar
- */
+/** This is where the users will register. */
 public class RegisterActivity extends AppCompatActivity {
 
     /** Text input for username. */
