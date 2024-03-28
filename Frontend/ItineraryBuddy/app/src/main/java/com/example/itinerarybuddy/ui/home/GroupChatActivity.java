@@ -1,4 +1,4 @@
-package com.example.itinerarybuddy.ui.dashboard;
+package com.example.itinerarybuddy.ui.home;
 
 import android.os.Bundle;
 import android.util.Log;

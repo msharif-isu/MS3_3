@@ -63,5 +63,6 @@
     <string name="send">Send</string>
     <string name="group_chat">Group Chat</string>
     <string name="back">Back</string>
+    <string name="group">group</string>
 
 </resources>

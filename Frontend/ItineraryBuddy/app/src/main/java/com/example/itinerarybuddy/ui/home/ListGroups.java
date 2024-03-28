@@ -1,4 +1,4 @@
-package com.example.itinerarybuddy.ui.dashboard;
+package com.example.itinerarybuddy.ui.home;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -34,10 +34,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.sql.Time;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Timer;
 
 public class ListGroups extends AppCompatActivity {
 
@@ -46,6 +45,9 @@ public class ListGroups extends AppCompatActivity {
      */
     protected static ArrayAdapter<Group> adapter;
 
+    /**
+     * List to display the groups.
+     */
     private ListView list;
 
     @Override
@@ -61,16 +63,8 @@ public class ListGroups extends AppCompatActivity {
         // Initialize adapter by configuring it with group data from UserData class
         adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1);
         UserData.queue = Volley.newRequestQueue(getApplicationContext());
-        UserData.initializeGroups(adapter);
+        initializeGroups();
 
-        /*
-        adapter.sort(new Comparator<String>() {
-            @Override
-            public int compare(String o1, String o2) {
-                return o2.compareTo(o1);
-            }
-        });
-        */
         list.setAdapter(adapter);
 
         // Click on any group listed to load its unique page
@@ -119,6 +113,44 @@ public class ListGroups extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void initializeGroups(){
+        ArrayList<String> ids = UserData.getGroupIds();
+        String url;
+        String id;
+        for(int i = 0; i < ids.size(); i++){
+            id = ids.get(i);
+            url = "http://coms-309-035.class.las.iastate.edu:8080/Group/" + id;
+            JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    Log.d("Volley Response: ", response.toString());
+                    appendAdapter(response);
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e("Volley Error: ", error.toString());
+                }
+            });
+            Singleton.getInstance(getApplicationContext()).addRequest(req);
+        }
+    }
+
+    /**
+     * Helper method for initializeGroups() to create a group object and add it to the list adapter.
+     * @param response JSON object to read in the data from.
+     */
+    protected static void appendAdapter(JSONObject response){
+        String groupName = Group.getGroupName(response);
+        String groupCode = Group.getGroupID(response);
+        String groupDestination = Group.getGroupDestination(response);
+        String groupDescription = Group.getGroupDescription(response);
+        String groupCreator = Group.getGroupAmbassador(response);
+        ArrayList<String> members = Group.getGroupMembers(response);
+        Group g = new Group(groupName, groupCode, groupDestination, groupDescription, groupCreator, members);
+        adapter.add(g);
     }
 
     /**
@@ -191,11 +223,10 @@ public class ListGroups extends AppCompatActivity {
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.PUT, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                //TODO: fix data on update
                 Log.d("Volley Response: ", response.toString());
                 UserData.updateUserData();
                 Toast.makeText(getApplicationContext(), "Group Joined!", Toast.LENGTH_LONG).show();
-                startActivity(new Intent(getApplicationContext(), ListGroups.class));
+                updateList(response);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -235,8 +266,8 @@ public class ListGroups extends AppCompatActivity {
             public void onResponse(JSONObject response) {
                 Log.d("Volley Response: ", response.toString());
                 UserData.updateUserData();
-                updateList();
-                //startActivity(new Intent(getApplicationContext(), ListGroups.class));
+                Toast.makeText(getApplicationContext(), "Group Created!", Toast.LENGTH_LONG).show();
+                updateList(response);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -265,14 +296,12 @@ public class ListGroups extends AppCompatActivity {
             }
         };
         Singleton.getInstance(getApplicationContext()).addRequest(req);
-
-        recreate();
     }
 
-    private void updateList(){
-        adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1);
-        UserData.initializeGroups(adapter);
-        list.setAdapter(adapter);
-
+    protected void updateList(JSONObject response){
+        appendAdapter(response);
+        adapter.notifyDataSetChanged();
+        adapter.getItem(adapter.getCount()-1);
+        list.performItemClick(list, adapter.getCount()-1, (adapter.getItemId(adapter.getCount()-1)));
     }
 }
