@@ -1,4 +1,4 @@
-package MS3_3.Backend.chat;
+package MS3_3.Backend.TravelGroupChat;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

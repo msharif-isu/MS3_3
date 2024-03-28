@@ -1,16 +1,8 @@
-package MS3_3.Backend.GroupChat;
+package MS3_3.Backend.TravelGroupChat;
 
 import java.util.Date;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
-import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
+import jakarta.persistence.*;
 
 import lombok.Data;
 
@@ -18,12 +10,13 @@ import lombok.Data;
 @Table(name = "messages")
 @Data
 public class Message {
-	@Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
     @Column
     private String userName;
+
 
     @Lob
     private String content;
@@ -31,21 +24,35 @@ public class Message {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "sent")
     private Date sent = new Date();
-	
+/**
+    @ManyToOne
+    @JoinColumn(name = "travel_group_id")
+    private TravelGroup travelGroup;
+*/
+    private int groupId;
 	
 	public Message() {};
 	
-	public Message(String userName, String content) {
+	public Message(String userName, String content,int groupId) {
 		this.userName = userName;
 		this.content = content;
+        this.groupId = groupId;
 	}
 
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
+    }
+
+    public int getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(int id) {
+        this.groupId = id;
     }
 
     public String getUserName() {

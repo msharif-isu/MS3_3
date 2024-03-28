@@ -1,6 +1,5 @@
-package MS3_3.Backend.chat;
+package MS3_3.Backend.TravelGroupChat;
 
-import MS3_3.Backend.Groups.TravelGroup;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

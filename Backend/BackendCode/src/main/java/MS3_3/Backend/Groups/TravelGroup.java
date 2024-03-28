@@ -2,12 +2,12 @@ package MS3_3.Backend.Groups;
 
 
 import MS3_3.Backend.Ambassador.Ambassador;
+import MS3_3.Backend.Itinerary.Itinerary;
 import MS3_3.Backend.UserTypes.User;
-import MS3_3.Backend.chat.Message;
+import MS3_3.Backend.TravelGroupChat.Message;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
-import java.net.http.WebSocket;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +15,10 @@ import java.util.List;
 public class TravelGroup {
 
     private String travelGroupName;
+
+    @OneToOne
+    @JoinColumn(name = "shareCode")
+    private Itinerary itinerary;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
