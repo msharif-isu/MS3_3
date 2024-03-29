@@ -19,11 +19,17 @@ import com.example.itinerarybuddy.data.UserData;
 import com.example.itinerarybuddy.util.ChatWebSockets.ChatWebsocketManager;
 import com.example.itinerarybuddy.util.ChatWebSockets.WebsocketListener;
 
+import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class GroupChatActivity extends AppCompatActivity implements WebsocketListener {
+
+    private Group group;
+
+    private ChatWebsocketManager chat;
 
     private ListView chatText;
 
@@ -51,15 +57,16 @@ public class GroupChatActivity extends AppCompatActivity implements WebsocketLis
         int position;
         if (bundle != null) {
             position = Integer.parseInt(Objects.requireNonNull(bundle.getString("POSITION")));
-            Group group = ListGroups.adapter.getItem(position);
+            group = ListGroups.adapter.getItem(position);
 
             assert group != null;
             String text = group.getTravelGroupName() + "Group Chat";
             title.setText(text);
         }
 
-        ChatWebsocketManager chat = new ChatWebsocketManager(GroupChatActivity.this);
-        chat.connect("ws://10.0.2.2:8080/chat/" + UserData.getUsername());
+        chat = new ChatWebsocketManager(GroupChatActivity.this);
+        String ws = "ws://coms-309-035.class.las.iastate.edu:8080/chat/" + group.getTravelGroupID() + "/" + UserData.getUsername();
+        chat.connect(ws);
 
         send.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,7 +91,22 @@ public class GroupChatActivity extends AppCompatActivity implements WebsocketLis
     @Override
     public void onMessage(String msg) {
         runOnUiThread(() -> {
-            chatAdapter.add(msg);
+            ArrayList<String> messages = new ArrayList<String>();
+            StringBuilder m = new StringBuilder();
+            for(int i = 0; i < msg.length(); i++){
+                if(msg.charAt(i) == '\n'){
+                    messages.add(m.toString());
+                    m = new StringBuilder();
+                }
+                else{
+                    m.append(msg.charAt(i));
+                }
+            }
+
+            for(String s : messages){
+                chatAdapter.add(s);
+            }
+
             chatAdapter.notifyDataSetChanged();
         });
     }
