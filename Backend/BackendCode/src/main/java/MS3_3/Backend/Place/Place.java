@@ -22,7 +22,9 @@ public class Place {
     private String endTime;
 
 
-    public Place() {}
+    public Place() {
+    }
+
     public Place(String placeName, String startTime, String endTime, Day day) {
         this.placeName = placeName;
         this.startTime = startTime;
@@ -39,25 +41,35 @@ public class Place {
         return day;
     }
 
-    public String getPlaceName() { return placeName; }
+    public String getPlaceName() {
+        return placeName;
+    }
 
-    public String getStartTime() { return startTime; }
+    public String getStartTime() {
+        return startTime;
+    }
 
-    public String getEndTime() { return endTime; }
+    public String getEndTime() {
+        return endTime;
+    }
 
 
     public void setUniqueCode(int uniqueCode) {
         this.uniqueCode = uniqueCode;
     }
+
     public void setDay(Day day) {
         this.day = day;
     }
+
     public void setPlaceName(String placeName) {
         this.placeName = placeName;
     }
+
     public void setStartTime(String startTime) {
         this.startTime = startTime;
     }
+
     public void setEndTime(String endTime) {
         this.endTime = endTime;
     }

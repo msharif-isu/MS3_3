@@ -31,9 +31,6 @@ public class TravelGroup {
     private String travelGroupAmbassador;
 
     private String travelGroupDescription;
-    @ElementCollection(fetch = FetchType.EAGER)
-    //@OneToMany(mappedBy = "travelGroup", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
-    private List<Message> chatMessages;
 
     @ManyToMany(mappedBy = "groupCodes")
     private List<User> members;
@@ -51,28 +48,10 @@ public class TravelGroup {
         this.travelGroupAmbassador = userName;
         this.travelGroupDescription = groupDescription;
         this.members = new ArrayList<>();
-        this.chatMessages = new ArrayList<>();
     }
 
     public TravelGroup() {
         this.members = new ArrayList<>();
-        this.chatMessages = new ArrayList<>();
-    }
-
-    public List<Message> getChatMessages() {
-        return this.chatMessages;
-    }
-
-    public void setChatMessages(List<Message> chatMessages) {
-        this.chatMessages = chatMessages;
-    }
-
-    public void addChatMessages(Message chat) {
-        this.chatMessages.add(chat);
-    }
-
-    public void deleteChatMessages(Message chat) {
-        this.chatMessages.remove(chat);
     }
 
     public List<User> getMembers() {

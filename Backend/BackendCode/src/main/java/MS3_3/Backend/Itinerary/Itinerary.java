@@ -46,15 +46,25 @@ public class Itinerary {
         this.days = days;
     }
 
-    public int getShareCode() { return shareCode; }
+    public int getShareCode() {
+        return shareCode;
+    }
 
-    public List<Day> getDays() { return days; }
+    public List<Day> getDays() {
+        return days;
+    }
 
-    public String getItineraryName() { return itineraryName; }
+    public String getItineraryName() {
+        return itineraryName;
+    }
 
-    public String getStartDate() { return startDate; }
+    public String getStartDate() {
+        return startDate;
+    }
 
-    public String getEndDate() { return endDate; }
+    public String getEndDate() {
+        return endDate;
+    }
 
 
     public void setShareCode(int shareCode) {
@@ -65,7 +75,9 @@ public class Itinerary {
         this.days = days;
     }
 
-    public void addDay(Day day) { days.add(day); }
+    public void addDay(Day day) {
+        days.add(day);
+    }
 
     public void setItineraryName(String itineraryName) {
         this.itineraryName = itineraryName;

@@ -2,6 +2,8 @@ package MS3_3.Backend.TravelGroupChat;
 
 import java.util.Date;
 
+import MS3_3.Backend.Groups.TravelGroup;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import lombok.Data;
@@ -24,20 +26,21 @@ public class Message {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "sent")
     private Date sent = new Date();
-/**
-    @ManyToOne
-    @JoinColumn(name = "travel_group_id")
-    private TravelGroup travelGroup;
-*/
+    /**
+     * @ManyToOne
+     * @JoinColumn(name = "travel_group_id")
+     * @JsonIgnore private TravelGroup travelGroup;
+     */
     private int groupId;
-	
-	public Message() {};
-	
-	public Message(String userName, String content,int groupId) {
-		this.userName = userName;
-		this.content = content;
+
+    public Message() {
+    }
+
+    public Message(String userName, String content, int groupId) {
+        this.userName = userName;
+        this.content = content;
         this.groupId = groupId;
-	}
+    }
 
     public int getId() {
         return id;
@@ -79,5 +82,5 @@ public class Message {
         this.sent = sent;
     }
 
-    
+
 }

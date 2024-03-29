@@ -38,11 +38,6 @@ public class TravelGroupController {
         return travelGroupRepository.findById(GroupId);
     }
 
-    @GetMapping("/Group/Chat/{GroupId}")
-    public List<Message> getGroupChat(@PathVariable int GroupId) {
-        return travelGroupRepository.findById(GroupId).getChatMessages();
-    }
-
     @PostMapping("/Group")
     public TravelGroup createNewGroup(@RequestBody TravelGroup group) {
         if (ambassadorRepository.findByUserName(group.getTravelGroupAmbassador()) != null) {
@@ -73,13 +68,6 @@ public class TravelGroupController {
         return travelGroupRepository.findById(groupId);
     }
 
-    @PutMapping("/Group/chat/{groupId}")
-    public TravelGroup updateGroupChat(@PathVariable int groupId) {
-        travelGroupRepository.findById(groupId).setChatMessages(messageRepository.findAllByGroupId(groupId));
-        travelGroupRepository.save(travelGroupRepository.findById(groupId));
-        return travelGroupRepository.findById(groupId);
-    }
-
     @PutMapping("/Group/AddUser/{groupId}/{username}")
     public TravelGroup addMember(@PathVariable int groupId, @PathVariable String username) {
         TravelGroup group = travelGroupRepository.findById(groupId);
@@ -107,13 +95,12 @@ public class TravelGroupController {
     @DeleteMapping("/Group")
     public TravelGroup deleteGroup(@PathVariable int groupId, @PathVariable String username) {
         TravelGroup group = travelGroupRepository.findById(groupId);
-        if(adminRepository.findByUserName(username) == null){
+        if (adminRepository.findByUserName(username) == null) {
             return group;
-        }
-        else{
-            int i =0;
+        } else {
+            int i = 0;
             List<User> memberList = travelGroupRepository.findById(groupId).getMembers();
-            while(memberList.size() > i){
+            while (memberList.size() > i) {
                 User currUser = memberList.get(i);
                 userRepository.findByUserName(currUser.getUserName()).removeUserCodes(groupId);
                 userRepository.findByUserName(currUser.getUserName()).removeGroupCodes(travelGroupRepository.findById(groupId));
