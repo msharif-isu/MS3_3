@@ -11,13 +11,18 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.Request;
@@ -46,6 +51,12 @@ public class LoadGroup extends AppCompatActivity {
      * This is the travel group object that this page represents. Passed in from the ListGroups list adapter and displayed here.
      */
     private Group group;
+
+    private ActivityResultLauncher<String> getImage;
+
+    private View editView;
+
+    private ImageView image;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,6 +144,15 @@ public class LoadGroup extends AppCompatActivity {
                 //TODO: group chat listener
             }
         });
+
+        editView = DialogCreateGroupBinding.inflate(getLayoutInflater()).getRoot();
+        image = editView.findViewById(R.id.group_image_select);
+        getImage = registerForActivityResult(new ActivityResultContracts.GetContent(), uri -> {
+            if(uri != null){
+                image.setImageURI(uri);
+                Toast.makeText(getApplicationContext(), "Image Selected!", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     /**
@@ -172,15 +192,17 @@ public class LoadGroup extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.layout.dialog_create_group);
         builder.setTitle("Edit Travel Group");
 
-        View v = DialogCreateGroupBinding.inflate(getLayoutInflater()).getRoot();
-        builder.setView(v);
+        builder.setView(editView);
 
-        EditText nameInput = v.findViewById(R.id.group_name_input);
+        EditText nameInput = editView.findViewById(R.id.group_name_input);
         nameInput.setText(group.getTravelGroupName());
-        EditText destinationInput = v.findViewById(R.id.group_destination_input);
+        EditText destinationInput = editView.findViewById(R.id.group_destination_input);
         destinationInput.setText(group.getTravelGroupDestination());
-        EditText descriptionInput = v.findViewById(R.id.group_description_input);
+        EditText descriptionInput = editView.findViewById(R.id.group_description_input);
         descriptionInput.setText(group.getTravelGroupDescription());
+
+        Button chooseImage = editView.findViewById(R.id.choose_image);
+        chooseImage.setOnClickListener(execute -> getImage.launch("image/*"));
 
         builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
             @Override

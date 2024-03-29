@@ -60,5 +60,8 @@
     <string name="group_members">Group Members</string>
     <string name="edit_travel_group">Edit Travel Group</string>
     <string name="group">group</string>
+    <string name="select_group_cover_image">Select Group Cover Image</string>
+    <string name="choose_a_picture">Choose a Picture</string>
+    <string name="group_image">Group Image</string>
 
 </resources>
