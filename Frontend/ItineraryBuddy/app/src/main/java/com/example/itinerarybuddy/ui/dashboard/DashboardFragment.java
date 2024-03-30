@@ -2,6 +2,7 @@ package com.example.itinerarybuddy.ui.dashboard;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -22,16 +23,22 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.android.volley.Request;
+import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.itinerarybuddy.R;
+import com.example.itinerarybuddy.activities.SavedPost;
 import com.example.itinerarybuddy.activities.WebSocketListener;
 import com.example.itinerarybuddy.activities.WebSocketManager;
 import com.example.itinerarybuddy.data.Itinerary;
 import com.example.itinerarybuddy.data.Post_Itinerary;
 import com.example.itinerarybuddy.data.Spinner_ItineraryInfo;
 import com.example.itinerarybuddy.databinding.FragmentDashboardBinding;
+import com.example.itinerarybuddy.util.Singleton;
 
 import org.java_websocket.handshake.ServerHandshake;
 import org.json.JSONArray;
@@ -40,6 +47,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 
 import android.os.Handler;
@@ -50,6 +58,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
+
 
 public class DashboardFragment extends Fragment implements WebSocketListener, OnItemClickListener {
 
@@ -89,14 +98,46 @@ public class DashboardFragment extends Fragment implements WebSocketListener, On
             }
         });
 
-        fetch_Destinations_TripCode();
+        ImageView savedContent = root.findViewById(R.id.savedContent);
+
+        savedContent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(requireContext(), SavedPost.class);
+                startActivity(intent);
+            }
+        });
+
+        GET_previousPosts();
+        GET_fetch_Destinations_TripCode();
         loadPosts();
 
-        startUpdateTimeTimer();
+        //startUpdateTimeTimer();
 
         return root;
     }
 
+    public static String generatePostID(){
+
+        String letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        String numbers = "0123456789";
+
+        Random random = new Random();
+
+        StringBuilder postIDBuilder = new StringBuilder();
+
+        //Generate 3 random letters
+        for(int i = 0; i < 3; i++){
+            postIDBuilder.append(letters.charAt(random.nextInt(letters.length())));
+        }
+
+        for(int i = 0; i < 4; i++){
+            postIDBuilder.append(numbers.charAt(random.nextInt(numbers.length())));
+        }
+
+        return postIDBuilder.toString();
+    }
     private void connectWebSocket() {
         String serverUrl = BASE_URL + "Aina"; // Adjust this based on your requirements
         WebSocketManager.getInstance().connectWebSocket(serverUrl);
@@ -111,13 +152,13 @@ public class DashboardFragment extends Fragment implements WebSocketListener, On
         try {
             JSONObject jsonObject = new JSONObject(message);
             String username = jsonObject.getString("username");
-            String timePosted = jsonObject.getString("timePosted");
+            String postId = jsonObject.getString("postID");
             String itinerary = jsonObject.getString("itinerary");
             String tripCode = jsonObject.getString("tripCode");
             int numDays = jsonObject.getInt("number of days");
             String caption = jsonObject.getString("caption");
 
-            return new Post_Itinerary(username, timePosted, itinerary, tripCode, numDays, caption);
+            return new Post_Itinerary(username, itinerary, tripCode, numDays, caption, postId);
         } catch (JSONException e) {
             e.printStackTrace();
             return null;
@@ -200,10 +241,12 @@ public class DashboardFragment extends Fragment implements WebSocketListener, On
                         return;
                     }
 
+                    String postID = generatePostID();
 
                     //Post_Itinerary newPost = new Post_Itinerary(UserData.getUsername(),"Just Now", selectedItinerary,caption );
-                    Post_Itinerary newPost = new Post_Itinerary("Aina", "Just Now", destination, choosen_tripCode, choosen_numDays, caption );
+                    Post_Itinerary newPost = new Post_Itinerary("Aina", destination, choosen_tripCode, choosen_numDays, caption, postID);
 
+                    POST_newPost(newPost);
                     WebSocketManager.getInstance().sendPost(newPost);
 
                     posts.add(0, newPost);
@@ -222,12 +265,138 @@ public class DashboardFragment extends Fragment implements WebSocketListener, On
             }
         });
 
+
         builder.show();
 
     }
 
+    private void POST_newPost(Post_Itinerary post){
 
-    @Override
+        //String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary/Share" + username;
+        String url = "https://1064bd8c-7f0f-4802-94f1-71b8b5568975.mock.pstmn.io/Itinerary/Share";
+
+        // Create a new JSONObject to hold the post data
+        JSONObject postData = new JSONObject();
+        try {
+            postData.put("username", post.getUsername());
+            postData.put("postFile", post.getPostFile());
+            postData.put("postID", post.getPostID());
+            postData.put("tripCode", post.getTripCode());
+            postData.put("number of days", post.getDays());
+            postData.put("caption", post.getCaption());
+            postData.put("likeCount", post.getLikeCount());
+            postData.put("saveCount", post.getSavedCount());
+            // Convert comments list to JSON array
+            JSONArray commentsArray = new JSONArray();
+            for (Post_Itinerary.Comment comment : post.getComments()) {
+                JSONObject commentObject = new JSONObject();
+                commentObject.put("username", comment.getUsername());
+                commentObject.put("commentText", comment.getCommentText());
+                commentsArray.put(commentObject);
+            }
+            postData.put("comments", commentsArray);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, postData,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("Volley Response: ", response.toString());
+                        Toast.makeText(requireContext(), "Posted!", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("Volley Error POST: ", error.toString());
+                        Toast.makeText(requireContext(), "Error posting itinerary", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+        // Add the request to the RequestQueue
+        Singleton.getInstance(requireContext()).addRequest(jsonObjectRequest);
+    }
+
+    private void GET_previousPosts() {
+        // URL for fetching previous posts
+
+        //String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary/Share" + username;
+        String url = "https://1064bd8c-7f0f-4802-94f1-71b8b5568975.mock.pstmn.io/Itinerary/Share";
+
+        // RequestQueue for handling Volley requests
+        RequestQueue queue = Volley.newRequestQueue(requireContext());
+
+        // Create a GET request
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        // Handle successful response
+                        try {
+                            JSONArray postsArray = response.getJSONArray("posts");
+                            // Iterate through the array of posts
+                            for (int i = 0; i < postsArray.length(); i++) {
+                                JSONObject postObject = postsArray.getJSONObject(i);
+                                // Parse each post from the JSON object
+                                Post_Itinerary post = parsePostFromJson(postObject);
+                                // Add the parsed post to your list of posts
+                                posts.add(post);
+                            }
+                            // Notify the adapter of data change
+                            postAdapter.notifyDataSetChanged();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Toast.makeText(requireContext(), "Error parsing JSON response", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                // Handle errors in the response
+                Log.e("Volley Error GET: ", error.toString());
+                Toast.makeText(requireContext(), "Error fetching previous posts", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // Add the request to the RequestQueue
+        queue.add(jsonObjectRequest);
+    }
+
+    private Post_Itinerary parsePostFromJson(JSONObject jsonObject) {
+        try {
+            String username = jsonObject.getString("username");
+            String postFile = jsonObject.getString("postFile");
+            String postID = jsonObject.getString("postID");
+            String tripCode = jsonObject.getString("tripCode");
+            int numOfDays = jsonObject.getInt("number of days");
+            String caption = jsonObject.getString("caption");
+
+
+            JSONArray commentsArray = jsonObject.getJSONArray("comments");
+            List<Post_Itinerary.Comment> comments = new ArrayList<>();
+
+            // Iterate through the comments array
+            for (int j = 0; j < commentsArray.length(); j++) {
+                JSONObject commentObject = commentsArray.getJSONObject(j);
+                String commenterUsername = commentObject.getString("username");
+                String commentText = commentObject.getString("commentText");
+                // Create a Comment object and add it to the comments list
+                comments.add(new Post_Itinerary.Comment(commenterUsername, commentText));
+            }
+
+            // Create and return a new Post_Itinerary object using the constructor
+            return new Post_Itinerary(username, postFile, tripCode, numOfDays, caption, postID);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+        @Override
     public void onEditClicked(int position) {
         // Call EditClicked method in DashboardFragment
         EditClicked(position);
@@ -259,6 +428,8 @@ public class DashboardFragment extends Fragment implements WebSocketListener, On
                 String newCaption = editText.getText().toString();
                 post.setCaption(newCaption);
 
+                PUT_editCaption(post, newCaption);
+
                 // Update the RecyclerView
                 postAdapter.notifyItemChanged(position);
 
@@ -277,8 +448,49 @@ public class DashboardFragment extends Fragment implements WebSocketListener, On
         builder.show();
     }
 
+    private void PUT_editCaption(Post_Itinerary post, String newCaption){
+
+
+        //String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary/Share/" + username + post.getPostID();
+        String url = "https://1064bd8c-7f0f-4802-94f1-71b8b5568975.mock.pstmn.io/Itinerary/Share" + post.getPostID();
+        JSONObject captionData = new JSONObject();
+
+        try{
+            captionData.put("caption", newCaption);
+
+        }catch (JSONException e){
+            e.printStackTrace();
+           // Toast.makeText(requireContext(), "Error updating JSON file", Toast.LENGTH_SHORT).show();
+        }
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, captionData,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        // Handle successful response
+                        Log.d("Volley Response", "Caption updated successfully");
+                        Toast.makeText(requireContext(), "Caption updated successfully!", Toast.LENGTH_SHORT).show();
+                    }
+                },
+
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // Handle errors in the response
+                        Log.e("Volley Error", "Error updating caption: " + error.toString());
+                        Toast.makeText(requireContext(), "Error updating caption", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+        Singleton.getInstance(requireContext()).addRequest(jsonObjectRequest);
+    }
     public void DeleteClicked(int position) {
         // Remove the post from the list
+
+        Post_Itinerary deleting_post = posts.get(position);
+        String postId = deleting_post.getPostID();
+
         posts.remove(position);
 
         // Update the RecyclerView
@@ -287,11 +499,38 @@ public class DashboardFragment extends Fragment implements WebSocketListener, On
         // You may want to send a delete request to the server here
         // For example: sendDeleteRequest(postId);
 
-        Toast.makeText(requireContext(), "Post deleted", Toast.LENGTH_SHORT).show();
+        DELETE_post(postId);
+
+        //Toast.makeText(requireContext(), "Post deleted", Toast.LENGTH_SHORT).show();
+    }
+
+    private void DELETE_post(String postID){
+
+        //String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary/Share/" + username + postID;
+        String url = "https://1064bd8c-7f0f-4802-94f1-71b8b5568975.mock.pstmn.io/Itinerary/Share" + postID;
+
+        StringRequest stringRequest = new StringRequest(Request.Method.DELETE, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+
+                        Log.d("Volley Response", "Post deleted successfully");
+                        Toast.makeText(requireContext(), "Post deleted successfully!", Toast.LENGTH_SHORT).show();
+                    }
+                },
+
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("Volley Error", "Error deleting post: " + error.toString());
+                        Toast.makeText(requireContext(), "Error deleting post", Toast.LENGTH_SHORT).show();
+                    }
+                });
+        Singleton.getInstance(requireContext()).addRequest(stringRequest);
     }
 
 
-    private void fetch_Destinations_TripCode(){
+    private void GET_fetch_Destinations_TripCode(){
 
         //String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary/" + username;
         String url = "https://5569939f-7918-4af9-937a-86edcfe9bc7f.mock.pstmn.io/Itinerary/GetInfo";
@@ -341,7 +580,7 @@ public class DashboardFragment extends Fragment implements WebSocketListener, On
     private void loadPosts() {
         // Fetch posts from backend or database
         // For demo, let's add some sample posts
-        posts.add(new Post_Itinerary("user1", "2 hours ago", "post1.jpg", "12345678", 2, "This is the first post."));
+        posts.add(new Post_Itinerary("user1", "post1.jpg", "12345678", 2, "This is the first post.", "ABC1234"));
         //posts.add(new Post_Itinerary("user2", "1 hour ago", "post2.jpg", "This is the second post."));
         //posts.add(new Post_Itinerary("user3", "30 minutes ago", "post3.jpg", "This is the third post."));
 
@@ -350,7 +589,7 @@ public class DashboardFragment extends Fragment implements WebSocketListener, On
     }
 
 
-    private void startUpdateTimeTimer() {
+   /* private void startUpdateTimeTimer() {
         handler = new Handler(Looper.getMainLooper());
         updateTimeRunnable = new Runnable() {
             @Override
@@ -397,7 +636,7 @@ public class DashboardFragment extends Fragment implements WebSocketListener, On
                 e.printStackTrace();
             }
         }
-    }
+    }*/
 
 
     @Override
@@ -412,11 +651,24 @@ public class DashboardFragment extends Fragment implements WebSocketListener, On
         handleWebSocketMessage(message);
     }
 
+
     private void handleWebSocketMessage(String message) {
+
         // Parse the message received from the WebSocket server
         Post_Itinerary newPost = parsePostFromMessage(message);
         if (newPost != null) {
-            // Add the new post to the list and notify the adapter
+            // Check if the post already exists in the list
+            for (Post_Itinerary post : posts) {
+                if (post.getUsername().equals(newPost.getUsername()) && post.getTripCode().equals(newPost.getTripCode())) {
+                    // Update the existing post with the new data
+                    post.setLikeCount(newPost.getLikeCount());
+                    post.setSaveCount(newPost.getSavedCount());
+                    // Notify the adapter of the data change
+                    postAdapter.notifyDataSetChanged();
+                    return; // Exit the loop since the post has been found and updated
+                }
+            }
+            // If the post does not exist in the list, add it
             posts.add(0, newPost);
             postAdapter.notifyItemInserted(0);
         }

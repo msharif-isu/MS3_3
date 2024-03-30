@@ -15,17 +15,21 @@ public class Post_Itinerary {
     public String tripCode;
     public int numDays;
 
+    public String postID;
+
     private ArrayList<Comment> comments;
-    public Post_Itinerary(String username, String timePosted, String postFile, String tripCode, int numDays, String caption){
+    public Post_Itinerary(String username, String postFile, String tripCode, int numDays, String caption, String postID){
 
         this.username = username;
-        this.timePosted = timePosted;
+        //this.timePosted = timePosted;
 
         this.postFile = postFile;
         this.tripCode  = tripCode;
         this.numDays = numDays;
 
         this.caption = caption;
+
+        this.postID = postID;
 
         this.likeCount = 0;
         this.likeValue = false;
@@ -36,6 +40,9 @@ public class Post_Itinerary {
         this.comments = new ArrayList<>();
     }
 
+    public String getPostID(){
+        return postID;
+    }
     public String getUsername(){
         return username;
     }
@@ -70,6 +77,12 @@ public class Post_Itinerary {
     public boolean isLiked() {
 
         return likeValue;
+    }
+
+    public void setLikeCount(int numLike){
+
+        likeCount = numLike;
+
     }
 
     public int getLikeCount() {
@@ -108,11 +121,16 @@ public class Post_Itinerary {
         saveCount--;
     }
 
+
     public boolean isSaved() {
 
         return saveValue;
     }
 
+    public void setSaveCount(int numSave){
+
+        saveCount = numSave;
+    }
     public int getSavedCount() {
 
         return saveCount;

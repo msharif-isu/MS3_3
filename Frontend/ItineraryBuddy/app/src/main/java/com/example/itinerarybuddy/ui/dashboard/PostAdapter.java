@@ -68,6 +68,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
         public PostViewHolder(View itemView) {
             super(itemView);
+
             usernameTextView = itemView.findViewById(R.id.text_username);
             timePostedTextView = itemView.findViewById(R.id.text_time_posted);
             postFileTextView = itemView.findViewById(R.id.text_post_file);
@@ -107,6 +108,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         holder.postFileTextView.setText(post.getPostFile());
         holder.captionTextView.setText(post.getCaption());
         holder.commentsTextView.setText(post.getComments().toString());
+
 
         // Set OnClickListener for postFileTextView to start DayCard activity
         holder.postFileTextView.setOnClickListener(new View.OnClickListener() {
