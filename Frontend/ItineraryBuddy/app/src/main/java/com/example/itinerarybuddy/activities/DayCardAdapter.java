@@ -1,5 +1,7 @@
 package com.example.itinerarybuddy.activities;
 
+import static android.content.Intent.*;
+
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -19,10 +21,14 @@ public class DayCardAdapter extends RecyclerView.Adapter<DayCardAdapter.ViewHold
     private ArrayList<String> dayTitles;
     private ArrayList<String> dayContents;
 
-    public DayCardAdapter(Context context, ArrayList<String> dayTitles, ArrayList<String> dayContents) {
+    private boolean isEditable;
+    private String source;
+    public DayCardAdapter(Context context, ArrayList<String> dayTitles, ArrayList<String> dayContents, boolean isEditable, String source) {
         this.context = context;
         this.dayTitles = dayTitles;
         this.dayContents = dayContents;
+        this.isEditable = isEditable;
+        this.source = source;
     }
 
     @NonNull
@@ -63,6 +69,11 @@ public class DayCardAdapter extends RecyclerView.Adapter<DayCardAdapter.ViewHold
                 String title = dayTitles.get(position);
                 Intent intent = new Intent(context, ScheduleTemplate.class);
                 intent.putExtra("TITLE", title);
+
+                //Retrieve extras from the intent that started DayCard
+                intent.putExtra("IS_EDITABLE", isEditable);
+                intent.putExtra("SOURCE", source);
+
                 context.startActivity(intent);
             }
         }

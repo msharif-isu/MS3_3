@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.itinerarybuddy.R;
@@ -35,6 +36,7 @@ import org.json.JSONObject;
 
 public class ScheduleTemplate extends AppCompatActivity {
 
+    private boolean isEditable;
     private boolean isFirstClick = true;
     private ScheduleAdapter adapter;
     @Override
@@ -43,6 +45,7 @@ public class ScheduleTemplate extends AppCompatActivity {
         setContentView(R.layout.activity_schedule_template);
 
         String day = getIntent().getStringExtra("TITLE");
+        isEditable = getIntent().getBooleanExtra("IS_EDITABLE", true);
 
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -50,7 +53,7 @@ public class ScheduleTemplate extends AppCompatActivity {
 
         List<ScheduleItem> data = generateData();
 
-        adapter = new ScheduleAdapter(data, day);
+        adapter = new ScheduleAdapter(data, day, isEditable);
         recyclerView.setAdapter(adapter);
 
         GET_schedule(day);

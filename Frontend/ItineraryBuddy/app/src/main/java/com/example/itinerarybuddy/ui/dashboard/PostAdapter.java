@@ -120,7 +120,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
                 // Pass the number of days to the intent
                 intent.putExtra("NUM_OF_DAYS", post.getDays());
-
+                intent.putExtra("IS_EDITABLE", false);
+                intent.putExtra("SOURCE", "Community");
                 context.startActivity(intent);
             }
         });

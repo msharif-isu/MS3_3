@@ -29,9 +29,12 @@ class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHolder> {
     private String dayTitle;
     private static List<ScheduleItem> scheduleData;
 
-    public ScheduleAdapter(List<ScheduleItem> scheduleData, String dayTitle) {
+    private boolean isEditable;
+
+    public ScheduleAdapter(List<ScheduleItem> scheduleData, String dayTitle, boolean isEditable) {
         this.scheduleData = scheduleData;
         this.dayTitle = dayTitle;
+        this.isEditable = isEditable;
     }
 
     public List<ScheduleItem> getScheduleData(){
@@ -69,6 +72,8 @@ class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHolder> {
             if (position > 0 && position <= scheduleData.size()) {
                 ScheduleItem item = scheduleData.get(position - 1);
                 holder.bindData(item);
+
+                holder.setDataFieldsEditable(isEditable);
             }
         }
     }
@@ -90,6 +95,7 @@ class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHolder> {
         notifyItemRangeInserted(0, newData.size());
     }
 
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         private TextView headerTextViewTime;
@@ -101,6 +107,22 @@ class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHolder> {
         private EditText dataEditTextTime;
         private EditText dataEditTextPlaces;
         private EditText dataEditTextNote;
+
+        public void setDataFieldsEditable(boolean isEditable){
+
+            if(dataEditTextTime != null){
+                dataEditTextTime.setEnabled(isEditable);
+            }
+
+            if(dataEditTextPlaces != null){
+                dataEditTextPlaces.setEnabled(isEditable);
+            }
+
+            if(dataEditTextNote != null){
+                dataEditTextNote.setEnabled(isEditable);
+            }
+
+        }
 
         public ViewHolder(@NonNull View itemView, String dayTitle) {
             super(itemView);

@@ -88,6 +88,8 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
                 Intent intent = new Intent(requireContext(), DayCard.class);
 
                 intent.putExtra("NUM_OF_DAYS", days);
+                intent.putExtra("IS_EDITABLE", true);
+                intent.putExtra("SOURCE", "Personal");
 
                 startActivity(intent);
             }

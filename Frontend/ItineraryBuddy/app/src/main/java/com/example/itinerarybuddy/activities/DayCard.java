@@ -18,12 +18,17 @@ public class DayCard extends AppCompatActivity {
     private ArrayList<String> dayTitles;
     private ArrayList<String> dayContents;
 
+    private String source;
+    private boolean isEditable;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_day_card);
 
         int numOfDays = getIntent().getIntExtra("NUM_OF_DAYS", 0);
+
+        source = getIntent().getStringExtra("SOURCE");
+        isEditable = getIntent().getBooleanExtra("IS_EDITABLE", true);
 
         recyclerView = findViewById(R.id.recyclerViewDayCard);
 
@@ -35,7 +40,7 @@ public class DayCard extends AppCompatActivity {
             dayContents.add("Schedule Content for Day " + i);
         }
 
-        dayCardAdapter = new DayCardAdapter(this, dayTitles, dayContents);
+        dayCardAdapter = new DayCardAdapter(this, dayTitles, dayContents, isEditable, source);
         recyclerView.setAdapter(dayCardAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
