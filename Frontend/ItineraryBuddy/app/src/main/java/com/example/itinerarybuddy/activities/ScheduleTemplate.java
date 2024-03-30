@@ -60,27 +60,34 @@ public class ScheduleTemplate extends AppCompatActivity {
 
         FloatingActionButton btnSaveUpdate = findViewById(R.id.btnSaveUpdate);
 
-        btnSaveUpdate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        if(!isEditable){
 
-                List<ScheduleItem> scheduleItems = adapter.getScheduleData();
+            btnSaveUpdate.setVisibility(View.INVISIBLE);
 
-                if(isFirstClick){
+        }
 
-                    POST_schedule(day, scheduleItems);
-                    Toast.makeText(ScheduleTemplate.this, "Data saved!", Toast.LENGTH_SHORT).show();
+        else {
+            btnSaveUpdate.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    List<ScheduleItem> scheduleItems = adapter.getScheduleData();
+
+                    if (isFirstClick) {
+
+                        POST_schedule(day, scheduleItems);
+                        Toast.makeText(ScheduleTemplate.this, "Data saved!", Toast.LENGTH_SHORT).show();
+                    } else {
+
+                        UPDATE_schedule(day, scheduleItems);
+                        Toast.makeText(ScheduleTemplate.this, "Data updated!", Toast.LENGTH_SHORT).show();
+                    }
+
+                    isFirstClick = false;
                 }
+            });
 
-                else{
-
-                    UPDATE_schedule(day, scheduleItems);
-                    Toast.makeText(ScheduleTemplate.this, "Data updated!", Toast.LENGTH_SHORT).show();
-                }
-
-                isFirstClick = false;
-            }
-        });
+        }
 
     }
 
