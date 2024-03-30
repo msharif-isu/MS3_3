@@ -18,7 +18,6 @@ public class DayCard extends AppCompatActivity {
     private ArrayList<String> dayTitles;
     private ArrayList<String> dayContents;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

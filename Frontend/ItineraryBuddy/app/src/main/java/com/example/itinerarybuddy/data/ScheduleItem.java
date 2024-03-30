@@ -15,7 +15,6 @@ public class ScheduleItem {
     public ScheduleItem() {
     }
 
-
     public ScheduleItem(int day, String date, Time time, String places, String notes) {
 
         this.day = day;

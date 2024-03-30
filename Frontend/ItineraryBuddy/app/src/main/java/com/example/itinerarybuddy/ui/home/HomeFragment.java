@@ -71,10 +71,6 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-       /* final TextView textView = binding.textHome;
-        homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);*/
-
-
         ListView list = root.findViewById(R.id.listViewItineraries);
         itineraryAdapter = new CustomAdapter(requireContext(), R.layout. list_item_layout, homeViewModel.getItineraries(), this, this);
         list.setAdapter(itineraryAdapter);
@@ -277,7 +273,7 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
     private void POST_itinerary(String destination, String tripCode, String startDate, String endDate, int numOfDays){
 
         //Make a network request using Volley
-        // String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary/Create";
+        // String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary/" + username;
         String url = "https://5569939f-7918-4af9-937a-86edcfe9bc7f.mock.pstmn.io/Itinerary/Create";
 
         RequestQueue queue = Volley.newRequestQueue(requireContext());
@@ -380,7 +376,6 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-
     public void onEditClicked(int position){
 
         editItinerary(position);
@@ -389,34 +384,6 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
     public void onDeleteClicked(int position){
         deleteItinerary(position);
     }
-
- /*   private void showPopupMenu(View view, int position){
-
-        PopupMenu popupMenu = new PopupMenu(requireContext(), view);
-        MenuInflater inflater = popupMenu.getMenuInflater();
-
-        inflater.inflate(R.menu.itinerary_menu, popupMenu.getMenu());
-
-        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                if(item.getItemId() == R.id.action_edit){
-                    editItinerary(position);
-                    return true;
-                }
-
-                else if(item.getItemId() == R.id.action_delete){
-                    deleteItinerary(position);
-                    return true;
-                }
-
-                else{
-                    return false;
-                }            }
-        });
-
-        popupMenu.show();
-    }*/
 
     private void editItinerary(final int position){
 
@@ -522,7 +489,7 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
     private void PUT_itinerary(final String destination, final int position, final String startDate, final String endDate){
 
         String tripCode = getTripCodeFromAdapterPosition(position);
-        //String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary/Update" + tripCode;
+        //String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary/" + username + tripCode;
         String url = "https://5569939f-7918-4af9-937a-86edcfe9bc7f.mock.pstmn.io/Itinerary/Update/" + tripCode;
 
         StringRequest updateRequest = new StringRequest(Request.Method.PUT, url,
@@ -570,7 +537,7 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
     //DELETE (Delete itinerary function related)
     private void DELETE_itinerary(final String tripCode) {
 
-        //String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary/Delete" + tripCode;
+        //String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary/" + username + tripCode;
         String url = "https://5569939f-7918-4af9-937a-86edcfe9bc7f.mock.pstmn.io/Itinerary/Delete/" + tripCode;
 
         StringRequest deleteRequest = new StringRequest(Request.Method.DELETE, url,
@@ -638,7 +605,7 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
     public void GET_itinerary(){
 
 
-        //String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary/GetInfo";
+        //String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary/" + username;
         String url = "https://5569939f-7918-4af9-937a-86edcfe9bc7f.mock.pstmn.io/Itinerary/GetInfo";
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null,

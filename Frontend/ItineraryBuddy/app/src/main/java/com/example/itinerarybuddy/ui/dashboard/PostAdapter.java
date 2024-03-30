@@ -1,9 +1,12 @@
 package com.example.itinerarybuddy.ui.dashboard;
 
+import static androidx.core.content.ContextCompat.startActivity;
+
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -19,7 +22,10 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.itinerarybuddy.R;
+import com.example.itinerarybuddy.activities.DayCard;
+import com.example.itinerarybuddy.data.Itinerary;
 import com.example.itinerarybuddy.data.Post_Itinerary;
+import com.example.itinerarybuddy.data.Spinner_ItineraryInfo;
 import com.example.itinerarybuddy.data.UserData;
 import com.example.itinerarybuddy.ui.home.CustomAdapter;
 
@@ -28,13 +34,14 @@ import java.util.List;
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
 
     private List<Post_Itinerary> posts;
+    private List<Spinner_ItineraryInfo> itineraries;
     private Context context;
-
     private DashboardFragment fragment;
 
     // Constructor to initialize the adapter with a list of posts
-    public PostAdapter(List<Post_Itinerary> posts, Context context, DashboardFragment fragment) {
+    public PostAdapter(List<Post_Itinerary> posts,  List<Spinner_ItineraryInfo> itineraries, Context context, DashboardFragment fragment) {
         this.posts = posts;
+        this.itineraries = itineraries;
         this.context = context;
         this.fragment = fragment;
     }
@@ -46,21 +53,17 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         public TextView postFileTextView;
         public TextView captionTextView;
 
-
         public TextView commentsTextView;
         public ImageView commentIcon;
         public TextView moreComments;
 
-
         public TextView likeCountView;
         public ImageView likeImageView;
-
 
         public TextView saveCountView;
         public ImageView saveImageView;
 
         public ImageView moreView;
-
 
 
         public PostViewHolder(View itemView) {
@@ -105,7 +108,25 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         holder.captionTextView.setText(post.getCaption());
         holder.commentsTextView.setText(post.getComments().toString());
 
-        // Show only first 2 comments initially
+        // Set OnClickListener for postFileTextView to start DayCard activity
+        holder.postFileTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Obtain the context from the adapter
+                Context context = holder.itemView.getContext();
+
+                // Use the context to start the activity
+                Intent intent = new Intent(context, DayCard.class);
+
+                // Pass the number of days to the intent
+                intent.putExtra("NUM_OF_DAYS", post.getDays());
+
+                context.startActivity(intent);
+            }
+        });
+
+
+    // Show only first 2 comments initially
         StringBuilder seeComment = new StringBuilder();
         List<Post_Itinerary.Comment> showComment = post.getComments();
         int numCommentsToShow = Math.min(2, showComment.size());
@@ -273,6 +294,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         });
         popupMenu.show();
     }
+
 
     @Override
     public int getItemCount() {

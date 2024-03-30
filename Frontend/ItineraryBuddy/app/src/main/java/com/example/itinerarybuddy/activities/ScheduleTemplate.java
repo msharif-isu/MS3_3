@@ -49,10 +49,11 @@ public class ScheduleTemplate extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
 
         List<ScheduleItem> data = generateData();
+
         adapter = new ScheduleAdapter(data, day);
         recyclerView.setAdapter(adapter);
 
-        GET_schedule();
+        GET_schedule(day);
 
         FloatingActionButton btnSaveUpdate = findViewById(R.id.btnSaveUpdate);
 
@@ -84,12 +85,13 @@ public class ScheduleTemplate extends AppCompatActivity {
     
     private void POST_schedule(String day, List<ScheduleItem> scheduleData){
 
-        // String url = "http://coms-309-035.class.las.iastate.edu:8080/Schedule/Post";
-        String url = "https://7557e865-ef05-4e77-beaf-a69fca370355.mock.pstmn.io/Schedule/Post" + day;
+        String day_url = day.replace(" ", "");
+        // String url = "http://coms-309-035.class.las.iastate.edu:8080/Schedule/Post/" + username + tripCode + day_url;
+
+        String url = "https://7557e865-ef05-4e77-beaf-a69fca370355.mock.pstmn.io/Schedule/Post/" + day_url;
         RequestQueue queue = Volley.newRequestQueue(this);
 
         //Convert ScheduleItem list to JSONArray
-
         JSONArray jsonArray = new JSONArray();
 
         for(ScheduleItem item:scheduleData){
@@ -152,8 +154,10 @@ public class ScheduleTemplate extends AppCompatActivity {
     //UPDATE the schedule data
     private void UPDATE_schedule(String day, List<ScheduleItem> scheduleData){
 
-        // String url = "http://coms-309-035.class.las.iastate.edu:8080/Schedule/Update";
-        String url = "https://7557e865-ef05-4e77-beaf-a69fca370355.mock.pstmn.io/Schedule/Update" + day;
+        String day_url = day.replace(" ", "");
+
+        // String url = "http://coms-309-035.class.las.iastate.edu:8080/Schedule/Update/" + username + tripCode + day_url;
+        String url = "https://7557e865-ef05-4e77-beaf-a69fca370355.mock.pstmn.io/Schedule/Update/" + day_url;
         RequestQueue queue = Volley.newRequestQueue(this);
 
         //Convert ScheduleItem list to JSONArray
@@ -214,10 +218,12 @@ public class ScheduleTemplate extends AppCompatActivity {
     }
 
     //GET the schedule data from the json file
-    private void GET_schedule(){
+    private void GET_schedule(String day){
 
-        // String url = "http://coms-309-035.class.las.iastate.edu:8080/Schedule/Get";
-        String url = "https://7557e865-ef05-4e77-beaf-a69fca370355.mock.pstmn.io/Schedule/Get";
+        String day_url = day.replace(" ", "");
+
+        //String url = "http://coms-309-035.class.las.iastate.edu:8080/Schedule/Get/" + username + tripCode + day_url;
+        String url = "https://7557e865-ef05-4e77-beaf-a69fca370355.mock.pstmn.io/Schedule/Get/" + day_url;
 
         RequestQueue queue = Volley.newRequestQueue(this);
 
@@ -252,10 +258,6 @@ public class ScheduleTemplate extends AppCompatActivity {
 
                                 scheduleItems.add(scheduleItem);
                             }
-
-                            /*RecyclerView recyclerView = findViewById(R.id.recyclerView);
-                            ScheduleAdapter adapter = new ScheduleAdapter(scheduleItems);
-                            recyclerView.setAdapter(adapter);*/
 
                             adapter.prependData(scheduleItems);
 

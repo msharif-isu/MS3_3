@@ -80,7 +80,7 @@ public class Itinerary {
 
         try{
 
-            days = itineraryInfo.getString("days");
+            days = itineraryInfo.getString("number of days");
 
         } catch (JSONException e){
 

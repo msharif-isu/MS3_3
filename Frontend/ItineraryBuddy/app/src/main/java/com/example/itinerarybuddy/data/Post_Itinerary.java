@@ -12,13 +12,19 @@ public class Post_Itinerary {
     public boolean likeValue;
     public int saveCount;
     public boolean saveValue;
+    public String tripCode;
+    public int numDays;
 
     private ArrayList<Comment> comments;
-    public Post_Itinerary(String username, String timePosted, String postFile, String caption){
+    public Post_Itinerary(String username, String timePosted, String postFile, String tripCode, int numDays, String caption){
 
         this.username = username;
         this.timePosted = timePosted;
+
         this.postFile = postFile;
+        this.tripCode  = tripCode;
+        this.numDays = numDays;
+
         this.caption = caption;
 
         this.likeCount = 0;
@@ -44,9 +50,18 @@ public class Post_Itinerary {
     }
 
     public String getPostFile(){
-        return postFile;
+
+        String shown = postFile.split(",")[0];
+        return shown;
     }
 
+    public String getTripCode(){
+        return tripCode;
+    }
+
+    public int getDays(){
+        return numDays;
+    }
     public String getCaption(){
         return caption;
     }
