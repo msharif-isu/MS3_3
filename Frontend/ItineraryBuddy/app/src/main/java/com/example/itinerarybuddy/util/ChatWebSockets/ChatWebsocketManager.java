@@ -32,6 +32,12 @@ public class ChatWebsocketManager {
         }
     }
 
+    public void disconnect(){
+        if(client.isOpen()) {
+            client.close();
+        }
+    }
+
     private class ChatWebsocketClient extends WebSocketClient{
 
         public ChatWebsocketClient(URI serverUri) {

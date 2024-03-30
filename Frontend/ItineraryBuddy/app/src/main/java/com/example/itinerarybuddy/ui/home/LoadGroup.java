@@ -45,7 +45,7 @@ public class LoadGroup extends AppCompatActivity {
     /**
      * This is the travel group object that this page represents. Passed in from the ListGroups list adapter and displayed here.
      */
-    private Group group;
+    protected static Group group;
 
     private int index;
 
@@ -67,18 +67,18 @@ public class LoadGroup extends AppCompatActivity {
         if(bundle != null) {
             index = Integer.parseInt(Objects.requireNonNull(bundle.getString("POSITION")));
             group = ListGroups.adapter.getItem(index);
-
-            // Instantiate text views
-            TextView name = findViewById(R.id.group_title);
-            TextView description = findViewById(R.id.group_description);
-            TextView destination = findViewById(R.id.group_destination);
-
-            assert group != null;
-            name.setText(group.getTravelGroupName());
-            description.setText(group.getTravelGroupDescription());
-            String destinationText = "Traveling to: " + group.getTravelGroupDestination();
-            destination.setText(destinationText);
         }
+
+        // Instantiate text views
+        TextView name = findViewById(R.id.group_title);
+        TextView description = findViewById(R.id.group_description);
+        TextView destination = findViewById(R.id.group_destination);
+
+        assert group != null;
+        name.setText(group.getTravelGroupName());
+        description.setText(group.getTravelGroupDescription());
+        String destinationText = "Traveling to: " + group.getTravelGroupDestination();
+        destination.setText(destinationText);
 
         // Set click listener for back button
         back.setOnClickListener(new View.OnClickListener() {
