@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,6 +22,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.itinerarybuddy.R;
 import com.example.itinerarybuddy.activities.DayCard;
 import com.example.itinerarybuddy.data.Itinerary;
@@ -29,10 +36,14 @@ import com.example.itinerarybuddy.data.Spinner_ItineraryInfo;
 import com.example.itinerarybuddy.data.UserData;
 import com.example.itinerarybuddy.ui.home.CustomAdapter;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.List;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
 
+    private RequestQueue requestQueue;
     private List<Post_Itinerary> posts;
     private List<Spinner_ItineraryInfo> itineraries;
     private Context context;
@@ -44,6 +55,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         this.itineraries = itineraries;
         this.context = context;
         this.fragment = fragment;
+
+        requestQueue = Volley.newRequestQueue(context);
     }
 
     // ViewHolder class to hold the views for each post item
@@ -194,6 +207,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                     holder.likeImageView.setImageResource(R.drawable.ic_like_after);
 
                 }
+
+                PUT_updateLikeCount(post);
             }
         });
 
@@ -229,7 +244,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                     holder.saveImageView.setImageResource(R.drawable.ic_bookmark_aftr);
 
                 }
+
+                PUT_updateSaveCount(post);
             }
+
         });
 
         holder.moreView.setOnClickListener(new View.OnClickListener() {
@@ -239,6 +257,69 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             }
         });
 
+    }
+
+    private void PUT_updateSaveCount(Post_Itinerary post) {
+
+       // String url = "https://1064bd8c-7f0f-4802-94f1-71b8b5568975.mock.pstmn.io/Itinerary/Share/SaveCount" + post.getPostID();
+
+        String url = "https://1064bd8c-7f0f-4802-94f1-71b8b5568975.mock.pstmn.io/Itinerary/Share/SaveCount";
+
+        JSONObject requestData = new JSONObject();
+
+        try{
+            requestData.put("saveCount", post.getSavedCount());
+
+        } catch (JSONException e){
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, requestData,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("Update Save Count", "Success");
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("Update Save Count Error", error.toString());
+            }
+        });
+
+        requestQueue.add(jsonObjectRequest);
+
+    }
+
+    private void PUT_updateLikeCount(Post_Itinerary post) {
+
+
+        //String url = "" + post.getPostID();
+        String url = "https://1064bd8c-7f0f-4802-94f1-71b8b5568975.mock.pstmn.io/Itinerary/Share/LikeCount";
+
+        JSONObject requestData = new JSONObject();
+
+        try{
+            requestData.put("likeCount", post.getSavedCount());
+
+        } catch (JSONException e){
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, requestData,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("Update Like Count", "Success");
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("Update Like Count Error", error.toString());
+            }
+        });
+
+        requestQueue.add(jsonObjectRequest);
     }
 
     // Return the size of your dataset (invoked by the layout manager)
@@ -262,6 +343,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                     String username = "Aina";
                     post.addComment(username, commentText);
                     notifyDataSetChanged();
+
+                    POST_addComment(post, username, commentText);
                 }
                 dialog.dismiss();
             }
@@ -275,6 +358,38 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         });
 
         builder.show();
+    }
+
+    private void POST_addComment(Post_Itinerary post, String username, String commentText) {
+
+        String url = "https://1064bd8c-7f0f-4802-94f1-71b8b5568975.mock.pstmn.io/Itinerary/Share/Comment";
+
+        JSONObject commentData = new JSONObject();
+
+        try{
+            commentData.put("username", username);
+            commentData.put("commentText", commentText);
+        }
+
+        catch(JSONException e){
+
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, commentData,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("Add Comment Response", response.toString());
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("Add comment Error", error.toString());
+            }
+        });
+
+        requestQueue.add(jsonObjectRequest);
     }
 
     private void showPopupMenu(View view, int position) {
