@@ -83,7 +83,7 @@ public class DashboardFragment extends Fragment implements WebSocketListener, On
         LinearLayoutManager layoutManager = new LinearLayoutManager(requireContext());
         recyclerView.setLayoutManager(layoutManager);
 
-        postAdapter = new PostAdapter(posts, itineraryInfos, requireContext(), this);
+        postAdapter = new PostAdapter(posts, requireContext(), this);
         recyclerView.setAdapter(postAdapter);
 
         connectWebSocket();

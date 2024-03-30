@@ -45,14 +45,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
     private RequestQueue requestQueue;
     private List<Post_Itinerary> posts;
-    private List<Spinner_ItineraryInfo> itineraries;
     private Context context;
     private DashboardFragment fragment;
 
     // Constructor to initialize the adapter with a list of posts
-    public PostAdapter(List<Post_Itinerary> posts,  List<Spinner_ItineraryInfo> itineraries, Context context, DashboardFragment fragment) {
+    public PostAdapter(List<Post_Itinerary> posts, Context context, DashboardFragment fragment) {
         this.posts = posts;
-        this.itineraries = itineraries;
         this.context = context;
         this.fragment = fragment;
 
