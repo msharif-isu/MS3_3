@@ -5,7 +5,7 @@
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>coms309</groupId>
-	<artifactId>backend228</artifactId>
+	<artifactId>ImageUpload</artifactId>
 	<version>1.0.0</version>
 
 	<!-- To make it a spring boot project -->
@@ -52,6 +52,10 @@
 			<artifactId>mysql-connector-java</artifactId>
 			<version>8.0.22</version>
 			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
 		</dependency>
 
 

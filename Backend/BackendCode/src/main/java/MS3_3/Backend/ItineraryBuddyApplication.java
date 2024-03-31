@@ -18,7 +18,7 @@ public class ItineraryBuddyApplication {
 	 * @param userRepository
 	 * @return
 	 */
-
+/**
 	@Bean
 	CommandLineRunner initUser(UserRepository userRepository, AdminRepository adminRepository) {
 		return args -> {
@@ -49,6 +49,7 @@ public class ItineraryBuddyApplication {
 	 * @param placeRepository Place Repository
 	 * @return CommandLineRunner
 	 */
+/**
 	@Bean
 	CommandLineRunner initItinerary(ItineraryRepository itineraryRepository, DayRepository dayRepository, PlaceRepository placeRepository) {
 		return args -> {
@@ -98,5 +99,5 @@ public class ItineraryBuddyApplication {
 			placeRepository.save(place8_4);
 		};
 	}
-
+*/
 }

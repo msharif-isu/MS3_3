@@ -2,12 +2,15 @@ package MS3_3.Backend.Groups;
 
 import MS3_3.Backend.Ambassador.Ambassador;
 import MS3_3.Backend.Ambassador.AmbassadorRepository;
+import MS3_3.Backend.FileUpload.Image;
+import MS3_3.Backend.FileUpload.ImageRepository;
 import MS3_3.Backend.UserTypes.User;
 import MS3_3.Backend.UserTypes.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class TravelGroupController {
@@ -19,6 +22,9 @@ public class TravelGroupController {
 
     @Autowired
     AmbassadorRepository ambassadorRepository;
+
+    @Autowired
+    private ImageRepository imageRepository;
 
     @GetMapping("/Group")
     public List<TravelGroup> getAllGroups() {
@@ -37,6 +43,7 @@ public class TravelGroupController {
             Ambassador groupLeader = ambassadorRepository.findByUserName(group.getTravelGroupAmbassador());
             User groupLeaderUserAccount = userRepository.findByUserName(group.getTravelGroupAmbassador());
             savedGroup.addNewMember(groupLeaderUserAccount);
+            savedGroup.setGroupImage(imageRepository.findById(1));
             groupLeader.addGroup(savedGroup);
             groupLeaderUserAccount.addGroupCodes(group);
             TravelGroup newGroup = travelGroupRepository.save(savedGroup);

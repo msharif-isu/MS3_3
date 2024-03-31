@@ -1,7 +1,10 @@
 package MS3_3.Backend.FileUpload;
 
+import MS3_3.Backend.Groups.TravelGroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -12,36 +15,40 @@ import java.nio.file.Files;
 @RestController
 public class ImageController {
 
-    // replace this! careful with the operating system in use
-    // private static String directory = "/Users/hobian/"
-    //Directory still tbd
-    private static String directory = "/Users/collalti/";
+    @Autowired
+    private StorageService service;
 
     @Autowired
-    private ImageRepository imageRepository;
+    private TravelGroupRepository travelGroupRepository;
 
-    @GetMapping(value = "/images/{id}", produces = MediaType.IMAGE_JPEG_VALUE)
-    byte[] getImageById(@PathVariable int id) throws IOException {
-        Image image = imageRepository.findById(id);
-        File imageFile = new File(image.getFilePath());
-        return Files.readAllBytes(imageFile.toPath());
+    @PostMapping("/Image")
+    public ResponseEntity<?> uploadImage(@RequestParam("image")MultipartFile file) throws IOException {
+        String uploadImage = service.uploadImage(file);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(uploadImage);
     }
 
-    @PostMapping("images")
-    public String handleFileUpload(@RequestParam("image") MultipartFile imageFile)  {
+    @GetMapping("/Image/{fileName}")
+    public ResponseEntity<?> downloadImageByName(@PathVariable String fileName){
+        byte[] imageData=service.downloadImageByFileName(fileName);
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.valueOf("image/png"))
+                .body(imageData);
+    }
 
-        try {
-            File destinationFile = new File(directory + File.separator + imageFile.getOriginalFilename());
-            imageFile.transferTo(destinationFile);  // save file to disk
+    @PostMapping("/Group/Image/{groupId}")
+    public ResponseEntity<?> uploadGroupImage(@PathVariable int groupId, @RequestParam("image")MultipartFile file) throws IOException {
+        String uploadImage = service.uploadGroupImage(file, groupId);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(uploadImage);
+    }
 
-            Image image = new Image();
-            image.setFilePath(destinationFile.getAbsolutePath());
-            imageRepository.save(image);
-
-            return "File uploaded successfully: " + destinationFile.getAbsolutePath();
-        } catch (IOException e) {
-            return "Failed to upload file: " + e.getMessage();
-        }
+    @GetMapping("/Group/Image/{groupId}")
+    public ResponseEntity<?> downloadGroupImage(@PathVariable int groupId){
+        byte[] imageData=service.downloadImageByGroupId(groupId);
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.valueOf("image/png"))
+                .body(imageData);
     }
 
 }
