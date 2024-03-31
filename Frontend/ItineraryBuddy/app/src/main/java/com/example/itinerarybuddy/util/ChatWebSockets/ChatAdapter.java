@@ -42,8 +42,9 @@ public class ChatAdapter extends ArrayAdapter<ChatData> {
         assert chatData != null;
         message.setText(chatData.getMessage());
         sender.setText(chatData.getSender());
+        sender.setText(chatData.getSender());
 
-        if(chatData.getSender().equals(UserData.getUsername())){
+        if(chatData.getSender().equals("You")){
             message.setBackgroundResource(R.drawable.chat_card_sent);
         }
         else{
