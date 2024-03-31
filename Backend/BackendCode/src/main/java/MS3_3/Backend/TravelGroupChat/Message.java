@@ -19,18 +19,13 @@ public class Message {
     @Column
     private String userName;
 
-
     @Lob
     private String content;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "sent")
     private Date sent = new Date();
-    /**
-     * @ManyToOne
-     * @JoinColumn(name = "travel_group_id")
-     * @JsonIgnore private TravelGroup travelGroup;
-     */
+
     private int groupId;
 
     public Message() {
