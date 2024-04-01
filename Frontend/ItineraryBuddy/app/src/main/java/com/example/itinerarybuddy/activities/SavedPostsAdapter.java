@@ -28,14 +28,13 @@ class SavedPostsAdapter extends RecyclerView.Adapter<SavedPostsAdapter.SavedPost
     // ViewHolder class to hold the views for each saved post item
     public static class SavedPostViewHolder extends RecyclerView.ViewHolder {
         public TextView usernameTextView;
-        public TextView timePostedTextView;
+
         public TextView postFileTextView;
         public TextView captionTextView;
 
         public SavedPostViewHolder(View itemView) {
             super(itemView);
             usernameTextView = itemView.findViewById(R.id.text_username);
-            timePostedTextView = itemView.findViewById(R.id.text_time_posted);
             postFileTextView = itemView.findViewById(R.id.text_post_file);
             captionTextView = itemView.findViewById(R.id.text_caption);
         }
@@ -56,7 +55,6 @@ class SavedPostsAdapter extends RecyclerView.Adapter<SavedPostsAdapter.SavedPost
 
         // Set the data for the views
         holder.usernameTextView.setText(savedPost.getUsername());
-        holder.timePostedTextView.setText(savedPost.getTimePosted());
         holder.postFileTextView.setText(savedPost.getPostFile());
         holder.captionTextView.setText(savedPost.getCaption());
     }

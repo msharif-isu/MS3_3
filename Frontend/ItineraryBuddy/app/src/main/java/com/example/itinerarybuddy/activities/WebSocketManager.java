@@ -6,6 +6,7 @@ import com.example.itinerarybuddy.data.Post_Itinerary;
 
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -56,13 +57,30 @@ public class WebSocketManager {
     }
 
     private String toJson(Post_Itinerary post) {
-
         try {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("username", post.getUsername());
             jsonObject.put("timePosted", post.getTimePosted());
-            jsonObject.put("itinerary", post.getPostFile());
+            jsonObject.put("postFile", post.getPostFile());
             jsonObject.put("caption", post.getCaption());
+            jsonObject.put("likeCount", post.getLikeCount());
+            jsonObject.put("likeValue", post.isLiked());
+            jsonObject.put("saveCount", post.getSaveCount());
+            jsonObject.put("saveValue", post.isSaved());
+            jsonObject.put("tripCode", post.getTripCode());
+            jsonObject.put("numDays", post.getDays());
+            jsonObject.put("postID", post.getPostID());
+
+            // Convert comments list to JSON array
+            JSONArray commentsArray = new JSONArray();
+            for (Post_Itinerary.Comment comment : post.getComments()) {
+                JSONObject commentObject = new JSONObject();
+                commentObject.put("username", comment.getUsername());
+                commentObject.put("commentText", comment.getCommentText());
+                commentsArray.put(commentObject);
+            }
+            jsonObject.put("comments", commentsArray);
+
             return jsonObject.toString();
         } catch (JSONException e) {
             e.printStackTrace();

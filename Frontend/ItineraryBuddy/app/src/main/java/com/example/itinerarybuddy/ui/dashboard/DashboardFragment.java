@@ -37,6 +37,7 @@ import com.example.itinerarybuddy.activities.WebSocketManager;
 import com.example.itinerarybuddy.data.Itinerary;
 import com.example.itinerarybuddy.data.Post_Itinerary;
 import com.example.itinerarybuddy.data.Spinner_ItineraryInfo;
+import com.example.itinerarybuddy.data.UserData;
 import com.example.itinerarybuddy.databinding.FragmentDashboardBinding;
 import com.example.itinerarybuddy.util.Singleton;
 
@@ -68,8 +69,6 @@ public class DashboardFragment extends Fragment implements WebSocketListener, On
     private PostAdapter postAdapter;
     private List<Spinner_ItineraryInfo> itineraryInfos = new ArrayList<>();
     private List<Post_Itinerary> posts = new ArrayList<>();
-    private Handler handler;
-    private Runnable updateTimeRunnable;
     private String BASE_URL = "ws://localhost:8080/post/";
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -88,7 +87,7 @@ public class DashboardFragment extends Fragment implements WebSocketListener, On
 
         connectWebSocket();
 
-        WebSocketManager.getInstance().setWebSocketListener(DashboardFragment.this);
+        WebSocketManager.getInstance().setWebSocketListener(this);
 
         ImageView postButton = root.findViewById(R.id.postContent);
         postButton.setOnClickListener(new View.OnClickListener() {
@@ -109,11 +108,9 @@ public class DashboardFragment extends Fragment implements WebSocketListener, On
             }
         });
 
-        GET_previousPosts();
+       // GET_previousPosts();
         GET_fetch_Destinations_TripCode();
         loadPosts();
-
-        //startUpdateTimeTimer();
 
         return root;
     }
@@ -138,7 +135,10 @@ public class DashboardFragment extends Fragment implements WebSocketListener, On
 
         return postIDBuilder.toString();
     }
+
     private void connectWebSocket() {
+
+       // String serverUrl = BASE_URL + UserData.getUsername();
         String serverUrl = BASE_URL + "Aina"; // Adjust this based on your requirements
         WebSocketManager.getInstance().connectWebSocket(serverUrl);
     }
@@ -152,26 +152,40 @@ public class DashboardFragment extends Fragment implements WebSocketListener, On
         try {
             JSONObject jsonObject = new JSONObject(message);
             String username = jsonObject.getString("username");
-            String postId = jsonObject.getString("postID");
-            String itinerary = jsonObject.getString("itinerary");
-            String tripCode = jsonObject.getString("tripCode");
-            int numDays = jsonObject.getInt("number of days");
+            String postFile = jsonObject.getString("postFile");
             String caption = jsonObject.getString("caption");
+            int likeCount = jsonObject.getInt("likeCount");
+            //boolean likeValue = jsonObject.getBoolean("likeValue");
+            int saveCount = jsonObject.getInt("saveCount");
+            //boolean saveValue = jsonObject.getBoolean("saveValue");
+            String tripCode = jsonObject.getString("tripCode");
+            int numDays = jsonObject.getInt("numDays");
+            String postID = jsonObject.getString("postID");
 
-            return new Post_Itinerary(username, itinerary, tripCode, numDays, caption, postId);
+            // Parse comments array
+            JSONArray commentsArray = jsonObject.getJSONArray("comments");
+            ArrayList<Post_Itinerary.Comment> comments = new ArrayList<>();
+            for (int i = 0; i < commentsArray.length(); i++) {
+                JSONObject commentObject = commentsArray.getJSONObject(i);
+                String commenterUsername = commentObject.getString("username");
+                String commentText = commentObject.getString("commentText");
+                comments.add(new Post_Itinerary.Comment(commenterUsername, commentText));
+            }
+
+            // Create and return a new Post_Itinerary object
+            Post_Itinerary returning_post =  new Post_Itinerary(username, postFile, tripCode, numDays, caption, postID);
+
+            returning_post.setLikeCount(likeCount);
+            returning_post.setSaveCount(saveCount);
+
+            return returning_post;
+
         } catch (JSONException e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    // Function to send a post to the server (if needed)
-    private void sendPostToServer(Post_Itinerary post) {
-        // You can implement this if you need to send posts to the server
-        // For example, if users can post new content from the app
-        // You can use WebSocket to send the post to the server
-        // Example: webSocket.send("Your message to the server");
-    }
 
     // Function to show the dialog for posting
     public void showPostDialog() {
@@ -285,7 +299,10 @@ public class DashboardFragment extends Fragment implements WebSocketListener, On
             postData.put("number of days", post.getDays());
             postData.put("caption", post.getCaption());
             postData.put("likeCount", post.getLikeCount());
-            postData.put("saveCount", post.getSavedCount());
+            postData.put("saveCount", post.getSaveCount());
+            postData.put("isSaved", post.isSaved());
+
+
             // Convert comments list to JSON array
             JSONArray commentsArray = new JSONArray();
             for (Post_Itinerary.Comment comment : post.getComments()) {
@@ -372,6 +389,8 @@ public class DashboardFragment extends Fragment implements WebSocketListener, On
             String tripCode = jsonObject.getString("tripCode");
             int numOfDays = jsonObject.getInt("number of days");
             String caption = jsonObject.getString("caption");
+            int likeCount = jsonObject.getInt("likeCount");
+            int saveCount = jsonObject.getInt("saveCount");
 
 
             JSONArray commentsArray = jsonObject.getJSONArray("comments");
@@ -386,8 +405,13 @@ public class DashboardFragment extends Fragment implements WebSocketListener, On
                 comments.add(new Post_Itinerary.Comment(commenterUsername, commentText));
             }
 
+            Post_Itinerary postItinerary = new Post_Itinerary(username, postFile, tripCode, numOfDays, caption, postID);
+
+            postItinerary.setLikeCount(likeCount);
+            postItinerary.setSaveCount(saveCount);
+
             // Create and return a new Post_Itinerary object using the constructor
-            return new Post_Itinerary(username, postFile, tripCode, numOfDays, caption, postID);
+            return postItinerary;
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -433,8 +457,6 @@ public class DashboardFragment extends Fragment implements WebSocketListener, On
                 // Update the RecyclerView
                 postAdapter.notifyItemChanged(position);
 
-                // You may want to send the updated post to the server here
-                // sendPostToServer(post);
 
                 dialog.dismiss();
             }
@@ -447,12 +469,11 @@ public class DashboardFragment extends Fragment implements WebSocketListener, On
         });
         builder.show();
     }
-
     private void PUT_editCaption(Post_Itinerary post, String newCaption){
 
 
         //String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary/Share/" + username + post.getPostID();
-        String url = "https://1064bd8c-7f0f-4802-94f1-71b8b5568975.mock.pstmn.io/Itinerary/Share" + post.getPostID();
+        String url = "https://1064bd8c-7f0f-4802-94f1-71b8b5568975.mock.pstmn.io/Itinerary/Share";
         JSONObject captionData = new JSONObject();
 
         try{
@@ -496,12 +517,8 @@ public class DashboardFragment extends Fragment implements WebSocketListener, On
         // Update the RecyclerView
         postAdapter.notifyItemRemoved(position);
 
-        // You may want to send a delete request to the server here
-        // For example: sendDeleteRequest(postId);
-
         DELETE_post(postId);
 
-        //Toast.makeText(requireContext(), "Post deleted", Toast.LENGTH_SHORT).show();
     }
 
     private void DELETE_post(String postID){
@@ -584,59 +601,11 @@ public class DashboardFragment extends Fragment implements WebSocketListener, On
         //posts.add(new Post_Itinerary("user2", "1 hour ago", "post2.jpg", "This is the second post."));
         //posts.add(new Post_Itinerary("user3", "30 minutes ago", "post3.jpg", "This is the third post."));
 
+        GET_previousPosts();
+
         // Notify adapter of data change
         postAdapter.notifyDataSetChanged();
     }
-
-
-   /* private void startUpdateTimeTimer() {
-        handler = new Handler(Looper.getMainLooper());
-        updateTimeRunnable = new Runnable() {
-            @Override
-            public void run() {
-                updatePostTimestamps();
-                handler.postDelayed(this, DateUtils.MINUTE_IN_MILLIS);
-            }
-        };
-        handler.post(updateTimeRunnable);
-    }
-
-    private void updatePostTimestamps() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy hh:mm:ss a");
-        for (int i = 0; i < posts.size(); i++) {
-            Post_Itinerary post = posts.get(i);
-            String timestamp = post.getTimePosted();
-
-            try {
-                Date date = dateFormat.parse(timestamp);
-                long diffMillis = new Date().getTime() - date.getTime();
-                long diffSeconds = TimeUnit.SECONDS.toSeconds(diffMillis);
-                long diffMinutes = TimeUnit.MILLISECONDS.toMinutes(diffMillis);
-                long diffHours = TimeUnit.MINUTES.toHours(diffMinutes);
-
-                if(diffSeconds < 60){
-
-                    post.setTimePosted(DateUtils.getRelativeTimeSpanString(date.getTime(), System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS).toString());
-                }
-               else if (diffHours < 1) {
-                    // Update time with minute intervals
-                    post.setTimePosted(DateUtils.getRelativeTimeSpanString(date.getTime(), System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS).toString());
-                } else if (diffHours < 24) {
-                    // Update time with hour intervals
-                    post.setTimePosted(DateUtils.getRelativeTimeSpanString(date.getTime(), System.currentTimeMillis(), DateUtils.HOUR_IN_MILLIS).toString());
-                } else if (diffHours < 168) {
-                    // Update time with day intervals
-                    post.setTimePosted(DateUtils.getRelativeTimeSpanString(date.getTime(), System.currentTimeMillis(), DateUtils.DAY_IN_MILLIS).toString());
-                } else {
-                    // If more than a week, show the date
-                    post.setTimePosted(dateFormat.format(date));
-                }
-                postAdapter.notifyItemChanged(i);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        }
-    }*/
 
 
     @Override
@@ -656,20 +625,30 @@ public class DashboardFragment extends Fragment implements WebSocketListener, On
 
         // Parse the message received from the WebSocket server
         Post_Itinerary newPost = parsePostFromMessage(message);
+
         if (newPost != null) {
             // Check if the post already exists in the list
-            for (Post_Itinerary post : posts) {
-                if (post.getUsername().equals(newPost.getUsername()) && post.getTripCode().equals(newPost.getTripCode())) {
-                    // Update the existing post with the new data
-                    post.setLikeCount(newPost.getLikeCount());
-                    post.setSaveCount(newPost.getSavedCount());
-                    // Notify the adapter of the data change
-                    postAdapter.notifyDataSetChanged();
-                    return; // Exit the loop since the post has been found and updated
+            boolean postExist = false;
+
+            for(int i = 0; i < posts.size(); i++){
+
+                Post_Itinerary postItinerary = posts.get(i);
+
+                if(postItinerary.getUsername().equals(newPost.getUsername()) && postItinerary.getPostID().equals(newPost.getPostID())){
+
+                    //Update the existing post with the new data
+                    posts.set(i, newPost);
+                    postExist = true;
+                    break;
                 }
             }
-            // If the post does not exist in the list, add it
-            posts.add(0, newPost);
+
+            if(!postExist){
+                //If the post does not exist in the list, add it
+                posts.add(0, newPost);
+            }
+
+            //Notify the adapter of data change
             postAdapter.notifyItemInserted(0);
         }
     }
@@ -687,10 +666,6 @@ public class DashboardFragment extends Fragment implements WebSocketListener, On
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        // Stop the timer when the fragment is destroyed
-        if (handler != null && updateTimeRunnable != null) {
-            handler.removeCallbacks(updateTimeRunnable);
-        }
 
         //Remove the WebSocketListener when the fragment is destroyed
         if(webSocketManager != null){

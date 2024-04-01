@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import androidx.annotation.NonNull;
@@ -60,7 +61,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     // ViewHolder class to hold the views for each post item
     public static class PostViewHolder extends RecyclerView.ViewHolder {
         public TextView usernameTextView;
-        public TextView timePostedTextView;
         public TextView postFileTextView;
         public TextView captionTextView;
 
@@ -81,7 +81,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             super(itemView);
 
             usernameTextView = itemView.findViewById(R.id.text_username);
-            timePostedTextView = itemView.findViewById(R.id.text_time_posted);
             postFileTextView = itemView.findViewById(R.id.text_post_file);
             captionTextView = itemView.findViewById(R.id.text_caption);
 
@@ -115,7 +114,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
         // Set the data for the views
         holder.usernameTextView.setText(post.getUsername());
-        holder.timePostedTextView.setText(post.getTimePosted());
         holder.postFileTextView.setText(post.getPostFile());
         holder.captionTextView.setText(post.getCaption());
         holder.commentsTextView.setText(post.getComments().toString());
@@ -181,6 +179,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         });
 
         holder.likeCountView.setText(String.valueOf(post.getLikeCount()));
+
         if (post.isLiked()) {
             holder.likeImageView.setImageResource(R.drawable.ic_like_after);
         } else {
@@ -217,7 +216,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             }
         });
 
-        holder.saveCountView.setText(String.valueOf(post.getSavedCount()));
+        holder.saveCountView.setText(String.valueOf(post.getSaveCount()));
         if (post.isSaved()) {
             holder.saveImageView.setImageResource(R.drawable.ic_bookmark_aftr);
         } else {
@@ -232,15 +231,19 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
                     post.setSaved(false);
                     post.decreaseSaveCount();
-                    holder.saveCountView.setText("Saved: " + String.valueOf(post.getSavedCount()));
+                    holder.saveCountView.setText("Saved: " + String.valueOf(post.getSaveCount()));
                     holder.saveImageView.setImageResource(R.drawable.ic_bookmark_bfr);
+
+                    PUT_updateSavedPost(post);
+
                 } else {
 
                     post.setSaved(true);
                     post.increaseSaveCount();
-                    holder.saveCountView.setText("Saved: " + String.valueOf(post.getSavedCount()));
+                    holder.saveCountView.setText("Saved: " + String.valueOf(post.getSaveCount()));
                     holder.saveImageView.setImageResource(R.drawable.ic_bookmark_aftr);
 
+                    PUT_updateSavedPost(post);
                 }
 
                 PUT_updateSaveCount(post);
@@ -257,6 +260,47 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
     }
 
+    private void PUT_updateSavedPost(Post_Itinerary post) {
+
+        //String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary/Share/" + username + post.getPostID();
+        String url = "https://1064bd8c-7f0f-4802-94f1-71b8b5568975.mock.pstmn.io/Itinerary/Share";
+
+        JSONObject savedContent = new JSONObject();
+
+        try{
+
+            savedContent.put("isSaved", post.isSaved());
+
+        } catch(JSONException e){
+
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, savedContent,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        //boolean updatedSavedStatus = false;
+                        boolean updatedSavedStatus = post.isSaved();
+
+                        Log.d("Volley Response", "Updated Saved Status: " + updatedSavedStatus);
+
+                    }
+                },
+
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                        Log.e("Volley error", "Fail to update savedContent");
+
+                    }
+                });
+
+        requestQueue.add(jsonObjectRequest);
+    }
+
     private void PUT_updateSaveCount(Post_Itinerary post) {
 
        // String url = "https://1064bd8c-7f0f-4802-94f1-71b8b5568975.mock.pstmn.io/Itinerary/Share/SaveCount" + post.getPostID();
@@ -266,7 +310,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         JSONObject requestData = new JSONObject();
 
         try{
-            requestData.put("saveCount", post.getSavedCount());
+            requestData.put("saveCount", post.getSaveCount());
 
         } catch (JSONException e){
             e.printStackTrace();
@@ -298,7 +342,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         JSONObject requestData = new JSONObject();
 
         try{
-            requestData.put("likeCount", post.getSavedCount());
+            requestData.put("likeCount", post.getSaveCount());
 
         } catch (JSONException e){
             e.printStackTrace();

@@ -131,7 +131,7 @@ public class Post_Itinerary {
 
         saveCount = numSave;
     }
-    public int getSavedCount() {
+    public int getSaveCount() {
 
         return saveCount;
     }
