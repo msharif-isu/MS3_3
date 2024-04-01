@@ -63,5 +63,10 @@
     <string name="select_group_cover_image">Select Group Cover Image</string>
     <string name="choose_a_picture">Choose a Picture</string>
     <string name="group_image">Group Image</string>
+    <string name="group_cover_image">Group Image</string>
+    <string name="place_holder_for_itinerary">(Place Holder for Group Itinerary)</string>
+    <string name="set_group_cover_image">Set Group Cover Image</string>
+    <string name="selected_image">Selected Image</string>
+    <string name="select_an_image">Select an Image</string>
 
 </resources>
