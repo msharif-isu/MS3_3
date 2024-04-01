@@ -300,8 +300,6 @@ public class DashboardFragment extends Fragment implements WebSocketListener, On
             postData.put("caption", post.getCaption());
             postData.put("likeCount", post.getLikeCount());
             postData.put("saveCount", post.getSaveCount());
-            postData.put("isSaved", post.isSaved());
-
 
             // Convert comments list to JSON array
             JSONArray commentsArray = new JSONArray();

@@ -37,6 +37,7 @@ import com.example.itinerarybuddy.data.Spinner_ItineraryInfo;
 import com.example.itinerarybuddy.data.UserData;
 import com.example.itinerarybuddy.ui.home.CustomAdapter;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -234,7 +235,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                     holder.saveCountView.setText("Saved: " + String.valueOf(post.getSaveCount()));
                     holder.saveImageView.setImageResource(R.drawable.ic_bookmark_bfr);
 
-                    PUT_updateSavedPost(post);
+                    POST_updateSavedPost(post);
 
                 } else {
 
@@ -243,7 +244,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                     holder.saveCountView.setText("Saved: " + String.valueOf(post.getSaveCount()));
                     holder.saveImageView.setImageResource(R.drawable.ic_bookmark_aftr);
 
-                    PUT_updateSavedPost(post);
+                    POST_updateSavedPost(post);
                 }
 
                 PUT_updateSaveCount(post);
@@ -260,45 +261,86 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
     }
 
-    private void PUT_updateSavedPost(Post_Itinerary post) {
+    private void POST_updateSavedPost(Post_Itinerary post) {
 
         //String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary/Share/" + username + post.getPostID();
-        String url = "https://1064bd8c-7f0f-4802-94f1-71b8b5568975.mock.pstmn.io/Itinerary/Share";
+        String url = "https://1064bd8c-7f0f-4802-94f1-71b8b5568975.mock.pstmn.io/Itinerary/Share/SavedPost";
 
-        JSONObject savedContent = new JSONObject();
+        JSONObject postData = new JSONObject();
 
-        try{
+        try {
+            // Add the data of the post
+            postData.put("username", post.getUsername());
+            postData.put("postFile", post.getPostFile());
+            postData.put("postID", post.getPostID());
+            postData.put("tripCode", post.getTripCode());
+            postData.put("number of days", post.getDays());
+            postData.put("caption", post.getCaption());
+            postData.put("likeCount", post.getLikeCount());
+            postData.put("saveCount", post.getSaveCount());
 
-            savedContent.put("isSaved", post.isSaved());
 
-        } catch(JSONException e){
-
+            // Convert comments list to JSON array
+            JSONArray commentsArray = new JSONArray();
+            for (Post_Itinerary.Comment comment : post.getComments()) {
+                JSONObject commentObject = new JSONObject();
+                commentObject.put("username", comment.getUsername());
+                commentObject.put("commentText", comment.getCommentText());
+                commentsArray.put(commentObject);
+            }
+            postData.put("comments", commentsArray);
+        } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, savedContent,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
+        int method;
 
-                        //boolean updatedSavedStatus = false;
-                        boolean updatedSavedStatus = post.isSaved();
+        if(post.isSaved()){
 
-                        Log.d("Volley Response", "Updated Saved Status: " + updatedSavedStatus);
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, postData,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            Log.d("Volley Response Saved: ", response.toString());
 
-                    }
-                },
+                        }
+                    },
 
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.e("Volley Error Post Saved: ", error.toString());
+                        }
+                    });
 
-                        Log.e("Volley error", "Fail to update savedContent");
+            requestQueue.add(jsonObjectRequest);
 
-                    }
-                });
+        }
 
-        requestQueue.add(jsonObjectRequest);
+        else{
+
+           // url += post.getPostID();
+
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.DELETE, url, postData,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            Log.d("Volley Response Delete Saved:", response.toString());
+                        }
+                    },
+
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.e("Volley Error Delete Saved Post: ", error.toString());
+                        }
+                    });
+
+            requestQueue.add(jsonObjectRequest);
+        }
+
+
+
     }
 
     private void PUT_updateSaveCount(Post_Itinerary post) {
@@ -330,7 +372,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         });
 
         requestQueue.add(jsonObjectRequest);
-
     }
 
     private void PUT_updateLikeCount(Post_Itinerary post) {

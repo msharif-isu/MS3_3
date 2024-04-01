@@ -28,7 +28,6 @@ class SavedPostsAdapter extends RecyclerView.Adapter<SavedPostsAdapter.SavedPost
     // ViewHolder class to hold the views for each saved post item
     public static class SavedPostViewHolder extends RecyclerView.ViewHolder {
         public TextView usernameTextView;
-
         public TextView postFileTextView;
         public TextView captionTextView;
 
