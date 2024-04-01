@@ -3,28 +3,40 @@ package com.example.itinerarybuddy.util;
 import android.net.Uri;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
+import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
-public class VolleyImageRequest extends Request<String> {
+public class VolleyImageRequest extends Request<NetworkResponse> {
 
+    private final Response.Listener<NetworkResponse> listener;
+    private final Response.ErrorListener errorListener;
     private final byte[] image;
+    private final String boundary = "apiclient-" + System.currentTimeMillis();
 
-    public VolleyImageRequest(int method, String url, byte[] image, Response.Listener<String> listener, Response.ErrorListener errorListener) {
+    public VolleyImageRequest(int method, String url, byte[] image, Response.Listener<NetworkResponse> listener, Response.ErrorListener errorListener) {
         super(method, url, errorListener);
         this.image = image;
+        this.listener = listener;
+        this.errorListener = errorListener;
     }
 
     @Override
     public String getBodyContentType() {
-        return "multipart/form-data;boundary=apiclient" + System.currentTimeMillis();
+        return "multipart/form-data;boundary=" + boundary;
     }
 
     @Override
@@ -34,7 +46,15 @@ public class VolleyImageRequest extends Request<String> {
         DataOutputStream dos = new DataOutputStream(bos);
 
         try{
+            dos.writeBytes("--" + boundary + "\r\n");
+            dos.writeBytes("Content-Disposition: form-data; name=\"image\";filename=\"image.jpeg\"\r\n");
+            dos.writeBytes("\r\n");
+
             dos.write(image);
+
+            dos.writeBytes("\r\n");
+            dos.writeBytes("--" + boundary + "--\r\n");
+
             byteArray = bos.toByteArray();
         }catch(IOException e){
             Log.e("Error: ", e.toString());
@@ -43,13 +63,31 @@ public class VolleyImageRequest extends Request<String> {
         return byteArray;
     }
 
+    @Nullable
     @Override
-    protected Response<String> parseNetworkResponse(NetworkResponse networkResponse) {
-        return null;
+    protected Map<String, String> getParams() throws AuthFailureError {
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put("type", "image/jpeg");
+        return map;
     }
 
     @Override
-    protected void deliverResponse(String s) {
+    protected Response<NetworkResponse> parseNetworkResponse(NetworkResponse networkResponse) {
+        try {
+            return Response.success(networkResponse,
+                    HttpHeaderParser.parseCacheHeaders(networkResponse));
+        } catch (Exception e) {
+            return Response.error(new ParseError(e));
+        }
+    }
 
+    @Override
+    protected void deliverResponse(NetworkResponse networkResponse) {
+        listener.onResponse(networkResponse);
+    }
+
+    @Override
+    public void deliverError(VolleyError error) {
+        errorListener.onErrorResponse(error);
     }
 }

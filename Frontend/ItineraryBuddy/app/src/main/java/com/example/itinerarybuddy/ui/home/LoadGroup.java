@@ -28,6 +28,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -102,6 +103,7 @@ public class LoadGroup extends AppCompatActivity {
             description.setText(group.getTravelGroupDescription());
             String destinationText = "Traveling to: " + group.getTravelGroupDestination();
             destination.setText(destinationText);
+            getImage();
         }
 
         // Set click listener for back button
@@ -173,9 +175,6 @@ public class LoadGroup extends AppCompatActivity {
                 selectGroupImage();
             }
         });
-
-
-
     }
 
     private void selectGroupImage(){
@@ -207,7 +206,7 @@ public class LoadGroup extends AppCompatActivity {
     }
 
     private byte[] uriToImage(Uri image){
-        byte[] bytes = new byte[1024];
+        byte[] bytes = new byte[4*1024];
         try{
             @SuppressLint("Recycle") InputStream input = getContentResolver().openInputStream(image);
             ByteArrayOutputStream buffer = new ByteArrayOutputStream();
@@ -221,6 +220,8 @@ public class LoadGroup extends AppCompatActivity {
                     buffer.write(bytes, 0, bytes.length);
                 }
             }
+
+            bytes = buffer.toByteArray();
         }catch(IOException e){
             Log.e("Error: ", e.toString());
         }
@@ -229,16 +230,33 @@ public class LoadGroup extends AppCompatActivity {
     }
 
     private void uploadImage(byte[] data){
-        String url = ""; //TODO: fix url
-        VolleyImageRequest request = new VolleyImageRequest(Request.Method.POST, url, data, new Response.Listener<String>() {
+        String url = "http://coms-309-035.class.las.iastate.edu:8080/Group/Image/" + group.getTravelGroupID();
+        VolleyImageRequest request = new VolleyImageRequest(Request.Method.PUT, url, data, new Response.Listener<NetworkResponse>() {
             @Override
-            public void onResponse(String s) {
-                Log.d("Upload", "Response: " + s);
+            public void onResponse(NetworkResponse networkResponse) {
+                Log.d("Upload", "Response: " + networkResponse.toString());
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
                 Log.e("Upload", "Error: " + volleyError.getMessage());
+            }
+        });
+        Singleton.getInstance(getApplicationContext()).addRequest(request);
+    }
+
+    private void getImage(){
+        String url = "http://coms-309-035.class.las.iastate.edu:8080/Group/Image/" + group.getTravelGroupID();
+        ImageRequest request = new ImageRequest(url, new Response.Listener<Bitmap>() {
+            @Override
+            public void onResponse(Bitmap bitmap) {
+                Log.d("Volley Image: ", bitmap.toString());
+                groupImage.setImageBitmap(bitmap);
+            }
+        }, 0, 0, ImageView.ScaleType.FIT_XY, Bitmap.Config.RGB_565, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                Log.e("Volley Error: ", volleyError.toString());
             }
         });
         Singleton.getInstance(getApplicationContext()).addRequest(request);
