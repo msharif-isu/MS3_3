@@ -23,7 +23,6 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
@@ -40,9 +39,8 @@ import com.example.itinerarybuddy.data.UserData;
 import com.example.itinerarybuddy.databinding.DialogCreateGroupBinding;
 import com.example.itinerarybuddy.databinding.DialogGroupDetailsBinding;
 import com.example.itinerarybuddy.databinding.DialogSelectImageBinding;
-import com.example.itinerarybuddy.ui.home.ListGroups;
 import com.example.itinerarybuddy.util.Singleton;
-import com.example.itinerarybuddy.util.VolleyImageRequest;
+import com.example.itinerarybuddy.util.UploadImageRequest;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -63,8 +61,6 @@ public class LoadGroup extends AppCompatActivity {
     private Group group;
 
     private ActivityResultLauncher<String> getImage;
-
-    private View editView;
 
     private ImageView groupImage;
 
@@ -172,7 +168,12 @@ public class LoadGroup extends AppCompatActivity {
         groupImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                selectGroupImage();
+                if(UserData.getUsertype().equals("Ambassador")){
+                    selectGroupImage();
+                }
+                else{
+                    Toast.makeText(getApplicationContext(), "Only Travel Ambassadors can edit the group.", Toast.LENGTH_LONG).show();
+                }
             }
         });
     }
@@ -231,10 +232,11 @@ public class LoadGroup extends AppCompatActivity {
 
     private void uploadImage(byte[] data){
         String url = "http://coms-309-035.class.las.iastate.edu:8080/Group/Image/" + group.getTravelGroupID();
-        VolleyImageRequest request = new VolleyImageRequest(Request.Method.PUT, url, data, new Response.Listener<NetworkResponse>() {
+        UploadImageRequest request = new UploadImageRequest(url, data, new Response.Listener<NetworkResponse>() {
             @Override
             public void onResponse(NetworkResponse networkResponse) {
                 Log.d("Upload", "Response: " + networkResponse.toString());
+                getImage();
             }
         }, new Response.ErrorListener() {
             @Override
@@ -298,7 +300,7 @@ public class LoadGroup extends AppCompatActivity {
     private void editGroup(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.layout.dialog_create_group);
         builder.setTitle("Edit Travel Group");
-        editView = DialogCreateGroupBinding.inflate(getLayoutInflater()).getRoot();
+        View editView = DialogCreateGroupBinding.inflate(getLayoutInflater()).getRoot();
         builder.setView(editView);
 
         EditText nameInput = editView.findViewById(R.id.group_name_input);

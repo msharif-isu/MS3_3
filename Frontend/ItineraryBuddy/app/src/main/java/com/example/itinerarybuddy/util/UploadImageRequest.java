@@ -1,6 +1,5 @@
 package com.example.itinerarybuddy.util;
 
-import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
@@ -16,19 +15,18 @@ import com.android.volley.toolbox.HttpHeaderParser;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-public class VolleyImageRequest extends Request<NetworkResponse> {
+public class UploadImageRequest extends Request<NetworkResponse> {
 
     private final Response.Listener<NetworkResponse> listener;
     private final Response.ErrorListener errorListener;
     private final byte[] image;
     private final String boundary = "apiclient-" + System.currentTimeMillis();
 
-    public VolleyImageRequest(int method, String url, byte[] image, Response.Listener<NetworkResponse> listener, Response.ErrorListener errorListener) {
-        super(method, url, errorListener);
+    public UploadImageRequest(String url, byte[] image, Response.Listener<NetworkResponse> listener, Response.ErrorListener errorListener) {
+        super(Request.Method.PUT, url, errorListener);
         this.image = image;
         this.listener = listener;
         this.errorListener = errorListener;
