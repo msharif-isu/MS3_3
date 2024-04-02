@@ -606,7 +606,6 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
 
     public void GET_itinerary(){
 
-
         //String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary/" + username;
         String url = "https://5569939f-7918-4af9-937a-86edcfe9bc7f.mock.pstmn.io/Itinerary/GetInfo";
 

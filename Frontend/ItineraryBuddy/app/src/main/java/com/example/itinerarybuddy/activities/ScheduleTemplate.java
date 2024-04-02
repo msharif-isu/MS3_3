@@ -79,7 +79,7 @@ public class ScheduleTemplate extends AppCompatActivity {
                         Toast.makeText(ScheduleTemplate.this, "Data saved!", Toast.LENGTH_SHORT).show();
                     } else {
 
-                        UPDATE_schedule(day, scheduleItems);
+                        PUT_schedule(day, scheduleItems);
                         Toast.makeText(ScheduleTemplate.this, "Data updated!", Toast.LENGTH_SHORT).show();
                     }
 
@@ -96,7 +96,7 @@ public class ScheduleTemplate extends AppCompatActivity {
     private void POST_schedule(String day, List<ScheduleItem> scheduleData){
 
         String day_url = day.replace(" ", "");
-        // String url = "http://coms-309-035.class.las.iastate.edu:8080/Schedule/Post/" + username + tripCode + day_url;
+        // String url = "http://coms-309-035.class.las.iastate.edu:8080/Schedule/" + username + tripCode + day_url;
 
         String url = "https://7557e865-ef05-4e77-beaf-a69fca370355.mock.pstmn.io/Schedule/Post/" + day_url;
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -162,11 +162,11 @@ public class ScheduleTemplate extends AppCompatActivity {
     }
 
     //UPDATE the schedule data
-    private void UPDATE_schedule(String day, List<ScheduleItem> scheduleData){
+    private void PUT_schedule(String day, List<ScheduleItem> scheduleData){
 
         String day_url = day.replace(" ", "");
 
-        // String url = "http://coms-309-035.class.las.iastate.edu:8080/Schedule/Update/" + username + tripCode + day_url;
+        // String url = "http://coms-309-035.class.las.iastate.edu:8080/Schedule/" + username + tripCode + day_url;
         String url = "https://7557e865-ef05-4e77-beaf-a69fca370355.mock.pstmn.io/Schedule/Update/" + day_url;
         RequestQueue queue = Volley.newRequestQueue(this);
 
@@ -232,7 +232,7 @@ public class ScheduleTemplate extends AppCompatActivity {
 
         String day_url = day.replace(" ", "");
 
-        //String url = "http://coms-309-035.class.las.iastate.edu:8080/Schedule/Get/" + username + tripCode + day_url;
+        //String url = "http://coms-309-035.class.las.iastate.edu:8080/Schedule/" + username + tripCode + day_url;
         String url = "https://7557e865-ef05-4e77-beaf-a69fca370355.mock.pstmn.io/Schedule/Get/" + day_url;
 
         RequestQueue queue = Volley.newRequestQueue(this);
