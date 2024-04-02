@@ -51,5 +51,18 @@ public class ImageController {
                 .body(imageData);
     }
 
+    @PutMapping("/Group/Image/{groupId}")
+    public ResponseEntity<?> changeGroupImage(@PathVariable int groupId, @RequestParam("image")MultipartFile file) throws IOException {
+        String uploadImage = service.changeGroupImage(file, groupId);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(uploadImage);
+    }
+
+    @DeleteMapping("/Group/Image/{groupId}")
+    public ResponseEntity<?> deleteGroupImage(@PathVariable int groupId) {
+        String uploadImage = service.changeImageByGroupId(groupId,1);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(uploadImage);
+    }
 }
 

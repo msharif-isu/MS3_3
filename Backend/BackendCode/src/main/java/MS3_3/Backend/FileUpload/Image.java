@@ -30,7 +30,7 @@ public class Image {
     private String name;
     private String type;
     @Lob
-    @Column(name = "imagedata",length = 1000)
+    @Column(name = "imagedata")
     private byte[] imageData;
 
     public Image(String name, String type, byte[] imageData, int groupId) {

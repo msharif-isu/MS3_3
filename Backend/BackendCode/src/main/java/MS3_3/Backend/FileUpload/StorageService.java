@@ -1,5 +1,6 @@
 package MS3_3.Backend.FileUpload;
 
+import MS3_3.Backend.Groups.TravelGroup;
 import MS3_3.Backend.Groups.TravelGroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,7 +37,23 @@ public class StorageService {
                 .type(file.getContentType())
                 .imageData(ImageUtils.compressImage(file.getBytes())).build()
         );
-       // travelGroupRepository.findById(groupId).setGroupImage(imageData);
+        travelGroupRepository.findById(groupId).setGroupImage(imageData);
+        if (imageData != null) {
+            return "file uploaded successfully to Group " + travelGroupRepository.findById(groupId).getTravelGroupName() + " : " + file.getOriginalFilename();
+        }
+        return null;
+    }
+
+    public String changeGroupImage(MultipartFile file, int groupId) throws IOException {
+
+        Image imageData = repository.save(Image.builder()
+                .name(file.getOriginalFilename())
+                .type(file.getContentType())
+                .imageData(ImageUtils.compressImage(file.getBytes())).build()
+        );
+        TravelGroup travelGroup =  travelGroupRepository.findById(groupId);
+        travelGroup.setGroupImage(imageData);
+        travelGroupRepository.save(travelGroup);
         if (imageData != null) {
             return "file uploaded successfully to Group " + travelGroupRepository.findById(groupId).getTravelGroupName() + " : " + file.getOriginalFilename();
         }
@@ -53,6 +70,13 @@ public class StorageService {
         Image dbImageData = travelGroupRepository.findById(groupId).getGroupImage();
         byte[] images=ImageUtils.decompressImage(dbImageData.getImageData());
         return images;
+    }
+
+    public String changeImageByGroupId(int groupId, int imageId){
+        TravelGroup travelGroup =  travelGroupRepository.findById(groupId);
+        travelGroup.setGroupImage(repository.findById(imageId));
+        travelGroupRepository.save(travelGroup);
+        return "file successfully deleted from Group: " + travelGroupRepository.findById(groupId).getTravelGroupName();
     }
 
 }
