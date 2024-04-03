@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
+
 @Entity
 public class Day {
     @Id
@@ -33,6 +34,7 @@ public class Day {
         this.places = new ArrayList<Place>();
         this.itinerary = itinerary;
     }
+
     public Day(String destination, List<Place> places, Itinerary itinerary) {
         this.destination = destination;
         this.places = places;
@@ -44,26 +46,36 @@ public class Day {
         return uniqueCode;
     }
 
-    public List<Place> getPlaces() { return places; }
+    public List<Place> getPlaces() {
+        return places;
+    }
 
     public Itinerary getItinerary() {
         return itinerary;
     }
 
-    public String getDestination() { return destination; }
+    public String getDestination() {
+        return destination;
+    }
 
 
     public void setUniqueCode(int uniqueCode) {
         this.uniqueCode = uniqueCode;
     }
-    
-    public void setPlaces(List<Place> places) { this.places = places; }
 
-    public void addPlace(Place place) { places.add(place); }
+    public void setPlaces(List<Place> places) {
+        this.places = places;
+    }
+
+    public void addPlace(Place place) {
+        places.add(place);
+    }
 
     public void setItinerary(Itinerary itinerary) {
         this.itinerary = itinerary;
     }
 
-    public void setDestination(String destination) { this.destination = destination; }
+    public void setDestination(String destination) {
+        this.destination = destination;
+    }
 }

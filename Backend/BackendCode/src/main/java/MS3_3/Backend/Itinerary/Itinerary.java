@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import MS3_3.Backend.Day.Day;
+import MS3_3.Backend.Groups.TravelGroup;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
@@ -12,6 +13,10 @@ public class Itinerary {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int shareCode;
+
+    @OneToOne
+    @JsonIgnore
+    private TravelGroup travelGroup;
 
     @OneToMany(mappedBy = "itinerary", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Day> days;
@@ -41,15 +46,25 @@ public class Itinerary {
         this.days = days;
     }
 
-    public int getShareCode() { return shareCode; }
+    public int getShareCode() {
+        return shareCode;
+    }
 
-    public List<Day> getDays() { return days; }
+    public List<Day> getDays() {
+        return days;
+    }
 
-    public String getItineraryName() { return itineraryName; }
+    public String getItineraryName() {
+        return itineraryName;
+    }
 
-    public String getStartDate() { return startDate; }
+    public String getStartDate() {
+        return startDate;
+    }
 
-    public String getEndDate() { return endDate; }
+    public String getEndDate() {
+        return endDate;
+    }
 
 
     public void setShareCode(int shareCode) {
@@ -60,7 +75,9 @@ public class Itinerary {
         this.days = days;
     }
 
-    public void addDay(Day day) { days.add(day); }
+    public void addDay(Day day) {
+        days.add(day);
+    }
 
     public void setItineraryName(String itineraryName) {
         this.itineraryName = itineraryName;

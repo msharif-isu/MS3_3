@@ -17,9 +17,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-/** This is the login page.
- * @author Justin Sebahar
- */
+/** This is the login page. */
 public class LoginActivity extends AppCompatActivity {
 
     /** Input field for username. */

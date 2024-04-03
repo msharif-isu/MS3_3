@@ -40,16 +40,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-/**
- * This is the activity where a specific group will be displayed. The member can look at the group details, itinerary or join the chat.
- * @author Justin Sebahar
- */
 public class LoadGroup extends AppCompatActivity {
 
     /**
      * This is the travel group object that this page represents. Passed in from the ListGroups list adapter and displayed here.
      */
-    private Group group;
+    protected static Group group;
+
+    private int index;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,32 +60,42 @@ public class LoadGroup extends AppCompatActivity {
         // Instantiate buttons
         ImageButton back = findViewById(R.id.back_button);
         ImageButton groupOptions = findViewById(R.id.options_button);
-        ImageButton groupChat = findViewById(R.id.chat_button);
+        ImageButton chat = findViewById(R.id.chat_button);
 
         // Extract the group from the previous activity using bundle
         Bundle bundle = getIntent().getExtras();
-        int position;
         if(bundle != null) {
-            position = Integer.parseInt(Objects.requireNonNull(bundle.getString("POSITION")));
-            group = ListGroups.adapter.getItem(position);
-
-            // Instantiate text views
-            TextView name = findViewById(R.id.group_title);
-            TextView description = findViewById(R.id.group_description);
-            TextView destination = findViewById(R.id.group_destination);
-
-            assert group != null;
-            name.setText(group.getTravelGroupName());
-            description.setText(group.getTravelGroupDescription());
-            String destinationText = "Traveling to: " + group.getTravelGroupDestination();
-            destination.setText(destinationText);
+            index = Integer.parseInt(Objects.requireNonNull(bundle.getString("POSITION")));
+            group = ListGroups.adapter.getItem(index);
         }
+
+        // Instantiate text views
+        TextView name = findViewById(R.id.group_title);
+        TextView description = findViewById(R.id.group_description);
+        TextView destination = findViewById(R.id.group_destination);
+
+        assert group != null;
+        name.setText(group.getTravelGroupName());
+        description.setText(group.getTravelGroupDescription());
+        String destinationText = "Traveling to: " + group.getTravelGroupDestination();
+        destination.setText(destinationText);
 
         // Set click listener for back button
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getApplicationContext(), ListGroups.class));
+            }
+        });
+
+        chat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getApplicationContext(), GroupChatActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("POSITION", Integer.valueOf(index).toString());
+                i.putExtras(bundle);
+                startActivity(i);
             }
         });
 
@@ -128,13 +136,6 @@ public class LoadGroup extends AppCompatActivity {
                     }
                 });
                 menu.show();
-            }
-        });
-
-        groupChat.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //TODO: group chat listener
             }
         });
     }

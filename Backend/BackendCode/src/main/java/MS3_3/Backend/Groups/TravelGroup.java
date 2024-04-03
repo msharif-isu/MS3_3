@@ -4,6 +4,7 @@ package MS3_3.Backend.Groups;
 import MS3_3.Backend.Ambassador.Ambassador;
 import MS3_3.Backend.FileUpload.Image;
 import MS3_3.Backend.UserTypes.User;
+import MS3_3.Backend.TravelGroupChat.Message;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
@@ -130,5 +131,4 @@ public class TravelGroup {
     public void setTravelGroupDescription(String groupDescription) {
         this.travelGroupDescription = groupDescription;
     }
-
 }

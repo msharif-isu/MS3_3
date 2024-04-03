@@ -33,7 +33,7 @@ public class AdminController {
 
     @PostMapping("/Admin/Create")
     public Admin createPerson(@RequestBody Admin person) {
-        person.setUserType("Ambassador");
+        person.setUserType("Admin");
         adminRepository.save(person);
         userRepository.save(new User(person.getEmail(), person.getUserName(), person.getPassword(), person.getState(), person.getCity(),
                 person.getUserType()));
