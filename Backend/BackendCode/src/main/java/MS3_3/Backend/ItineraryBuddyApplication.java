@@ -18,7 +18,7 @@ public class ItineraryBuddyApplication {
 	 * @param userRepository
 	 * @return
 	 */
-
+/**
 	@Bean
 	CommandLineRunner initUser(UserRepository userRepository, AdminRepository adminRepository) {
 		return args -> {
@@ -38,8 +38,31 @@ public class ItineraryBuddyApplication {
 			userRepository.save(user2);
 			userRepository.save(user3);
 
-		};
-	}
+ /**
+  * Initializes the itinerary with provided repositories.
+  *
+  * @param itineraryRepository Itinerary Repository
+ * @param dayRepository Day Repository
+ * @param placeRepository Place Repository
+ * @return CommandLineRunner
+ */
+/**
+ @Bean CommandLineRunner initItinerary(ItineraryRepository itineraryRepository, DayRepository dayRepository, PlaceRepository placeRepository) {
+ return args -> {
+ Itinerary itinerary1 = new Itinerary("Itinerary1",
+ "10/01/2002", "10/02/2002");
+ Day day1_1 = new Day("France", itinerary1);
+ Day day2_1 = new Day("England", itinerary1);
+ itinerary1.addDay(day1_1);
+ itinerary1.addDay(day2_1);
+ Place place1_1 = new Place("Place1", "10:00", "11:30", day1_1);
+ Place place2_1 = new Place("Place2", "12:00", "3:00", day1_1);
+ Place place3_2 = new Place("Place3", "4:00", "7:00", day2_1);
+ Place place4_2 = new Place("Place4", "8:00", "11:00", day2_1);
+ day1_1.addPlace(place1_1);
+ day1_1.addPlace(place2_1);
+ day2_1.addPlace(place3_2);
+ day2_1.addPlace(place4_2);
 
 	/**
 	 * Initializes the itinerary with provided repositories.
@@ -49,6 +72,7 @@ public class ItineraryBuddyApplication {
 	 * @param placeRepository Place Repository
 	 * @return CommandLineRunner
 	 */
+/**
 	@Bean
 	CommandLineRunner initItinerary(ItineraryRepository itineraryRepository, DayRepository dayRepository, PlaceRepository placeRepository) {
 		return args -> {
@@ -98,5 +122,5 @@ public class ItineraryBuddyApplication {
 			placeRepository.save(place8_4);
 		};
 	}
-
+*/
 }

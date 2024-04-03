@@ -1,13 +1,19 @@
 package MS3_3.Backend.Groups;
 
+import MS3_3.Backend.AdminDashboard.AdminRepository;
 import MS3_3.Backend.Ambassador.Ambassador;
 import MS3_3.Backend.Ambassador.AmbassadorRepository;
+import MS3_3.Backend.FileUpload.Image;
+import MS3_3.Backend.FileUpload.ImageRepository;
 import MS3_3.Backend.UserTypes.User;
 import MS3_3.Backend.UserTypes.UserRepository;
+import MS3_3.Backend.TravelGroupChat.Message;
+import MS3_3.Backend.TravelGroupChat.MessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class TravelGroupController {
@@ -18,7 +24,15 @@ public class TravelGroupController {
     TravelGroupRepository travelGroupRepository;
 
     @Autowired
+    AdminRepository adminRepository;
+
+    @Autowired
     AmbassadorRepository ambassadorRepository;
+    @Autowired
+    MessageRepository messageRepository;
+
+    @Autowired
+    private ImageRepository imageRepository;
 
     @GetMapping("/Group")
     public List<TravelGroup> getAllGroups() {
@@ -37,6 +51,12 @@ public class TravelGroupController {
             Ambassador groupLeader = ambassadorRepository.findByUserName(group.getTravelGroupAmbassador());
             User groupLeaderUserAccount = userRepository.findByUserName(group.getTravelGroupAmbassador());
             savedGroup.addNewMember(groupLeaderUserAccount);
+            Image copy = new Image();
+            copy.setImageData(imageRepository.findById(38).getImageData());
+            copy.setType(imageRepository.findById(38).getType());
+            copy.setName(imageRepository.findById(38).getName());
+            imageRepository.save(copy);
+            savedGroup.setGroupImage(copy);
             groupLeader.addGroup(savedGroup);
             groupLeaderUserAccount.addGroupCodes(group);
             TravelGroup newGroup = travelGroupRepository.save(savedGroup);
@@ -82,5 +102,24 @@ public class TravelGroupController {
         userRepository.save(user);
         travelGroupRepository.save(group);
         return group;
+    }
+
+    @DeleteMapping("/Group")
+    public TravelGroup deleteGroup(@PathVariable int groupId, @PathVariable String username) {
+        TravelGroup group = travelGroupRepository.findById(groupId);
+        if (adminRepository.findByUserName(username) == null) {
+            return group;
+        } else {
+            int i = 0;
+            List<User> memberList = travelGroupRepository.findById(groupId).getMembers();
+            while (memberList.size() > i) {
+                User currUser = memberList.get(i);
+                userRepository.findByUserName(currUser.getUserName()).removeUserCodes(groupId);
+                userRepository.findByUserName(currUser.getUserName()).removeGroupCodes(travelGroupRepository.findById(groupId));
+                i++;
+            }
+        }
+        travelGroupRepository.deleteById(groupId);
+        return null;
     }
 }
