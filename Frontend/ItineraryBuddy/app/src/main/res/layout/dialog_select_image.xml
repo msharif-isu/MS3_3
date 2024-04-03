@@ -21,6 +21,12 @@
         android:layout_height="wrap_content"
         android:text="@string/select_an_image" />
 
+    <Button
+        android:id="@+id/delete_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/remove_group_image" />
+
     <ImageView
         android:id="@+id/selected_image"
         android:layout_width="match_parent"

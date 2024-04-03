@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -185,14 +186,38 @@ public class LoadGroup extends AppCompatActivity {
         builder.setView(view);
 
         Button select = view.findViewById(R.id.select_image_button);
+        Button delete = view.findViewById(R.id.delete_image);
         selectImage = view.findViewById(R.id.selected_image);
 
-        select.setOnClickListener(execute -> getImage.launch("image/*"));
+        int[] method = {-1};
+        select.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getImage.launch("image/*");
+                method[0] = 0;
+            }
+        });
+
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                method[0] = 1;
+            }
+        });
 
         builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                uploadImage(uriToImage(uploadImageUri));
+                if(method[0] == 0){
+                    imageMethod(uriToImage(uploadImageUri), Request.Method.PUT);
+                }
+                else if(method[0] == 1){
+                    imageMethod(null, Request.Method.DELETE);
+                }
+                else{
+                    Toast.makeText(getApplicationContext(), "please Make a Selection", Toast.LENGTH_LONG).show();
+                }
+
             }
         });
 
@@ -204,64 +229,6 @@ public class LoadGroup extends AppCompatActivity {
         });
 
         builder.show();
-    }
-
-    private byte[] uriToImage(Uri image){
-        byte[] bytes = new byte[4*1024];
-        try{
-            @SuppressLint("Recycle") InputStream input = getContentResolver().openInputStream(image);
-            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-
-            while (true) {
-                assert input != null;
-                if (input.read(bytes) == -1){
-                    break;
-                }
-                else{
-                    buffer.write(bytes, 0, bytes.length);
-                }
-            }
-
-            bytes = buffer.toByteArray();
-        }catch(IOException e){
-            Log.e("Error: ", e.toString());
-        }
-
-        return bytes;
-    }
-
-    private void uploadImage(byte[] data){
-        String url = "http://coms-309-035.class.las.iastate.edu:8080/Group/Image/" + group.getTravelGroupID();
-        UploadImageRequest request = new UploadImageRequest(url, data, new Response.Listener<NetworkResponse>() {
-            @Override
-            public void onResponse(NetworkResponse networkResponse) {
-                Log.d("Upload", "Response: " + networkResponse.toString());
-                getImage();
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError volleyError) {
-                Log.e("Upload", "Error: " + volleyError.getMessage());
-            }
-        });
-        Singleton.getInstance(getApplicationContext()).addRequest(request);
-    }
-
-    private void getImage(){
-        String url = "http://coms-309-035.class.las.iastate.edu:8080/Group/Image/" + group.getTravelGroupID();
-        ImageRequest request = new ImageRequest(url, new Response.Listener<Bitmap>() {
-            @Override
-            public void onResponse(Bitmap bitmap) {
-                Log.d("Volley Image: ", bitmap.toString());
-                groupImage.setImageBitmap(bitmap);
-            }
-        }, 0, 0, ImageView.ScaleType.FIT_XY, Bitmap.Config.RGB_565, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError volleyError) {
-                Log.e("Volley Error: ", volleyError.toString());
-            }
-        });
-        Singleton.getInstance(getApplicationContext()).addRequest(request);
     }
 
     /**
@@ -447,5 +414,84 @@ public class LoadGroup extends AppCompatActivity {
     private void deleteGroup(){
         ListGroups.adapter.remove(group);
         ListGroups.adapter.notifyDataSetChanged();
+    }
+    
+
+    // THE FOLLOWING FUNCTIONS ARE RELATED TO FEATURE 2: IMAGE UPLOAD!
+
+    private byte[] uriToImage(Uri image){
+        byte[] bytes = new byte[4*1024];
+        try{
+            @SuppressLint("Recycle") InputStream input = getContentResolver().openInputStream(image);
+            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+
+            while (true) {
+                assert input != null;
+                if (input.read(bytes) == -1){
+                    break;
+                }
+                else{
+                    buffer.write(bytes, 0, bytes.length);
+                }
+            }
+
+            bytes = buffer.toByteArray();
+        }catch(IOException e){
+            Log.e("Error: ", e.toString());
+        }
+
+        return bytes;
+    }
+
+    private void imageMethod(byte[] data, int method){
+        String url = "http://coms-309-035.class.las.iastate.edu:8080/Group/Image/" + group.getTravelGroupID();
+
+        if(method == Request.Method.PUT){
+            UploadImageRequest request = new UploadImageRequest(Request.Method.PUT, url, data, new Response.Listener<NetworkResponse>() {
+                @Override
+                public void onResponse(NetworkResponse networkResponse) {
+                    Log.d("Upload", "Response: " + networkResponse.toString());
+                    getImage();
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError volleyError) {
+                    Log.e("Upload", "Error: " + volleyError.getMessage());
+                }
+            });
+            Singleton.getInstance(getApplicationContext()).addRequest(request);
+        }
+        else if(method == Request.Method.DELETE){
+            UploadImageRequest request = new UploadImageRequest(Request.Method.DELETE, url, new Response.Listener<NetworkResponse>() {
+                @Override
+                public void onResponse(NetworkResponse networkResponse) {
+                    Log.d("Image deleted:", networkResponse.toString());
+                    getImage();
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError volleyError) {
+                    Log.e("Delete", "Error: " + volleyError.getMessage());
+                }
+            });
+            Singleton.getInstance(getApplicationContext()).addRequest(request);
+        }
+    }
+
+    private void getImage(){
+        String url = "http://coms-309-035.class.las.iastate.edu:8080/Group/Image/" + group.getTravelGroupID();
+        ImageRequest request = new ImageRequest(url, new Response.Listener<Bitmap>() {
+            @Override
+            public void onResponse(Bitmap bitmap) {
+                Log.d("Volley Image: ", bitmap.toString());
+                groupImage.setImageBitmap(bitmap);
+            }
+        }, 0, 0, ImageView.ScaleType.FIT_XY, Bitmap.Config.RGB_565, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                Log.e("Volley Error: ", volleyError.toString());
+            }
+        });
+        Singleton.getInstance(getApplicationContext()).addRequest(request);
     }
 }

@@ -25,9 +25,16 @@ public class UploadImageRequest extends Request<NetworkResponse> {
     private final byte[] image;
     private final String boundary = "apiclient-" + System.currentTimeMillis();
 
-    public UploadImageRequest(String url, byte[] image, Response.Listener<NetworkResponse> listener, Response.ErrorListener errorListener) {
-        super(Request.Method.PUT, url, errorListener);
+    public UploadImageRequest(int method, String url, byte[] image, Response.Listener<NetworkResponse> listener, Response.ErrorListener errorListener) {
+        super(method, url, errorListener);
         this.image = image;
+        this.listener = listener;
+        this.errorListener = errorListener;
+    }
+
+    public UploadImageRequest(int method, String url, Response.Listener<NetworkResponse> listener, Response.ErrorListener errorListener) {
+        super(method, url, errorListener);
+        this.image = null;
         this.listener = listener;
         this.errorListener = errorListener;
     }

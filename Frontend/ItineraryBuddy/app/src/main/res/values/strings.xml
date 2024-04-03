@@ -68,5 +68,6 @@
     <string name="set_group_cover_image">Set Group Cover Image</string>
     <string name="selected_image">Selected Image</string>
     <string name="select_an_image">Select an Image</string>
+    <string name="remove_group_image">Remove Group Image</string>
 
 </resources>
