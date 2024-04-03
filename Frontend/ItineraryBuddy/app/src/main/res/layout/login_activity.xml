@@ -42,14 +42,16 @@
         android:textSize="25sp"
         app:layout_constraintBottom_toTopOf="@+id/password_input"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="0.504"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/gradient"
+        app:layout_constraintVertical_bias="1.0" />
 
     <EditText
         android:id="@+id/password_input"
         android:layout_width="300dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="272dp"
+        android:layout_marginBottom="332dp"
         android:autofillHints="password"
         android:background="@drawable/rounded_edittext"
         android:fontFamily="sans-serif-condensed-medium"
@@ -58,19 +60,20 @@
         android:textSize="25sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/new_user_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="48dp"
         android:fontFamily="sans-serif-condensed-medium"
         android:text="@string/new_user_text"
         android:textColor="@color/black"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/login_button" />
 
@@ -78,7 +81,6 @@
         android:id="@+id/username_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="54dp"
         android:layout_marginBottom="8dp"
         android:fontFamily="sans-serif-condensed-medium"
         android:labelFor="@id/username_input"
@@ -88,8 +90,7 @@
         app:layout_constraintBottom_toTopOf="@+id/username_input"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.2"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/gradient" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/login_button"

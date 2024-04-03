@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -40,8 +39,8 @@ import com.example.itinerarybuddy.data.UserData;
 import com.example.itinerarybuddy.databinding.DialogCreateGroupBinding;
 import com.example.itinerarybuddy.databinding.DialogGroupDetailsBinding;
 import com.example.itinerarybuddy.databinding.DialogSelectImageBinding;
+import com.example.itinerarybuddy.util.CustomImageRequest;
 import com.example.itinerarybuddy.util.Singleton;
-import com.example.itinerarybuddy.util.UploadImageRequest;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -54,6 +53,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * This is where a specific group can be loaded. Will contain group details, settings, chat, etc.
+ */
 public class LoadGroup extends AppCompatActivity {
 
     /**
@@ -61,12 +63,24 @@ public class LoadGroup extends AppCompatActivity {
      */
     private Group group;
 
+    /**
+     * Prompt for selecting image from library.
+     */
     private ActivityResultLauncher<String> getImage;
 
+    /**
+     * Cover image within the main group page.
+     */
     private ImageView groupImage;
 
+    /**
+     * Image view for the image selection page in settings.
+     */
     private ImageView selectImage;
 
+    /**
+     * URI associated with selected image to upload.
+     */
     private Uri uploadImageUri;
 
     @Override
@@ -95,12 +109,13 @@ public class LoadGroup extends AppCompatActivity {
             TextView description = findViewById(R.id.group_description);
             TextView destination = findViewById(R.id.group_destination);
 
+            // Set data to the various views
             assert group != null;
             name.setText(group.getTravelGroupName());
             description.setText(group.getTravelGroupDescription());
             String destinationText = "Traveling to: " + group.getTravelGroupDestination();
             destination.setText(destinationText);
-            getImage();
+            getImage(groupImage);
         }
 
         // Set click listener for back button
@@ -158,6 +173,7 @@ public class LoadGroup extends AppCompatActivity {
             }
         });
 
+        // Image selection process
         getImage = registerForActivityResult(new ActivityResultContracts.GetContent(), uri -> {
             if(uri != null){
                 uploadImageUri = uri;
@@ -169,6 +185,7 @@ public class LoadGroup extends AppCompatActivity {
         groupImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Allow user to change group image if they are an ambassador.
                 if(UserData.getUsertype().equals("Ambassador")){
                     selectGroupImage();
                 }
@@ -177,58 +194,6 @@ public class LoadGroup extends AppCompatActivity {
                 }
             }
         });
-    }
-
-    private void selectGroupImage(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.layout.dialog_select_image);
-        builder.setTitle("Edit Travel Group");
-        View view = DialogSelectImageBinding.inflate(getLayoutInflater()).getRoot();
-        builder.setView(view);
-
-        Button select = view.findViewById(R.id.select_image_button);
-        Button delete = view.findViewById(R.id.delete_image);
-        selectImage = view.findViewById(R.id.selected_image);
-
-        int[] method = {-1};
-        select.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getImage.launch("image/*");
-                method[0] = 0;
-            }
-        });
-
-        delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                method[0] = 1;
-            }
-        });
-
-        builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if(method[0] == 0){
-                    imageMethod(uriToImage(uploadImageUri), Request.Method.PUT);
-                }
-                else if(method[0] == 1){
-                    imageMethod(null, Request.Method.DELETE);
-                }
-                else{
-                    Toast.makeText(getApplicationContext(), "please Make a Selection", Toast.LENGTH_LONG).show();
-                }
-
-            }
-        });
-
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-
-        builder.show();
     }
 
     /**
@@ -419,6 +384,68 @@ public class LoadGroup extends AppCompatActivity {
 
     // THE FOLLOWING FUNCTIONS ARE RELATED TO FEATURE 2: IMAGE UPLOAD!
 
+    /**
+     * Initiates the dialog to allow ambassador to modify the group image.
+     */
+    private void selectGroupImage(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.layout.dialog_select_image);
+        builder.setTitle("Edit Travel Group");
+        View view = DialogSelectImageBinding.inflate(getLayoutInflater()).getRoot();
+        builder.setView(view);
+
+        Button select = view.findViewById(R.id.select_image_button);
+        Button delete = view.findViewById(R.id.delete_image);
+        selectImage = view.findViewById(R.id.selected_image);
+        getImage(selectImage);
+
+        int[] method = {-1};
+        select.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getImage.launch("image/*");
+                method[0] = 0;
+            }
+        });
+
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                selectImage.setImageResource(R.drawable.add_a_photo);
+                method[0] = 1;
+            }
+        });
+
+        builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if(method[0] == 0){
+                    imageMethod(uriToImage(uploadImageUri), Request.Method.PUT);
+                }
+                else if(method[0] == 1){
+                    imageMethod(null, Request.Method.DELETE);
+                }
+                else{
+                    Toast.makeText(getApplicationContext(), "please Make a Selection", Toast.LENGTH_LONG).show();
+                }
+
+            }
+        });
+
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
+    }
+
+    /**
+     * Helper method to convert the image data format to be uploaded.
+     * @param image uri.
+     * @return uri as bytes.
+     */
     private byte[] uriToImage(Uri image){
         byte[] bytes = new byte[4*1024];
         try{
@@ -443,15 +470,20 @@ public class LoadGroup extends AppCompatActivity {
         return bytes;
     }
 
+    /**
+     * Network requests will be made here based on the passed in method type. Image will be uploaded or deleted.
+     * @param data of the image in bytes.
+     * @param method for the request.
+     */
     private void imageMethod(byte[] data, int method){
         String url = "http://coms-309-035.class.las.iastate.edu:8080/Group/Image/" + group.getTravelGroupID();
 
         if(method == Request.Method.PUT){
-            UploadImageRequest request = new UploadImageRequest(Request.Method.PUT, url, data, new Response.Listener<NetworkResponse>() {
+            CustomImageRequest request = new CustomImageRequest(url, data, new Response.Listener<NetworkResponse>() {
                 @Override
                 public void onResponse(NetworkResponse networkResponse) {
                     Log.d("Upload", "Response: " + networkResponse.toString());
-                    getImage();
+                    getImage(groupImage);
                 }
             }, new Response.ErrorListener() {
                 @Override
@@ -462,11 +494,11 @@ public class LoadGroup extends AppCompatActivity {
             Singleton.getInstance(getApplicationContext()).addRequest(request);
         }
         else if(method == Request.Method.DELETE){
-            UploadImageRequest request = new UploadImageRequest(Request.Method.DELETE, url, new Response.Listener<NetworkResponse>() {
+            CustomImageRequest request = new CustomImageRequest(url, new Response.Listener<NetworkResponse>() {
                 @Override
                 public void onResponse(NetworkResponse networkResponse) {
                     Log.d("Image deleted:", networkResponse.toString());
-                    getImage();
+                    getImage(groupImage);
                 }
             }, new Response.ErrorListener() {
                 @Override
@@ -478,13 +510,17 @@ public class LoadGroup extends AppCompatActivity {
         }
     }
 
-    private void getImage(){
+    /**
+     * Makes an image request to get the group image.
+     * @param image desired ImageView to set.
+     */
+    private void getImage(ImageView image){
         String url = "http://coms-309-035.class.las.iastate.edu:8080/Group/Image/" + group.getTravelGroupID();
         ImageRequest request = new ImageRequest(url, new Response.Listener<Bitmap>() {
             @Override
             public void onResponse(Bitmap bitmap) {
                 Log.d("Volley Image: ", bitmap.toString());
-                groupImage.setImageBitmap(bitmap);
+                image.setImageBitmap(bitmap);
             }
         }, 0, 0, ImageView.ScaleType.FIT_XY, Bitmap.Config.RGB_565, new Response.ErrorListener() {
             @Override

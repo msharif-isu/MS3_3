@@ -4,7 +4,6 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.ParseError;
 import com.android.volley.Request;
@@ -18,22 +17,50 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class UploadImageRequest extends Request<NetworkResponse> {
+/**
+ *
+ */
+public class CustomImageRequest extends Request<NetworkResponse> {
 
+    /**
+     * Response Listener for this request.
+     */
     private final Response.Listener<NetworkResponse> listener;
+
+    /**
+     * Response Error Listener for this request.
+     */
     private final Response.ErrorListener errorListener;
+
+    /**
+     * Image data. Only used for a PUT request.
+     */
     private final byte[] image;
+
     private final String boundary = "apiclient-" + System.currentTimeMillis();
 
-    public UploadImageRequest(int method, String url, byte[] image, Response.Listener<NetworkResponse> listener, Response.ErrorListener errorListener) {
-        super(method, url, errorListener);
+    /**
+     * Constructor to create a PUT request to add a group image.
+     * @param url for the request.
+     * @param image data for the body.
+     * @param listener for the request.
+     * @param errorListener for the request.
+     */
+    public CustomImageRequest(String url, byte[] image, Response.Listener<NetworkResponse> listener, Response.ErrorListener errorListener) {
+        super(Request.Method.PUT, url, errorListener);
         this.image = image;
         this.listener = listener;
         this.errorListener = errorListener;
     }
 
-    public UploadImageRequest(int method, String url, Response.Listener<NetworkResponse> listener, Response.ErrorListener errorListener) {
-        super(method, url, errorListener);
+    /**
+     * Constructor to create a DELETE request to remove a group image.
+     * @param url for the request.
+     * @param listener for the request.
+     * @param errorListener for the request.
+     */
+    public CustomImageRequest(String url, Response.Listener<NetworkResponse> listener, Response.ErrorListener errorListener) {
+        super(Request.Method.DELETE, url, errorListener);
         this.image = null;
         this.listener = listener;
         this.errorListener = errorListener;
@@ -45,7 +72,7 @@ public class UploadImageRequest extends Request<NetworkResponse> {
     }
 
     @Override
-    public byte[] getBody() throws AuthFailureError {
+    public byte[] getBody(){
         byte[] byteArray = null;
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(bos);
@@ -70,8 +97,8 @@ public class UploadImageRequest extends Request<NetworkResponse> {
 
     @Nullable
     @Override
-    protected Map<String, String> getParams() throws AuthFailureError {
-        HashMap<String, String> map = new HashMap<String, String>();
+    protected Map<String, String> getParams(){
+        HashMap<String, String> map = new HashMap<>();
         map.put("type", "image/jpeg");
         return map;
     }
