@@ -1,9 +1,12 @@
 package MS3_3.Backend.Groups;
 
+import MS3_3.Backend.AdminDashboard.AdminRepository;
 import MS3_3.Backend.Ambassador.Ambassador;
 import MS3_3.Backend.Ambassador.AmbassadorRepository;
 import MS3_3.Backend.UserTypes.User;
 import MS3_3.Backend.UserTypes.UserRepository;
+import MS3_3.Backend.TravelGroupChat.Message;
+import MS3_3.Backend.TravelGroupChat.MessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,7 +21,12 @@ public class TravelGroupController {
     TravelGroupRepository travelGroupRepository;
 
     @Autowired
+    AdminRepository adminRepository;
+
+    @Autowired
     AmbassadorRepository ambassadorRepository;
+    @Autowired
+    MessageRepository messageRepository;
 
     @GetMapping("/Group")
     public List<TravelGroup> getAllGroups() {
@@ -82,5 +90,24 @@ public class TravelGroupController {
         userRepository.save(user);
         travelGroupRepository.save(group);
         return group;
+    }
+
+    @DeleteMapping("/Group")
+    public TravelGroup deleteGroup(@PathVariable int groupId, @PathVariable String username) {
+        TravelGroup group = travelGroupRepository.findById(groupId);
+        if (adminRepository.findByUserName(username) == null) {
+            return group;
+        } else {
+            int i = 0;
+            List<User> memberList = travelGroupRepository.findById(groupId).getMembers();
+            while (memberList.size() > i) {
+                User currUser = memberList.get(i);
+                userRepository.findByUserName(currUser.getUserName()).removeUserCodes(groupId);
+                userRepository.findByUserName(currUser.getUserName()).removeGroupCodes(travelGroupRepository.findById(groupId));
+                i++;
+            }
+        }
+        travelGroupRepository.deleteById(groupId);
+        return null;
     }
 }

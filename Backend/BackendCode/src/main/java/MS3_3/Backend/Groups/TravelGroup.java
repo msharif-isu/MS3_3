@@ -2,7 +2,9 @@ package MS3_3.Backend.Groups;
 
 
 import MS3_3.Backend.Ambassador.Ambassador;
+import MS3_3.Backend.Itinerary.Itinerary;
 import MS3_3.Backend.UserTypes.User;
+import MS3_3.Backend.TravelGroupChat.Message;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
@@ -13,6 +15,10 @@ import java.util.List;
 public class TravelGroup {
 
     private String travelGroupName;
+
+    @OneToOne
+    @JoinColumn(name = "shareCode")
+    private Itinerary itinerary;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,13 +48,11 @@ public class TravelGroup {
         this.travelGroupAmbassador = userName;
         this.travelGroupDescription = groupDescription;
         this.members = new ArrayList<>();
-
     }
 
     public TravelGroup() {
         this.members = new ArrayList<>();
     }
-
 
     public List<User> getMembers() {
         return this.members;
@@ -119,5 +123,4 @@ public class TravelGroup {
     public void setTravelGroupDescription(String groupDescription) {
         this.travelGroupDescription = groupDescription;
     }
-
 }
