@@ -72,9 +72,15 @@ public class StorageService {
         return images;
     }
 
-    public String changeImageByGroupId(int groupId, int imageId){
+    public byte[] downloadImageByImageId(int imageId){
+        Image dbImageData = repository.findById(imageId);
+        byte[] images=ImageUtils.decompressImage(dbImageData.getImageData());
+        return images;
+    }
+
+    public String changeImageByGroupId(int groupId, Image newImage){
         TravelGroup travelGroup =  travelGroupRepository.findById(groupId);
-        travelGroup.setGroupImage(repository.findById(imageId));
+        travelGroup.setGroupImage(newImage);
         travelGroupRepository.save(travelGroup);
         return "file successfully deleted from Group: " + travelGroupRepository.findById(groupId).getTravelGroupName();
     }

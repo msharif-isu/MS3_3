@@ -29,11 +29,13 @@ public class Image {
 
     private String name;
     private String type;
+
+    //ALTER TABLE image_data MODIFY COLUMN imagedata LONGBLOB;
     @Lob
     @Column(name = "imagedata")
     private byte[] imageData;
 
-    public Image(String name, String type, byte[] imageData, int groupId) {
+    public Image(String name, String type, byte[] imageData) {
         this.name = name;
         this.type = type;
         this.imageData = imageData;

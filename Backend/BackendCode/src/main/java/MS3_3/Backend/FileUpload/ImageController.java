@@ -21,6 +21,9 @@ public class ImageController {
     @Autowired
     private TravelGroupRepository travelGroupRepository;
 
+    @Autowired
+    private ImageRepository imageRepository;
+
     @PostMapping("/Image")
     public ResponseEntity<?> uploadImage(@RequestParam("image")MultipartFile file) throws IOException {
         String uploadImage = service.uploadImage(file);
@@ -28,9 +31,9 @@ public class ImageController {
                 .body(uploadImage);
     }
 
-    @GetMapping("/Image/{fileName}")
-    public ResponseEntity<?> downloadImageByName(@PathVariable String fileName){
-        byte[] imageData=service.downloadImageByFileName(fileName);
+    @GetMapping("/Image/{Id}")
+    public ResponseEntity<?> downloadImageByName(@PathVariable int Id){
+        byte[] imageData=service.downloadImageByImageId(Id);
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.valueOf("image/png"))
                 .body(imageData);
@@ -60,7 +63,12 @@ public class ImageController {
 
     @DeleteMapping("/Group/Image/{groupId}")
     public ResponseEntity<?> deleteGroupImage(@PathVariable int groupId) {
-        String uploadImage = service.changeImageByGroupId(groupId,1);
+        Image copy = new Image();
+        copy.setImageData(imageRepository.findById(38).getImageData());
+        copy.setType(imageRepository.findById(38).getType());
+        copy.setName(imageRepository.findById(38).getName());
+        imageRepository.save(copy);
+        String uploadImage = service.changeImageByGroupId(groupId,copy);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(uploadImage);
     }

@@ -43,7 +43,12 @@ public class TravelGroupController {
             Ambassador groupLeader = ambassadorRepository.findByUserName(group.getTravelGroupAmbassador());
             User groupLeaderUserAccount = userRepository.findByUserName(group.getTravelGroupAmbassador());
             savedGroup.addNewMember(groupLeaderUserAccount);
-            savedGroup.setGroupImage(imageRepository.findById(1));
+            Image copy = new Image();
+            copy.setImageData(imageRepository.findById(38).getImageData());
+            copy.setType(imageRepository.findById(38).getType());
+            copy.setName(imageRepository.findById(38).getName());
+            imageRepository.save(copy);
+            savedGroup.setGroupImage(copy);
             groupLeader.addGroup(savedGroup);
             groupLeaderUserAccount.addGroupCodes(group);
             TravelGroup newGroup = travelGroupRepository.save(savedGroup);
