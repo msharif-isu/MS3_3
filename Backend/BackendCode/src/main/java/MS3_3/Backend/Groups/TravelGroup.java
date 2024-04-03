@@ -15,7 +15,7 @@ public class TravelGroup {
 
     private String travelGroupName;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "image_id")
     private Image groupImage;
 

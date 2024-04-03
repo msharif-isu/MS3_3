@@ -18,6 +18,7 @@ import java.util.List;
 @Builder
 public class Image {
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -32,7 +33,7 @@ public class Image {
 
     //ALTER TABLE image_data MODIFY COLUMN imagedata LONGBLOB;
     @Lob
-    @Column(name = "imagedata")
+    @Column(name = "imagedata", columnDefinition="LONGBLOB")
     private byte[] imageData;
 
     public Image(String name, String type, byte[] imageData) {
