@@ -115,6 +115,11 @@ public class DashboardFragment extends Fragment implements WebSocketListener, On
         return root;
     }
 
+    /**
+     * Generates a unique post ID consisting of 3 random letters followed by 4 random numbers.
+     *
+     * @return A string representing the generated post ID.
+     */
     public static String generatePostID(){
 
         String letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -136,6 +141,10 @@ public class DashboardFragment extends Fragment implements WebSocketListener, On
         return postIDBuilder.toString();
     }
 
+    /**
+     * Connects to the WebSocket server using the BASE_URL and a specific username.
+     * Adjust the server URL based on your requirements.
+     */
     private void connectWebSocket() {
 
        // String serverUrl = BASE_URL + UserData.getUsername();
@@ -144,7 +153,12 @@ public class DashboardFragment extends Fragment implements WebSocketListener, On
     }
 
 
-    // Function to parse a Post_Itinerary object from a WebSocket message
+    /**
+     * Parses a Post_Itinerary object from a WebSocket message.
+     *
+     * @param message The WebSocket message to parse.
+     * @return A Post_Itinerary object parsed from the message, or null if parsing fails.
+     */
     private Post_Itinerary parsePostFromMessage(String message) {
         // Parse the message and construct a Post_Itinerary object
         // This will depend on the format of the message sent by your server
@@ -187,7 +201,9 @@ public class DashboardFragment extends Fragment implements WebSocketListener, On
     }
 
 
-    // Function to show the dialog for posting
+    /**
+     * Shows a dialog for posting an itinerary.
+     */
     public void showPostDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setTitle("Post Itinerary");
@@ -284,10 +300,17 @@ public class DashboardFragment extends Fragment implements WebSocketListener, On
 
     }
 
+    /**
+     * Posts a new itinerary to the server.
+     *
+     * @param post The Post_Itinerary object representing the itinerary to be posted.
+     */
     private void POST_newPost(Post_Itinerary post){
 
         //String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary/Share" + username;
-        String url = "https://1064bd8c-7f0f-4802-94f1-71b8b5568975.mock.pstmn.io/Itinerary/Share";
+        //String url = "https://1064bd8c-7f0f-4802-94f1-71b8b5568975.mock.pstmn.io/Itinerary/Share";
+
+        String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary/Share";
 
         // Create a new JSONObject to hold the post data
         JSONObject postData = new JSONObject();
@@ -334,11 +357,16 @@ public class DashboardFragment extends Fragment implements WebSocketListener, On
         Singleton.getInstance(requireContext()).addRequest(jsonObjectRequest);
     }
 
+    /**
+     * Fetches previous posts from the server.
+     */
     private void GET_previousPosts() {
         // URL for fetching previous posts
 
         //String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary/Share" + username;
-        String url = "https://1064bd8c-7f0f-4802-94f1-71b8b5568975.mock.pstmn.io/Itinerary/Share";
+        //String url = "https://1064bd8c-7f0f-4802-94f1-71b8b5568975.mock.pstmn.io/Itinerary/Share";
+
+        String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary/Share";
 
         // RequestQueue for handling Volley requests
         RequestQueue queue = Volley.newRequestQueue(requireContext());
@@ -379,6 +407,12 @@ public class DashboardFragment extends Fragment implements WebSocketListener, On
         queue.add(jsonObjectRequest);
     }
 
+    /**
+     * Parses a Post_Itinerary object from a JSON object.
+     *
+     * @param jsonObject The JSON object representing the post.
+     * @return A Post_Itinerary object parsed from the JSON object, or null if parsing fails.
+     */
     private Post_Itinerary parsePostFromJson(JSONObject jsonObject) {
         try {
             String username = jsonObject.getString("username");
@@ -418,19 +452,33 @@ public class DashboardFragment extends Fragment implements WebSocketListener, On
     }
 
 
+    /**
+     * Handles the click event for editing a post's caption.
+     *
+     * @param position The position of the post in the list.
+     */
         @Override
     public void onEditClicked(int position) {
         // Call EditClicked method in DashboardFragment
         EditClicked(position);
     }
 
+    /**
+     * Handles the click event for deleting a post.
+     *
+     * @param position The position of the post in the list.
+     */
     @Override
     public void onDeleteClicked(int position) {
         // Call DeleteClicked method in DashboardFragment
         DeleteClicked(position);
     }
 
-
+    /**
+     * Shows a dialog for editing the caption of a post.
+     *
+     * @param position The position of the post in the list.
+     */
     public void EditClicked(int position) {
         // Get the post at the specified position
         Post_Itinerary post = posts.get(position);
@@ -468,10 +516,19 @@ public class DashboardFragment extends Fragment implements WebSocketListener, On
         builder.show();
     }
 
+    /**
+     * Updates the caption of a post on the server.
+     *
+     * @param post       The Post_Itinerary object representing the post to be updated.
+     * @param newCaption The new caption to be set for the post.
+     */
     private void PUT_editCaption(Post_Itinerary post, String newCaption){
 
         //String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary/Share/" + username + post.getPostID();
-        String url = "https://1064bd8c-7f0f-4802-94f1-71b8b5568975.mock.pstmn.io/Itinerary/Share";
+       // String url = "https://1064bd8c-7f0f-4802-94f1-71b8b5568975.mock.pstmn.io/Itinerary/Share";
+
+        String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary/Share/" + post.getPostID();
+
         JSONObject captionData = new JSONObject();
 
         try{
@@ -504,6 +561,13 @@ public class DashboardFragment extends Fragment implements WebSocketListener, On
 
         Singleton.getInstance(requireContext()).addRequest(jsonObjectRequest);
     }
+
+
+    /**
+     * Deletes a post from the server and the local list.
+     *
+     * @param position The position of the post to be deleted.
+     */
     public void DeleteClicked(int position) {
         // Remove the post from the list
 
@@ -519,10 +583,17 @@ public class DashboardFragment extends Fragment implements WebSocketListener, On
 
     }
 
+    /**
+     * Sends a DELETE request to delete a post from the server.
+     *
+     * @param postID The ID of the post to be deleted.
+     */
     private void DELETE_post(String postID){
 
         //String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary/Share/" + username + postID;
-        String url = "https://1064bd8c-7f0f-4802-94f1-71b8b5568975.mock.pstmn.io/Itinerary/Share" + postID;
+        //String url = "https://1064bd8c-7f0f-4802-94f1-71b8b5568975.mock.pstmn.io/Itinerary/Share" + postID;
+
+        String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary/Share/" + postID;
 
         StringRequest stringRequest = new StringRequest(Request.Method.DELETE, url,
                 new Response.Listener<String>() {
@@ -544,11 +615,15 @@ public class DashboardFragment extends Fragment implements WebSocketListener, On
         Singleton.getInstance(requireContext()).addRequest(stringRequest);
     }
 
-
+    /**
+     * Fetches destinations and trip codes from the server.
+     */
     private void GET_fetch_Destinations_TripCode(){
 
         //String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary/" + username;
-        String url = "https://5569939f-7918-4af9-937a-86edcfe9bc7f.mock.pstmn.io/Itinerary/GetInfo";
+       // String url = "https://5569939f-7918-4af9-937a-86edcfe9bc7f.mock.pstmn.io/Itinerary/GetInfo";
+
+        String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary";
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONArray>() {
@@ -592,6 +667,9 @@ public class DashboardFragment extends Fragment implements WebSocketListener, On
 
     }
 
+    /**
+     * Loads posts from the server or database.
+     */
     private void loadPosts() {
         // Fetch posts from backend or database
         // For demo, let's add some sample posts
@@ -619,6 +697,11 @@ public class DashboardFragment extends Fragment implements WebSocketListener, On
     }
 
 
+    /**
+     * Handles the message received from the WebSocket server.
+     *
+     * @param message The message received from the server.
+     */
     private void handleWebSocketMessage(String message) {
 
         // Parse the message received from the WebSocket server

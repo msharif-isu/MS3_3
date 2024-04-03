@@ -30,6 +30,7 @@ public class DayCard extends AppCompatActivity {
         source = getIntent().getStringExtra("SOURCE");
         isEditable = getIntent().getBooleanExtra("IS_EDITABLE", true);
 
+
         recyclerView = findViewById(R.id.recyclerViewDayCard);
 
         dayTitles = new ArrayList<>();
