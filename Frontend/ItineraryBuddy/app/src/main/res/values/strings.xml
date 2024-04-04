@@ -58,6 +58,10 @@
     <string name="enter_group_description">Enter Group Description</string>
     <string name="group_members">Group Members</string>
     <string name="edit_travel_group">Edit Travel Group</string>
+    <string name="message">Send a Message</string>
+    <string name="send">Send</string>
+    <string name="group_chat">Group Chat</string>
+    <string name="back">Back</string>
     <string name="group">group</string>
     <string name="select_group_cover_image">Select Group Cover Image</string>
     <string name="choose_a_picture">Choose a Picture</string>

@@ -97,12 +97,13 @@ public class LoadGroup extends AppCompatActivity {
         ImageButton back = findViewById(R.id.back_button);
         ImageButton groupOptions = findViewById(R.id.options_button);
         ImageButton chat = findViewById(R.id.chat_button);
+        groupImage = findViewById(R.id.group_image);
 
         // Extract the group from the previous activity using bundle
         Bundle bundle = getIntent().getExtras();
         if(bundle != null) {
-            position = Integer.parseInt(Objects.requireNonNull(bundle.getString("POSITION")));
-            group = ListGroups.adapter.getItem(position);
+            index = Integer.parseInt(Objects.requireNonNull(bundle.getString("POSITION")));
+            group = ListGroups.adapter.getItem(index);
 
             // Instantiate text views
             TextView name = findViewById(R.id.group_title);
@@ -188,10 +189,14 @@ public class LoadGroup extends AppCompatActivity {
             }
         });
 
-        groupChat.setOnClickListener(new View.OnClickListener() {
+        chat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: group chat listener
+                Intent i = new Intent(getApplicationContext(), GroupChatActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("POSITION", Integer.valueOf(index).toString());
+                i.putExtras(bundle);
+                startActivity(i);
             }
         });
 
