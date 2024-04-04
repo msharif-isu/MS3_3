@@ -4,6 +4,7 @@ import MS3_3.Backend.Day.Day;
 import MS3_3.Backend.UserTypes.User;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 
 import java.util.ArrayList;
 
@@ -23,7 +24,9 @@ public class PostedItinerary {
     private int numDays;
     @Id
     private String postID;
+    @OneToMany
     private ArrayList<Comment> comments;
+    @OneToMany
     private Day[] days;
 
     public PostedItinerary(){}
@@ -148,13 +151,17 @@ public class PostedItinerary {
         this.days = days;
     }
 
+    @Entity
     public static class Comment{
         private User creator;
         private String commentText;
+        @Id
+        private String commentID;
 
-        public Comment(User creator, String commentText) {
+        public Comment(User creator, String commentText, String commentID) {
             this.creator = creator;
             this.commentText = commentText;
+            this.commentID = commentID;
         }
 
         public User getCreator(){
@@ -169,12 +176,20 @@ public class PostedItinerary {
             return commentText;
         }
 
+        public String getCommentID() {
+            return commentID;
+        }
+
         public void setCreator(User creator) {
             this.creator = creator;
         }
 
         public void setCommentText(String commentText) {
             this.commentText = commentText;
+        }
+
+        public void setCommentID(String commentID) {
+            this.commentID = commentID;
         }
     }
 }
