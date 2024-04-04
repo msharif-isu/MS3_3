@@ -29,6 +29,9 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Activity class for displaying saved posts.
+ */
 public class SavedPost extends AppCompatActivity {
 
     private RecyclerView recyclerView;
@@ -59,6 +62,10 @@ public class SavedPost extends AppCompatActivity {
 
     }
 
+
+    /**
+     * Fetches saved posts data from the server.
+     */
     private void GET_SavedPostsData() {
         // URL for fetching previous posts
 
@@ -106,6 +113,12 @@ public class SavedPost extends AppCompatActivity {
         queue.add(jsonObjectRequest);
     }
 
+    /**
+     * Parses a JSON object to extract post data.
+     *
+     * @param jsonObject The JSON object representing a post.
+     * @return The parsed Post_Itinerary object.
+     */
     private Post_Itinerary parsePostFromJson(JSONObject jsonObject) {
         try {
             String username = jsonObject.getString("username");
@@ -145,6 +158,9 @@ public class SavedPost extends AppCompatActivity {
     }
 
 
+    /**
+     * Updates the RecyclerView based on the availability of saved posts.
+     */
     private void updateRecyclerView() {
 
         if(savedPostsLists != null && !savedPostsLists.isEmpty()){
