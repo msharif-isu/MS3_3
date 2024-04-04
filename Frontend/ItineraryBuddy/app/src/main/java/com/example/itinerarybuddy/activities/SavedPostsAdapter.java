@@ -27,6 +27,9 @@ import org.json.JSONObject;
 
 import java.util.List;
 
+/**
+ * Adapter class for displaying saved posts in a RecyclerView.
+ */
 class SavedPostsAdapter extends RecyclerView.Adapter<SavedPostsAdapter.SavedPostViewHolder> {
 
     private List<Post_Itinerary> savedPosts;
@@ -34,7 +37,12 @@ class SavedPostsAdapter extends RecyclerView.Adapter<SavedPostsAdapter.SavedPost
 
     private RequestQueue requestQueue;
 
-    // Constructor to initialize the adapter with a list of saved posts
+    /**
+     * Constructor to initialize the adapter with a list of saved posts and context.
+     *
+     * @param savedPosts The list of saved posts to be displayed.
+     * @param context The context of the application.
+     */
     public SavedPostsAdapter(List<Post_Itinerary> savedPosts, Context context) {
         this.savedPosts = savedPosts;
         this.context = context;
@@ -42,13 +50,21 @@ class SavedPostsAdapter extends RecyclerView.Adapter<SavedPostsAdapter.SavedPost
         requestQueue = Volley.newRequestQueue(context);
     }
 
-    // ViewHolder class to hold the views for each saved post item
+    /**
+     * ViewHolder class to hold the views for each saved post item.
+     */
     public static class SavedPostViewHolder extends RecyclerView.ViewHolder {
         public TextView usernameTextView;
         public TextView postFileTextView;
         public TextView captionTextView;
 
         public ImageView saveIcon;
+
+        /**
+         * Constructor for ViewHolder.
+         *
+         * @param itemView The view containing the UI elements for the saved post item.
+         */
         public SavedPostViewHolder(View itemView) {
             super(itemView);
             usernameTextView = itemView.findViewById(R.id.text_username);
@@ -59,6 +75,14 @@ class SavedPostsAdapter extends RecyclerView.Adapter<SavedPostsAdapter.SavedPost
         }
     }
 
+
+    /**
+     * Called when RecyclerView needs a new RecyclerView.ViewHolder of the given type to represent an item.
+     *
+     * @param parent The ViewGroup into which the new View will be added after it is bound to an adapter position.
+     * @param viewType The view type of the new View.
+     * @return A new ViewHolder that holds a View of the given view type.
+     */
     @NonNull
     @Override
     public SavedPostViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -67,6 +91,12 @@ class SavedPostsAdapter extends RecyclerView.Adapter<SavedPostsAdapter.SavedPost
         return new SavedPostViewHolder(view);
     }
 
+    /**
+     * Called by RecyclerView to display the data at the specified position.
+     *
+     * @param holder The ViewHolder which should be updated to represent the contents of the item at the given position in the data set.
+     * @param position The position of the item within the adapter's data set.
+     */
     @Override
     public void onBindViewHolder(@NonNull SavedPostViewHolder holder, int position) {
         // Get the data model based on position
@@ -114,6 +144,11 @@ class SavedPostsAdapter extends RecyclerView.Adapter<SavedPostsAdapter.SavedPost
         });
     }
 
+    /**
+     * Sends a DELETE request to remove a saved post.
+     *
+     * @param post The Post_Itinerary object representing the post to be removed.
+     */
     public void DELETE_savedPost(Post_Itinerary post){
 
         String url = "https://1064bd8c-7f0f-4802-94f1-71b8b5568975.mock.pstmn.io/Itinerary/Share/SavedPost" + post.getPostID();
@@ -139,12 +174,22 @@ class SavedPostsAdapter extends RecyclerView.Adapter<SavedPostsAdapter.SavedPost
 
         requestQueue.add(stringRequest);
     }
+
+    /**
+     * Returns the total number of items in the data set held by the adapter.
+     *
+     * @return The total number of items in this adapter.
+     */
     @Override
     public int getItemCount() {
         return savedPosts.size();
     }
 
-    // Method to update the list of saved posts
+    /**
+     * Method to update the list of saved posts.
+     *
+     * @param savedPosts The new list of saved posts.
+     */
     public void setSavedPosts(List<Post_Itinerary> savedPosts) {
         this.savedPosts = savedPosts;
     }

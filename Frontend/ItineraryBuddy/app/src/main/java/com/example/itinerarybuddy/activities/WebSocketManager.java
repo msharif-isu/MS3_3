@@ -60,7 +60,6 @@ public class WebSocketManager {
         try {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("username", post.getUsername());
-            jsonObject.put("timePosted", post.getTimePosted());
             jsonObject.put("postFile", post.getPostFile());
             jsonObject.put("caption", post.getCaption());
             jsonObject.put("likeCount", post.getLikeCount());
