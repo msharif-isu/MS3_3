@@ -36,6 +36,7 @@ public class Itinerary {
         this.days = new Day[numDays];
         this.numDays = numDays;
         for(int i = 0; i < numDays - 1; i++) {
+            days[i] = new Day();
             days[i].setItinerary(this);
         }
     }
@@ -46,6 +47,7 @@ public class Itinerary {
         this.days = new Day[numDays];
         this.numDays = numDays;
         for(int i = 0; i < numDays - 1; i++) {
+            days[i] = new Day();
             days[i].setItinerary(this);
         }
         this.destination = destination;
@@ -59,6 +61,7 @@ public class Itinerary {
         this.days = days;
         this.numDays = numDays;
         for(int i = 0; i < numDays - 1; i++) {
+            days[i] = new Day();
             days[i].setItinerary(this);
         }
         this.destination = destination;
@@ -119,7 +122,9 @@ public class Itinerary {
 
     public void setNumDays(int numDays) {
         this.numDays = numDays;
+        days = new Day[numDays];
         for(int i = 0; i < numDays-1; i++) {
+            days[i] = new Day();
             days[i].setItinerary(this);
         }
     }
