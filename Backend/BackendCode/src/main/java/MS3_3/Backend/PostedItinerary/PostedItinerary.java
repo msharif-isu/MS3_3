@@ -4,6 +4,7 @@ import MS3_3.Backend.Day.Day;
 import MS3_3.Backend.UserTypes.User;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 @Entity
 public class PostedItinerary {
 
+    @ManyToOne
     public User creator;
     public String timePosted;
     //Destination
@@ -153,6 +155,7 @@ public class PostedItinerary {
 
     @Entity
     public static class Comment{
+        @ManyToOne
         private User creator;
         private String commentText;
         @Id
