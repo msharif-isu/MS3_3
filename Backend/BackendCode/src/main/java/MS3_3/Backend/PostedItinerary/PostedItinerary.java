@@ -13,8 +13,8 @@ import java.util.ArrayList;
 public class PostedItinerary {
 
     @ManyToOne
-    public User creator;
-    public String timePosted;
+    private User creator;
+    private String timePosted;
     //Destination
     private String postFile;
     private String caption;
