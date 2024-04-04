@@ -149,6 +149,10 @@ public class PostedItinerary {
         this.comments = comments;
     }
 
+    public void addComment(Comment comment) {
+        comments.add(comment);
+    }
+
     public void setDays(Day[] days) {
         this.days = days;
     }
