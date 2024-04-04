@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface ItineraryRepository extends JpaRepository<Itinerary, Integer> {
+public interface ItineraryRepository extends JpaRepository<Itinerary, String> {
     @Transactional
     void deleteByTripCode(String tripCode);
 
