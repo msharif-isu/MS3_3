@@ -1,61 +1,93 @@
 package MS3_3.Backend.Itinerary;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import MS3_3.Backend.Day.Day;
 import MS3_3.Backend.Groups.TravelGroup;
+import MS3_3.Backend.UserTypes.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
 public class Itinerary {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int shareCode;
+    private String tripCode;
 
     @OneToOne
     @JsonIgnore
     private TravelGroup travelGroup;
 
     @OneToMany(mappedBy = "itinerary", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Day> days;
+    private Day[] days;
 
-    private String itineraryName;
+    @ManyToOne
+    private User creator;
+
+    private int numDays;
+
+    private String destination;
 
     private String startDate;
 
     private String endDate;
 
 
-    public Itinerary() {
-        days = new ArrayList<Day>();
+    public Itinerary() {}
+
+    public Itinerary(int numDays) {
+        this.days = new Day[numDays];
+        this.numDays = numDays;
+        for(int i = 0; i < numDays - 1; i++) {
+            days[i].setItinerary(this);
+        }
     }
 
-    public Itinerary(String itineraryName, String startDate, String endDate) {
-        this.itineraryName = itineraryName;
+    public Itinerary(String tripCode, User creator, int numDays, String destination, String startDate, String endDate) {
+        this.tripCode = tripCode;
+        this.creator = creator;
+        this.days = new Day[numDays];
+        this.numDays = numDays;
+        for(int i = 0; i < numDays - 1; i++) {
+            days[i].setItinerary(this);
+        }
+        this.destination = destination;
         this.startDate = startDate;
         this.endDate = endDate;
-        days = new ArrayList<Day>();
     }
 
-    public Itinerary(String itineraryName, String startDate, String endDate, List<Day> days) {
-        this.itineraryName = itineraryName;
-        this.startDate = startDate;
-        this.endDate = endDate;
+    public Itinerary(String tripCode, User creator, int numDays, Day[] days, String destination, String startDate, String endDate) {
+        this.tripCode = tripCode;
+        this.creator = creator;
         this.days = days;
+        this.numDays = numDays;
+        for(int i = 0; i < numDays - 1; i++) {
+            days[i].setItinerary(this);
+        }
+        this.destination = destination;
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
 
-    public int getShareCode() {
-        return shareCode;
+    public String getTripCode() {
+        return tripCode;
     }
 
-    public List<Day> getDays() {
+    public TravelGroup getTravelGroup() {
+        return travelGroup;
+    }
+
+    public Day[] getDays() {
         return days;
     }
 
-    public String getItineraryName() {
-        return itineraryName;
+    public User getCreator() {
+        return creator;
+    }
+
+    public int getNumDays() {
+        return numDays;
+    }
+
+    public String getDestination() {
+        return destination;
     }
 
     public String getStartDate() {
@@ -66,21 +98,34 @@ public class Itinerary {
         return endDate;
     }
 
-
-    public void setShareCode(int shareCode) {
-        this.shareCode = shareCode;
+    public void setTripCode(String tripCode) {
+        this.tripCode = tripCode;
     }
 
-    public void setDays(List<Day> days) {
+    public void setTravelGroup(TravelGroup travelGroup) {
+        this.travelGroup = travelGroup;
+    }
+
+    public void setDays(Day[] days) {
         this.days = days;
+        for(int i = 0; i < days.length-1; i++) {
+            days[i].setItinerary(this);
+        }
     }
 
-    public void addDay(Day day) {
-        days.add(day);
+    public void setCreator(User creator) {
+        this.creator = creator;
     }
 
-    public void setItineraryName(String itineraryName) {
-        this.itineraryName = itineraryName;
+    public void setNumDays(int numDays) {
+        this.numDays = numDays;
+        for(int i = 0; i < numDays-1; i++) {
+            days[i].setItinerary(this);
+        }
+    }
+
+    public void setDestination(String destination) {
+        this.destination = destination;
     }
 
     public void setStartDate(String startDate) {
