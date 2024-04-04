@@ -63,7 +63,7 @@ public class LoadGroup extends AppCompatActivity {
      */
     protected static Group group;
 
-    private int index;
+    protected static int index;
 
     /**
      * Prompt for selecting image from library.
@@ -119,6 +119,7 @@ public class LoadGroup extends AppCompatActivity {
             getImage(groupImage);
         }
 
+        /*
         // Instantiate text views
         TextView name = findViewById(R.id.group_title);
         TextView description = findViewById(R.id.group_description);
@@ -129,7 +130,7 @@ public class LoadGroup extends AppCompatActivity {
         description.setText(group.getTravelGroupDescription());
         String destinationText = "Traveling to: " + group.getTravelGroupDestination();
         destination.setText(destinationText);
-
+        */
         // Set click listener for back button
         back.setOnClickListener(new View.OnClickListener() {
             @Override
