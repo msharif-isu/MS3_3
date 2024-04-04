@@ -78,6 +78,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         public ImageView moreView;
 
 
+        /**
+         * ViewHolder class for holding views of a post item.
+         */
         public PostViewHolder(View itemView) {
             super(itemView);
 
@@ -100,6 +103,15 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         }
     }
 
+
+    /**
+     * Implementation of onCreateViewHolder method in RecyclerView.Adapter.
+     * This method is responsible for creating a new ViewHolder when needed.
+     *
+     * @param parent The ViewGroup into which the new View will be added after it is bound to an adapter position.
+     * @param viewType The view type of the new View.
+     * @return A new ViewHolder that holds a View of the given view type.
+     */
     @NonNull
     @Override
     public PostViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -108,6 +120,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         return new PostViewHolder(view);
     }
 
+    /**
+     * Implementation of onBindViewHolder method in RecyclerView.Adapter.
+     * This method is responsible for binding data to the views within a ViewHolder.
+     *
+     * @param holder The ViewHolder which should be updated to represent the contents of the item at the given position in the data set.
+     * @param position The position of the item within the adapter's data set.
+     */
     @Override
     public void onBindViewHolder(@NonNull PostViewHolder holder, @SuppressLint("RecyclerView") int position) {
         // Get the data model based on position
@@ -261,6 +280,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
     }
 
+    /**
+     * Sends a POST request to update the saved status of a post.
+     *
+     * @param post The Post_Itinerary object representing the post to be updated.
+     */
     private void POST_updateSavedPost(Post_Itinerary post) {
 
         //String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary/Share/" + username + post.getPostID();
@@ -345,6 +369,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
     }
 
+    /**
+     * Sends a PUT request to update the save count of a post.
+     *
+     * @param post The Post_Itinerary object representing the post to be updated.
+     */
     private void PUT_updateSaveCount(Post_Itinerary post) {
 
        // String url = "https://1064bd8c-7f0f-4802-94f1-71b8b5568975.mock.pstmn.io/Itinerary/Share/SaveCount" + post.getPostID();
@@ -378,6 +407,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         requestQueue.add(jsonObjectRequest);
     }
 
+    /**
+     * Sends a PUT request to update the like count of a post.
+     *
+     * @param post The Post_Itinerary object representing the post to be updated.
+     */
     private void PUT_updateLikeCount(Post_Itinerary post) {
 
 
@@ -410,7 +444,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         requestQueue.add(jsonObjectRequest);
     }
 
-    // Return the size of your dataset (invoked by the layout manager)
+    /**
+     * Displays a dialog for adding a comment to a post.
+     *
+     * @param holder The PostViewHolder instance associated with the post.
+     * @param post The Post_Itinerary object representing the post to add a comment to.
+     */
     private void showCommentDialog(PostViewHolder holder, Post_Itinerary post) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("Add Comment");
@@ -448,6 +487,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         builder.show();
     }
 
+    /**
+     * Sends a POST request to add a comment to a post.
+     *
+     * @param post The Post_Itinerary object representing the post to add a comment to.
+     * @param username The username of the commenter.
+     * @param commentText The text of the comment.
+     */
     private void POST_addComment(Post_Itinerary post, String username, String commentText) {
 
         String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary/Share/Comment";
@@ -481,6 +527,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         requestQueue.add(jsonObjectRequest);
     }
 
+    /**
+     * Displays a popup menu for the options related to a post.
+     *
+     * @param view The anchor view for the popup menu.
+     * @param position The position of the post in the RecyclerView.
+     */
     private void showPopupMenu(View view, int position) {
         PopupMenu popupMenu = new PopupMenu(context, view);
         popupMenu.getMenuInflater().inflate(R.menu.itinerary_menu, popupMenu.getMenu());
@@ -503,15 +555,16 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     }
 
 
+    /**
+     * Returns the total number of items in the data set held by the adapter.
+     *
+     * @return The total number of items in this adapter.
+     */
     @Override
     public int getItemCount() {
         return posts.size();
     }
 
-    public interface OnItemClickListener {
-        void onEditClicked(int position);
-        void onDeleteClicked(int position);
-    }
 
 }
 

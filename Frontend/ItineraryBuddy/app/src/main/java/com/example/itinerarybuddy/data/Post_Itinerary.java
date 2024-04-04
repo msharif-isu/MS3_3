@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class Post_Itinerary {
 
     public String username;
-    public String timePosted;
+
     public String postFile;
     public String caption;
     public int likeCount;
@@ -45,15 +45,6 @@ public class Post_Itinerary {
     }
     public String getUsername(){
         return username;
-    }
-
-    public String getTimePosted(){
-        return timePosted;
-    }
-
-    public void setTimePosted(String time){
-
-        timePosted = time;
     }
 
     public String getPostFile(){
