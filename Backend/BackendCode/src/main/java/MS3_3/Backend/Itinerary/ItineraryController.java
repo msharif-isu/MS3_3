@@ -18,14 +18,14 @@ public class ItineraryController {
     }
 
     @DeleteMapping("/Itinerary/{tripCode}")
-    public String deleteItinerary(@PathVariable int tripCode) {
+    public String deleteItinerary(@PathVariable String tripCode) {
         String name = itineraryRepository.findByTripCode(tripCode).getDestination();
         itineraryRepository.deleteByTripCode(tripCode);
         return "Itinerary " + name + " successfully deleted";
     }
 
     @PutMapping("/Itinerary/{tripCode}")
-    public Itinerary updateItinerary(@PathVariable int tripCode, @RequestBody Itinerary updatedItinerary) {
+    public Itinerary updateItinerary(@PathVariable String tripCode, @RequestBody Itinerary updatedItinerary) {
         Itinerary existingItinerary = itineraryRepository.findByTripCode(tripCode);
         if (existingItinerary != null) {
             existingItinerary.setTripCode(updatedItinerary.getTripCode());
@@ -44,7 +44,7 @@ public class ItineraryController {
     }
 
     @GetMapping("/Itinerary/{tripCode}")
-    public Itinerary getItinerary(@PathVariable int tripCode) {
+    public Itinerary getItinerary(@PathVariable String tripCode) {
         return itineraryRepository.findByTripCode(tripCode);
     }
 

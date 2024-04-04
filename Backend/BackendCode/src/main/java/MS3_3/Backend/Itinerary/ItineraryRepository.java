@@ -8,9 +8,9 @@ import java.util.List;
 
 public interface ItineraryRepository extends JpaRepository<Itinerary, Integer> {
     @Transactional
-    void deleteByTripCode(int tripCode);
+    void deleteByTripCode(String tripCode);
 
-    Itinerary findByTripCode(int tripCode);
+    Itinerary findByTripCode(String tripCode);
 
     List<Itinerary> findByCreator(User creator);
 }
