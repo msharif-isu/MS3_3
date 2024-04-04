@@ -18,6 +18,10 @@ public class DayCard extends AppCompatActivity {
     private ArrayList<String> dayContents;
 
 
+    private String source;
+    private boolean isEditable;
+
+
     /**
      * Called when the activity is starting.
      * <p>
@@ -36,6 +40,10 @@ public class DayCard extends AppCompatActivity {
         // Retrieve the number of days from the intent extra
         int numOfDays = getIntent().getIntExtra("NUM_OF_DAYS", 0);
 
+        source = getIntent().getStringExtra("SOURCE");
+        isEditable = getIntent().getBooleanExtra("IS_EDITABLE", true);
+
+
         recyclerView = findViewById(R.id.recyclerViewDayCard);
 
         dayTitles = new ArrayList<>();
@@ -47,8 +55,10 @@ public class DayCard extends AppCompatActivity {
             dayContents.add("Schedule Content for Day " + i);
         }
 
+
         // Initialize and set up the RecyclerView adapter
-        dayCardAdapter = new DayCardAdapter(this, dayTitles, dayContents);
+        dayCardAdapter = new DayCardAdapter(this, dayTitles, dayContents, isEditable, source);
+
         recyclerView.setAdapter(dayCardAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }

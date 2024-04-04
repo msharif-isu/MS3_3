@@ -29,8 +29,7 @@
     <string name="title_community">Community</string>
     <string name="title_ambassador">Ambassador</string>
     <string name="title_appName">ItineraryBuddy</string>
-    <string name="title_dashboard">Boo 2</string>
-    <string name="title_notifications">Boo 3</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="itemDay">Day</string>
