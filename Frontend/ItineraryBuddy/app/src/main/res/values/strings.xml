@@ -37,7 +37,7 @@
     <string name="itemTime">Time</string>
     <string name="itemPlaces">Places</string>
     <string name="itemNote">Note</string>
-    <string name="your_groups"><u>Your Travel Groups</u></string>
+    <string name="your_groups">Your Travel Groups</string>
     <string name="join_a_travel_group_to_meet_new_people_plan_amazing_trips_and_have_a_fun_time">Join a travel group to meet new people, plan amazing trips, and have a fun time!</string>
     <string name="leave_group">Leave Group</string>
     <string name="view_group">View Group</string>
@@ -58,10 +58,15 @@
     <string name="enter_group_description">Enter Group Description</string>
     <string name="group_members">Group Members</string>
     <string name="edit_travel_group">Edit Travel Group</string>
-    <string name="message">Send a Message</string>
-    <string name="send">Send</string>
-    <string name="group_chat">Group Chat</string>
-    <string name="back">Back</string>
-
+    <string name="group">group</string>
+    <string name="select_group_cover_image">Select Group Cover Image</string>
+    <string name="choose_a_picture">Choose a Picture</string>
+    <string name="group_image">Group Image</string>
+    <string name="group_cover_image">Group Image</string>
+    <string name="place_holder_for_itinerary">(Place Holder for Group Itinerary)</string>
+    <string name="set_group_cover_image">Set Group Cover Image</string>
+    <string name="selected_image">Selected Image</string>
+    <string name="select_an_image">Select an Image</string>
+    <string name="remove_group_image">Remove Group Image</string>
 
 </resources>
