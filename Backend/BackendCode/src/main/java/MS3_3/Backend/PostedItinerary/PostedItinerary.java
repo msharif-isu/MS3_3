@@ -2,6 +2,7 @@ package MS3_3.Backend.PostedItinerary;
 
 import MS3_3.Backend.Day.Day;
 import MS3_3.Backend.UserTypes.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
@@ -46,6 +47,9 @@ public class PostedItinerary {
         this.numDays = numDays;
         this.postID = postID;
         this.comments = comments;
+        for(Comment comment: comments) {
+            comment.setItinerary(this);
+        }
         this.days = days;
     }
 
@@ -150,6 +154,7 @@ public class PostedItinerary {
     }
 
     public void addComment(Comment comment) {
+        comment.setItinerary(this);
         comments.add(comment);
     }
 
@@ -157,16 +162,27 @@ public class PostedItinerary {
         this.days = days;
     }
 
+    public void removeComment(Comment comment) {
+        comments.remove(comment);
+    }
+
     @Entity
     public static class Comment{
         @ManyToOne
         private User creator;
+
+        @ManyToOne
+        @JsonIgnore
+        private PostedItinerary itinerary;
         private String commentText;
         @Id
         private String commentID;
 
-        public Comment(User creator, String commentText, String commentID) {
+        public Comment() {}
+
+        public Comment(User creator, PostedItinerary itinerary, String commentText, String commentID) {
             this.creator = creator;
+            this.itinerary = itinerary;
             this.commentText = commentText;
             this.commentID = commentID;
         }
@@ -179,6 +195,10 @@ public class PostedItinerary {
             return creator.getUserName();
         }
 
+        public PostedItinerary getItinerary() {
+            return itinerary;
+        }
+
         public String getCommentText() {
             return commentText;
         }
@@ -189,6 +209,10 @@ public class PostedItinerary {
 
         public void setCreator(User creator) {
             this.creator = creator;
+        }
+
+        public void setItinerary(PostedItinerary itinerary) {
+            this.itinerary = itinerary;
         }
 
         public void setCommentText(String commentText) {

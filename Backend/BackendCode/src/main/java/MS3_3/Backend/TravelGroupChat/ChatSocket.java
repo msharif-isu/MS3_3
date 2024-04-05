@@ -1,32 +1,24 @@
 package MS3_3.Backend.TravelGroupChat;
 
+import MS3_3.Backend.Groups.TravelGroupRepository;
+import jakarta.websocket.*;
+import jakarta.websocket.server.PathParam;
+import jakarta.websocket.server.ServerEndpoint;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.io.IOException;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-
-import MS3_3.Backend.Groups.TravelGroup;
-import MS3_3.Backend.Groups.TravelGroupRepository;
-import jakarta.websocket.OnClose;
-import jakarta.websocket.OnError;
-import jakarta.websocket.OnMessage;
-import jakarta.websocket.OnOpen;
-import jakarta.websocket.Session;
-import jakarta.websocket.server.PathParam;
-import jakarta.websocket.server.ServerEndpoint;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 
 /**
  * Websocket link
  * ws://coms-309-035.class.las.iastate.edu:8080/chat/{groupID}/{username}
  */
 
-@Controller      // this is needed for this to be an endpoint to springboot
+      // this is needed for this to be an endpoint to springboot
 @ServerEndpoint(value = "/chat/{groupId}/{username}")  // this is Websocket url
 public class ChatSocket {
 
