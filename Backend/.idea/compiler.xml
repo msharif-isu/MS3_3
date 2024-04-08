@@ -8,11 +8,13 @@
         <outputRelativeToContentRoot value="true" />
         <module name="backend224" />
         <module name="WebSocketTest" />
+        <module name="MainBranch" />
       </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="MainBranch" options="-parameters" />
       <module name="WebSocketTest" options="-parameters" />
       <module name="backend224" options="-parameters" />
     </option>
