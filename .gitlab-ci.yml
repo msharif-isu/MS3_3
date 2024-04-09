@@ -10,18 +10,18 @@ maven-build:
   tags:                 # to specify which runner to execute this job
     - springboot_tag    # change to your runner's tag
   script:               # what to execute for this job
-    - cd Backend        # change 'Backend' to to where you have the pom.xml (do not add / in the beginning)
+    - cd Backend/BackendCode/pom.xml        # change 'Backend' to to where you have the pom.xml (do not add / in the beginning)
     - mvn package       # maven package
   artifacts:            # where to output the packaged jar file, change 'Backend' to to where you have the pom.xml
     paths:
-      - Backend/target/*.jar
+      - Backend/BackendCode/pom.xml/target/*.jar
 
 maven-test:
   stage: maventest     # one of the stages listed above
   tags:
     - springboot_tag   # change to your runner's tag
   script:
-    - cd Backend       # change 'Backend' to to where you have the pom.xml (do not add / in the beginning)
+    - cd Backend/BackendCode/pom.xml/target/*.jar       # change 'Backend' to to where you have the pom.xml (do not add / in the beginning)
     - mvn test         # maven test
 
 auto-deploy:
@@ -29,7 +29,7 @@ auto-deploy:
   tags:
     - springboot_tag      # change to your runner's tag
   script:               # script to run the deployment service you created
-    - cd Backend        # change 'Backend' to to where you have the pom.xml (do not add / in the beginning)
+    - cd Backend/BackendCode/pom.xml/target/*.jar        # change 'Backend' to to where you have the pom.xml (do not add / in the beginning)
     - sudo mv target/*.jar /target/web-demo.jar
     - sudo systemctl stop system-web-demo
     - sudo systemctl start system-web-demo
@@ -41,9 +41,9 @@ android-build:
     - android_tag                    # change to your runner's tag
   before_script:                    # enable gradlew, change 'Frontend' to where you have 'gradlew'
     - export GRADLE_USER_HOME=`pwd`/.gradle
-    - chmod +x ./Frontend/gradlew
+    - chmod +x ./Frontend/itineraryBuddy/gradlew
   script:
-    - cd Frontend                   # change 'Frontend' to where you have 'gradlew' (do not add / in the beginning)
+    - cd Frontend/itineraryBuddy/gradlew                   # change 'Frontend' to where you have 'gradlew' (do not add / in the beginning)
     - ./gradlew build               # gradle build
 
 android-test:
@@ -53,7 +53,7 @@ android-test:
     - android_tag                   # change to your runner's tag
   before_script:                   # enable gradlew, change 'Frontend' to where you have 'gradlew'
     - export GRADLE_USER_HOME=`pwd`/.gradle
-    - chmod +x ./Frontend/gradlew
+    - chmod +x ./Frontend/itineraryBuddy/gradlew
   script:
-    - cd Frontend                  # change 'Frontend' to where you have 'gradlew' (do not add / in the beginning)
+    - cd Frontend/itineraryBuddy/gradlew                  # change 'Frontend' to where you have 'gradlew' (do not add / in the beginning)
     - ./gradlew test               # gradle test
