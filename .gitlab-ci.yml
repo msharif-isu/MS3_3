@@ -43,7 +43,7 @@ android-build:
     - export GRADLE_USER_HOME=`pwd`/.gradle
     - chmod +x ./Frontend/ItineraryBuddy/gradlew
   script:
-    - cd Frontend/itineraryBuddy/                   # change 'Frontend' to where you have 'gradlew' (do not add / in the beginning)
+    - cd Frontend/ItineraryBuddy/                   # change 'Frontend' to where you have 'gradlew' (do not add / in the beginning)
     - ./gradlew build               # gradle build
 
 android-test:
