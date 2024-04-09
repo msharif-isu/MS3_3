@@ -10,18 +10,18 @@ maven-build:
   tags:                 # to specify which runner to execute this job
     - springboot_tag    # change to your runner's tag
   script:               # what to execute for this job
-    - cd Backend        # change 'Backend' to to where you have the pom.xml (do not add / in the beginning)
+    - cd Backend/BackendCode        # change 'Backend' to to where you have the pom.xml (do not add / in the beginning)
     - mvn package       # maven package
   artifacts:            # where to output the packaged jar file, change 'Backend' to to where you have the pom.xml
     paths:
-      - Backend/target/*.jar
+      - Backend/BackendCode/target/*.jar
 
 maven-test:
   stage: maventest     # one of the stages listed above
   tags:
     - springboot_tag   # change to your runner's tag
   script:
-    - cd Backend       # change 'Backend' to to where you have the pom.xml (do not add / in the beginning)
+    - cd Backend/BackendCode       # change 'Backend' to to where you have the pom.xml (do not add / in the beginning)
     - mvn test         # maven test
 
 auto-deploy:
@@ -29,7 +29,7 @@ auto-deploy:
   tags:
     - springboot_tag      # change to your runner's tag
   script:               # script to run the deployment service you created
-    - cd Backend        # change 'Backend' to to where you have the pom.xml (do not add / in the beginning)
+    - cd Backend/BackendCode        # change 'Backend' to to where you have the pom.xml (do not add / in the beginning)
     - sudo mv target/*.jar /target/web-demo.jar
     - sudo systemctl stop system-web-demo
     - sudo systemctl start system-web-demo
