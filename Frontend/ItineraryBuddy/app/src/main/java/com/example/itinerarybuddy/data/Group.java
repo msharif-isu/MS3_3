@@ -204,7 +204,12 @@ public class Group {
         try{
             JSONArray array = json.getJSONArray("members");
             for(int i = 0; i < array.length(); i++){
-                groupMembers.add(array.getJSONObject(i).getString("userName"));
+                if(json.getString("travelGroupAmbassador").equals(array.getJSONObject(i).getString("userName"))){
+                    groupMembers.add(array.getJSONObject(i).getString("userName") + " (Group Creator)");
+                }
+                else {
+                    groupMembers.add(array.getJSONObject(i).getString("userName"));
+                }
             }
         } catch (JSONException e) {
             Log.e("Error: ", e.toString());

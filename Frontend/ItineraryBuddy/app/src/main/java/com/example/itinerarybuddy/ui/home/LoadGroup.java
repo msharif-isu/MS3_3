@@ -1,8 +1,11 @@
 package com.example.itinerarybuddy.ui.home;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuInflater;
@@ -11,35 +14,48 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.itinerarybuddy.R;
 import com.example.itinerarybuddy.data.Group;
 import com.example.itinerarybuddy.data.UserData;
 import com.example.itinerarybuddy.databinding.DialogCreateGroupBinding;
 import com.example.itinerarybuddy.databinding.DialogGroupDetailsBinding;
-import com.example.itinerarybuddy.ui.home.ListGroups;
+import com.example.itinerarybuddy.databinding.DialogSelectImageBinding;
+import com.example.itinerarybuddy.util.CustomImageRequest;
 import com.example.itinerarybuddy.util.Singleton;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * This is where a specific group can be loaded. Will contain group details, settings, chat, etc.
+ */
 public class LoadGroup extends AppCompatActivity {
 
     /**
@@ -47,7 +63,27 @@ public class LoadGroup extends AppCompatActivity {
      */
     protected static Group group;
 
-    private int index;
+    protected static int index;
+
+    /**
+     * Prompt for selecting image from library.
+     */
+    private ActivityResultLauncher<String> getImage;
+
+    /**
+     * Cover image within the main group page.
+     */
+    private ImageView groupImage;
+
+    /**
+     * Image view for the image selection page in settings.
+     */
+    private ImageView selectImage;
+
+    /**
+     * URI associated with selected image to upload.
+     */
+    private Uri uploadImageUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,14 +97,29 @@ public class LoadGroup extends AppCompatActivity {
         ImageButton back = findViewById(R.id.back_button);
         ImageButton groupOptions = findViewById(R.id.options_button);
         ImageButton chat = findViewById(R.id.chat_button);
+        groupImage = findViewById(R.id.group_image);
 
         // Extract the group from the previous activity using bundle
         Bundle bundle = getIntent().getExtras();
         if(bundle != null) {
             index = Integer.parseInt(Objects.requireNonNull(bundle.getString("POSITION")));
             group = ListGroups.adapter.getItem(index);
+
+            // Instantiate text views
+            TextView name = findViewById(R.id.group_title);
+            TextView description = findViewById(R.id.group_description);
+            TextView destination = findViewById(R.id.group_destination);
+
+            // Set data to the various views
+            assert group != null;
+            name.setText(group.getTravelGroupName());
+            description.setText(group.getTravelGroupDescription());
+            String destinationText = "Traveling to: " + group.getTravelGroupDestination();
+            destination.setText(destinationText);
+            getImage(groupImage);
         }
 
+        /*
         // Instantiate text views
         TextView name = findViewById(R.id.group_title);
         TextView description = findViewById(R.id.group_description);
@@ -79,7 +130,7 @@ public class LoadGroup extends AppCompatActivity {
         description.setText(group.getTravelGroupDescription());
         String destinationText = "Traveling to: " + group.getTravelGroupDestination();
         destination.setText(destinationText);
-
+        */
         // Set click listener for back button
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -138,6 +189,39 @@ public class LoadGroup extends AppCompatActivity {
                 menu.show();
             }
         });
+
+        chat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getApplicationContext(), GroupChatActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("POSITION", Integer.valueOf(index).toString());
+                i.putExtras(bundle);
+                startActivity(i);
+            }
+        });
+
+        // Image selection process
+        getImage = registerForActivityResult(new ActivityResultContracts.GetContent(), uri -> {
+            if(uri != null){
+                uploadImageUri = uri;
+                selectImage.setImageURI(uri);
+                Toast.makeText(getApplicationContext(), "Image Selected!", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        groupImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Allow user to change group image if they are an ambassador.
+                if(UserData.getUsertype().equals("Ambassador")){
+                    selectGroupImage();
+                }
+                else{
+                    Toast.makeText(getApplicationContext(), "Only Travel Ambassadors can edit the group.", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
     }
 
     /**
@@ -176,15 +260,14 @@ public class LoadGroup extends AppCompatActivity {
     private void editGroup(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.layout.dialog_create_group);
         builder.setTitle("Edit Travel Group");
+        View editView = DialogCreateGroupBinding.inflate(getLayoutInflater()).getRoot();
+        builder.setView(editView);
 
-        View v = DialogCreateGroupBinding.inflate(getLayoutInflater()).getRoot();
-        builder.setView(v);
-
-        EditText nameInput = v.findViewById(R.id.group_name_input);
+        EditText nameInput = editView.findViewById(R.id.group_name_input);
         nameInput.setText(group.getTravelGroupName());
-        EditText destinationInput = v.findViewById(R.id.group_destination_input);
+        EditText destinationInput = editView.findViewById(R.id.group_destination_input);
         destinationInput.setText(group.getTravelGroupDestination());
-        EditText descriptionInput = v.findViewById(R.id.group_description_input);
+        EditText descriptionInput = editView.findViewById(R.id.group_description_input);
         descriptionInput.setText(group.getTravelGroupDescription());
 
         builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
@@ -324,5 +407,155 @@ public class LoadGroup extends AppCompatActivity {
     private void deleteGroup(){
         ListGroups.adapter.remove(group);
         ListGroups.adapter.notifyDataSetChanged();
+    }
+    
+
+    // THE FOLLOWING FUNCTIONS ARE RELATED TO FEATURE 2: IMAGE UPLOAD!
+
+    /**
+     * Initiates the dialog to allow ambassador to modify the group image.
+     */
+    private void selectGroupImage(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.layout.dialog_select_image);
+        builder.setTitle("Edit Travel Group");
+        View view = DialogSelectImageBinding.inflate(getLayoutInflater()).getRoot();
+        builder.setView(view);
+
+        Button select = view.findViewById(R.id.select_image_button);
+        Button delete = view.findViewById(R.id.delete_image);
+        selectImage = view.findViewById(R.id.selected_image);
+        getImage(selectImage);
+
+        int[] method = {-1};
+        select.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getImage.launch("image/*");
+                method[0] = 0;
+            }
+        });
+
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                selectImage.setImageResource(R.drawable.add_a_photo);
+                method[0] = 1;
+            }
+        });
+
+        builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if(method[0] == 0){
+                    imageMethod(uriToImage(uploadImageUri), Request.Method.PUT);
+                }
+                else if(method[0] == 1){
+                    imageMethod(null, Request.Method.DELETE);
+                }
+                else{
+                    Toast.makeText(getApplicationContext(), "please Make a Selection", Toast.LENGTH_LONG).show();
+                }
+
+            }
+        });
+
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
+    }
+
+    /**
+     * Helper method to convert the image data format to be uploaded.
+     * @param image uri.
+     * @return uri as bytes.
+     */
+    private byte[] uriToImage(Uri image){
+        byte[] bytes = new byte[4*1024];
+        try{
+            @SuppressLint("Recycle") InputStream input = getContentResolver().openInputStream(image);
+            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+
+            while (true) {
+                assert input != null;
+                if (input.read(bytes) == -1){
+                    break;
+                }
+                else{
+                    buffer.write(bytes, 0, bytes.length);
+                }
+            }
+
+            bytes = buffer.toByteArray();
+        }catch(IOException e){
+            Log.e("Error: ", e.toString());
+        }
+
+        return bytes;
+    }
+
+    /**
+     * Network requests will be made here based on the passed in method type. Image will be uploaded or deleted.
+     * @param data of the image in bytes.
+     * @param method for the request.
+     */
+    private void imageMethod(byte[] data, int method){
+        String url = "http://coms-309-035.class.las.iastate.edu:8080/Group/Image/" + group.getTravelGroupID();
+
+        if(method == Request.Method.PUT){
+            CustomImageRequest request = new CustomImageRequest(url, data, new Response.Listener<NetworkResponse>() {
+                @Override
+                public void onResponse(NetworkResponse networkResponse) {
+                    Log.d("Upload", "Response: " + networkResponse.toString());
+                    getImage(groupImage);
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError volleyError) {
+                    Log.e("Upload", "Error: " + volleyError.getMessage());
+                }
+            });
+            Singleton.getInstance(getApplicationContext()).addRequest(request);
+        }
+        else if(method == Request.Method.DELETE){
+            CustomImageRequest request = new CustomImageRequest(url, new Response.Listener<NetworkResponse>() {
+                @Override
+                public void onResponse(NetworkResponse networkResponse) {
+                    Log.d("Image deleted:", networkResponse.toString());
+                    getImage(groupImage);
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError volleyError) {
+                    Log.e("Delete", "Error: " + volleyError.getMessage());
+                }
+            });
+            Singleton.getInstance(getApplicationContext()).addRequest(request);
+        }
+    }
+
+    /**
+     * Makes an image request to get the group image.
+     * @param image desired ImageView to set.
+     */
+    private void getImage(ImageView image){
+        String url = "http://coms-309-035.class.las.iastate.edu:8080/Group/Image/" + group.getTravelGroupID();
+        ImageRequest request = new ImageRequest(url, new Response.Listener<Bitmap>() {
+            @Override
+            public void onResponse(Bitmap bitmap) {
+                Log.d("Volley Image: ", bitmap.toString());
+                image.setImageBitmap(bitmap);
+            }
+        }, 0, 0, ImageView.ScaleType.FIT_XY, Bitmap.Config.RGB_565, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                Log.e("Volley Error: ", volleyError.toString());
+            }
+        });
+        Singleton.getInstance(getApplicationContext()).addRequest(request);
     }
 }

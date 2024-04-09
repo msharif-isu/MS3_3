@@ -119,6 +119,9 @@ public class GroupChatActivity extends AppCompatActivity implements WebsocketLis
             public void onClick(View v) {
                 chatWebsocket.disconnect();
                 Intent i = new Intent(getApplicationContext(), LoadGroup.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("POSITION", Integer.valueOf(LoadGroup.index).toString());
+                i.putExtras(bundle);
                 startActivity(i);
             }
         });
@@ -134,14 +137,16 @@ public class GroupChatActivity extends AppCompatActivity implements WebsocketLis
             String[] messages = msg.split("\n");
             for(String s : messages){
                 // Parse out the message and the sender.
-                String message = s.substring(s.indexOf(":") + 2);
-                String sender = s.substring(0, s.indexOf(":"));
-                if(sender.equals(UserData.getUsername())){
-                    sender = "You";
+                if(!s.isEmpty()){
+                    if(!s.contains(" disconnected")){
+                        String sender = s.substring(0, s.indexOf(":"));
+                        String message = s.substring(s.indexOf(":") + 2);
+                        if(sender.equals(UserData.getUsername())){
+                            sender = "You";
+                        }
+                        adapter.add(new ChatData(message, sender));
+                    }
                 }
-
-                // Add to adapter and refresh list.
-                adapter.add(new ChatData(message, sender));
             }
 
             adapter.notifyDataSetChanged();

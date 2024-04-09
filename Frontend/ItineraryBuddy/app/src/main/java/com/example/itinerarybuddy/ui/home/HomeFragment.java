@@ -17,6 +17,7 @@ import android.widget.DatePicker;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.example.itinerarybuddy.activities.DayCard;
+import com.example.itinerarybuddy.activities.ScheduleTemplate;
 import com.example.itinerarybuddy.data.Itinerary;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -47,6 +48,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.itinerarybuddy.R;
+import com.example.itinerarybuddy.data.UserData;
 import com.example.itinerarybuddy.databinding.FragmentHomeBinding;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -103,10 +105,15 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
                 String selectedItinerary = itineraryAdapter.getItem(position);
 
                 int days = extractNumOfDays(selectedItinerary);
+                String tripCode = extractTripCode(selectedItinerary);
 
                 Intent intent = new Intent(requireContext(), DayCard.class);
+                Intent intent2 = new Intent(requireContext(), ScheduleTemplate.class);
 
                 intent.putExtra("NUM_OF_DAYS", days);
+                intent.putExtra("IS_EDITABLE", true);
+                intent.putExtra("SOURCE", "Personal");
+                intent2.putExtra("TRIPCODE", tripCode);
 
                 startActivity(intent);
             }
@@ -130,6 +137,17 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
         });
 
         return root;
+    }
+
+
+    private String extractTripCode(String itinerary) {
+        String label = "Trip Code: ";
+        int labelIndex = itinerary.indexOf(label);
+
+        if (labelIndex != -1) {
+            return itinerary.substring(labelIndex + label.length()).trim();
+        }
+        return null;
     }
 
     /**
@@ -359,8 +377,10 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
     private void POST_itinerary(String destination, String tripCode, String startDate, String endDate, int numOfDays){
 
         //Make a network request using Volley
-        // String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary/Create";
-        String url = "https://5569939f-7918-4af9-937a-86edcfe9bc7f.mock.pstmn.io/Itinerary/Create";
+      //  String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary/" + UserData.getUsername();
+        //String url = "https://5569939f-7918-4af9-937a-86edcfe9bc7f.mock.pstmn.io/Itinerary/Create";
+
+        String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary";
 
         // Create a new request queue using Volley
         RequestQueue queue = Volley.newRequestQueue(requireContext());
@@ -428,6 +448,7 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
     }
 
     /**
@@ -490,6 +511,7 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
 
         deleteItinerary(position);
     }
+
 
     /**
      * Displays a dialog for editing an itinerary item.
@@ -629,8 +651,10 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
 
         // Retrieve the trip code for the specified itinerary position
         String tripCode = getTripCodeFromAdapterPosition(position);
-        //String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary/Update" + tripCode;
-        String url = "https://5569939f-7918-4af9-937a-86edcfe9bc7f.mock.pstmn.io/Itinerary/Update/" + tripCode;
+        //String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary/" + UserData.getUsername() + tripCode;
+        //String url = "https://5569939f-7918-4af9-937a-86edcfe9bc7f.mock.pstmn.io/Itinerary/Update/" + tripCode;
+
+        String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary/" + tripCode;
 
         // Create a StringRequest for the PUT request
         StringRequest updateRequest = new StringRequest(Request.Method.PUT, url,
@@ -685,8 +709,10 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
      */
     private void DELETE_itinerary(final String tripCode) {
 
-        //String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary/Delete" + tripCode;
-        String url = "https://5569939f-7918-4af9-937a-86edcfe9bc7f.mock.pstmn.io/Itinerary/Delete/" + tripCode;
+       // String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary/" + UserData.getUsername() + tripCode;
+        //String url = "https://5569939f-7918-4af9-937a-86edcfe9bc7f.mock.pstmn.io/Itinerary/Delete/" + tripCode;
+
+        String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary/" + tripCode;
 
         // Create a StringRequest for the DELETE request
         StringRequest deleteRequest = new StringRequest(Request.Method.DELETE, url,
@@ -765,9 +791,10 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
      */
     public void GET_itinerary(){
 
+        //String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary/" + UserData.getUsername();
+        //String url = "https://5569939f-7918-4af9-937a-86edcfe9bc7f.mock.pstmn.io/Itinerary/GetInfo";
 
-        //String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary/GetInfo";
-        String url = "https://5569939f-7918-4af9-937a-86edcfe9bc7f.mock.pstmn.io/Itinerary/GetInfo";
+        String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary";
 
         // Create a JsonArrayRequest for the GET request
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null,

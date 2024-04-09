@@ -13,13 +13,13 @@ public class ScheduleItem {
     Time time;
     String places;
     String notes;
+    String tripCode;
 
     /**
      * Default constructor.
      */
     public ScheduleItem() {
     }
-
 
     /**
      * Constructs a ScheduleItem with specified attributes.
@@ -37,6 +37,15 @@ public class ScheduleItem {
         this.time = time;
         this.places = places;
         this.notes = notes;
+    }
+
+
+    public void setTripCode(String tripCode) {
+        this.tripCode = tripCode;
+    }
+
+    public String getTripCode(){
+        return tripCode;
     }
 
     /**
