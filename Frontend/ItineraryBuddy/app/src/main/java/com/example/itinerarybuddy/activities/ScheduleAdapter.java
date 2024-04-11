@@ -26,7 +26,7 @@ import java.util.List;
  * and binding it to the corresponding views in the RecyclerView.
  */
 
-class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHolder> {
+public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHolder> {
 
     private static final int VIEW_TYPE_HEADER = 0;
     private static final int VIEW_TYPE_DATA = 1;

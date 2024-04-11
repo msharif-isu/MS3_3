@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -34,6 +35,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.itinerarybuddy.R;
+import com.example.itinerarybuddy.activities.DayCard;
+import com.example.itinerarybuddy.activities.ScheduleTemplate;
 import com.example.itinerarybuddy.data.Group;
 import com.example.itinerarybuddy.data.UserData;
 import com.example.itinerarybuddy.databinding.DialogCreateGroupBinding;
@@ -98,6 +101,7 @@ public class LoadGroup extends AppCompatActivity {
         ImageButton groupOptions = findViewById(R.id.options_button);
         ImageButton chat = findViewById(R.id.chat_button);
         groupImage = findViewById(R.id.group_image);
+        LinearLayout itinerary = findViewById(R.id.itinerary_details);
 
         // Extract the group from the previous activity using bundle
         Bundle bundle = getIntent().getExtras();
@@ -119,18 +123,6 @@ public class LoadGroup extends AppCompatActivity {
             getImage(groupImage);
         }
 
-        /*
-        // Instantiate text views
-        TextView name = findViewById(R.id.group_title);
-        TextView description = findViewById(R.id.group_description);
-        TextView destination = findViewById(R.id.group_destination);
-
-        assert group != null;
-        name.setText(group.getTravelGroupName());
-        description.setText(group.getTravelGroupDescription());
-        String destinationText = "Traveling to: " + group.getTravelGroupDestination();
-        destination.setText(destinationText);
-        */
         // Set click listener for back button
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -220,6 +212,21 @@ public class LoadGroup extends AppCompatActivity {
                 else{
                     Toast.makeText(getApplicationContext(), "Only Travel Ambassadors can edit the group.", Toast.LENGTH_LONG).show();
                 }
+            }
+        });
+
+        itinerary.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int days = 5;
+                String tripCode = "1234";
+
+                Intent intent = new Intent(getApplicationContext(), DayCard.class);
+                intent.putExtra("NUM_OF_DAYS", days);
+                intent.putExtra("SOURCE", "GROUP");
+                intent.putExtra("IS_EDITABLE", UserData.getUsertype().equals("User"));
+
+                startActivity(intent);
             }
         });
     }

@@ -113,6 +113,7 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
                 intent.putExtra("NUM_OF_DAYS", days);
                 intent.putExtra("IS_EDITABLE", true);
                 intent.putExtra("SOURCE", "Personal");
+                intent.putExtra("TYPE", "Personal");
                 intent2.putExtra("TRIPCODE", tripCode);
 
                 startActivity(intent);
