@@ -2,9 +2,11 @@ package com.example.itinerarybuddy.ui.home;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,6 +17,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -33,12 +36,14 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.itinerarybuddy.R;
 import com.example.itinerarybuddy.activities.DayCard;
 import com.example.itinerarybuddy.activities.ScheduleTemplate;
 import com.example.itinerarybuddy.data.Group;
 import com.example.itinerarybuddy.data.UserData;
+import com.example.itinerarybuddy.databinding.DialogAddItineraryBinding;
 import com.example.itinerarybuddy.databinding.DialogCreateGroupBinding;
 import com.example.itinerarybuddy.databinding.DialogGroupDetailsBinding;
 import com.example.itinerarybuddy.databinding.DialogSelectImageBinding;
@@ -52,7 +57,10 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
@@ -88,6 +96,20 @@ public class LoadGroup extends AppCompatActivity {
      */
     private Uri uploadImageUri;
 
+    private TextView itineraryDestination;
+
+    private TextView itineraryStart;
+
+    private TextView itineraryEnd;
+
+    private TextView itineraryLength;
+
+    private EditText destinationEdit;
+
+    private EditText startDateInput;
+
+    private EditText endDateInput;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,6 +124,11 @@ public class LoadGroup extends AppCompatActivity {
         ImageButton chat = findViewById(R.id.chat_button);
         groupImage = findViewById(R.id.group_image);
         LinearLayout itinerary = findViewById(R.id.itinerary_details);
+        itineraryDestination = findViewById(R.id.group_itinerary_destination);
+        itineraryStart = findViewById(R.id.group_itinerary_start);
+        itineraryEnd = findViewById(R.id.group_itinerary_end);
+        itineraryLength = findViewById(R.id.group_itinerary_length);
+        ImageView itinerarySettings = findViewById(R.id.iconPopUp);
 
         // Extract the group from the previous activity using bundle
         Bundle bundle = getIntent().getExtras();
@@ -121,6 +148,7 @@ public class LoadGroup extends AppCompatActivity {
             String destinationText = "Traveling to: " + group.getTravelGroupDestination();
             destination.setText(destinationText);
             getImage(groupImage);
+            getItinerary();
         }
 
         // Set click listener for back button
@@ -227,6 +255,13 @@ public class LoadGroup extends AppCompatActivity {
                 intent.putExtra("IS_EDITABLE", UserData.getUsertype().equals("User"));
 
                 startActivity(intent);
+            }
+        });
+
+        itinerarySettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                editItinerary();
             }
         });
     }
@@ -564,5 +599,103 @@ public class LoadGroup extends AppCompatActivity {
             }
         });
         Singleton.getInstance(getApplicationContext()).addRequest(request);
+    }
+
+    /**
+     * Requests for this groups itinerary to display.
+     */
+    private void getItinerary(){
+        final String url = "https://443da8f0-75e2-4be2-8e84-834c5d63eda6.mock.pstmn.io/itinerary?id=1"; //TODO: fix url
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject jsonObject) {
+                try{
+                    String destination = "Destination: " + jsonObject.getString("destination");
+                    String start = "Start Date: " + jsonObject.getString("start date");
+                    String end = "End Date: " + jsonObject.getString("end date");
+                    String length = "Number of Days: " + jsonObject.getString("number of days");
+
+                    itineraryDestination.setText(destination);
+                    itineraryStart.setText(start);
+                    itineraryEnd.setText(end);
+                    itineraryLength.setText(length);
+                } catch (JSONException e) {
+                    Log.e("JSON Exception: ", e.toString());
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                Log.e("Volley Error: ", volleyError.toString());
+            }
+        });
+        Singleton.getInstance(getApplicationContext()).addRequest(request);
+    }
+
+    private void editItinerary(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.layout.dialog_add_itinerary);
+        builder.setTitle("Edit Group Itinerary");
+        View view = DialogAddItineraryBinding.inflate(getLayoutInflater()).getRoot();
+        builder.setView(view);
+
+        destinationEdit = view.findViewById(R.id.destinationEditText);
+        startDateInput = view.findViewById(R.id.startDateEditText);
+        endDateInput = view.findViewById(R.id.endDateEditText);
+
+        destinationEdit.setText(itineraryDestination.getText().toString());
+        startDateInput.setText(itineraryStart.getText().toString());
+        endDateInput.setText(itineraryEnd.getText().toString());
+
+        startDateInput.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                //showDatePickerDialog(startDateInput);
+            }
+        });
+
+        endDateInput.setOnClickListener(new View.OnClickListener(){
+
+            public void onClick(View v){
+                //showEndDatePickerDialog(Calendar.getInstance(), endDateInput);
+            }
+        });
+
+        builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String destination = destinationEdit.getText().toString();
+                String startDate = startDateInput.getText().toString();
+                String endDate = endDateInput.getText().toString();
+
+            }
+        });
+
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
+    }
+
+    /**
+     * Makes updates to the group itinerary.
+     */
+    private void putItinerary(){
+        final String url = ""; //TODO: fix url
+        JSONObject itinerary = new JSONObject();
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.PUT, url, itinerary, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject jsonObject) {
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+
+            }
+        });
     }
 }
