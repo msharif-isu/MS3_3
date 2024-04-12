@@ -121,6 +121,9 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHo
      */
     @Override
     public int getItemCount() {
+        if(scheduleData == null){
+            return 0;
+        }
         return scheduleData.size() + 1;
     }
 

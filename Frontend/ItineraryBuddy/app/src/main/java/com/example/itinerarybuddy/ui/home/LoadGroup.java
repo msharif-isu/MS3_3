@@ -252,7 +252,7 @@ public class LoadGroup extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), DayCard.class);
                 intent.putExtra("NUM_OF_DAYS", days);
                 intent.putExtra("SOURCE", "GROUP");
-                intent.putExtra("IS_EDITABLE", UserData.getUsertype().equals("User"));
+                intent.putExtra("IS_EDITABLE", !UserData.getUsertype().equals("User"));
 
                 startActivity(intent);
             }
@@ -611,9 +611,9 @@ public class LoadGroup extends AppCompatActivity {
             public void onResponse(JSONObject jsonObject) {
                 try{
                     String destination = "Destination: " + jsonObject.getString("destination");
-                    String start = "Start Date: " + jsonObject.getString("start date");
-                    String end = "End Date: " + jsonObject.getString("end date");
-                    String length = "Number of Days: " + jsonObject.getString("number of days");
+                    String start = "Start Date: " + jsonObject.getString("start-date");
+                    String end = "End Date: " + jsonObject.getString("end-date");
+                    String length = "Number of Days: " + jsonObject.getString("number-of-days");
 
                     itineraryDestination.setText(destination);
                     itineraryStart.setText(start);
@@ -637,6 +637,8 @@ public class LoadGroup extends AppCompatActivity {
         builder.setTitle("Edit Group Itinerary");
         View view = DialogAddItineraryBinding.inflate(getLayoutInflater()).getRoot();
         builder.setView(view);
+        AlertDialog d = builder.create();
+
 
         destinationEdit = view.findViewById(R.id.destinationEditText);
         startDateInput = view.findViewById(R.id.startDateEditText);
@@ -648,9 +650,11 @@ public class LoadGroup extends AppCompatActivity {
 
         startDateInput.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
-                //showDatePickerDialog(startDateInput);
+                d.cancel();
+                showDatePickerDialog(startDateInput);
             }
         });
+
 
         endDateInput.setOnClickListener(new View.OnClickListener(){
 
@@ -665,7 +669,6 @@ public class LoadGroup extends AppCompatActivity {
                 String destination = destinationEdit.getText().toString();
                 String startDate = startDateInput.getText().toString();
                 String endDate = endDateInput.getText().toString();
-
             }
         });
 
@@ -676,7 +679,30 @@ public class LoadGroup extends AppCompatActivity {
             }
         });
 
-        builder.show();
+        //builder.show();
+        d.show();
+    }
+
+    private void showDatePickerDialog(final EditText date) {
+
+        final Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(getApplicationContext(),
+                new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                        calendar.set(year, monthOfYear, dayOfMonth);
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+                        date.setText(dateFormat.format(calendar.getTime()));
+
+                        //showEndDatePickerDialog(calendar, endDateInput);
+                    }
+                }, year, month, day);
+
+        //datePickerDialog.show();
     }
 
     /**
