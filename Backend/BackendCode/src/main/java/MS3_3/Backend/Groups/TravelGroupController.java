@@ -5,6 +5,9 @@ import MS3_3.Backend.Ambassador.Ambassador;
 import MS3_3.Backend.Ambassador.AmbassadorRepository;
 import MS3_3.Backend.FileUpload.Image;
 import MS3_3.Backend.FileUpload.ImageRepository;
+import MS3_3.Backend.Itinerary.Itinerary;
+import MS3_3.Backend.TravelGroupItinerary.TravelGroupItinerary;
+import MS3_3.Backend.TravelGroupItinerary.TravelGroupItineraryRepository;
 import MS3_3.Backend.UserTypes.User;
 import MS3_3.Backend.UserTypes.UserRepository;
 import MS3_3.Backend.TravelGroupChat.Message;
@@ -25,6 +28,9 @@ public class TravelGroupController {
 
     @Autowired
     AdminRepository adminRepository;
+
+    @Autowired
+    TravelGroupItineraryRepository travelGroupItineraryRepository;
 
     @Autowired
     AmbassadorRepository ambassadorRepository;
@@ -48,6 +54,8 @@ public class TravelGroupController {
     public TravelGroup createNewGroup(@RequestBody TravelGroup group) {
         if (ambassadorRepository.findByUserName(group.getTravelGroupAmbassador()) != null) {
             TravelGroup savedGroup = group;
+            //
+            savedGroup.setTravelGroupItinerary(new TravelGroupItinerary());
             Ambassador groupLeader = ambassadorRepository.findByUserName(group.getTravelGroupAmbassador());
             User groupLeaderUserAccount = userRepository.findByUserName(group.getTravelGroupAmbassador());
             savedGroup.addNewMember(groupLeaderUserAccount);

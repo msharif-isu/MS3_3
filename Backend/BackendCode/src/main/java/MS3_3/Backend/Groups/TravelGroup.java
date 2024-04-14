@@ -3,6 +3,7 @@ package MS3_3.Backend.Groups;
 
 import MS3_3.Backend.Ambassador.Ambassador;
 import MS3_3.Backend.FileUpload.Image;
+import MS3_3.Backend.TravelGroupItinerary.TravelGroupItinerary;
 import MS3_3.Backend.UserTypes.User;
 import MS3_3.Backend.TravelGroupChat.Message;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -15,6 +16,10 @@ import java.util.List;
 public class TravelGroup {
 
     private String travelGroupName;
+
+    @OneToOne
+    @JoinColumn(name = "travelGroupItinerary_id")
+    TravelGroupItinerary travelGroupItinerary;
 
     @OneToOne
     @JoinColumn(name = "image_id")
@@ -52,6 +57,14 @@ public class TravelGroup {
 
     public TravelGroup() {
         this.members = new ArrayList<>();
+    }
+
+    public TravelGroupItinerary getTravelGroupItinerary() {
+        return travelGroupItinerary;
+    }
+
+    public void setTravelGroupItinerary(TravelGroupItinerary travelGroupItinerary) {
+        this.travelGroupItinerary = travelGroupItinerary;
     }
 
     public Image getGroupImage() {
