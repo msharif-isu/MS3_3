@@ -605,7 +605,7 @@ public class LoadGroup extends AppCompatActivity {
      * Requests for this groups itinerary to display.
      */
     private void getItinerary(){
-        final String url = "https://443da8f0-75e2-4be2-8e84-834c5d63eda6.mock.pstmn.io/itinerary?id=1"; //TODO: fix url
+        final String url = "http://coms-309-035.class.las.iastate.edu:8080/Group/Itinerary/" + group.getTravelGroupID(); //TODO: fix url
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject jsonObject) {
@@ -637,8 +637,6 @@ public class LoadGroup extends AppCompatActivity {
         builder.setTitle("Edit Group Itinerary");
         View view = DialogAddItineraryBinding.inflate(getLayoutInflater()).getRoot();
         builder.setView(view);
-        AlertDialog d = builder.create();
-
 
         destinationEdit = view.findViewById(R.id.destinationEditText);
         startDateInput = view.findViewById(R.id.startDateEditText);
@@ -650,8 +648,7 @@ public class LoadGroup extends AppCompatActivity {
 
         startDateInput.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
-                d.cancel();
-                showDatePickerDialog(startDateInput);
+                datePickerDialog(startDateInput);
             }
         });
 
@@ -659,7 +656,7 @@ public class LoadGroup extends AppCompatActivity {
         endDateInput.setOnClickListener(new View.OnClickListener(){
 
             public void onClick(View v){
-                //showEndDatePickerDialog(Calendar.getInstance(), endDateInput);
+                datePickerDialog(endDateInput);
             }
         });
 
@@ -669,6 +666,30 @@ public class LoadGroup extends AppCompatActivity {
                 String destination = destinationEdit.getText().toString();
                 String startDate = startDateInput.getText().toString();
                 String endDate = endDateInput.getText().toString();
+
+                // Ensure start date is before the end date
+                Calendar start = Calendar.getInstance();
+                String startYear = startDate.substring(0, startDate.indexOf("-"));
+                String startMonth = startDate.substring(startDate.indexOf("-") + 1, startDate.lastIndexOf("-"));
+                String startDay = startDate.substring(startDate.lastIndexOf("-") + 1);
+                start.set(Integer.parseInt(startYear), Integer.parseInt(startMonth), Integer.parseInt(startDay));
+
+                Calendar end = Calendar.getInstance();
+                String endYear = endDate.substring(0, endDate.indexOf("-"));
+                String endMonth = endDate.substring(endDate.indexOf("-") + 1, endDate.lastIndexOf("-"));
+                String endDay = endDate.substring(endDate.lastIndexOf("-") + 1);
+                end.set(Integer.parseInt(endYear), Integer.parseInt(endMonth), Integer.parseInt(endDay));
+
+                if(end.before(start)){
+                    Toast.makeText(getApplicationContext(), "End date cannot be before start date.", Toast.LENGTH_LONG).show();
+                }
+                else{
+                    try {
+                        putItinerary(destination, startDate, endDate);
+                    } catch (JSONException e) {
+                        Log.e("JSON Exception: ", e.toString());
+                    }
+                }
             }
         });
 
@@ -679,49 +700,50 @@ public class LoadGroup extends AppCompatActivity {
             }
         });
 
-        //builder.show();
-        d.show();
+        builder.show();
     }
 
-    private void showDatePickerDialog(final EditText date) {
+    private void datePickerDialog(EditText input) {
 
         final Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-        DatePickerDialog datePickerDialog = new DatePickerDialog(getApplicationContext(),
+        DatePickerDialog datePicker = new DatePickerDialog(this,
                 new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                         calendar.set(year, monthOfYear, dayOfMonth);
                         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-                        date.setText(dateFormat.format(calendar.getTime()));
-
-                        //showEndDatePickerDialog(calendar, endDateInput);
+                        input.setText(dateFormat.format(calendar.getTime()));
                     }
                 }, year, month, day);
-
-        //datePickerDialog.show();
+        datePicker.show();
     }
 
     /**
      * Makes updates to the group itinerary.
      */
-    private void putItinerary(){
-        final String url = ""; //TODO: fix url
+    private void putItinerary(String destination, String startDate, String endDate) throws JSONException {
         JSONObject itinerary = new JSONObject();
+        itinerary.put("destination", destination);
+        itinerary.put("start-date", startDate);
+        itinerary.put("end-date", endDate);
+
+        final String url = "http://coms-309-035.class.las.iastate.edu:8080/Group/Itinerary/" + group.getTravelGroupID(); //TODO: fix
 
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.PUT, url, itinerary, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject jsonObject) {
-
+                Log.d("Volley Response: ", jsonObject.toString());
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
-
+                Log.e("Volley Error: ", volleyError.toString());
             }
         });
+        Singleton.getInstance(getApplicationContext()).addRequest(request);
     }
 }

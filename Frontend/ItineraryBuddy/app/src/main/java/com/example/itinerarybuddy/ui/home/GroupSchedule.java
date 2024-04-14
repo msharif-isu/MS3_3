@@ -15,7 +15,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.itinerarybuddy.R;
 import com.example.itinerarybuddy.activities.ScheduleAdapter;
-import com.example.itinerarybuddy.activities.ScheduleTemplate;
 import com.example.itinerarybuddy.data.ScheduleItem;
 import com.example.itinerarybuddy.util.Singleton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -67,9 +66,9 @@ public class GroupSchedule extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        List<ScheduleItem> list = new ArrayList<>(50);
-        for(int i = 0; i < 50; i++){
-            list.add(new ScheduleItem());
+        List<ScheduleItem> list = new ArrayList<>();
+        for(int i = 0; i < 5; i++){
+           list.add(new ScheduleItem());
         }
 
         adapter = new ScheduleAdapter(list ,day, isEditable);
@@ -87,15 +86,33 @@ public class GroupSchedule extends AppCompatActivity {
             btnSaveUpdate.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    putSchedule();
+                    try {
+                        putSchedule();
+                    } catch (JSONException e) {
+                        Log.e("JSON Exception: ", e.toString());
+                    }
                 }
             });
         }
 
     }
 
-    private void putSchedule() {
+    private void putSchedule() throws JSONException {
+        List<ScheduleItem> data = adapter.getScheduleData();
+        JSONObject schedule = new JSONObject();
+        JSONArray json = new JSONArray(data);
+        for(ScheduleItem s : data){
+            if(s != null){
+                JSONObject item = new JSONObject();
+                item.put("time", s.getTime());
+                item.put("place", s.getPlaces());
+                item.put("note", s.getNotes());
 
+                json.put(item);
+            }
+        }
+        schedule.put("scheduleData", json);
+        Log.d("JSON: ", schedule.toString());
     }
 
     private void getSchedule() {
