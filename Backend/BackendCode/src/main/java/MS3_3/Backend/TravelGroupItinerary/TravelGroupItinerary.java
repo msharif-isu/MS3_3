@@ -1,18 +1,21 @@
-package MS3_3.Backend.Itinerary;
+package MS3_3.Backend.TravelGroupItinerary;
+
+import MS3_3.Backend.Day.Day;
+import MS3_3.Backend.Groups.TravelGroup;
+import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import MS3_3.Backend.Day.Day;
-import MS3_3.Backend.Groups.TravelGroup;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
-
 @Entity
-public class Itinerary {
+public class TravelGroupItinerary {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int shareCode;
+    private int groupCode;
+
+    @OneToOne
+    @JoinColumn(name = "travel_group_id")
+    private TravelGroup travelGroup;
 
     @OneToMany(mappedBy = "itinerary", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Day> days;
@@ -23,27 +26,30 @@ public class Itinerary {
 
     private String endDate;
 
-
-    public Itinerary() {
+    public TravelGroupItinerary() {
         days = new ArrayList<Day>();
     }
 
-    public Itinerary(String itineraryName, String startDate, String endDate) {
+    public TravelGroupItinerary(String itineraryName, String startDate, String endDate) {
         this.itineraryName = itineraryName;
         this.startDate = startDate;
         this.endDate = endDate;
         days = new ArrayList<Day>();
     }
 
-    public Itinerary(String itineraryName, String startDate, String endDate, List<Day> days) {
+    public TravelGroupItinerary(String itineraryName, String startDate, String endDate, List<Day> days) {
         this.itineraryName = itineraryName;
         this.startDate = startDate;
         this.endDate = endDate;
         this.days = days;
     }
 
-    public int getShareCode() {
-        return shareCode;
+    public int getGroupCode() {
+        return groupCode;
+    }
+
+    public TravelGroup getTravelGroup() {
+        return travelGroup;
     }
 
     public List<Day> getDays() {
@@ -62,10 +68,6 @@ public class Itinerary {
         return endDate;
     }
 
-
-    public void setShareCode(int shareCode) {
-        this.shareCode = shareCode;
-    }
 
     public void setDays(List<Day> days) {
         this.days = days;
