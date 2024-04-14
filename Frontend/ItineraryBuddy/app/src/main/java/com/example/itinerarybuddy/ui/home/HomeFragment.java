@@ -378,9 +378,9 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
 
         //Make a network request using Volley
       //  String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary/" + UserData.getUsername();
-        //String url = "https://5569939f-7918-4af9-937a-86edcfe9bc7f.mock.pstmn.io/Itinerary/Create";
+        String url = "https://5569939f-7918-4af9-937a-86edcfe9bc7f.mock.pstmn.io/Itinerary/";
 
-        String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary";
+//        String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary";
 
         // Create a new request queue using Volley
         RequestQueue queue = Volley.newRequestQueue(requireContext());
@@ -652,7 +652,7 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
         // Retrieve the trip code for the specified itinerary position
         String tripCode = getTripCodeFromAdapterPosition(position);
         //String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary/" + UserData.getUsername() + tripCode;
-        //String url = "https://5569939f-7918-4af9-937a-86edcfe9bc7f.mock.pstmn.io/Itinerary/Update/" + tripCode;
+        //String url = "https://5569939f-7918-4af9-937a-86edcfe9bc7f.mock.pstmn.io/Itinerary/" + tripCode;
 
         String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary/" + tripCode;
 
@@ -710,9 +710,9 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
     private void DELETE_itinerary(final String tripCode) {
 
        // String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary/" + UserData.getUsername() + tripCode;
-        //String url = "https://5569939f-7918-4af9-937a-86edcfe9bc7f.mock.pstmn.io/Itinerary/Delete/" + tripCode;
+        String url = "https://5569939f-7918-4af9-937a-86edcfe9bc7f.mock.pstmn.io/Itinerary/" + tripCode;
 
-        String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary/" + tripCode;
+       // String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary/" + tripCode;
 
         // Create a StringRequest for the DELETE request
         StringRequest deleteRequest = new StringRequest(Request.Method.DELETE, url,
@@ -784,7 +784,7 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
         confirmDeleteBuilder.show();
     }
 
-    //GET (fetch itinerary information function related)
+
     /**
      * Sends a GET request to retrieve itinerary information from the server.
      * Updates the adapter with the fetched itinerary data upon successful response.
@@ -792,9 +792,9 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
     public void GET_itinerary(){
 
         //String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary/" + UserData.getUsername();
-        //String url = "https://5569939f-7918-4af9-937a-86edcfe9bc7f.mock.pstmn.io/Itinerary/GetInfo";
+        String url = "https://5569939f-7918-4af9-937a-86edcfe9bc7f.mock.pstmn.io/Itinerary/";
 
-        String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary";
+        //String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary";
 
         // Create a JsonArrayRequest for the GET request
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null,

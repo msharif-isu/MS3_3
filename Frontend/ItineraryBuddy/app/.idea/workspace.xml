@@ -5,49 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a16e5fc7-c067-41a8-acd4-7d71d30947f5" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/itinerarybuddy/activities/SavedPost.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/itinerarybuddy/activities/SavedPostsAdapter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/itinerarybuddy/activities/WebSocketListener.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/itinerarybuddy/activities/WebSocketManager.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/itinerarybuddy/data/Post_Itinerary.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/itinerarybuddy/data/Spinner_ItineraryInfo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/itinerarybuddy/ui/dashboard/ItineraryInfoAdapter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/itinerarybuddy/ui/dashboard/OnItemClickListener.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/itinerarybuddy/ui/dashboard/PostAdapter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/ic_bookmark_aftr.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/ic_bookmark_bfr.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/ic_comment.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/ic_default_pp.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/ic_like_after.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/ic_like_before.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/ic_post.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/res/layout/activity_saved_post.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/res/layout/dialog_post_itinerary.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/res/layout/item_itinerary.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/res/layout/item_post.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/res/layout/item_saved_post.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/AndroidManifest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/itinerarybuddy/activities/DayCard.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/itinerarybuddy/activities/DayCard.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/itinerarybuddy/activities/DayCardAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/itinerarybuddy/activities/DayCardAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/itinerarybuddy/activities/ScheduleAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/itinerarybuddy/activities/ScheduleAdapter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/itinerarybuddy/activities/SavedPost.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/itinerarybuddy/activities/SavedPost.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/itinerarybuddy/activities/ScheduleTemplate.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/itinerarybuddy/activities/ScheduleTemplate.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/itinerarybuddy/data/Itinerary.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/itinerarybuddy/data/Itinerary.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/itinerarybuddy/data/ScheduleItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/itinerarybuddy/data/ScheduleItem.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/itinerarybuddy/ui/dashboard/DashboardFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/itinerarybuddy/ui/dashboard/DashboardFragment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/itinerarybuddy/ui/dashboard/DashboardViewModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/itinerarybuddy/ui/dashboard/DashboardViewModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/itinerarybuddy/ui/dashboard/PostAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/itinerarybuddy/ui/dashboard/PostAdapter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/itinerarybuddy/ui/home/HomeFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/itinerarybuddy/ui/home/HomeFragment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/res/layout/fragment_dashboard.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/layout/fragment_dashboard.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/res/layout/fragment_home.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/layout/fragment_home.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/res/layout/item_schedule_data.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/layout/item_schedule_data.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/res/navigation/mobile_navigation.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/navigation/mobile_navigation.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/res/values/colors.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/values/colors.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/values/strings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/../build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../gradle/wrapper/gradle-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../settings.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/../settings.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/../build.gradle" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -89,7 +54,7 @@
     "android.gradle.sync.needed": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
-    "git-widget-placeholder": "18-frontend-groups-page",
+    "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "D:/School/SE309/ms3_3/Frontend/ItineraryBuddy/app"
   }

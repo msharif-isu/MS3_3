@@ -194,9 +194,9 @@ public class ScheduleTemplate extends AppCompatActivity {
             String day_url = day.replace(" ", "");
 
             // String url = "http://coms-309-035.class.las.iastate.edu:8080/Schedule/" + username + tripCode + day_url;
-            //String url = "https://7557e865-ef05-4e77-beaf-a69fca370355.mock.pstmn.io/Schedule/Update/" + day_url;
+            String url = "https://7557e865-ef05-4e77-beaf-a69fca370355.mock.pstmn.io/Schedule/Update/" + day_url;
 
-            String url = "http://coms-309-035.class.las.iastate.edu:8080/Schedule/" + tripCode + day_url;
+            //String url = "http://coms-309-035.class.las.iastate.edu:8080/Schedule/" + tripCode + day_url;
 
             RequestQueue queue = Volley.newRequestQueue(this);
 
