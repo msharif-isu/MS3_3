@@ -67,6 +67,7 @@ public class DashboardFragment extends Fragment implements WebSocketListener, On
     private FragmentDashboardBinding binding;
     private RecyclerView recyclerView;
     private PostAdapter postAdapter;
+
     private List<Spinner_ItineraryInfo> itineraryInfos = new ArrayList<>();
     private List<Post_Itinerary> posts = new ArrayList<>();
     private String BASE_URL = "ws://localhost:8080/post/";
