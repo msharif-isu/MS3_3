@@ -24,11 +24,8 @@
 
         <activity
             android:name=".activities.LoginActivity"
-            android:exported="true">
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
+            android:exported="false">
+
         </activity>
 
         <activity
@@ -43,7 +40,14 @@
         <activity
             android:name=".activities.personalPage1"
             android:exported="true"
-            android:label="@string/title_activity_personal_page1"/>
+            android:label="@string/title_activity_personal_page1">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+
         <activity
             android:name=".ui.home.ListGroups"
             android:exported="false" />
