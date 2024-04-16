@@ -8,7 +8,7 @@ stages:             # these stages (jobs) forms the CICD pipeline
 maven-build:
   stage: mavenbuild     # one of the stages listed above
   tags:                 # to specify which runner to execute this job
-    - noahpater_tag    # change to your runner's tag
+    - springboot_tag    # change to your runner's tag
   script:               # what to execute for this job
     - cd Backend/BackendCode        # change 'Backend' to to where you have the pom.xml (do not add / in the beginning)
     - mvn package       # maven package
@@ -19,7 +19,7 @@ maven-build:
 maven-test:
   stage: maventest     # one of the stages listed above
   tags:
-    - noahpater_tag   # change to your runner's tag
+    - springbooty_tag   # change to your runner's tag
   script:
     - cd Backend/BackendCode       # change 'Backend' to to where you have the pom.xml (do not add / in the beginning)
     - mvn test         # maven test
