@@ -44,6 +44,7 @@ public class GroupSchedule extends AppCompatActivity {
 
     private String day;
 
+
     /**
      * Called when the activity is starting. This is where most initialization should go.
      *
@@ -74,7 +75,11 @@ public class GroupSchedule extends AppCompatActivity {
         adapter = new ScheduleAdapter(list ,day, isEditable);
         recyclerView.setAdapter(adapter);
 
-        getSchedule();
+        try {
+            getSchedule(Integer.parseInt(day));
+        } catch (JSONException | ParseException e) {
+            throw new RuntimeException(e);
+        }
 
         // Set click listener for the save/update button
         FloatingActionButton btnSaveUpdate = findViewById(R.id.btnSaveUpdate);
@@ -100,7 +105,7 @@ public class GroupSchedule extends AppCompatActivity {
     private void putSchedule() throws JSONException {
         List<ScheduleItem> data = adapter.getScheduleData();
         JSONObject schedule = new JSONObject();
-        JSONArray json = new JSONArray(data);
+        JSONArray array = new JSONArray(data);
         for(ScheduleItem s : data){
             if(s != null){
                 JSONObject item = new JSONObject();
@@ -108,14 +113,79 @@ public class GroupSchedule extends AppCompatActivity {
                 item.put("place", s.getPlaces());
                 item.put("note", s.getNotes());
 
-                json.put(item);
+                array.put(item);
             }
         }
-        schedule.put("scheduleData", json);
+        schedule.put("scheduleData", array);
         Log.d("JSON: ", schedule.toString());
+
+        LoadGroup.days.remove(Integer.parseInt(day) - 1);
+        LoadGroup.days.put(Integer.parseInt(day), array);
     }
 
-    private void getSchedule() {
+    private void getSchedule(int day) throws JSONException, ParseException {
+        JSONArray dayData = LoadGroup.days.getJSONArray(day-1);
+        List<ScheduleItem> scheduleItems = new ArrayList<>();
+        for (int i = 0; i < dayData.length(); i++) {
+            JSONObject scheduleItemJson = dayData.getJSONObject(i);
+
+            String timeString = scheduleItemJson.getString("time");
+            String places = scheduleItemJson.getString("place");
+            String notes = scheduleItemJson.getString("note");
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+            Date parsedDate = dateFormat.parse(timeString);
+            assert parsedDate != null;
+            Time time = new Time(parsedDate.getTime());
+
+            ScheduleItem scheduleItem = new ScheduleItem();
+            scheduleItem.setTime(time);
+            scheduleItem.setPlaces(places);
+            scheduleItem.setNotes(notes);
+
+            scheduleItems.add(scheduleItem);
+        }
+
+        adapter.prependData(scheduleItems);
+
+        /*
+        {
+    "travelGroupItinerary": {
+        "groupCode": 1,
+        "days": [
+            {
+                "scheduleData": [
+                    {
+                        "time": "",
+                        "place": "",
+                        "note": ""
+                    },
+                    {
+                        "time": "",
+                        "place": "",
+                        "note": ""
+                    }
+                ]
+            },
+            {
+                "scheduleData": [
+                    {
+                        "time": "",
+                        "place": "",
+                        "note": ""
+                    }
+                ]
+            }
+        ],
+        "itineraryName": "",
+        "startDate": "",
+        "endDate": "",
+        "numDays": ""
+    }
+}
+         */
+
+        /*
         String url = "https://443da8f0-75e2-4be2-8e84-834c5d63eda6.mock.pstmn.io/schedule?id=1"; //TODO
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
@@ -160,7 +230,9 @@ public class GroupSchedule extends AppCompatActivity {
                     }
                 });
         Singleton.getInstance(getApplicationContext()).addRequest(request);
+        */
     }
 }
+
 
 

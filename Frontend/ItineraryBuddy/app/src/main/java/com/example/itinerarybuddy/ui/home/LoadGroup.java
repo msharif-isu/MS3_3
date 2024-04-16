@@ -33,6 +33,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
+import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
@@ -58,7 +59,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -73,6 +79,16 @@ public class LoadGroup extends AppCompatActivity {
      * This is the travel group object that this page represents. Passed in from the ListGroups list adapter and displayed here.
      */
     protected static Group group;
+
+    /**
+     * JSON object holding all of the data for the group itinerary.
+     */
+    protected static JSONObject itinerary;
+
+    /**
+     * JSON containing schedule data for the itinerary.
+     */
+    protected static JSONArray days;
 
     protected static int index;
 
@@ -605,15 +621,18 @@ public class LoadGroup extends AppCompatActivity {
      * Requests for this groups itinerary to display.
      */
     private void getItinerary(){
-        final String url = "http://coms-309-035.class.las.iastate.edu:8080/Group/Itinerary/" + group.getTravelGroupID(); //TODO: fix url
+        final String url = "http://coms-309-035.class.las.iastate.edu:8080/Group/" + group.getTravelGroupID();
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject jsonObject) {
                 try{
-                    String destination = "Destination: " + jsonObject.getString("destination");
-                    String start = "Start Date: " + jsonObject.getString("start-date");
-                    String end = "End Date: " + jsonObject.getString("end-date");
-                    String length = "Number of Days: " + jsonObject.getString("number-of-days");
+                    JSONObject i = jsonObject.getJSONObject("travelGroupItinerary");
+                    itinerary = i;
+                    days = i.getJSONArray("days");
+                    String destination = "Destination: " + i.getString("destination");
+                    String start = "Start Date: " + i.getString("startDate");
+                    String end = "End Date: " + i.getString("endDate");
+                    String length = "Number of Days: " + i.getString("numDays");
 
                     itineraryDestination.setText(destination);
                     itineraryStart.setText(start);
@@ -684,8 +703,15 @@ public class LoadGroup extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "End date cannot be before start date.", Toast.LENGTH_LONG).show();
                 }
                 else{
+                    long daysBetween = 0;
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                        LocalDateTime d1 = LocalDateTime.parse(start.toString(), DateTimeFormatter.ofPattern("yyyy MM dd"));
+                        LocalDateTime d2 = LocalDateTime.parse(start.toString(), DateTimeFormatter.ofPattern("yyyy MM dd"));
+                        daysBetween = Duration.between(d1, d2).toDays();
+                        Log.d("Num Days: ", String.valueOf(daysBetween));
+                    }
                     try {
-                        putItinerary(destination, startDate, endDate);
+                        putItinerary(destination, startDate, endDate, String.valueOf(daysBetween));
                     } catch (JSONException e) {
                         Log.e("JSON Exception: ", e.toString());
                     }
@@ -725,11 +751,14 @@ public class LoadGroup extends AppCompatActivity {
     /**
      * Makes updates to the group itinerary.
      */
-    private void putItinerary(String destination, String startDate, String endDate) throws JSONException {
+    protected void putItinerary(String destination, String startDate, String endDate, String length) throws JSONException {
         JSONObject itinerary = new JSONObject();
+        itinerary.put("code", itinerary.get("groupCode"));
+        itinerary.put("days", LoadGroup.days);
         itinerary.put("destination", destination);
-        itinerary.put("start-date", startDate);
-        itinerary.put("end-date", endDate);
+        itinerary.put("startDate", startDate);
+        itinerary.put("endDate", endDate);
+        itinerary.put("numDays", length);
 
         final String url = "http://coms-309-035.class.las.iastate.edu:8080/Group/Itinerary/" + group.getTravelGroupID(); //TODO: fix
 
