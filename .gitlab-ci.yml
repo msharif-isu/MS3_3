@@ -19,7 +19,7 @@ maven-build:
 maven-test:
   stage: maventest     # one of the stages listed above
   tags:
-    - springbooty_tag   # change to your runner's tag
+    - springboot_tag   # change to your runner's tag
   script:
     - cd Backend/BackendCode       # change 'Backend' to to where you have the pom.xml (do not add / in the beginning)
     - mvn test         # maven test
