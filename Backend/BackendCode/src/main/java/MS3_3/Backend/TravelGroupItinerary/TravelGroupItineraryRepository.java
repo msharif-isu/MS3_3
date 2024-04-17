@@ -4,9 +4,9 @@ import MS3_3.Backend.Itinerary.Itinerary;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface TravelGroupItineraryRepository extends JpaRepository<Itinerary, Integer> {
+public interface TravelGroupItineraryRepository extends JpaRepository<TravelGroupItinerary, Long> {
     @Transactional
-    void deleteByShareCode(int shareCode);
+    void deleteById(int Id);
 
-    Itinerary findByShareCode(int shareCode);
+    TravelGroupItinerary findById(int Id);
 }

@@ -17,8 +17,8 @@ public class TravelGroup {
 
     private String travelGroupName;
 
-    @OneToOne
-    @JoinColumn(name = "travelGroupItinerary_id")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "travel_group_itinerary_id")
     TravelGroupItinerary travelGroupItinerary;
 
     @OneToOne
