@@ -14,6 +14,7 @@
         android:layout_marginLeft="280dp"
         android:layout_gravity="center_vertical"/>
 
+
     <!-- RecyclerView to display day cards -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewBlogPost"
@@ -24,5 +25,6 @@
         android:background="@android:color/white"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:spanCount="2" />
+
 
 </LinearLayout>

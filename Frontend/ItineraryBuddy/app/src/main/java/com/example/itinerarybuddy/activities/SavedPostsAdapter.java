@@ -21,6 +21,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.itinerarybuddy.R;
 import com.example.itinerarybuddy.data.Post_Itinerary;
+import com.example.itinerarybuddy.data.UserData;
 import com.example.itinerarybuddy.util.Singleton;
 
 import org.json.JSONObject;
@@ -151,8 +152,9 @@ class SavedPostsAdapter extends RecyclerView.Adapter<SavedPostsAdapter.SavedPost
      */
     public void DELETE_savedPost(Post_Itinerary post){
 
-        String url = "https://1064bd8c-7f0f-4802-94f1-71b8b5568975.mock.pstmn.io/Itinerary/Share/SavedPost" + post.getPostID();
+      //  String url = "http://coms-309-035.class.las.iastate.edu:8080/bookmarks/" + UserData.getUsername() +"/"+ post.getPostID();
 
+        String url = "https://1064bd8c-7f0f-4802-94f1-71b8b5568975.mock.pstmn.io/Itinerary/Share/SavedPost" + post.getPostID();
         //String url = "https://1064bd8c-7f0f-4802-94f1-71b8b5568975.mock.pstmn.io/Itinerary/Share/SavedPost";
 
         StringRequest stringRequest = new StringRequest(Request.Method.DELETE, url,

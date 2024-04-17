@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.itinerarybuddy.R;
 import com.example.itinerarybuddy.activities.BlogCardAdapter;
 import com.example.itinerarybuddy.data.BlogItem;
+import com.example.itinerarybuddy.data.Post_Itinerary;
 import com.example.itinerarybuddy.data.UserData;
 import com.example.itinerarybuddy.databinding.FragmentNotificationsBinding;
 
@@ -43,8 +44,7 @@ public class NotificationsFragment extends Fragment {
         recyclerView = root.findViewById(R.id.recyclerViewBlogPost);
         recyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 2)); // Use requireContext() instead of 'this'
 
-
-        postBlogAdapter = new BlogCardAdapter(cardItems);
+        postBlogAdapter = new BlogCardAdapter(cardItems, requireContext());
         recyclerView.setAdapter(postBlogAdapter);
 
         ImageView postButton = root.findViewById(R.id.postBlog);
@@ -54,7 +54,6 @@ public class NotificationsFragment extends Fragment {
                 showPostBlogDialog();
             }
         });
-
 
 
 
@@ -97,6 +96,17 @@ public class NotificationsFragment extends Fragment {
 
         builder.show();
 
+    }
+
+    private void loadPosts() {
+
+
+        GET_previousBlogPosts();
+        // Notify adapter of data change
+        postBlogAdapter.notifyDataSetChanged();
+    }
+
+    private void GET_previousBlogPosts() {
     }
 
     @Override
