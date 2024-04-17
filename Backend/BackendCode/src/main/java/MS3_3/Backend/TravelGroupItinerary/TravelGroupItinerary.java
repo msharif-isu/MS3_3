@@ -1,7 +1,8 @@
 package MS3_3.Backend.TravelGroupItinerary;
 
-import MS3_3.Backend.Day.Day;
 import MS3_3.Backend.Groups.TravelGroup;
+import MS3_3.Backend.TravelGroupItinerary.Schedule.TravelGroupItinerarySchedule;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -11,14 +12,11 @@ import java.util.List;
 public class TravelGroupItinerary {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int groupCode;
+    private int id;
 
     @OneToOne
-    @JoinColumn(name = "travel_group_id")
+    @JsonIgnore
     private TravelGroup travelGroup;
-
-    @OneToMany(mappedBy = "itinerary", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Day> days;
 
     private String itineraryName;
 
@@ -26,34 +24,53 @@ public class TravelGroupItinerary {
 
     private String endDate;
 
+    private int numDays;
+
+    @OneToMany
+    private List<TravelGroupItinerarySchedule> travelGroupItinerarySchedule;
+
     public TravelGroupItinerary() {
-        days = new ArrayList<Day>();
+        this.travelGroupItinerarySchedule = new ArrayList<TravelGroupItinerarySchedule>();
     }
 
-    public TravelGroupItinerary(String itineraryName, String startDate, String endDate) {
+    public TravelGroupItinerary(String itineraryName, String startDate, String endDate, int numDays) {
         this.itineraryName = itineraryName;
         this.startDate = startDate;
         this.endDate = endDate;
-        days = new ArrayList<Day>();
+        this.numDays = numDays;
+        this.travelGroupItinerarySchedule = new ArrayList<TravelGroupItinerarySchedule>();
     }
 
-    public TravelGroupItinerary(String itineraryName, String startDate, String endDate, List<Day> days) {
+    public TravelGroupItinerary(String itineraryName, String startDate, String endDate, List<TravelGroupItinerarySchedule> itinerary, int numDays) {
         this.itineraryName = itineraryName;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.days = days;
+        this.numDays = numDays;
+        this.travelGroupItinerarySchedule = itinerary;
     }
 
-    public int getGroupCode() {
-        return groupCode;
+    public int getNumDays() {
+        return numDays;
+    }
+
+    public void setNumDays(int numDays) {
+        this.numDays = numDays;
+    }
+
+    public List<TravelGroupItinerarySchedule> getTravelGroupItinerarySchedule() {
+        return travelGroupItinerarySchedule;
+    }
+
+    public void setTravelGroupItinerarySchedule(List<TravelGroupItinerarySchedule> travelGroupItinerarySchedule) {
+        this.travelGroupItinerarySchedule = travelGroupItinerarySchedule;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public TravelGroup getTravelGroup() {
         return travelGroup;
-    }
-
-    public List<Day> getDays() {
-        return days;
     }
 
     public String getItineraryName() {
@@ -68,14 +85,6 @@ public class TravelGroupItinerary {
         return endDate;
     }
 
-
-    public void setDays(List<Day> days) {
-        this.days = days;
-    }
-
-    public void addDay(Day day) {
-        days.add(day);
-    }
 
     public void setItineraryName(String itineraryName) {
         this.itineraryName = itineraryName;

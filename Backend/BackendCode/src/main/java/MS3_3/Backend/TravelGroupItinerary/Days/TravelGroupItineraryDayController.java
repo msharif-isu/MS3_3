@@ -1,30 +1,22 @@
-package MS3_3.Backend.TravelGroupItinerary;
+package MS3_3.Backend.TravelGroupItinerary.Days;
 
 import MS3_3.Backend.Groups.TravelGroup;
 import MS3_3.Backend.Groups.TravelGroupRepository;
-import jakarta.persistence.Access;
+import MS3_3.Backend.TravelGroupItinerary.TravelGroupItinerary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-public class TravelGroupItineraryController {
+public class TravelGroupItineraryDayController {
+    @Autowired
+    TravelGroupItineraryDayRepository travelGroupItineraryDayRepository;
 
     @Autowired
     TravelGroupRepository travelGroupRepository;
-
-    @Autowired
-    TravelGroupItineraryRepository travelGroupItineraryRepository;
-
-    @PostMapping("/Group/Itinerary")
-    public TravelGroupItinerary createTravelGroupItinerary(@RequestBody TravelGroupItinerary travelGroupItinerary) {
-        TravelGroup travelGroup = travelGroupRepository.findById(travelGroupItinerary.getId());
-        travelGroup.setTravelGroupItinerary(travelGroupItinerary);
-        return travelGroup.getTravelGroupItinerary();
-    }
-
-    @GetMapping("/Group/Itinerary/{groupId}")
-    public TravelGroupItinerary getTravelGroupItinerary(@PathVariable int groupId) {
-        return travelGroupRepository.findById(groupId).getTravelGroupItinerary();
+    /**
+    @GetMapping("/Group/Itinerary/Day/{groupId}/{dayId}")
+    public TravelGroupItineraryDay getTravelGroupItineraryByDay(@PathVariable int groupId, @PathVariable int dayId) {
+        return travelGroupRepository.findById(groupId).getTravelGroupItinerary()
     }
 
     @PutMapping()
@@ -41,9 +33,5 @@ public class TravelGroupItineraryController {
         travelGroup.setTravelGroupItinerary(null);
         return travelGroupRepository.findById(groupId).getTravelGroupItinerary();
     }
-
-    @GetMapping("/Group/Itinerary")
-    public TravelGroupItineraryRepository getTravelGroupItineraryRepository() {
-        return travelGroupItineraryRepository;
-    }
+    */
 }
