@@ -27,12 +27,37 @@ public class TravelGroupItineraryController {
         return travelGroupRepository.findById(groupId).getTravelGroupItinerary();
     }
 
-    @PutMapping()
+    @PutMapping("/Group/Itinerary/{groupId}")
     public TravelGroupItinerary updateTravelGroupItinerary(@PathVariable int groupId,
                                                            @RequestBody TravelGroupItinerary travelGroupItinerary) {
+        // Retrieve the existing TravelGroupItinerary from the repository
+        TravelGroupItinerary existingItinerary = travelGroupItineraryRepository.findByTravelGroupItineraryId(groupId);
+
+        travelGroupItinerary.getTravelGroupItinerarySchedule();
+        // Update the fields of the existing itinerary with the values from the request body
+        existingItinerary.setTravelGroupItinerarySchedule(travelGroupItinerary.getTravelGroupItinerarySchedule());
+        existingItinerary.setItineraryName(travelGroupItinerary.getItineraryName());
+        existingItinerary.setStartDate(travelGroupItinerary.getStartDate());
+        existingItinerary.setEndDate(travelGroupItinerary.getEndDate());
+        existingItinerary.setNumDays(travelGroupItinerary.getNumDays());
+
+        // Save the updated TravelGroupItinerary
+        travelGroupItineraryRepository.save(existingItinerary);
+
+        // It seems like you're also updating the TravelGroup with the new TravelGroupItinerary,
+        // so ensure that both TravelGroup and TravelGroupItinerary are properly updated and saved.
+
+        // Retrieve the corresponding TravelGroup from the repository
         TravelGroup travelGroup = travelGroupRepository.findById(groupId);
-        travelGroup.setTravelGroupItinerary(travelGroupItinerary);
-        return travelGroupRepository.findById(groupId).getTravelGroupItinerary();
+
+        // Update the TravelGroup with the new TravelGroupItinerary
+        travelGroup.setTravelGroupItinerary(existingItinerary);
+
+        // Save the updated TravelGroup
+        travelGroupRepository.save(travelGroup);
+
+        // Return the updated TravelGroupItinerary
+        return existingItinerary;
     }
 
     @DeleteMapping("/Group/Itinerary/{groupId}")

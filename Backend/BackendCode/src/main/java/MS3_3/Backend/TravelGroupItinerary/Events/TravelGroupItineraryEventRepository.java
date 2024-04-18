@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface TravelGroupItineraryEventRepository extends JpaRepository<TravelGroupItineraryEvent, Long> {
     @Transactional
-    void deleteById(int id);
+    void deleteByTravelGroupItineraryEventId(int travelGroupItineraryEventId);
 
-    TravelGroupItineraryEvent findById(int id);
+    TravelGroupItineraryEvent findByTravelGroupItineraryEventId(int travelGroupItineraryEventId);
 }
