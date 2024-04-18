@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface TravelGroupItineraryScheduleRepository extends JpaRepository<TravelGroupItinerarySchedule, Long> {
     @Transactional
-    void deleteById(int Id);
+    void deleteByTravelGroupItineraryScheduleId(int travelGroupItineraryScheduleId);
 
-    TravelGroupItinerarySchedule findById(int Id);
+    TravelGroupItinerarySchedule findByTravelGroupItineraryScheduleId(int travelGroupItineraryScheduleId);
 }

@@ -24,6 +24,11 @@ public class TravelGroupItineraryScheduleController {
     @Autowired
     TravelGroupRepository travelGroupRepository;
 
+    /**
+     *
+     * All methods complete
+     *
+     */
     @GetMapping("/Group/Schedule/{groupId}")
     public List<TravelGroupItinerarySchedule> getTravelGroupItinerary(@PathVariable int groupId) {
         return travelGroupRepository.findById(groupId).getTravelGroupItinerary().getTravelGroupItinerarySchedule();
@@ -32,13 +37,13 @@ public class TravelGroupItineraryScheduleController {
     @PutMapping("/Group/Schedule/{groupId}")
     public TravelGroupItinerary updateTravelGroupItinerary(@PathVariable int groupId,
                                                            @RequestBody List<TravelGroupItinerarySchedule> travelGroupItinerarySchedule) {
-        travelGroupItineraryRepository.findById(groupId).setTravelGroupItinerarySchedule(travelGroupItinerarySchedule);
+        travelGroupItineraryRepository.findByTravelGroupItineraryId(groupId).setTravelGroupItinerarySchedule(travelGroupItinerarySchedule);
         return travelGroupRepository.findById(groupId).getTravelGroupItinerary();
     }
 
     @DeleteMapping("/Group/Schedule/{groupId}")
     public TravelGroupItinerary deleteTravelGroupItinerary(@PathVariable int groupId) {
-        travelGroupItineraryScheduleRepository.findById(groupId).setTravelGroupItinerary(null);
+        travelGroupItineraryScheduleRepository.findByTravelGroupItineraryScheduleId(groupId).setTravelGroupItinerary(null);
         return travelGroupRepository.findById(groupId).getTravelGroupItinerary();
     }
 }

@@ -12,7 +12,7 @@ import java.util.List;
 public class TravelGroupItinerary {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int travelGroupItineraryId;
 
     @OneToOne
     @JsonIgnore
@@ -26,7 +26,7 @@ public class TravelGroupItinerary {
 
     private int numDays;
 
-    @OneToMany
+    @OneToMany(mappedBy = "travelGroupItinerary", cascade = CascadeType.ALL)
     private List<TravelGroupItinerarySchedule> travelGroupItinerarySchedule;
 
     public TravelGroupItinerary() {
@@ -66,7 +66,7 @@ public class TravelGroupItinerary {
     }
 
     public int getId() {
-        return id;
+        return travelGroupItineraryId;
     }
 
     public TravelGroup getTravelGroup() {

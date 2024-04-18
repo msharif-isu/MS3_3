@@ -16,17 +16,17 @@ public class TravelGroupItineraryDay {
      */
 
     @ManyToOne
-    @JoinColumn(name = "travel_group_itinerary_schedule_id")
+    @JoinColumn(name = "travelGroupItineraryScheduleId")
     @JsonIgnore
     private TravelGroupItinerarySchedule travelGroupItinerarySchedule;
 
 
-    @OneToMany
+    @OneToMany(mappedBy = "travelGroupDay", cascade = CascadeType.ALL)
     private List<TravelGroupItineraryEvent> events;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int travelGroupItineraryDayId;
 
     public TravelGroupItineraryDay() {
         this.events = new ArrayList<>();
@@ -52,7 +52,11 @@ public class TravelGroupItineraryDay {
         this.events = events;
     }
 
+    public TravelGroupItineraryEvent getEvent(int event) {
+        return events.get(event);
+    }
+
     public int getId() {
-        return id;
+        return travelGroupItineraryDayId;
     }
 }

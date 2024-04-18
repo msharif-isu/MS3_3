@@ -9,10 +9,10 @@ public class TravelGroupItineraryEvent {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int travelGroupItineraryEventId;
 
-    @ManyToOne
-    @JoinColumn(name = "travel_group_itinerary_day_id")
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "travelGroupItineraryDayId")
     @JsonIgnore
     private TravelGroupItineraryDay travelGroupDay;
 
@@ -28,12 +28,15 @@ public class TravelGroupItineraryEvent {
         this.notes = notes;
     }
 
+    public TravelGroupItineraryEvent() {
+    }
+
     public TravelGroupItineraryDay getTravelGroupDay() {
         return travelGroupDay;
     }
 
     public int getId() {
-        return id;
+        return travelGroupItineraryEventId;
     }
 
     public String getTime() {
@@ -59,4 +62,11 @@ public class TravelGroupItineraryEvent {
     public void setNotes(String notes) {
         this.notes = notes;
     }
+
+    public void setEvent(TravelGroupItineraryEvent event) {
+        this.time = event.time;
+        this.notes = event.notes;
+        this.place = event.place;
+    }
+
 }
