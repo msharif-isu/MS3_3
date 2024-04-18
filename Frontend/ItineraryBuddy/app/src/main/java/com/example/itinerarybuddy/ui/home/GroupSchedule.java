@@ -29,6 +29,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 
 
 /**
@@ -42,8 +44,17 @@ public class GroupSchedule extends AppCompatActivity {
     private boolean isFirstClick = true;
     private ScheduleAdapter adapter;
 
-    private String day;
+    /**
+     * Contains the string title "Day x".
+     */
+    private String dayString;
 
+    /**
+     * Extracts the day as an int.
+     */
+    private int dayInt;
+
+    private static JSONArray days;
 
     /**
      * Called when the activity is starting. This is where most initialization should go.
@@ -58,7 +69,8 @@ public class GroupSchedule extends AppCompatActivity {
         setContentView(R.layout.activity_schedule_template);
 
         // Retrieve the day title from the intent
-        day = getIntent().getStringExtra("TITLE");
+        dayInt = Integer.parseInt(Objects.requireNonNull(getIntent().getStringExtra("TITLE")).substring(4));
+        dayString = getIntent().getStringExtra("TITLE");
         isEditable = getIntent().getBooleanExtra("IS_EDITABLE", false);
         tripCode = getIntent().getStringExtra("TRIPCODE");
 
@@ -68,17 +80,17 @@ public class GroupSchedule extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
 
         List<ScheduleItem> list = new ArrayList<>();
-        for(int i = 0; i < 5; i++){
-           list.add(new ScheduleItem());
+        for (int i = 0; i < 20; i++) {
+            list.add(new ScheduleItem());
         }
 
-        adapter = new ScheduleAdapter(list ,day, isEditable);
+        adapter = new ScheduleAdapter(list, dayString, isEditable);
         recyclerView.setAdapter(adapter);
 
         try {
-            getSchedule(Integer.parseInt(day));
+            getSchedule(dayInt);
         } catch (JSONException | ParseException e) {
-            throw new RuntimeException(e);
+            Log.e("Error fetching schedule: ", e.toString());
         }
 
         // Set click listener for the save/update button
@@ -86,8 +98,7 @@ public class GroupSchedule extends AppCompatActivity {
 
         if (!isEditable) {
             btnSaveUpdate.setVisibility(View.INVISIBLE);
-        }
-        else {
+        } else {
             btnSaveUpdate.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -105,35 +116,73 @@ public class GroupSchedule extends AppCompatActivity {
     private void putSchedule() throws JSONException {
         List<ScheduleItem> data = adapter.getScheduleData();
         JSONObject schedule = new JSONObject();
-        JSONArray array = new JSONArray(data);
-        for(ScheduleItem s : data){
-            if(s != null){
-                JSONObject item = new JSONObject();
-                item.put("time", s.getTime());
-                item.put("place", s.getPlaces());
-                item.put("note", s.getNotes());
+        JSONArray newData = new JSONArray();
+        for (int i = 0; i < data.size(); i++) {
+            if (data.get(i).getTime() != null && data.get(i).getPlaces() != null && data.get(i).getNotes() != null) {
 
-                array.put(item);
+                JSONObject item = new JSONObject();
+                item.put("time", data.get(i).getTime().toString());
+                item.put("place", data.get(i).getPlaces());
+                item.put("note", data.get(i).getNotes());
+
+                newData.put(item);
+                Log.d("Schedule Item", newData.toString());
             }
         }
-        schedule.put("scheduleData", array);
-        Log.d("JSON: ", schedule.toString());
+        schedule.put("scheduleData", newData);
 
-        LoadGroup.days.remove(Integer.parseInt(day) - 1);
-        LoadGroup.days.put(Integer.parseInt(day), array);
+        JSONObject newItinerary = new JSONObject();
+        newItinerary.put("groupCode", LoadGroup.groupItinerary.get("groupCode"));
+
+        //Add current schedule data to main json
+        JSONArray days = new JSONArray();
+        for(int i = 0; i < LoadGroup.groupItinerary.getJSONArray("days").length(); i++){
+            if(i == dayInt - 1){
+                days.put(schedule);
+            }
+            else{
+                days.put(LoadGroup.groupItinerary.getJSONArray("days").getJSONObject(i));
+            }
+        }
+        newItinerary.put("days", days);
+        newItinerary.put("itineraryName", LoadGroup.groupItinerary.get("itineraryName"));
+        newItinerary.put("startDate", LoadGroup.groupItinerary.get("startDate"));
+        newItinerary.put("endDate", LoadGroup.groupItinerary.get("endDate"));
+        newItinerary.put("numDays", LoadGroup.groupItinerary.get("itineraryName"));
+        Log.d("JSON: ", newItinerary.toString());
+
+
+        final String url = ""; //TODO
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.PUT, url, newItinerary, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject jsonObject) {
+                Log.d("Volley Response:", jsonObject.toString());
+                LoadGroup.groupItinerary = jsonObject;
+                Toast.makeText(getApplicationContext(), "Schedule Updated", Toast.LENGTH_LONG).show();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                Log.e("Volley Error:", volleyError.toString());
+                Toast.makeText(getApplicationContext(), "Error Updating Data", Toast.LENGTH_LONG).show();
+            }
+        });
+        Singleton.getInstance(getApplicationContext()).addRequest(request);
     }
 
     private void getSchedule(int day) throws JSONException, ParseException {
-        JSONArray dayData = LoadGroup.days.getJSONArray(day-1);
+        days = LoadGroup.groupItinerary.getJSONArray("days");
+        JSONObject scheduleDay = days.getJSONObject(day - 1);
+        JSONArray dayItems = scheduleDay.getJSONArray("scheduleData");
         List<ScheduleItem> scheduleItems = new ArrayList<>();
-        for (int i = 0; i < dayData.length(); i++) {
-            JSONObject scheduleItemJson = dayData.getJSONObject(i);
+        for (int i = 0; i < dayItems.length(); i++) {
+            JSONObject itineraryDay = dayItems.getJSONObject(i);
 
-            String timeString = scheduleItemJson.getString("time");
-            String places = scheduleItemJson.getString("place");
-            String notes = scheduleItemJson.getString("note");
+            String timeString = itineraryDay.getString("time");
+            String places = itineraryDay.getString("place");
+            String notes = itineraryDay.getString("note");
 
-            SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss", Locale.US);
             Date parsedDate = dateFormat.parse(timeString);
             assert parsedDate != null;
             Time time = new Time(parsedDate.getTime());
@@ -182,55 +231,7 @@ public class GroupSchedule extends AppCompatActivity {
         "endDate": "",
         "numDays": ""
     }
-}
-         */
-
-        /*
-        String url = "https://443da8f0-75e2-4be2-8e84-834c5d63eda6.mock.pstmn.io/schedule?id=1"; //TODO
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-
-                            JSONArray scheduleDataArray = response.getJSONArray("scheduleData");
-                            List<ScheduleItem> scheduleItems = new ArrayList<>();
-
-                            for (int i = 0; i < scheduleDataArray.length(); i++) {
-                                JSONObject scheduleItemJson = scheduleDataArray.getJSONObject(i);
-
-                                String timeString = scheduleItemJson.getString("time");
-                                String places = scheduleItemJson.getString("place");
-                                String notes = scheduleItemJson.getString("note");
-
-                                SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
-                                Date parsedDate = dateFormat.parse(timeString);
-                                Time time = new Time(parsedDate.getTime());
-
-                                ScheduleItem scheduleItem = new ScheduleItem();
-                                scheduleItem.setTime(time);
-                                scheduleItem.setPlaces(places);
-                                scheduleItem.setNotes(notes);
-
-                                scheduleItems.add(scheduleItem);
-                            }
-
-                            adapter.prependData(scheduleItems);
-
-                        } catch (JSONException | ParseException e) {
-                            Log.e("JSON Exception: ", e.toString());
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(getApplicationContext(), "Error fetching data", Toast.LENGTH_SHORT).show();
-                        Log.e("Volley Error", error.toString());
-                    }
-                });
-        Singleton.getInstance(getApplicationContext()).addRequest(request);
-        */
+    */
     }
 }
 

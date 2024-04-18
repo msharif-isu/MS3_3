@@ -83,12 +83,7 @@ public class LoadGroup extends AppCompatActivity {
     /**
      * JSON object holding all of the data for the group itinerary.
      */
-    protected static JSONObject itinerary;
-
-    /**
-     * JSON containing schedule data for the itinerary.
-     */
-    protected static JSONArray days;
+    protected static JSONObject groupItinerary;
 
     protected static int index;
 
@@ -262,15 +257,19 @@ public class LoadGroup extends AppCompatActivity {
         itinerary.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int days = 5;
-                String tripCode = "1234";
+                int days = 0;
+                try {
+                    days = groupItinerary.getJSONArray("days").length();
+                    //days = 1;
+                    Intent intent = new Intent(getApplicationContext(), DayCard.class);
+                    intent.putExtra("NUM_OF_DAYS", days);
+                    intent.putExtra("SOURCE", "GROUP");
+                    intent.putExtra("IS_EDITABLE", !UserData.getUsertype().equals("User"));
 
-                Intent intent = new Intent(getApplicationContext(), DayCard.class);
-                intent.putExtra("NUM_OF_DAYS", days);
-                intent.putExtra("SOURCE", "GROUP");
-                intent.putExtra("IS_EDITABLE", !UserData.getUsertype().equals("User"));
+                    startActivity(intent);
+                } catch (JSONException e) {
 
-                startActivity(intent);
+                }
             }
         });
 
@@ -621,18 +620,18 @@ public class LoadGroup extends AppCompatActivity {
      * Requests for this groups itinerary to display.
      */
     private void getItinerary(){
-        final String url = "http://coms-309-035.class.las.iastate.edu:8080/Group/" + group.getTravelGroupID();
+        //final String url = "http://coms-309-035.class.las.iastate.edu:8080/Group/" + group.getTravelGroupID();
+        final String url = "https://443da8f0-75e2-4be2-8e84-834c5d63eda6.mock.pstmn.io/itinerary?id=1";
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject jsonObject) {
                 try{
-                    JSONObject i = jsonObject.getJSONObject("travelGroupItinerary");
-                    itinerary = i;
-                    days = i.getJSONArray("days");
-                    String destination = "Destination: " + i.getString("destination");
-                    String start = "Start Date: " + i.getString("startDate");
-                    String end = "End Date: " + i.getString("endDate");
-                    String length = "Number of Days: " + i.getString("numDays");
+                    //JSONObject i = jsonObject.getJSONObject("travelGroupItinerary");
+                    groupItinerary = jsonObject;
+                    String destination = "Destination: " + group.getTravelGroupDestination();
+                    String start = "Start Date: " + jsonObject.getString("startDate");
+                    String end = "End Date: " + jsonObject.getString("endDate");
+                    String length = "Number of Days: " + jsonObject.getString("numDays");
 
                     itineraryDestination.setText(destination);
                     itineraryStart.setText(start);
@@ -753,8 +752,8 @@ public class LoadGroup extends AppCompatActivity {
      */
     protected void putItinerary(String destination, String startDate, String endDate, String length) throws JSONException {
         JSONObject itinerary = new JSONObject();
-        itinerary.put("code", itinerary.get("groupCode"));
-        itinerary.put("days", LoadGroup.days);
+        itinerary.put("code", groupItinerary.getJSONObject("groupCode"));
+        itinerary.put("days", groupItinerary.getJSONArray("days"));
         itinerary.put("destination", destination);
         itinerary.put("startDate", startDate);
         itinerary.put("endDate", endDate);
