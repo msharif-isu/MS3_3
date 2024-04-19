@@ -72,5 +72,7 @@
     <string name="selected_image">Selected Image</string>
     <string name="select_an_image">Select an Image</string>
     <string name="remove_group_image">Remove Group Image</string>
+    <string name="photo">Photo</string>
+    <string name="add_a_photo">Add a Photo</string>
 
 </resources>

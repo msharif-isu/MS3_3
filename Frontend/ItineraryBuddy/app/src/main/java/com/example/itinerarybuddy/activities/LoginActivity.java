@@ -12,6 +12,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.itinerarybuddy.R;
 import com.example.itinerarybuddy.data.UserData;
+import com.example.itinerarybuddy.ui.notifications.BlogPhotoAlbum;
 import com.example.itinerarybuddy.util.Singleton;
 import org.json.JSONObject;
 import java.util.HashMap;
@@ -79,7 +80,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 // Save user JSON and proceed to homepage
                 UserData.userInfo = response;
-                startActivity(new Intent(getApplicationContext(), personalPage1.class));
+                startActivity(new Intent(getApplicationContext(), BlogPhotoAlbum.class));
             }
         }, new Response.ErrorListener() {
             @Override
