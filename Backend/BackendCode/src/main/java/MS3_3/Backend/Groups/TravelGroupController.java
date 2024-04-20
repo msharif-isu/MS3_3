@@ -64,6 +64,7 @@ public class TravelGroupController {
             copy.setType(imageRepository.findById(1).getType());
             copy.setName(imageRepository.findById(1).getName());
             imageRepository.save(copy);
+            savedGroup.setTravelGroupItinerary(newItinerary);
             savedGroup.setGroupImage(copy);
             groupLeader.addGroup(savedGroup);
             groupLeaderUserAccount.addGroupCodes(group);

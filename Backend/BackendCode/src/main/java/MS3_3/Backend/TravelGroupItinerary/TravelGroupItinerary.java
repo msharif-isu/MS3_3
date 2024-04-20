@@ -2,7 +2,7 @@ package MS3_3.Backend.TravelGroupItinerary;
 
 import MS3_3.Backend.FileUpload.Image;
 import MS3_3.Backend.Groups.TravelGroup;
-import MS3_3.Backend.TravelGroupItinerary.Schedule.TravelGroupItinerarySchedule;
+import MS3_3.Backend.TravelGroupItinerary.Events.TravelGroupItineraryEvent;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
@@ -23,10 +23,15 @@ public class TravelGroupItinerary {
 
     private int numDays;
 
-    @OneToOne(mappedBy = "travelGroupsItinerary", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private TravelGroupItinerarySchedule travelGroupItinerarySchedule;
+    @OneToOne(mappedBy = "travelGroupItinerary")
+    private TravelGroup travelGroup;
+
+    @OneToMany(mappedBy = "groupItinerary", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TravelGroupItineraryEvent> travelGroupItineraryEventsList;
+
 
     public TravelGroupItinerary() {
+        this.travelGroupItineraryEventsList = new ArrayList<>();
     }
 
     public TravelGroupItinerary(String itineraryName, String startDate, String endDate, int numDays) {
@@ -34,15 +39,9 @@ public class TravelGroupItinerary {
         this.startDate = startDate;
         this.endDate = endDate;
         this.numDays = numDays;
+        this.travelGroupItineraryEventsList = new ArrayList<>();
     }
 
-    public TravelGroupItinerary(String itineraryName, String startDate, String endDate, TravelGroupItinerarySchedule schedule, int numDays) {
-        this.itineraryName = itineraryName;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.numDays = numDays;
-        this.travelGroupItinerarySchedule = schedule;
-    }
 
     public int getNumDays() {
         return numDays;
@@ -52,12 +51,12 @@ public class TravelGroupItinerary {
         this.numDays = numDays;
     }
 
-    public TravelGroupItinerarySchedule getTravelGroupItinerarySchedule() {
-        return travelGroupItinerarySchedule;
+    public List<TravelGroupItineraryEvent> getTravelGroupItineraryEventsList() {
+        return travelGroupItineraryEventsList;
     }
 
-    public void setTravelGroupItinerarySchedule(TravelGroupItinerarySchedule travelGroupItinerarySchedule) {
-        this.travelGroupItinerarySchedule = travelGroupItinerarySchedule;
+    public void setTravelGroupItineraryEventsList(List<TravelGroupItineraryEvent> travelGroupItineraryEventsList) {
+        this.travelGroupItineraryEventsList = travelGroupItineraryEventsList;
     }
 
     public int getId() {

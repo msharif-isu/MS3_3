@@ -26,6 +26,10 @@ public class TravelGroup {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int travelGroupId;
 
+    @OneToOne
+    @JoinColumn(name = "travel_group_itinerary_id")
+    private TravelGroupItinerary travelGroupItinerary;
+
     private String travelGroupDestination;
 
     private String travelGroupCode;
@@ -54,6 +58,14 @@ public class TravelGroup {
 
     public TravelGroup() {
         this.members = new ArrayList<>();
+    }
+
+    public TravelGroupItinerary getTravelGroupItinerary() {
+        return travelGroupItinerary;
+    }
+
+    public void setTravelGroupItinerary(TravelGroupItinerary travelGroupItinerary) {
+        this.travelGroupItinerary = travelGroupItinerary;
     }
 
     public Image getGroupImage() {
