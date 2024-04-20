@@ -507,16 +507,16 @@ public class LoadGroup extends AppCompatActivity {
         String url = "http://coms-309-035.class.las.iastate.edu:8080/Group/Image/" + group.getTravelGroupID();
 
         if(method == Request.Method.PUT){
-            CustomImageRequest request = new CustomImageRequest(url, data, new Response.Listener<NetworkResponse>() {
+            CustomImageRequest request = new CustomImageRequest(Request.Method.PUT, url, data, new Response.Listener<NetworkResponse>() {
                 @Override
                 public void onResponse(NetworkResponse networkResponse) {
-                    Log.d("Upload", "Response: " + networkResponse.toString());
+                    Log.d("Uploaded Image", networkResponse.toString());
                     getImage(groupImage);
                 }
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError volleyError) {
-                    Log.e("Upload", "Error: " + volleyError.getMessage());
+                    Log.e("Image Upload Error", volleyError.toString());
                 }
             });
             Singleton.getInstance(getApplicationContext()).addRequest(request);

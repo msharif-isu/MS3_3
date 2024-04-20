@@ -20,11 +20,14 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.android.volley.NetworkResponse;
+import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.example.itinerarybuddy.R;
 import com.example.itinerarybuddy.databinding.BlogImageConfirmationBinding;
+import com.example.itinerarybuddy.util.CustomImageRequest;
 import com.example.itinerarybuddy.util.Singleton;
 
 import java.io.ByteArrayOutputStream;
@@ -45,12 +48,12 @@ public class BlogPhotoAlbum extends AppCompatActivity {
         setContentView(R.layout.blog_album);
 
         GridView grid = findViewById(R.id.grid);
-        grid.setNumColumns(2);
         adapter = new ImageAdapter(getApplicationContext());
         grid.setAdapter(adapter);
         adapter.add(BitmapFactory.decodeResource(getResources(), R.drawable.earth_icon));
         adapter.add(BitmapFactory.decodeResource(getResources(), R.drawable.airplane_trip));
         adapter.add(BitmapFactory.decodeResource(getResources(), R.drawable.airplane_trip));
+        adapter.add(BitmapFactory.decodeResource(getResources(), R.drawable.earth_icon));
         adapter.notifyDataSetChanged();
 
         // Image selection process
@@ -145,6 +148,18 @@ public class BlogPhotoAlbum extends AppCompatActivity {
     }
 
     private void uploadImage(byte[] bytes){
-
+        final String url = ""; //TODO
+        CustomImageRequest request = new CustomImageRequest(Request.Method.POST, url, bytes, new Response.Listener<NetworkResponse>() {
+            @Override
+            public void onResponse(NetworkResponse networkResponse) {
+                Log.d("Uploaded Image", networkResponse.toString());
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                Log.e("Image Upload Error", volleyError.toString());
+            }
+        });
+        Singleton.getInstance(getApplicationContext()).addRequest(request);
     }
 }

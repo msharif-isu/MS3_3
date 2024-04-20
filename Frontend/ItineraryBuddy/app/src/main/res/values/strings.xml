@@ -74,5 +74,6 @@
     <string name="remove_group_image">Remove Group Image</string>
     <string name="photo">Photo</string>
     <string name="add_a_photo">Add a Photo</string>
+    <string name="photo_gallery">Photo Gallery</string>
 
 </resources>
