@@ -3,18 +3,35 @@ package com.example.itinerarybuddy;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
-import static androidx.test.espresso.action.ViewActions.typeText;d
+import static androidx.test.espresso.action.ViewActions.typeText;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.RootMatchers.isDialog;
+import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
+import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertEquals;
+
+import android.app.Instrumentation;
+import android.content.Intent;
 
 import com.example.itinerarybuddy.activities.LoginActivity;
 import com.example.itinerarybuddy.data.UserData;
+import com.example.itinerarybuddy.ui.home.ListGroups;
+import com.example.itinerarybuddy.ui.home.LoadGroup;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.AlertDialogLayout;
+import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.filters.LargeTest;
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner;
 import androidx.test.rule.ActivityTestRule;
@@ -23,25 +40,101 @@ import androidx.test.rule.ActivityTestRule;
 @LargeTest
 public class JustinSystemTest {
 
-    private static final int DELAY_MS = 500;
+    private static final int DELAY_MS = 1000;
 
     @Rule   // needed to launch the activity
     public ActivityTestRule<LoginActivity> activityRule = new ActivityTestRule<>(LoginActivity.class);
 
-    @Test
-    public void loginTest(){
+    @Before
+    public void setup(){
         String username = "Justin";
         String password = "1";
         onView(withId(R.id.username_input)).perform(typeText(username), closeSoftKeyboard());
         onView(withId(R.id.password_input)).perform(typeText(password), closeSoftKeyboard());
         onView(withId(R.id.login_button)).perform(click());
+        try {
+            Thread.sleep(DELAY_MS);
+        } catch (InterruptedException e) {
+        }
+    }
 
+    @Test
+    public void loginTest(){
+        // Assert that the intended user has been logged in
+        assertEquals("Justin", UserData.getUsername());
+    }
+
+    @Test
+    public void joinGroupTest(){
+        onView(withId(R.id.group_button)).perform(click());
         try {
             Thread.sleep(DELAY_MS);
         } catch (InterruptedException e) {
         }
 
-        // Assert that the intended user has been logged in
-        assertEquals("Justin", UserData.getUsername());
+        int start = ListGroups.getAdapter().getCount();
+        onView(withId(R.id.add_group_button)).perform(click());
+        onView(withId(R.id.group_code_input)).perform(typeText("10"), closeSoftKeyboard());
+        onView(withId(android.R.id.button1)).perform(click());
+        try {
+            Thread.sleep(DELAY_MS);
+        } catch (InterruptedException e) {
+        }
+        int end = ListGroups.getAdapter().getCount();
+
+        //onView(withText("Test99\nDestination: Canada")).check(matches(isDisplayed()));
+        assertEquals(start + 1, end);
     }
+
+    @Test
+    public void leaveGroupTest(){
+        onView(withId(R.id.group_button)).perform(click());
+        try {
+            Thread.sleep(DELAY_MS);
+        } catch (InterruptedException e) {
+        }
+
+        int start = ListGroups.getAdapter().getCount();
+        onView(withText("Test99\nDestination: Canada")).perform(click());
+        onView(withId(R.id.options_button)).perform(click());
+        onView(withText("Leave Group")).perform(click());
+        onView(withId(android.R.id.button1)).perform(click());
+
+        try {
+            Thread.sleep(DELAY_MS);
+        } catch (InterruptedException e) {
+        }
+        int end = ListGroups.getAdapter().getCount();
+
+        //onView(withText("Test99\nDestination: Canada")).check(matches(not(isDisplayed())));
+
+        assertEquals(start - 1, end);
+    }
+
+    /*
+    @Test
+    public void createGroupTest(){
+        onView(withId(R.id.group_button)).perform(click());
+        try {
+            Thread.sleep(DELAY_MS);
+        } catch (InterruptedException e) {
+        }
+
+        int start = ListGroups.getAdapter().getCount();
+        onView(withId(R.id.create_group_button)).perform(click());
+        onView(withId(R.id.group_name_input)).perform(typeText("System Test"), closeSoftKeyboard());
+        onView(withId(R.id.group_destination_input)).perform(typeText("System Test"), closeSoftKeyboard());
+        onView(withId(R.id.group_description_input)).perform(typeText("System Test"), closeSoftKeyboard());
+        onView(withId(android.R.id.button1)).perform(click());
+
+        try {
+            Thread.sleep(DELAY_MS);
+        } catch (InterruptedException e) {
+        }
+        int end = ListGroups.getAdapter().getCount();
+
+        assertEquals(start + 1, end);
+    }
+    */
+
 }
