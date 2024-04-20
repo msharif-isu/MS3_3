@@ -36,59 +36,44 @@ public class TravelGroupItineraryController {
         return travelGroupItineraryRepository.findByTravelGroupItineraryId(groupId);
     }
 
-    /**
+    /**     Example Json for Put Request
      {
-     "id": 1,
-     "itineraryName": "London",
-     "startDate": "1/11/2025",
-     "endDate": "1/13/2025",
-     "numDays": 2,
-     "travelGroupItinerarySchedule":
-     {
-     "days": [
-     {
-     "events": [
-     {
-     "time": "12:00 pm",
-     "place": "St James' Park",
-     "notes": "New Castle United Game"
-     },
-     {
-     "time": "1:00 pm",
-     "place": "St James' Park",
-     "notes": "Halftime get a drink"
-     }
-     ]
-     },
-     {
-     "events": [
-     {
-     "time": "6:00 pm",
-     "place": "Hotel Name",
-     "notes": "Check in Time"
-     }
-     ]
-     }
-     ]
-     },
-     {
-     "days": [
-     {
-     "events": [
-     {
-     "time": "12:00 pm",
-     "place": "Hotel Name",
-     "notes": "Checkout Time"
-     },
-     {
-     "time": "12:30 pm",
-     "place": "Train Station",
-     "notes": "Go somewhere and explore"
-     }
-     ]
-     }
-     ]
-     }
+         "itineraryName": "London",
+         "startDate": "1/12/2025",
+         "endDate": "1/14/2025",
+         "numDays": 2,
+         "travelGroupItineraryEventsList": [
+             {
+             "dayNumber": 1,
+             "time": "12:00 pm",
+             "place": "St James' Park",
+             "notes": "New Castle United Game"
+             },
+             {
+             "dayNumber": 1,
+             "time": "1:00 pm",
+             "place": "St James' Park",
+             "notes": "Halftime get a drink"
+             },
+             {
+             "dayNumber": 1,
+             "time": "6:00 pm",
+             "place": "Hotel Name",
+             "notes": "Check in Time"
+             },
+             {
+             "dayNumber": 2,
+             "time": "12:00 pm",
+             "place": "Hotel Name",
+             "notes": "Checkout Time"
+             },
+             {
+             "dayNumber": 2,
+             "time": "12:30 pm",
+             "place": "Train Station",
+             "notes": "Go somewhere and explore"
+             },
+         ]
      }
      */
 
@@ -122,51 +107,20 @@ public class TravelGroupItineraryController {
     }
 
 
-
-
-
-    /** Working Constant add
-     @PutMapping("/Group/Itinerary/{groupId}")
-     public TravelGroupItinerary updateTravelGroupItinerary(@PathVariable int groupId,
-     @RequestBody TravelGroupItinerary updatedItinerary) {
-
-     // Retrieve the corresponding TravelGroup from the repository
-     TravelGroupItinerary existingItinerary = travelGroupItineraryRepository.findByTravelGroupItineraryId(groupId);
-
-     int oldLength = existingItinerary.getTravelGroupItineraryEventsList().size();
-     // Update the existing itinerary with the values from the updated itinerary
-     existingItinerary.setItineraryName(updatedItinerary.getItineraryName());
-     existingItinerary.setStartDate(updatedItinerary.getStartDate());
-     existingItinerary.setEndDate(updatedItinerary.getEndDate());
-     existingItinerary.setNumDays(updatedItinerary.getNumDays());
-     existingItinerary.getTravelGroupItineraryEventsList().clear();
-
-     List<TravelGroupItineraryEvent> temp = existingItinerary.getTravelGroupItineraryEventsList();
-
-     for (int i = 0; i < updatedItinerary.getTravelGroupItineraryEventsList().size(); i++) {
-     temp.add(new TravelGroupItineraryEvent(existingItinerary,updatedItinerary.getTravelGroupItineraryEventsList().get(i).getDayNumber(),
-     updatedItinerary.getTravelGroupItineraryEventsList().get(i).getPlace(),updatedItinerary.getTravelGroupItineraryEventsList().get(i).getPlace(),
-     updatedItinerary.getTravelGroupItineraryEventsList().get(i).getNotes()));
-     existingItinerary.getTravelGroupItineraryEventsList().add(temp.get(i));
-     }
-
-     existingItinerary.setTravelGroupItineraryEventsList(temp);
-
-     TravelGroupItinerary output = travelGroupItineraryRepository.save(existingItinerary);
-     return travelGroupItineraryRepository.findByTravelGroupItineraryId(groupId);
-     }
-     */
-
-/**
     @DeleteMapping("/Group/Itinerary/{groupId}")
     public TravelGroupItinerary deleteTravelGroupItinerary(@PathVariable int groupId) {
-        TravelGroup travelGroup = travelGroupRepository.findByTravelGroupId(groupId);
-        travelGroup.setTravelGroupItinerary(null);
-        return travelGroupRepository.findByTravelGroupId(groupId).getTravelGroupItinerary();
+        TravelGroupItinerary existingItinerary = travelGroupItineraryRepository.findByTravelGroupItineraryId(groupId);
+        existingItinerary.setItineraryName("");
+        existingItinerary.setStartDate("");
+        existingItinerary.setEndDate("");
+        existingItinerary.setNumDays(0);
+        existingItinerary.getTravelGroupItineraryEventsList().clear();
+        TravelGroupItinerary output = travelGroupItineraryRepository.save(existingItinerary);
+        return output;
     }
-*/
-    @GetMapping("/Group/Itinerary")
-    public TravelGroupItineraryRepository getTravelGroupItineraryRepository() {
-        return travelGroupItineraryRepository;
+
+    @GetMapping("/Group/Itineraries")
+    public List<TravelGroupItinerary> getTravelGroupItineraryRepository() {
+        return travelGroupItineraryRepository.findAll();
     }
 }
