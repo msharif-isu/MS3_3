@@ -17,9 +17,6 @@ public class TravelGroup {
 
     private String travelGroupName;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "travel_group_itinerary_id")
-    TravelGroupItinerary travelGroupItinerary;
 
     @OneToOne
     @JoinColumn(name = "image_id")
@@ -27,7 +24,7 @@ public class TravelGroup {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int travelGroupId;
 
     private String travelGroupDestination;
 
@@ -57,14 +54,6 @@ public class TravelGroup {
 
     public TravelGroup() {
         this.members = new ArrayList<>();
-    }
-
-    public TravelGroupItinerary getTravelGroupItinerary() {
-        return travelGroupItinerary;
-    }
-
-    public void setTravelGroupItinerary(TravelGroupItinerary travelGroupItinerary) {
-        this.travelGroupItinerary = travelGroupItinerary;
     }
 
     public Image getGroupImage() {
@@ -117,7 +106,7 @@ public class TravelGroup {
 
 
     public int getTravelGroupId() {
-        return id;
+        return travelGroupId;
     }
 
     public String getTravelGroupName() {

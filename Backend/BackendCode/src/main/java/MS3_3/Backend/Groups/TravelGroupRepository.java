@@ -5,8 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 public interface TravelGroupRepository extends JpaRepository<TravelGroup, Long> {
-    TravelGroup findById(int id);
+    TravelGroup findByTravelGroupId(int travelGroupId);
 
     @Transactional
-    void deleteById(int id);
+    void deleteByTravelGroupId(int travelGroupId);
 }

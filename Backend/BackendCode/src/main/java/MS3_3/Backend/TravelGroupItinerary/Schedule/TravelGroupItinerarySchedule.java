@@ -1,6 +1,7 @@
 package MS3_3.Backend.TravelGroupItinerary.Schedule;
 
-import MS3_3.Backend.TravelGroupItinerary.Days.TravelGroupItineraryDay;
+//import MS3_3.Backend.TravelGroupItinerary.Days.TravelGroupItineraryDay;
+import MS3_3.Backend.TravelGroupItinerary.Events.TravelGroupItineraryEvent;
 import MS3_3.Backend.TravelGroupItinerary.TravelGroupItinerary;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -21,32 +22,36 @@ public class TravelGroupItinerarySchedule {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int travelGroupItineraryScheduleId;
 
-    @OneToMany(mappedBy = "travelGroupItinerarySchedule", cascade = CascadeType.ALL)
-    private List<TravelGroupItineraryDay> days;
+    @OneToMany(mappedBy = "travelGroupsSchedule", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TravelGroupItineraryEvent> events;
 
-    @ManyToOne
+
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "travelGroupItineraryId")
-    @JsonIgnore
-    private TravelGroupItinerary travelGroupItinerary;
+    private TravelGroupItinerary travelGroupsItinerary;
 
     public TravelGroupItinerarySchedule() {
-        days = new ArrayList<>();
-    }
-
-    public TravelGroupItineraryDay getDay(int day) {
-        return this.days.get(day);
+        events = new ArrayList<>();
     }
 
     public void setTravelGroupItinerary(TravelGroupItinerary travelGroupItinerary) {
-        this.travelGroupItinerary = travelGroupItinerary;
+        //this.travelGroupItinerary = travelGroupItinerary;
     }
 
-    public List<TravelGroupItineraryDay> getDays() {
-        return days;
+    public TravelGroupItinerary getTravelGroupsItinerary() {
+        return travelGroupsItinerary;
     }
 
-    public void setDays(List<TravelGroupItineraryDay> days) {
-        this.days = days;
+    public void setTravelGroupItineraryScheduleId(int travelGroupItineraryScheduleId) {
+        this.travelGroupItineraryScheduleId = travelGroupItineraryScheduleId;
+    }
+
+    public List<TravelGroupItineraryEvent> getDays() {
+        return events;
+    }
+
+    public void setDays(List<TravelGroupItineraryEvent> days) {
+        this.events = days;
     }
 
 

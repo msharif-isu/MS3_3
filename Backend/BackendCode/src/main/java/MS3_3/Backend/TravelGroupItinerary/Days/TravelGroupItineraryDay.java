@@ -7,21 +7,18 @@ import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
-
-@Entity
+/**
+//@Entity
 public class TravelGroupItineraryDay {
     /**
      * One schedule has Many days
      * One day has Many events
      */
+/**
+    @ManyToOne(fetch = FetchType.EAGER)
+    private TravelGroupItinerarySchedule travelGroupsSchedule;
 
-    @ManyToOne
-    @JoinColumn(name = "travelGroupItineraryScheduleId")
-    @JsonIgnore
-    private TravelGroupItinerarySchedule travelGroupItinerarySchedule;
-
-
-    @OneToMany(mappedBy = "travelGroupDay", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "travelGroupDay", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TravelGroupItineraryEvent> events;
 
     @Id
@@ -41,7 +38,7 @@ public class TravelGroupItineraryDay {
     }
 
     public TravelGroupItinerarySchedule getTravelGroupItinerarySchedule() {
-        return travelGroupItinerarySchedule;
+        return travelGroupsSchedule;
     }
 
     public List<TravelGroupItineraryEvent> getEvents() {
@@ -59,4 +56,5 @@ public class TravelGroupItineraryDay {
     public int getId() {
         return travelGroupItineraryDayId;
     }
-}
+    */
+//}
