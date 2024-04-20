@@ -8,4 +8,5 @@ public interface TravelGroupItineraryEventRepository extends JpaRepository<Trave
     void deleteByTravelGroupItineraryEventId(int travelGroupItineraryEventId);
 
     TravelGroupItineraryEvent findByTravelGroupItineraryEventId(int travelGroupItineraryEventId);
-}
+
+    }

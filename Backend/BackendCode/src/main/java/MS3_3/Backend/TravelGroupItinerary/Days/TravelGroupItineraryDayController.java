@@ -11,50 +11,50 @@ import java.util.List;
 
 @RestController
 public class TravelGroupItineraryDayController {
-    @Autowired
-    TravelGroupItineraryDayRepository travelGroupItineraryDayRepository;
+    //@Autowired
+    //TravelGroupItineraryDayRepository travelGroupItineraryDayRepository;
 
     @Autowired
     TravelGroupRepository travelGroupRepository;
-
+/**
     @GetMapping("/Group/Itinerary/Day/{groupId}")
     public List<TravelGroupItineraryDay> getTravelGroupItinerary(@PathVariable int groupId) {
-        return travelGroupRepository.findById(groupId).getTravelGroupItinerary().getTravelGroupItinerarySchedule().get(groupId).getDays();
+        return travelGroupRepository.findByTravelGroupId(groupId).getTravelGroupItinerary().getTravelGroupItinerarySchedule().getDays();
     }
 
     @GetMapping("/Group/Itinerary/Day/{groupId}/{dayId}")
     public TravelGroupItineraryDay getTravelGroupItineraryByDay(@PathVariable int groupId, @PathVariable int dayId) {
-        return travelGroupRepository.findById(groupId).getTravelGroupItinerary().getTravelGroupItinerarySchedule().get(groupId).getDay(dayId);
+        return travelGroupRepository.findByTravelGroupId(groupId).getTravelGroupItinerary().getTravelGroupItinerarySchedule().getDay(dayId);
     }
 
     @PutMapping("/Group/Itinerary/Day/{groupId}/{dayId}")
     public List<TravelGroupItineraryDay> updateWholeTravelGroupItineraryByDay(@PathVariable int groupId,
                                                            @RequestBody List<TravelGroupItineraryDay> travelGroupDays) {
-        travelGroupRepository.findById(groupId).getTravelGroupItinerary().getTravelGroupItinerarySchedule().get(groupId).setDays(travelGroupDays);
+        travelGroupRepository.findByTravelGroupId(groupId).getTravelGroupItinerary().getTravelGroupItinerarySchedule().setDays(travelGroupDays);
 
-        return travelGroupRepository.findById(groupId).getTravelGroupItinerary().getTravelGroupItinerarySchedule().get(groupId).getDays();
+        return travelGroupRepository.findByTravelGroupId(groupId).getTravelGroupItinerary().getTravelGroupItinerarySchedule().getDays();
     }
 
     @PutMapping("/Group/Itinerary/Day/Add/{groupId}/{dayId}")
     public List<TravelGroupItineraryDay> addTravelGroupItineraryByDay(@PathVariable int groupId,
                                                                               @RequestBody TravelGroupItineraryDay travelGroupDays) {
-        travelGroupRepository.findById(groupId).getTravelGroupItinerary().getTravelGroupItinerarySchedule().get(groupId).getDays().add(travelGroupDays);
+        travelGroupRepository.findByTravelGroupId(groupId).getTravelGroupItinerary().getTravelGroupItinerarySchedule().getDays().add(travelGroupDays);
 
-        return travelGroupRepository.findById(groupId).getTravelGroupItinerary().getTravelGroupItinerarySchedule().get(groupId).getDays();
+        return travelGroupRepository.findByTravelGroupId(groupId).getTravelGroupItinerary().getTravelGroupItinerarySchedule().getDays();
     }
 
     @PutMapping("/Group/Itinerary/Day/Delete/{groupId}/{dayId}")
     public List<TravelGroupItineraryDay> deleteTravelGroupItineraryByDay(@PathVariable int groupId,
                                                                          @PathVariable int dayId) {
-        travelGroupRepository.findById(groupId).getTravelGroupItinerary().getTravelGroupItinerarySchedule().get(groupId).getDays().remove(dayId);
+        travelGroupRepository.findByTravelGroupId(groupId).getTravelGroupItinerary().getTravelGroupItinerarySchedule().getDays().remove(dayId);
 
-        return travelGroupRepository.findById(groupId).getTravelGroupItinerary().getTravelGroupItinerarySchedule().get(groupId).getDays();
+        return travelGroupRepository.findByTravelGroupId(groupId).getTravelGroupItinerary().getTravelGroupItinerarySchedule().getDays();
     }
 
     @DeleteMapping("/Group/Itinerary/Day/{groupId}")
     public TravelGroupItinerary deleteTravelGroupItinerary(@PathVariable int groupId,@PathVariable int dayId) {
-        travelGroupRepository.findById(groupId).getTravelGroupItinerary().getTravelGroupItinerarySchedule().get(dayId).setDays(null);
-        return travelGroupRepository.findById(groupId).getTravelGroupItinerary();
+        travelGroupRepository.findByTravelGroupId(groupId).getTravelGroupItinerary().getTravelGroupItinerarySchedule().setDays(null);
+        return travelGroupRepository.findByTravelGroupId(groupId).getTravelGroupItinerary();
     }
-
+*/
 }

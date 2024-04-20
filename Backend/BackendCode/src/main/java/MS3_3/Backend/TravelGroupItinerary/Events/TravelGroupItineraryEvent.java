@@ -1,6 +1,7 @@
 package MS3_3.Backend.TravelGroupItinerary.Events;
 
-import MS3_3.Backend.TravelGroupItinerary.Days.TravelGroupItineraryDay;
+//import MS3_3.Backend.TravelGroupItinerary.Days.TravelGroupItineraryDay;
+import MS3_3.Backend.TravelGroupItinerary.Schedule.TravelGroupItinerarySchedule;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
@@ -11,30 +12,38 @@ public class TravelGroupItineraryEvent {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int travelGroupItineraryEventId;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "travelGroupItineraryDayId")
-    @JsonIgnore
-    private TravelGroupItineraryDay travelGroupDay;
+    @ManyToOne(fetch = FetchType.EAGER)
+    private TravelGroupItinerarySchedule travelGroupsSchedule;
 
+    private int dayNumber;
     private String time;
 
     private String place;
 
     private String notes;
 
-    public TravelGroupItineraryEvent(String time, String place, String notes) {
+    public TravelGroupItineraryEvent(int dayNumber, String time, String place, String notes) {
+        this.dayNumber = dayNumber;
         this.time = time;
         this.place = place;
         this.notes = notes;
     }
 
-    public TravelGroupItineraryEvent() {
+    public int getDayNumber() {
+        return dayNumber;
     }
 
+    public void setDayNumber(int dayNumber) {
+        this.dayNumber = dayNumber;
+    }
+
+    public TravelGroupItineraryEvent() {
+    }
+/**
     public TravelGroupItineraryDay getTravelGroupDay() {
         return travelGroupDay;
     }
-
+*/
     public int getId() {
         return travelGroupItineraryEventId;
     }
@@ -64,6 +73,7 @@ public class TravelGroupItineraryEvent {
     }
 
     public void setEvent(TravelGroupItineraryEvent event) {
+        this.dayNumber = dayNumber;
         this.time = event.time;
         this.notes = event.notes;
         this.place = event.place;

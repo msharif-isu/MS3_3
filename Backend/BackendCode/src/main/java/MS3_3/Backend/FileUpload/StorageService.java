@@ -37,9 +37,9 @@ public class StorageService {
                 .type(file.getContentType())
                 .imageData(ImageUtils.compressImage(file.getBytes())).build()
         );
-        travelGroupRepository.findById(groupId).setGroupImage(imageData);
+        travelGroupRepository.findByTravelGroupId(groupId).setGroupImage(imageData);
         if (imageData != null) {
-            return "file uploaded successfully to Group " + travelGroupRepository.findById(groupId).getTravelGroupName() + " : " + file.getOriginalFilename();
+            return "file uploaded successfully to Group " + travelGroupRepository.findByTravelGroupId(groupId).getTravelGroupName() + " : " + file.getOriginalFilename();
         }
         return null;
     }
@@ -51,11 +51,11 @@ public class StorageService {
                 .type(file.getContentType())
                 .imageData(ImageUtils.compressImage(file.getBytes())).build()
         );
-        TravelGroup travelGroup =  travelGroupRepository.findById(groupId);
+        TravelGroup travelGroup =  travelGroupRepository.findByTravelGroupId(groupId);
         travelGroup.setGroupImage(imageData);
         travelGroupRepository.save(travelGroup);
         if (imageData != null) {
-            return "file uploaded successfully to Group " + travelGroupRepository.findById(groupId).getTravelGroupName() + " : " + file.getOriginalFilename();
+            return "file uploaded successfully to Group " + travelGroupRepository.findByTravelGroupId(groupId).getTravelGroupName() + " : " + file.getOriginalFilename();
         }
         return null;
     }
@@ -67,7 +67,7 @@ public class StorageService {
     }
 
     public byte[] downloadImageByGroupId(int groupId){
-        Image dbImageData = travelGroupRepository.findById(groupId).getGroupImage();
+        Image dbImageData = travelGroupRepository.findByTravelGroupId(groupId).getGroupImage();
         byte[] images=ImageUtils.decompressImage(dbImageData.getImageData());
         return images;
     }
@@ -79,10 +79,10 @@ public class StorageService {
     }
 
     public String changeImageByGroupId(int groupId, Image newImage){
-        TravelGroup travelGroup =  travelGroupRepository.findById(groupId);
+        TravelGroup travelGroup =  travelGroupRepository.findByTravelGroupId(groupId);
         travelGroup.setGroupImage(newImage);
         travelGroupRepository.save(travelGroup);
-        return "file successfully deleted from Group: " + travelGroupRepository.findById(groupId).getTravelGroupName();
+        return "file successfully deleted from Group: " + travelGroupRepository.findByTravelGroupId(groupId).getTravelGroupName();
     }
 
 }
