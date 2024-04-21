@@ -80,6 +80,8 @@ public class LoadGroup extends AppCompatActivity {
      */
     protected static Group group;
 
+    protected static String groupID;
+
     /**
      * JSON object holding all of the data for the group itinerary.
      */
@@ -154,6 +156,7 @@ public class LoadGroup extends AppCompatActivity {
 
             // Set data to the various views
             assert group != null;
+            groupID = group.getTravelGroupID();
             name.setText(group.getTravelGroupName());
             description.setText(group.getTravelGroupDescription());
             String destinationText = "Traveling to: " + group.getTravelGroupDestination();
@@ -259,12 +262,14 @@ public class LoadGroup extends AppCompatActivity {
             public void onClick(View v) {
                 int days = 0;
                 try {
-                    days = groupItinerary.getJSONArray("days").length();
-                    //days = 1;
+                    days = Integer.parseInt(groupItinerary.getString("numDays"));
                     Intent intent = new Intent(getApplicationContext(), DayCard.class);
-                    intent.putExtra("NUM_OF_DAYS", days);
-                    intent.putExtra("SOURCE", "GROUP");
-                    intent.putExtra("IS_EDITABLE", !UserData.getUsertype().equals("User"));
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("NUM_OF_DAYS", days);
+                    bundle.putString("SOURCE", "GROUP");
+                    bundle.putBoolean("IS_EDITABLE", !UserData.getUsertype().equals("User"));
+                    bundle.putString("GROUPID", group.getTravelGroupID());
+                    intent.putExtras(bundle);
 
                     startActivity(intent);
                 } catch (JSONException e) {
@@ -620,13 +625,11 @@ public class LoadGroup extends AppCompatActivity {
      * Requests for this groups itinerary to display.
      */
     private void getItinerary(){
-        //final String url = "http://coms-309-035.class.las.iastate.edu:8080/Group/" + group.getTravelGroupID();
-        final String url = "https://443da8f0-75e2-4be2-8e84-834c5d63eda6.mock.pstmn.io/itinerary?id=1";
+        final String url = "http://coms-309-035.class.las.iastate.edu:8080/Group/Itinerary/" + group.getTravelGroupID();
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject jsonObject) {
                 try{
-                    //JSONObject i = jsonObject.getJSONObject("travelGroupItinerary");
                     groupItinerary = jsonObject;
                     String destination = "Destination: " + group.getTravelGroupDestination();
                     String start = "Start Date: " + jsonObject.getString("startDate");

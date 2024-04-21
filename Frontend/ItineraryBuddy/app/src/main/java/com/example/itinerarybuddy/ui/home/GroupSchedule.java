@@ -40,7 +40,7 @@ import java.util.Objects;
 public class GroupSchedule extends AppCompatActivity {
 
     private boolean isEditable;
-    private String tripCode;
+    private String groupID;
     private boolean isFirstClick = true;
     private ScheduleAdapter adapter;
 
@@ -53,8 +53,6 @@ public class GroupSchedule extends AppCompatActivity {
      * Extracts the day as an int.
      */
     private int dayInt;
-
-    private static JSONArray days;
 
     /**
      * Called when the activity is starting. This is where most initialization should go.
@@ -72,7 +70,7 @@ public class GroupSchedule extends AppCompatActivity {
         dayInt = Integer.parseInt(Objects.requireNonNull(getIntent().getStringExtra("TITLE")).substring(4));
         dayString = getIntent().getStringExtra("TITLE");
         isEditable = getIntent().getBooleanExtra("IS_EDITABLE", false);
-        tripCode = getIntent().getStringExtra("TRIPCODE");
+        groupID = getIntent().getStringExtra("GROUPID");
 
 
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
@@ -104,7 +102,7 @@ public class GroupSchedule extends AppCompatActivity {
                 public void onClick(View v) {
                     try {
                         putSchedule();
-                    } catch (JSONException e) {
+                    } catch (JSONException | ParseException e) {
                         Log.e("JSON Exception: ", e.toString());
                     }
                 }
@@ -113,46 +111,53 @@ public class GroupSchedule extends AppCompatActivity {
 
     }
 
-    private void putSchedule() throws JSONException {
+    private void putSchedule() throws JSONException, ParseException {
         List<ScheduleItem> data = adapter.getScheduleData();
-        JSONObject schedule = new JSONObject();
-        JSONArray newData = new JSONArray();
-        for (int i = 0; i < data.size(); i++) {
-            if (data.get(i).getTime() != null && data.get(i).getPlaces() != null && data.get(i).getNotes() != null) {
+        for(ScheduleItem s: data){
+            if(s.getPlaces() != null)
+                Log.d("Data", s.getPlaces());
+        }
 
+        JSONArray events = LoadGroup.groupItinerary.getJSONArray("travelGroupItineraryEventsList");
+        for(int i = events.length() - 1; i >= 0; i--){
+            if(events.getJSONObject(i).getInt("dayNumber") == dayInt){
+                events.remove(i);
+            }
+        }
+        Log.d("Events:", events.toString());
+
+        int index = events.length() - 1;
+        for(int i = 0; i < events.length(); i++){
+            if(events.getJSONObject(i).getInt("dayNumber") > dayInt){
+                index = i;
+                break;
+            }
+        }
+
+        for(int i = 0; i < data.size(); i++){
+            if(data.get(i).getTime() != null && data.get(i).getPlaces() != null && data.get(i).getNotes() != null) {
                 JSONObject item = new JSONObject();
+                item.put("dayNumber", dayInt);
                 item.put("time", data.get(i).getTime().toString());
                 item.put("place", data.get(i).getPlaces());
-                item.put("note", data.get(i).getNotes());
+                item.put("notes", data.get(i).getNotes());
 
-                newData.put(item);
-                Log.d("Schedule Item", newData.toString());
+                events.put(item);
             }
         }
-        schedule.put("scheduleData", newData);
+        Log.d("Events:", events.toString());
 
+        JSONObject oldItinerary = LoadGroup.groupItinerary;
         JSONObject newItinerary = new JSONObject();
-        newItinerary.put("groupCode", LoadGroup.groupItinerary.get("groupCode"));
+        newItinerary.put("itineraryName", oldItinerary.getString("itineraryName"));
+        newItinerary.put("startDate", oldItinerary.getString("startDate"));
+        newItinerary.put("endDate", oldItinerary.getString("endDate"));
+        newItinerary.put("numDays", oldItinerary.getString("numDays"));
+        newItinerary.put("travelGroupItineraryEventsList", events);
+        newItinerary.put("startDate", oldItinerary.getString("startDate"));
+        Log.d("Itinerary:", newItinerary.toString());
 
-        //Add current schedule data to main json
-        JSONArray days = new JSONArray();
-        for(int i = 0; i < LoadGroup.groupItinerary.getJSONArray("days").length(); i++){
-            if(i == dayInt - 1){
-                days.put(schedule);
-            }
-            else{
-                days.put(LoadGroup.groupItinerary.getJSONArray("days").getJSONObject(i));
-            }
-        }
-        newItinerary.put("days", days);
-        newItinerary.put("itineraryName", LoadGroup.groupItinerary.get("itineraryName"));
-        newItinerary.put("startDate", LoadGroup.groupItinerary.get("startDate"));
-        newItinerary.put("endDate", LoadGroup.groupItinerary.get("endDate"));
-        newItinerary.put("numDays", LoadGroup.groupItinerary.get("itineraryName"));
-        Log.d("JSON: ", newItinerary.toString());
-
-
-        final String url = ""; //TODO
+        final String url = "http://coms-309-035.class.las.iastate.edu:8080/Group/Itinerary/" + LoadGroup.groupID; //TODO
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.PUT, url, newItinerary, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject jsonObject) {
@@ -171,67 +176,32 @@ public class GroupSchedule extends AppCompatActivity {
     }
 
     private void getSchedule(int day) throws JSONException, ParseException {
-        days = LoadGroup.groupItinerary.getJSONArray("days");
-        JSONObject scheduleDay = days.getJSONObject(day - 1);
-        JSONArray dayItems = scheduleDay.getJSONArray("scheduleData");
+        JSONArray schedule = LoadGroup.groupItinerary.getJSONArray("travelGroupItineraryEventsList");
         List<ScheduleItem> scheduleItems = new ArrayList<>();
-        for (int i = 0; i < dayItems.length(); i++) {
-            JSONObject itineraryDay = dayItems.getJSONObject(i);
+        for (int i = 0; i < schedule.length(); i++) {
+            JSONObject event = schedule.getJSONObject(i);
+            Log.d("Event:", event.toString());
+            if(event.getString("dayNumber").equals(Integer.toString(day))){
+                String timeString = event.getString("time");
+                String places = event.getString("place");
+                String notes = event.getString("notes");
 
-            String timeString = itineraryDay.getString("time");
-            String places = itineraryDay.getString("place");
-            String notes = itineraryDay.getString("note");
+                SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss", Locale.US);
+                Date parsedDate = dateFormat.parse(timeString);
+                assert parsedDate != null;
+                Time time = new Time(parsedDate.getTime());
 
-            SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss", Locale.US);
-            Date parsedDate = dateFormat.parse(timeString);
-            assert parsedDate != null;
-            Time time = new Time(parsedDate.getTime());
+                ScheduleItem scheduleItem = new ScheduleItem();
+                scheduleItem.setDay(day);
+                scheduleItem.setTime(time);
+                scheduleItem.setPlaces(places);
+                scheduleItem.setNotes(notes);
 
-            ScheduleItem scheduleItem = new ScheduleItem();
-            scheduleItem.setTime(time);
-            scheduleItem.setPlaces(places);
-            scheduleItem.setNotes(notes);
-
-            scheduleItems.add(scheduleItem);
+                scheduleItems.add(scheduleItem);
+            }
         }
 
         adapter.prependData(scheduleItems);
-
-        /*
-        {
-    "travelGroupItinerary": {
-        "groupCode": 1,
-        "days": [
-            {
-                "scheduleData": [
-                    {
-                        "time": "",
-                        "place": "",
-                        "note": ""
-                    },
-                    {
-                        "time": "",
-                        "place": "",
-                        "note": ""
-                    }
-                ]
-            },
-            {
-                "scheduleData": [
-                    {
-                        "time": "",
-                        "place": "",
-                        "note": ""
-                    }
-                ]
-            }
-        ],
-        "itineraryName": "",
-        "startDate": "",
-        "endDate": "",
-        "numDays": ""
-    }
-    */
     }
 }
 
