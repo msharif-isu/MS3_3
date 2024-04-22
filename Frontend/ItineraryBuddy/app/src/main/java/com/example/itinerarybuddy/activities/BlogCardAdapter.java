@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,9 +20,14 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.example.itinerarybuddy.R;
 import com.example.itinerarybuddy.data.BlogItem;
+import com.example.itinerarybuddy.util.CustomImageRequest;
+import com.example.itinerarybuddy.util.Singleton;
 
 
 import java.io.ByteArrayOutputStream;
@@ -145,25 +151,26 @@ public class BlogCardAdapter extends RecyclerView.Adapter<BlogCardAdapter.ViewHo
     }
 
     private void imageMethod(byte[] data, int method) {
-        // Implement your image upload logic here
-        // For example, you can make a network request to upload the image
-        // Replace the following placeholder code with your actual implementation
+        String url = "http://coms-309-035.class.las.iastate.edu:8080/Group/Image/";
 
-        // String url = "YOUR_IMAGE_UPLOAD_ENDPOINT";
-        // CustomImageRequest request = new CustomImageRequest(url, data,
-        //     new Response.Listener<NetworkResponse>() {
-        //         @Override
-        //         public void onResponse(NetworkResponse networkResponse) {
-        //             // Handle successful image upload
-        //         }
-        //     },
-        //     new Response.ErrorListener() {
-        //         @Override
-        //         public void onErrorResponse(VolleyError volleyError) {
-        //             // Handle error
-        //         }
-        //     });
-        // Singleton.getInstance(context.getApplicationContext()).addToRequestQueue(request);
+        if (method == Request.Method.PUT) {
+            CustomImageRequest request = new CustomImageRequest(url, data,
+                    new Response.Listener<NetworkResponse>() {
+                        @Override
+                        public void onResponse(NetworkResponse networkResponse) {
+                            Log.d("Upload", "Response: " + networkResponse.toString());
+                            // Optionally, handle successful image upload here
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError volleyError) {
+                            Log.e("Upload", "Error: " + volleyError.getMessage());
+                            // Optionally, handle error response here
+                        }
+                    });
+            Singleton.getInstance(context.getApplicationContext()).addRequest(request);
+        }
     }
 
     @Override

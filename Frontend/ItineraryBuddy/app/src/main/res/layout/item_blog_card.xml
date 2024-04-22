@@ -26,6 +26,7 @@
             android:src="@drawable/add_a_photo"
             android:visibility="visible" />
 
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
@@ -65,5 +66,6 @@
             android:textSize="12sp" />
 
     </LinearLayout>
+
 
 </androidx.cardview.widget.CardView>
