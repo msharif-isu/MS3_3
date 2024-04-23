@@ -47,6 +47,7 @@ public class ChatSocket {
      * There are other ways to set this. However, this approach is
      * easiest.
      */
+
     @Autowired
     public void setMessageRepository(MessageRepository repo) {
         msgRepo = repo;  // we are setting the static variable

@@ -5,10 +5,11 @@ import MS3_3.Backend.Ambassador.Ambassador;
 import MS3_3.Backend.Ambassador.AmbassadorRepository;
 import MS3_3.Backend.FileUpload.Image;
 import MS3_3.Backend.FileUpload.ImageRepository;
+import MS3_3.Backend.TravelGroupChat.MessageRepository;
 import MS3_3.Backend.UserTypes.User;
 import MS3_3.Backend.UserTypes.UserRepository;
-import MS3_3.Backend.TravelGroupChat.Message;
-import MS3_3.Backend.TravelGroupChat.MessageRepository;
+//import MS3_3.Backend.TravelGroupChat.Message;
+//import MS3_3.Backend.TravelGroupChat.MessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -52,9 +53,9 @@ public class TravelGroupController {
             User groupLeaderUserAccount = userRepository.findByUserName(group.getTravelGroupAmbassador());
             savedGroup.addNewMember(groupLeaderUserAccount);
             Image copy = new Image();
-            copy.setImageData(imageRepository.findById(38).getImageData());
-            copy.setType(imageRepository.findById(38).getType());
-            copy.setName(imageRepository.findById(38).getName());
+            copy.setImageData(imageRepository.findById(1).getImageData());
+            copy.setType(imageRepository.findById(1).getType());
+            copy.setName(imageRepository.findById(1).getName());
             imageRepository.save(copy);
             savedGroup.setGroupImage(copy);
             groupLeader.addGroup(savedGroup);
