@@ -42,6 +42,10 @@ public class GroupSchedule extends AppCompatActivity {
     private boolean isEditable;
     private String groupID;
     private boolean isFirstClick = true;
+
+    /**
+     * Adapter for the list of schedule data.
+     */
     private ScheduleAdapter adapter;
 
     /**
@@ -77,6 +81,7 @@ public class GroupSchedule extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
+        // Fill list with with 20 empty placeholder elements
         List<ScheduleItem> list = new ArrayList<>();
         for (int i = 0; i < 20; i++) {
             list.add(new ScheduleItem());
@@ -111,6 +116,9 @@ public class GroupSchedule extends AppCompatActivity {
 
     }
 
+    /**
+     * Makes a request to update the itinerary upon saving schedule changes.
+     */
     private void putSchedule() throws JSONException, ParseException {
         List<ScheduleItem> data = adapter.getScheduleData();
         for(ScheduleItem s: data){
@@ -136,13 +144,15 @@ public class GroupSchedule extends AppCompatActivity {
 
         for(int i = 0; i < data.size(); i++){
             if(data.get(i).getTime() != null && data.get(i).getPlaces() != null && data.get(i).getNotes() != null) {
-                JSONObject item = new JSONObject();
-                item.put("dayNumber", dayInt);
-                item.put("time", data.get(i).getTime().toString());
-                item.put("place", data.get(i).getPlaces());
-                item.put("notes", data.get(i).getNotes());
+                if(!data.get(i).getPlaces().isEmpty() && !data.get(i).getNotes().isEmpty()){
+                    JSONObject item = new JSONObject();
+                    item.put("dayNumber", dayInt);
+                    item.put("time", data.get(i).getTime().toString());
+                    item.put("place", data.get(i).getPlaces());
+                    item.put("notes", data.get(i).getNotes());
 
-                events.put(item);
+                    events.put(item);
+                }
             }
         }
         Log.d("Events:", events.toString());
@@ -175,6 +185,10 @@ public class GroupSchedule extends AppCompatActivity {
         Singleton.getInstance(getApplicationContext()).addRequest(request);
     }
 
+    /**
+     * Retrieves the schedule events.
+     * @param day of the trip.
+     */
     private void getSchedule(int day) throws JSONException, ParseException {
         JSONArray schedule = LoadGroup.groupItinerary.getJSONArray("travelGroupItineraryEventsList");
         List<ScheduleItem> scheduleItems = new ArrayList<>();
