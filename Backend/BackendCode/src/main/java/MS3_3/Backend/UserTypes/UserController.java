@@ -1,6 +1,6 @@
 package MS3_3.Backend.UserTypes;
 
-import MS3_3.Backend.Groups.TravelGroupRepository;
+import MS3_3.Backend.TravelGroups.TravelGroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

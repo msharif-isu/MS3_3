@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import MS3_3.Backend.Day.Day;
-import MS3_3.Backend.Groups.TravelGroup;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
