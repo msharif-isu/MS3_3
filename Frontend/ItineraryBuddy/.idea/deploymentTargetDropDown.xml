@@ -21,10 +21,16 @@
           <timeTargetWasSelectedWithDropDown value="2024-03-20T21:36:32.782733500Z" />
         </State>
       </entry>
+      <entry key="testCreateItinerary()">
+        <State />
+      </entry>
       <entry key="testGenerateUniqueTripCode()">
         <State />
       </entry>
       <entry key="testShowAddItineraryDialog()">
+        <State />
+      </entry>
+      <entry key="testShowDatePickerDialog()">
         <State />
       </entry>
     </value>
