@@ -10,6 +10,8 @@ import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
+import static org.hamcrest.Matchers.containsString;
+
 import android.widget.DatePicker;
 
 import androidx.fragment.app.testing.FragmentScenario;
@@ -56,6 +58,7 @@ public class AinaSystemTest {
         onView(withText("OK")).check(matches(isDisplayed()));
     }
 
+
     @Test
     public void testCreateItinerary() {
         // Click on the add itinerary button
@@ -88,7 +91,7 @@ public class AinaSystemTest {
         onView(withText("Continue")).perform(click());
 
         // Verify that the new itinerary is added
-        // onView(withText(containsString("Paris"))).check(matches(isDisplayed()));
+        onView(withText(containsString("Paris"))).check(matches(isDisplayed()));
     }
 
     @Test

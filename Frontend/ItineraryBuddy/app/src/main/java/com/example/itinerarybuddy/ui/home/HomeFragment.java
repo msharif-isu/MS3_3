@@ -179,16 +179,16 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
 
         // Set click listeners for date input fields to show date picker dialogs
         startDateInput.setOnClickListener(new View.OnClickListener() {
-
+            @Override
             public void onClick(View v) {
-                showDatePickerDialog(startDateInput);
+                showStartDatePickerDialog(startDateInput);
             }
         });
 
         endDateInput.setOnClickListener(new View.OnClickListener() {
-
+            @Override
             public void onClick(View v) {
-                showDatePickerDialog(endDateInput);
+                showEndDatePickerDialog(endDateInput);
             }
         });
 
@@ -244,33 +244,39 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
     }
 
 
-    /**
-     * Displays a DatePickerDialog to allow the user to select a date.
-     * The selected date is then set to the provided EditText field.
-     * Additionally, upon selecting a date, it triggers the display of an EndDatePickerDialog.
-     *
-     * @param date The EditText field where the selected date will be set.
-     */
-    private void showDatePickerDialog(final EditText date) {
+    private void showStartDatePickerDialog(final EditText startDateInput) {
         final Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-        DatePickerDialog datePickerDialog = new DatePickerDialog(requireContext(),
+        DatePickerDialog startDatePickerDialog = new DatePickerDialog(requireContext(),
                 new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                         calendar.set(year, monthOfYear, dayOfMonth);
                         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-                        date.setText(dateFormat.format(calendar.getTime()));
+                        startDateInput.setText(dateFormat.format(calendar.getTime()));
                     }
                 }, year, month, day);
 
-        datePickerDialog.show();
+        startDatePickerDialog.show();
     }
 
-    private void showEndDatePickerDialog(final Calendar startDateCalendar, final EditText endDate) {
+    private void showEndDatePickerDialog(final EditText endDateInput) {
+        // Get the text from the startDateInput EditText
+        String startDateText = startDateInput.getText().toString();
+
+        // Check if the start date is empty
+        if (startDateText.isEmpty()) {
+            // If start date is empty, show a message and return
+            Toast.makeText(requireContext(), "Please select a start date first", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Parse the start date to a Calendar object
+        Calendar startDateCalendar = parseDate(startDateText);
+
         int year = startDateCalendar.get(Calendar.YEAR);
         int month = startDateCalendar.get(Calendar.MONTH);
         int day = startDateCalendar.get(Calendar.DAY_OF_MONTH);
@@ -284,12 +290,9 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
 
                         if (endDateCalendar.before(startDateCalendar)) {
                             Toast.makeText(requireContext(), "End date cannot be before start date", Toast.LENGTH_SHORT).show();
-                            // Clear start and end date input fields
-                            startDateInput.setText("");
-                            endDateInput.setText("");
                         } else {
                             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-                            endDate.setText(dateFormat.format(endDateCalendar.getTime()));
+                            endDateInput.setText(dateFormat.format(endDateCalendar.getTime()));
                         }
                     }
                 }, year, month, day);
@@ -297,6 +300,18 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
         endDatePickerDialog.show();
     }
 
+    private Calendar parseDate(String dateString) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+        try {
+            Date date = dateFormat.parse(dateString);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            return calendar;
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     /**
      * Creates a new itinerary frame with the provided destination, trip code, start date, and end date.
@@ -525,19 +540,19 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
 
         }
 
-        startDateInput.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v){
-                showDatePickerDialog(startDateInput);
+        startDateInput.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showStartDatePickerDialog(startDateInput);
             }
         });
 
-        endDateInput.setOnClickListener(new View.OnClickListener(){
-
-            public void onClick(View v){
-                showEndDatePickerDialog(Calendar.getInstance(), endDateInput);
+        endDateInput.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showEndDatePickerDialog(endDateInput);
             }
         });
-
         builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
