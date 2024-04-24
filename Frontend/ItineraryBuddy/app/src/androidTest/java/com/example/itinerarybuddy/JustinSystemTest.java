@@ -146,6 +146,10 @@ public class JustinSystemTest {
 
         int start = ListGroups.getAdapter().getCount();
         onView(withText("Test99\nDestination: Canada")).perform(click());
+        try {
+            Thread.sleep(DELAY_MS);
+        } catch (InterruptedException e) {
+        }
         onView(withId(R.id.options_button)).perform(click());
         onView(withText("Leave Group")).perform(click());
         onView(withId(android.R.id.button1)).perform(click());
