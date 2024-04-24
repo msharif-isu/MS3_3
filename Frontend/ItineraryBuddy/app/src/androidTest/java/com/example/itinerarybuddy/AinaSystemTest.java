@@ -37,5 +37,17 @@ public class AinaSystemTest {
         onView(withText("Add Itinerary")).check(matches(isDisplayed()));
     }
 
+    @Test
+    public void testShowDatePickerDialog() {
+
+        onView(withId(R.id.addItinerary)).perform(click());
+
+        // Click on the "Start Date" input field
+        onView(withId(R.id.startDateEditText)).perform(click());
+
+        // Verify that the date picker dialog is displayed
+        onView(withText("OK")).check(matches(isDisplayed()));
+    }
+
 
 }
