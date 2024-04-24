@@ -1,0 +1,868 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HomeFragment.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=0;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">debug</a> &gt; <a href="index.source.html" class="el_package">com.example.itinerarybuddy.ui.home</a> &gt; <span class="el_source">HomeFragment.java</span></div><h1>HomeFragment.java</h1><pre class="source lang-java linenums">package com.example.itinerarybuddy.ui.home;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ListView;
+import android.widget.DatePicker;
+
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.example.itinerarybuddy.activities.DayCard;
+import com.example.itinerarybuddy.activities.ScheduleTemplate;
+import com.example.itinerarybuddy.data.Itinerary;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+
+import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.content.DialogInterface;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import java.text.ParseException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+import java.util.HashSet;
+import java.util.Set;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+import com.example.itinerarybuddy.R;
+import com.example.itinerarybuddy.data.UserData;
+import com.example.itinerarybuddy.databinding.FragmentHomeBinding;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+
+/**
+ * A simple {@link Fragment} subclass.
+ * This fragment displays home content including a list of itineraries.
+ * It also allows adding, editing, and deleting itineraries.
+ */
+<span class="fc" id="L65">public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickListener, CustomAdapter.OnDeleteClickListener {</span>
+
+    private FragmentHomeBinding binding;
+    private CustomAdapter itineraryAdapter;
+    private EditText startDateInput;
+    private EditText endDateInput;
+
+    public int numOfDays;
+
+    /**
+     * Initializes the fragment's user interface and binds the data.
+     *
+     * @param inflater           The LayoutInflater object that can be used to inflate
+     *                           any views in the fragment,
+     * @param container          If non-null, this is the parent view that the fragment's
+     *                           UI should be attached to. The fragment should not add the view itself,
+     *                           but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     *                           from a previous saved state as given here.
+     * @return Return the View for the fragment's UI, or null.
+     */
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             ViewGroup container, Bundle savedInstanceState) {
+<span class="fc" id="L88">        HomeViewModel homeViewModel =</span>
+<span class="fc" id="L89">                new ViewModelProvider(this).get(HomeViewModel.class);</span>
+
+<span class="fc" id="L91">        Itinerary.requestQueue = Volley.newRequestQueue(requireContext());</span>
+<span class="fc" id="L92">        binding = FragmentHomeBinding.inflate(inflater, container, false);</span>
+<span class="fc" id="L93">        View root = binding.getRoot();</span>
+
+<span class="fc" id="L95">        ListView list = root.findViewById(R.id.listViewItineraries);</span>
+<span class="fc" id="L96">        itineraryAdapter = new CustomAdapter(requireContext(), R.layout. list_item_layout, homeViewModel.getItineraries(), this, this);</span>
+<span class="fc" id="L97">        list.setAdapter(itineraryAdapter);</span>
+
+<span class="fc" id="L99">        GET_itinerary();</span>
+
+<span class="fc" id="L101">        list.setOnItemClickListener(new AdapterView.OnItemClickListener(){</span>
+
+            public void onItemClick(AdapterView&lt;?&gt; parent, View view, int position, long id){
+                //Get the selected itinerary
+<span class="nc" id="L105">                String selectedItinerary = itineraryAdapter.getItem(position);</span>
+
+<span class="nc" id="L107">                int days = extractNumOfDays(selectedItinerary);</span>
+<span class="nc" id="L108">                String tripCode = extractTripCode(selectedItinerary);</span>
+
+<span class="nc" id="L110">                Intent intent = new Intent(requireContext(), DayCard.class);</span>
+<span class="nc" id="L111">                Intent intent2 = new Intent(requireContext(), ScheduleTemplate.class);</span>
+
+<span class="nc" id="L113">                intent.putExtra(&quot;NUM_OF_DAYS&quot;, days);</span>
+<span class="nc" id="L114">                intent.putExtra(&quot;IS_EDITABLE&quot;, true);</span>
+<span class="nc" id="L115">                intent.putExtra(&quot;SOURCE&quot;, &quot;Personal&quot;);</span>
+<span class="nc" id="L116">                intent2.putExtra(&quot;TRIPCODE&quot;, tripCode);</span>
+
+<span class="nc" id="L118">                startActivity(intent);</span>
+<span class="nc" id="L119">            }</span>
+        });
+
+<span class="fc" id="L122">        FloatingActionButton fab = root.findViewById(R.id.addItinerary);</span>
+
+<span class="fc" id="L124">        fab.setOnClickListener(new View.OnClickListener() {</span>
+            @Override
+            public void onClick(View v) {
+<span class="nc" id="L127">                showAddItineraryDialog();</span>
+<span class="nc" id="L128">            }</span>
+        });
+
+<span class="fc" id="L131">        ImageButton toGroups = root.findViewById(R.id.group_button);</span>
+<span class="fc" id="L132">        toGroups.setOnClickListener(new View.OnClickListener() {</span>
+            @Override
+            public void onClick(View v) {
+<span class="fc" id="L135">                startActivity(new Intent(requireContext(), ListGroups.class));</span>
+<span class="fc" id="L136">            }</span>
+        });
+
+<span class="fc" id="L139">        return root;</span>
+    }
+
+
+    private String extractTripCode(String itinerary) {
+<span class="nc" id="L144">        String label = &quot;Trip Code: &quot;;</span>
+<span class="nc" id="L145">        int labelIndex = itinerary.indexOf(label);</span>
+
+<span class="nc bnc" id="L147" title="All 2 branches missed.">        if (labelIndex != -1) {</span>
+<span class="nc" id="L148">            return itinerary.substring(labelIndex + label.length()).trim();</span>
+        }
+<span class="nc" id="L150">        return null;</span>
+    }
+
+    /**
+     * Called when the fragment is no longer in use. This is called after onStop() and before onDetach().
+     * It is used to clean up any resources used by the fragment.
+     */
+    @Override
+    public void onDestroyView() {
+<span class="fc" id="L159">        super.onDestroyView();</span>
+<span class="fc" id="L160">        binding = null;</span>
+<span class="fc" id="L161">    }</span>
+
+
+    /**
+     * Displays a dialog for adding a new itinerary.
+     * The dialog prompts the user to enter destination, start date, and end date for the new itinerary.
+     * It includes input fields for each of these details and handles user interaction for adding the itinerary.
+     */
+    private void showAddItineraryDialog() {
+
+
+<span class="nc" id="L172">        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());</span>
+<span class="nc" id="L173">        builder.setTitle(&quot;Add Itinerary&quot;);</span>
+
+        //Inflate the dialog layout
+<span class="nc" id="L176">        View dialogView = getLayoutInflater().inflate(R.layout.dialog_add_itinerary, null);</span>
+<span class="nc" id="L177">        builder.setView(dialogView);</span>
+
+        //Get references to input fields in the dialog layout
+<span class="nc" id="L180">        final EditText destinationEditText = dialogView.findViewById(R.id.destinationEditText);</span>
+<span class="nc" id="L181">        startDateInput = dialogView.findViewById(R.id.startDateEditText);</span>
+<span class="nc" id="L182">        endDateInput = dialogView.findViewById(R.id.endDateEditText);</span>
+
+        // Set click listeners for date input fields to show date picker dialogs
+<span class="nc" id="L185">        startDateInput.setOnClickListener(new View.OnClickListener() {</span>
+
+            public void onClick(View v) {
+<span class="nc" id="L188">                showDatePickerDialog(startDateInput);</span>
+<span class="nc" id="L189">            }</span>
+        });
+
+<span class="nc" id="L192">        endDateInput.setOnClickListener(new View.OnClickListener() {</span>
+
+            public void onClick(View v) {
+<span class="nc" id="L195">                showDatePickerDialog(endDateInput);</span>
+<span class="nc" id="L196">            }</span>
+        });
+
+
+<span class="nc" id="L200">        builder.setPositiveButton(&quot;Continue&quot;, new DialogInterface.OnClickListener() {</span>
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                // Retrieve values entered by the user
+<span class="nc" id="L205">                String destination = destinationEditText.getText().toString();</span>
+<span class="nc" id="L206">                String tripCode = generateUniqueTripCode();</span>
+<span class="nc" id="L207">                String startDate = startDateInput.getText().toString();</span>
+<span class="nc" id="L208">                String endDate = endDateInput.getText().toString();</span>
+
+                // Create a new itinerary with the provided details
+<span class="nc" id="L211">                createNewFrame(destination, tripCode, startDate, endDate);</span>
+<span class="nc" id="L212">            }</span>
+        });
+
+<span class="nc" id="L215">        builder.setNegativeButton(&quot;Cancel&quot;, new DialogInterface.OnClickListener() {</span>
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+<span class="nc" id="L218">                dialog.cancel();</span>
+<span class="nc" id="L219">            }</span>
+        });
+
+        // Display the dialog
+<span class="nc" id="L223">        builder.show();</span>
+<span class="nc" id="L224">    }</span>
+
+
+    /**
+     * Generates a unique trip code for a new itinerary.
+     * The trip code is an 8-digit alphanumeric code that is randomly generated.
+     * It ensures uniqueness by checking if the generated code is not already present in a set of generated codes.
+     *
+     * @return A unique trip code as a string.
+     */
+    private String generateUniqueTripCode() {
+
+<span class="nc" id="L236">        Random rand = new Random(System.currentTimeMillis());</span>
+
+<span class="nc" id="L238">        Set&lt;Integer&gt; generatedNumbers = new HashSet&lt;&gt;();</span>
+
+        while (true) {
+<span class="nc" id="L241">            int randomNum = rand.nextInt(10000000);</span>
+
+<span class="nc bnc" id="L243" title="All 2 branches missed.">            if (!generatedNumbers.contains(randomNum)) {</span>
+<span class="nc" id="L244">                generatedNumbers.add(randomNum);</span>
+<span class="nc" id="L245">                return String.format(&quot;%08d&quot;, randomNum);</span>
+            }
+<span class="nc" id="L247">        }</span>
+    }
+
+
+    /**
+     * Displays a DatePickerDialog to allow the user to select a date.
+     * The selected date is then set to the provided EditText field.
+     * Additionally, upon selecting a date, it triggers the display of an EndDatePickerDialog.
+     *
+     * @param date The EditText field where the selected date will be set.
+     */
+    private void showDatePickerDialog(final EditText date) {
+
+<span class="nc" id="L260">        final Calendar calendar = Calendar.getInstance();</span>
+<span class="nc" id="L261">        int year = calendar.get(Calendar.YEAR);</span>
+<span class="nc" id="L262">        int month = calendar.get(Calendar.MONTH);</span>
+<span class="nc" id="L263">        int day = calendar.get(Calendar.DAY_OF_MONTH);</span>
+
+<span class="nc" id="L265">        DatePickerDialog datePickerDialog = new DatePickerDialog(requireContext(),</span>
+<span class="nc" id="L266">                new DatePickerDialog.OnDateSetListener() {</span>
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+<span class="nc" id="L269">                        calendar.set(year, monthOfYear, dayOfMonth);</span>
+<span class="nc" id="L270">                        SimpleDateFormat dateFormat = new SimpleDateFormat(&quot;yyyy-MM-dd&quot;, Locale.US);</span>
+<span class="nc" id="L271">                        startDateInput.setText(dateFormat.format(calendar.getTime()));</span>
+
+<span class="nc" id="L273">                        showEndDatePickerDialog(calendar, endDateInput);</span>
+<span class="nc" id="L274">                    }</span>
+                }, year, month, day);
+
+<span class="nc" id="L277">        datePickerDialog.show();</span>
+<span class="nc" id="L278">    }</span>
+
+    /**
+     * Displays a DatePickerDialog to allow the user to select an end date for the itinerary.
+     * The selected end date is then set to the provided EditText field.
+     * Additionally, it checks if the selected end date is before the provided start date,
+     * and displays a toast message if so, indicating that the end date cannot be before the start date.
+     *
+     * @param startDateCalendar The Calendar instance representing the start date of the itinerary.
+     * @param endDate The EditText field where the selected end date will be set.
+     */
+    private void showEndDatePickerDialog(final Calendar startDateCalendar, final EditText endDate) {
+
+<span class="nc" id="L291">        int year = startDateCalendar.get(Calendar.YEAR);</span>
+<span class="nc" id="L292">        int month = startDateCalendar.get(Calendar.MONTH);</span>
+<span class="nc" id="L293">        int day = startDateCalendar.get(Calendar.DAY_OF_MONTH);</span>
+
+
+<span class="nc" id="L296">        DatePickerDialog endDatePickerDialog = new DatePickerDialog(requireContext(),</span>
+<span class="nc" id="L297">                new DatePickerDialog.OnDateSetListener() {</span>
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+<span class="nc" id="L300">                        Calendar endDateCalendar = Calendar.getInstance();</span>
+<span class="nc" id="L301">                        endDateCalendar.set(year, monthOfYear, dayOfMonth);</span>
+
+
+<span class="nc bnc" id="L304" title="All 2 branches missed.">                        if (endDateCalendar.before(startDateCalendar)) {</span>
+
+<span class="nc" id="L306">                            Toast.makeText(requireContext(), &quot;End date cannot be before start date&quot;, Toast.LENGTH_SHORT).show();</span>
+                        } else {
+
+<span class="nc" id="L309">                            SimpleDateFormat dateFormat = new SimpleDateFormat(&quot;yyyy-MM-dd&quot;, Locale.US);</span>
+<span class="nc" id="L310">                            endDate.setText(dateFormat.format(endDateCalendar.getTime()));</span>
+                        }
+<span class="nc" id="L312">                    }</span>
+                }, year, month, day);
+
+<span class="nc" id="L315">        endDatePickerDialog.show();</span>
+<span class="nc" id="L316">    }</span>
+
+    /**
+     * Creates a new itinerary frame with the provided destination, trip code, start date, and end date.
+     * Calculates the number of days between the start and end dates.
+     * Constructs the itinerary information string and inserts it into the itinerary adapter.
+     * Notifies the adapter of the data set change and initiates a POST request to add the itinerary to the server.
+     *
+     * @param destination The destination of the itinerary.
+     * @param tripCode The unique trip code associated with the itinerary.
+     * @param startDate The start date of the itinerary in &quot;yyyy-MM-dd&quot; format.
+     * @param endDate The end date of the itinerary in &quot;yyyy-MM-dd&quot; format.
+     */
+    private void createNewFrame(String destination, String tripCode, String startDate, String endDate) {
+
+        // Initialize a SimpleDateFormat for parsing dates
+<span class="nc" id="L332">        SimpleDateFormat dateFormat = new SimpleDateFormat(&quot;yyyy-MM-dd&quot;);</span>
+<span class="nc" id="L333">        numOfDays = 0;</span>
+
+        try{
+
+<span class="nc" id="L337">            Date startDateObj = dateFormat.parse(startDate);</span>
+<span class="nc" id="L338">            Date endDateObj = dateFormat.parse(endDate);</span>
+
+            // Calculate the difference in milliseconds between end and start dates
+<span class="nc" id="L341">            long differenceInMilliseconds = endDateObj.getTime() - startDateObj.getTime();</span>
+
+            // Convert milliseconds to days
+<span class="nc" id="L344">            numOfDays = (int) TimeUnit.DAYS.convert(differenceInMilliseconds, TimeUnit.MILLISECONDS);</span>
+
+<span class="nc" id="L346">        }catch (ParseException e){</span>
+<span class="nc" id="L347">            e.printStackTrace();</span>
+<span class="nc" id="L348">        }</span>
+
+<span class="nc" id="L350">        String itineraryInfo =</span>
+                &quot;Destination: &quot; + destination
+                        + &quot;\nTrip Code: &quot; + tripCode
+                        + &quot;\nStart Date: &quot; + startDate
+                        + &quot;\nEnd Date: &quot; + endDate
+                        + &quot;\nNumber of Days: &quot; + numOfDays;
+
+        // Insert the itinerary information into the itinerary adapter
+<span class="nc" id="L358">        itineraryAdapter.insert(itineraryInfo, 0);</span>
+
+        // Notify the adapter of the data set change
+<span class="nc" id="L361">        itineraryAdapter.notifyDataSetChanged();</span>
+
+        // Initiate a POST request to add the itinerary to the server
+<span class="nc" id="L364">        POST_itinerary(destination, tripCode, startDate, endDate, numOfDays);</span>
+
+<span class="nc" id="L366">    }</span>
+
+    /**
+     * Sends a POST request to create a new itinerary on the server.
+     *
+     * @param destination The destination of the itinerary.
+     * @param tripCode The unique trip code associated with the itinerary.
+     * @param startDate The start date of the itinerary in &quot;yyyy-MM-dd&quot; format.
+     * @param endDate The end date of the itinerary in &quot;yyyy-MM-dd&quot; format.
+     * @param numOfDays The number of days for the itinerary.
+     */
+    private void POST_itinerary(String destination, String tripCode, String startDate, String endDate, int numOfDays){
+
+        //Make a network request using Volley
+      //  String url = &quot;http://coms-309-035.class.las.iastate.edu:8080/Itinerary/&quot; + UserData.getUsername();
+        //String url = &quot;https://5569939f-7918-4af9-937a-86edcfe9bc7f.mock.pstmn.io/Itinerary/Create&quot;;
+
+<span class="nc" id="L383">        String url = &quot;http://coms-309-035.class.las.iastate.edu:8080/Itinerary&quot;;</span>
+
+        // Create a new request queue using Volley
+<span class="nc" id="L386">        RequestQueue queue = Volley.newRequestQueue(requireContext());</span>
+
+        //Convert itinerary information to JSON format
+<span class="nc" id="L389">        String tripData = &quot;{\n&quot; +</span>
+                &quot;\&quot;destination\&quot;: \&quot;&quot; + destination + &quot;\&quot;,\n&quot; +
+                &quot;\&quot;tripCode\&quot;: \&quot;&quot; + tripCode + &quot;\&quot;,\n&quot; +
+                &quot;\&quot;start date\&quot;: \&quot;&quot; + startDate + &quot;\&quot;,\n&quot; +
+                &quot;\&quot;end date\&quot;: \&quot;&quot; + endDate + &quot;\&quot;\n&quot; +
+                &quot;\&quot;number of days\&quot;: \&quot;&quot; + numOfDays + &quot;\&quot;\n&quot; +
+                &quot;}&quot;;
+
+<span class="nc" id="L397">        Log.d(&quot;Volley Request Data: &quot;, tripData);</span>
+
+        //Declare JSONObject to hold the itinerary data
+        JSONObject itineraryData;
+
+        try {
+
+            //Create a JSONObject from the tripData
+<span class="nc" id="L405">            itineraryData = new JSONObject(tripData);</span>
+
+            //JsonObjectRequest for the POST request
+<span class="nc" id="L408">            JsonObjectRequest jsonObject = new JsonObjectRequest(Request.Method.POST, url, itineraryData, new Response.Listener&lt;JSONObject&gt;() {</span>
+                @Override
+                public void onResponse(JSONObject response) {
+<span class="nc" id="L411">                    Log.d(&quot;Volley Response: &quot;, response.toString());</span>
+<span class="nc" id="L412">                    Toast.makeText(requireContext(), &quot;Itinerary created successfully&quot;, Toast.LENGTH_SHORT).show();</span>
+<span class="nc" id="L413">                }</span>
+<span class="nc" id="L414">            }, new Response.ErrorListener() {</span>
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+<span class="nc" id="L418">                    Log.e(&quot;Volley Error POST: &quot;, error.toString());</span>
+<span class="nc" id="L419">                    Toast.makeText(requireContext(), &quot;Error creating itinerary&quot;, Toast.LENGTH_SHORT).show();</span>
+<span class="nc" id="L420">                }</span>
+            })
+<span class="nc" id="L422">            {@Override</span>
+            protected Map&lt;String, String&gt; getParams(){
+
+                // Override getParams() to provide parameters for the request body (not used for JSON request)
+<span class="nc" id="L426">                HashMap&lt;String, String&gt; map = new HashMap&lt;String, String&gt;();</span>
+<span class="nc" id="L427">                map.put(&quot;destination&quot;, destination);</span>
+<span class="nc" id="L428">                map.put(&quot;tripCode&quot;, tripCode);</span>
+<span class="nc" id="L429">                map.put(&quot;start date&quot;, startDate);</span>
+<span class="nc" id="L430">                map.put(&quot;end date&quot;, endDate);</span>
+<span class="nc" id="L431">                map.put(&quot;number of days&quot;, String.valueOf(numOfDays));</span>
+
+<span class="nc" id="L433">                return map;</span>
+            }
+                @Override
+                public Map&lt;String, String&gt; getHeaders(){
+<span class="nc" id="L437">                    HashMap&lt;String, String&gt; map = new HashMap&lt;String, String&gt;();</span>
+<span class="nc" id="L438">                    map.put(&quot;Content-Type&quot;, &quot;application/json&quot;);</span>
+<span class="nc" id="L439">                    return map;</span>
+                }
+
+
+            };
+
+            //Add the JsonObjectRequest to the request queue
+<span class="nc" id="L446">            Itinerary.requestQueue.add(jsonObject);</span>
+
+<span class="nc" id="L448">        } catch (JSONException e) {</span>
+<span class="nc" id="L449">            e.printStackTrace();</span>
+<span class="nc" id="L450">        }</span>
+
+<span class="nc" id="L452">    }</span>
+
+    /**
+     * Extracts the number of days from the given itinerary string.
+     *
+     * @param itinerary The itinerary string containing information about the itinerary.
+     * @return The number of days extracted from the itinerary string. Returns 0 if the number of days cannot be parsed.
+     */
+    private int extractNumOfDays(String itinerary){
+
+<span class="nc" id="L462">     String label = &quot;Number of Days: &quot;;</span>
+
+<span class="nc" id="L464">     int labelIndex = itinerary.indexOf(label);</span>
+
+<span class="nc bnc" id="L466" title="All 2 branches missed.">     if(labelIndex != -1){</span>
+
+<span class="nc" id="L468">         String numOfDaysString = itinerary.substring(labelIndex+label.length());</span>
+
+         try{
+
+<span class="nc" id="L472">             return Integer.parseInt(numOfDaysString.trim());</span>
+
+<span class="nc" id="L474">         }catch (NumberFormatException e){</span>
+<span class="nc" id="L475">             e.printStackTrace();</span>
+         }
+     }
+<span class="nc" id="L478">   return 0;</span>
+    }
+
+
+    /**
+     * Initializes the contents of the options menu.
+     *
+     * @param menu     The options menu in which you place your items.
+     * @param inflater The MenuInflater object that can be used to inflate the menu layout.
+     */
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
+<span class="nc" id="L490">        inflater.inflate(R.menu.itinerary_menu, menu);</span>
+<span class="nc" id="L491">        super.onCreateOptionsMenu(menu, inflater);</span>
+<span class="nc" id="L492">    }</span>
+
+
+    /**
+     * Handles the action when an item is clicked for editing.
+     *
+     * @param position The position of the item in the adapter to be edited.
+     */
+    public void onEditClicked(int position){
+
+<span class="nc" id="L502">        editItinerary(position);</span>
+<span class="nc" id="L503">    }</span>
+
+    /**
+     * Handles the action when an item is clicked for deletion.
+     *
+     * @param position The position of the item in the adapter to be deleted.
+     */
+    public void onDeleteClicked(int position){
+
+<span class="nc" id="L512">        deleteItinerary(position);</span>
+<span class="nc" id="L513">    }</span>
+
+
+    /**
+     * Displays a dialog for editing an itinerary item.
+     *
+     * @param position The position of the itinerary item to be edited in the adapter.
+     */
+    private void editItinerary(final int position){
+
+<span class="nc" id="L523">        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());</span>
+<span class="nc" id="L524">        builder.setTitle(&quot;Edit Itinerary&quot;);</span>
+
+<span class="nc" id="L526">        View dialogView = getLayoutInflater().inflate(R.layout.dialog_add_itinerary, null);</span>
+<span class="nc" id="L527">        builder.setView(dialogView);</span>
+
+<span class="nc" id="L529">        final EditText destinationEdit = dialogView.findViewById(R.id.destinationEditText);</span>
+<span class="nc" id="L530">        startDateInput = dialogView.findViewById(R.id.startDateEditText);</span>
+<span class="nc" id="L531">        endDateInput = dialogView.findViewById(R.id.endDateEditText);</span>
+
+        // Retrieve itinerary information for the selected item
+<span class="nc" id="L534">        String itineraryInfo = itineraryAdapter.getItem(position);</span>
+
+        // Populate EditText fields with existing itinerary information
+<span class="nc bnc" id="L537" title="All 2 branches missed.">        if(itineraryInfo != null){</span>
+<span class="nc" id="L538">            String[] itineraryData = itineraryInfo.split(&quot;\n&quot;);</span>
+<span class="nc" id="L539">            destinationEdit.setText(itineraryData[0].substring(&quot;Destination: &quot;.length()));</span>
+<span class="nc" id="L540">            startDateInput.setText(itineraryData[2].substring(&quot;Start Date: &quot;.length()));</span>
+<span class="nc" id="L541">            endDateInput.setText(itineraryData[3].substring(&quot;End date: &quot;.length()));</span>
+
+        }
+
+<span class="nc" id="L545">        startDateInput.setOnClickListener(new View.OnClickListener(){</span>
+            public void onClick(View v){
+<span class="nc" id="L547">                showDatePickerDialog(startDateInput);</span>
+<span class="nc" id="L548">            }</span>
+        });
+
+<span class="nc" id="L551">        endDateInput.setOnClickListener(new View.OnClickListener(){</span>
+
+            public void onClick(View v){
+<span class="nc" id="L554">                showEndDatePickerDialog(Calendar.getInstance(), endDateInput);</span>
+<span class="nc" id="L555">            }</span>
+        });
+
+<span class="nc" id="L558">        builder.setPositiveButton(&quot;Save&quot;, new DialogInterface.OnClickListener() {</span>
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+<span class="nc" id="L561">                String destination = destinationEdit.getText().toString();</span>
+<span class="nc" id="L562">                String startDate = startDateInput.getText().toString();</span>
+<span class="nc" id="L563">                String endDate = endDateInput.getText().toString();</span>
+
+                // Update the itinerary item with new information
+<span class="nc" id="L566">                updateItinerary(position, destination, startDate, endDate);</span>
+
+                // Send a PUT request to update the itinerary on the server
+<span class="nc" id="L569">                PUT_itinerary(destination, position, startDate, endDate);</span>
+
+<span class="nc" id="L571">            }</span>
+        });
+
+<span class="nc" id="L574">        builder.setNegativeButton(&quot;Cancel&quot;, new DialogInterface.OnClickListener() {</span>
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+<span class="nc" id="L577">                dialog.cancel();</span>
+<span class="nc" id="L578">            }</span>
+        });
+
+<span class="nc" id="L581">        builder.show();</span>
+<span class="nc" id="L582">    }</span>
+
+    /**
+     * Updates the itinerary item at the specified position with new information and refreshes the adapter.
+     *
+     * @param position   The position of the itinerary item to be updated in the adapter.
+     * @param destination   The updated destination for the itinerary.
+     * @param startDate     The updated start date for the itinerary.
+     * @param endDate       The updated end date for the itinerary.
+     */
+    private void updateItinerary(int position, String destination, String startDate, String endDate){
+
+<span class="nc" id="L594">        SimpleDateFormat dateFormat = new SimpleDateFormat(&quot;yyyy-MM-dd&quot;);</span>
+
+        try{
+
+<span class="nc" id="L598">            Date startDateObj = dateFormat.parse(startDate);</span>
+<span class="nc" id="L599">            Date endDateObj = dateFormat.parse(endDate);</span>
+
+<span class="nc" id="L601">            long differenceInMilliseconds = endDateObj.getTime() - startDateObj.getTime();</span>
+<span class="nc" id="L602">            numOfDays = (int) TimeUnit.DAYS.convert(differenceInMilliseconds, TimeUnit.MILLISECONDS);</span>
+
+<span class="nc" id="L604">        }catch (ParseException e){</span>
+<span class="nc" id="L605">            e.printStackTrace();</span>
+<span class="nc" id="L606">        }</span>
+
+<span class="nc" id="L608">        String updatedItineraryInfo = &quot;Destination: &quot; + destination +</span>
+<span class="nc" id="L609">                &quot;\nTrip Code: &quot; + getTripCodeFromAdapterPosition(position) +</span>
+                &quot;\nStart Date: &quot; + startDate +
+                &quot;\nEnd Date: &quot; + endDate +
+                &quot;\nNumber of Days: &quot; + numOfDays;
+
+        // Remove the old itinerary item and insert the updated one at the beginning of the list
+<span class="nc" id="L615">        itineraryAdapter.remove(itineraryAdapter.getItem(position));</span>
+<span class="nc" id="L616">        itineraryAdapter.insert(updatedItineraryInfo,0);</span>
+
+        // Notify the adapter that the data set has changed
+<span class="nc" id="L619">        itineraryAdapter.notifyDataSetChanged();</span>
+
+<span class="nc" id="L621">    }</span>
+
+    /**
+     * Retrieves the trip code from the itinerary item at the specified position in the adapter.
+     *
+     * @param position The position of the itinerary item in the adapter.
+     * @return The trip code extracted from the itinerary item.
+     */
+    private String getTripCodeFromAdapterPosition(int position){
+<span class="nc" id="L630">        String itineraryInfo = itineraryAdapter.getItem(position);</span>
+
+<span class="nc bnc" id="L632" title="All 2 branches missed.">        if(itineraryInfo != null){</span>
+
+<span class="nc" id="L634">            String[] itineraryData = itineraryInfo.split(&quot;\n&quot;);</span>
+<span class="nc" id="L635">            String tripCode = itineraryData[1].substring(&quot;Trip Code:&quot;.length());</span>
+<span class="nc" id="L636">            return tripCode;</span>
+        }
+
+<span class="nc" id="L639">        return null;</span>
+    }
+
+    /**
+     * Sends a PUT request to update the itinerary information for the specified trip identified by its position.
+     *
+     * @param destination The updated destination for the itinerary.
+     * @param position    The position of the itinerary item in the adapter, used to identify the trip.
+     * @param startDate   The updated start date for the itinerary.
+     * @param endDate     The updated end date for the itinerary.
+     */
+    private void PUT_itinerary(final String destination, final int position, final String startDate, final String endDate){
+
+        // Retrieve the trip code for the specified itinerary position
+<span class="nc" id="L653">        String tripCode = getTripCodeFromAdapterPosition(position);</span>
+        //String url = &quot;http://coms-309-035.class.las.iastate.edu:8080/Itinerary/&quot; + UserData.getUsername() + tripCode;
+        //String url = &quot;https://5569939f-7918-4af9-937a-86edcfe9bc7f.mock.pstmn.io/Itinerary/Update/&quot; + tripCode;
+
+<span class="nc" id="L657">        String url = &quot;http://coms-309-035.class.las.iastate.edu:8080/Itinerary/&quot; + tripCode;</span>
+
+        // Create a StringRequest for the PUT request
+<span class="nc" id="L660">        StringRequest updateRequest = new StringRequest(Request.Method.PUT, url,</span>
+<span class="nc" id="L661">                new Response.Listener&lt;String&gt;() {</span>
+                    @Override
+                    public void onResponse(String response) {
+<span class="nc" id="L664">                        Log.d(&quot;Update Response: &quot;, response);</span>
+<span class="nc" id="L665">                        Toast.makeText(requireContext(), &quot;Itinerary updated successfully&quot;, Toast.LENGTH_SHORT).show();</span>
+<span class="nc" id="L666">                    }</span>
+                },
+
+<span class="nc" id="L669">                new Response.ErrorListener() {</span>
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+<span class="nc" id="L672">                        Log.e(&quot;Volley Error PUT: &quot;, error.toString());</span>
+
+<span class="nc" id="L674">                        Toast.makeText(requireContext(), &quot;Error updating itinerary&quot;, Toast.LENGTH_SHORT).show();</span>
+<span class="nc" id="L675">                    }</span>
+<span class="nc" id="L676">                }){</span>
+
+            @Override
+            protected Map&lt;String, String&gt; getParams(){
+
+                // Construct parameters for the PUT request
+<span class="nc" id="L682">                Map&lt;String, String&gt; params = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L683">                params.put(&quot;destination&quot;, destination);</span>
+<span class="nc" id="L684">                params.put(&quot;start date&quot;, startDate);</span>
+<span class="nc" id="L685">                params.put(&quot;end date&quot;, endDate);</span>
+<span class="nc" id="L686">                params.put(&quot;number of days&quot;, String.valueOf(numOfDays));</span>
+<span class="nc" id="L687">                return params;</span>
+            }
+
+            @Override
+            public Map&lt;String, String&gt; getHeaders(){
+
+<span class="nc" id="L693">                Map&lt;String, String&gt; headers = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L694">                headers.put(&quot;Content-Type&quot;, &quot;application/x-www-form-urlencoded&quot;);</span>
+<span class="nc" id="L695">                return headers;</span>
+            }
+        };
+
+        // Add the PUT request to the request queue
+<span class="nc" id="L700">        Itinerary.requestQueue.add(updateRequest);</span>
+<span class="nc" id="L701">    }</span>
+
+
+    //DELETE (Delete itinerary function related)
+    /**
+     * Sends a DELETE request to delete the itinerary associated with the specified trip code.
+     *
+     * @param tripCode The trip code of the itinerary to be deleted.
+     */
+    private void DELETE_itinerary(final String tripCode) {
+
+       // String url = &quot;http://coms-309-035.class.las.iastate.edu:8080/Itinerary/&quot; + UserData.getUsername() + tripCode;
+        //String url = &quot;https://5569939f-7918-4af9-937a-86edcfe9bc7f.mock.pstmn.io/Itinerary/Delete/&quot; + tripCode;
+
+<span class="nc" id="L715">        String url = &quot;http://coms-309-035.class.las.iastate.edu:8080/Itinerary/&quot; + tripCode;</span>
+
+        // Create a StringRequest for the DELETE request
+<span class="nc" id="L718">        StringRequest deleteRequest = new StringRequest(Request.Method.DELETE, url,</span>
+<span class="nc" id="L719">                new Response.Listener&lt;String&gt;() {</span>
+                    @Override
+                    public void onResponse(String response) {
+<span class="nc" id="L722">                        Log.d(&quot;Delete Response: &quot;, response);</span>
+<span class="nc" id="L723">                        Toast.makeText(requireContext(), &quot;Itinerary deleted successfully&quot;, Toast.LENGTH_SHORT).show();</span>
+<span class="nc" id="L724">                    }</span>
+                },
+
+<span class="nc" id="L727">                new Response.ErrorListener() {</span>
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+<span class="nc" id="L730">                        Log.e(&quot;Volley Error Delete:&quot;, error.toString());</span>
+
+<span class="nc" id="L732">                        Toast.makeText(requireContext(), &quot;Error deleting itinerary&quot;, Toast.LENGTH_SHORT).show();</span>
+<span class="nc" id="L733">                    }</span>
+<span class="nc" id="L734">                }) {</span>
+
+            public Map&lt;String, String&gt; getHeaders() {
+                // Add headers if needed, e.g., authorization token
+<span class="nc" id="L738">                Map&lt;String, String&gt; headers = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L739">                headers.put(&quot;Content-Type&quot;, &quot;application/x-www-form-urlencoded&quot;);</span>
+<span class="nc" id="L740">                return headers;</span>
+            }
+        };
+
+        // Add the DELETE request to the request queue
+<span class="nc" id="L745">        Itinerary.requestQueue.add(deleteRequest);</span>
+<span class="nc" id="L746">    }</span>
+
+
+    /**
+     * Prompts the user to confirm the deletion of an itinerary at the specified position in the adapter.
+     * Deletes the itinerary if the user confirms.
+     *
+     * @param position The position of the itinerary item in the adapter to be deleted.
+     */
+    private void deleteItinerary(final int position){
+
+<span class="nc" id="L757">        AlertDialog.Builder confirmDeleteBuilder = new AlertDialog.Builder(requireContext());</span>
+<span class="nc" id="L758">        confirmDeleteBuilder.setTitle(&quot;Confirm Delete&quot;);</span>
+<span class="nc" id="L759">        confirmDeleteBuilder.setMessage(&quot;Are you sure you want to delete this itinerary?&quot;);</span>
+
+<span class="nc" id="L761">        confirmDeleteBuilder.setPositiveButton(&quot;Yes&quot;, new DialogInterface.OnClickListener() {</span>
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                // Retrieve the trip code for the specified itinerary position
+<span class="nc" id="L766">                String tripCode = getTripCodeFromAdapterPosition(position);</span>
+
+                //Remove the data from the adapter
+<span class="nc" id="L769">                itineraryAdapter.remove(itineraryAdapter.getItem(position));</span>
+<span class="nc" id="L770">                itineraryAdapter.notifyDataSetChanged();</span>
+
+                // Send a DELETE request to delete the itinerary
+<span class="nc" id="L773">                DELETE_itinerary(tripCode);</span>
+<span class="nc" id="L774">            }</span>
+        });
+
+<span class="nc" id="L777">        confirmDeleteBuilder.setNegativeButton(&quot;No&quot;, new DialogInterface.OnClickListener() {</span>
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+<span class="nc" id="L780">                dialog.dismiss();</span>
+<span class="nc" id="L781">            }</span>
+        });
+
+<span class="nc" id="L784">        confirmDeleteBuilder.show();</span>
+<span class="nc" id="L785">    }</span>
+
+    //GET (fetch itinerary information function related)
+    /**
+     * Sends a GET request to retrieve itinerary information from the server.
+     * Updates the adapter with the fetched itinerary data upon successful response.
+     */
+    public void GET_itinerary(){
+
+        //String url = &quot;http://coms-309-035.class.las.iastate.edu:8080/Itinerary/&quot; + UserData.getUsername();
+        //String url = &quot;https://5569939f-7918-4af9-937a-86edcfe9bc7f.mock.pstmn.io/Itinerary/GetInfo&quot;;
+
+<span class="fc" id="L797">        String url = &quot;http://coms-309-035.class.las.iastate.edu:8080/Itinerary&quot;;</span>
+
+        // Create a JsonArrayRequest for the GET request
+<span class="fc" id="L800">        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null,</span>
+<span class="fc" id="L801">                new Response.Listener&lt;JSONArray&gt;() {</span>
+                    @Override
+                    public void onResponse(JSONArray response) {
+
+                        //Parse the JSON array and update the adapter with itinerary information
+<span class="nc" id="L806">                        updateItineraryAdapter(response);</span>
+<span class="nc" id="L807">                    }</span>
+                },
+<span class="fc" id="L809">                new Response.ErrorListener() {</span>
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+<span class="fc" id="L813">                        Log.e(&quot;Volley Error GET: &quot;, error.toString());</span>
+
+<span class="pc bpc" id="L815" title="1 of 2 branches missed.">                        if(error.networkResponse != null){</span>
+<span class="fc" id="L816">                            Log.e(&quot;Volley Error&quot;, &quot;Status Code: &quot; + error.networkResponse.statusCode);</span>
+<span class="fc" id="L817">                            Log.e(&quot;Volley Error: &quot;, &quot;Error Response: &quot; + new String(error.networkResponse.data));</span>
+                        }
+<span class="fc" id="L819">                        Toast.makeText(requireContext(), &quot;Error fetching itinerary info&quot;, Toast.LENGTH_SHORT).show();</span>
+<span class="fc" id="L820">                    }</span>
+                });
+
+        // Add the JsonArrayRequest to the request queue
+<span class="fc" id="L824">        Itinerary.requestQueue.add(jsonArrayRequest);</span>
+<span class="fc" id="L825">    }</span>
+
+    /**
+     * Updates the adapter with itinerary data obtained from the JSON array.
+     *
+     * @param itineraryArray The JSON array containing itinerary information.
+     */
+    private void updateItineraryAdapter(JSONArray itineraryArray) {
+
+        // Clear the existing data in the adapter
+<span class="nc" id="L835">        itineraryAdapter.clear();</span>
+
+        // Iterate over the JSON array to extract itinerary information
+<span class="nc bnc" id="L838" title="All 2 branches missed.">        for (int i = 0; i &lt; itineraryArray.length(); i++) {</span>
+            try {
+<span class="nc" id="L840">                JSONObject itineraryObject = itineraryArray.getJSONObject(i);</span>
+<span class="nc" id="L841">                String destination = itineraryObject.getString(&quot;destination&quot;);</span>
+<span class="nc" id="L842">                String tripCode = itineraryObject.getString(&quot;tripCode&quot;);</span>
+<span class="nc" id="L843">                String startDate = itineraryObject.getString(&quot;start date&quot;);</span>
+<span class="nc" id="L844">                String endDate = itineraryObject.getString(&quot;end date&quot;);</span>
+<span class="nc" id="L845">                String numOfDays = itineraryObject.getString(&quot;number of days&quot;);</span>
+
+<span class="nc" id="L847">                int numDays = Integer.parseInt(numOfDays);</span>
+
+<span class="nc" id="L849">                String itineraryInfo = &quot;Destination: &quot; + destination +</span>
+                        &quot;\nTrip Code: &quot; + tripCode +
+                        &quot;\nStart Date: &quot; + startDate +
+                        &quot;\nEnd Date: &quot; + endDate +
+                        &quot;\nNumber of Days: &quot; + numDays;
+
+                // Add the itinerary information to the adapter
+<span class="nc" id="L856">                itineraryAdapter.add(itineraryInfo);</span>
+
+
+<span class="nc" id="L859">            } catch (JSONException e) {</span>
+<span class="nc" id="L860">                e.printStackTrace();</span>
+<span class="nc" id="L861">            }</span>
+        }
+
+<span class="nc" id="L864">        itineraryAdapter.notifyDataSetChanged();</span>
+<span class="nc" id="L865">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span>Generated by the Android Gradle plugin 8.3.2</div></body></html>

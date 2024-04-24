@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>WebSocketManager.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=0;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">debug</a> &gt; <a href="index.source.html" class="el_package">com.example.itinerarybuddy.activities</a> &gt; <span class="el_source">WebSocketManager.java</span></div><h1>WebSocketManager.java</h1><pre class="source lang-java linenums">package com.example.itinerarybuddy.activities;
+
+import android.util.Log;
+
+import com.example.itinerarybuddy.data.Post_Itinerary;
+
+import org.java_websocket.client.WebSocketClient;
+import org.java_websocket.handshake.ServerHandshake;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.net.URI;
+
+public class WebSocketManager {
+    private static WebSocketManager instance;
+    private MyWebSocketClient webSocketClient;
+    private WebSocketListener webSocketListener;
+
+    private WebSocketManager(){}
+
+    public static synchronized WebSocketManager getInstance(){
+<span class="nc bnc" id="L23" title="All 2 branches missed.">        if(instance == null){</span>
+<span class="nc" id="L24">            instance = new WebSocketManager();</span>
+        }
+
+<span class="nc" id="L27">        return instance;</span>
+    }
+
+    public void setWebSocketListener(WebSocketListener listener){
+<span class="nc" id="L31">        this.webSocketListener = listener;</span>
+<span class="nc" id="L32">    }</span>
+
+    public void removeWebSocketListener(){
+<span class="nc" id="L35">        this.webSocketListener = null;</span>
+<span class="nc" id="L36">    }</span>
+
+    public void connectWebSocket(String serverUrl){
+
+        try{
+<span class="nc" id="L41">            URI serverUri = URI.create(serverUrl);</span>
+<span class="nc" id="L42">            webSocketClient = new MyWebSocketClient(serverUri);</span>
+<span class="nc" id="L43">            webSocketClient.connect();</span>
+        }
+<span class="nc" id="L45">        catch (Exception e){</span>
+<span class="nc" id="L46">            Log.e(&quot;Exception &quot;, e.toString());</span>
+<span class="nc" id="L47">            e.printStackTrace();</span>
+<span class="nc" id="L48">        }</span>
+<span class="nc" id="L49">    }</span>
+
+    public void sendPost(Post_Itinerary post){
+
+<span class="nc bnc" id="L53" title="All 4 branches missed.">        if(webSocketClient != null &amp;&amp; webSocketClient.isOpen()){</span>
+
+<span class="nc" id="L55">            webSocketClient.send(toJson(post));</span>
+        }
+<span class="nc" id="L57">    }</span>
+
+    private String toJson(Post_Itinerary post) {
+        try {
+<span class="nc" id="L61">            JSONObject jsonObject = new JSONObject();</span>
+<span class="nc" id="L62">            jsonObject.put(&quot;username&quot;, post.getUsername());</span>
+<span class="nc" id="L63">            jsonObject.put(&quot;postFile&quot;, post.getPostFile());</span>
+<span class="nc" id="L64">            jsonObject.put(&quot;caption&quot;, post.getCaption());</span>
+<span class="nc" id="L65">            jsonObject.put(&quot;likeCount&quot;, post.getLikeCount());</span>
+<span class="nc" id="L66">            jsonObject.put(&quot;likeValue&quot;, post.isLiked());</span>
+<span class="nc" id="L67">            jsonObject.put(&quot;saveCount&quot;, post.getSaveCount());</span>
+<span class="nc" id="L68">            jsonObject.put(&quot;saveValue&quot;, post.isSaved());</span>
+<span class="nc" id="L69">            jsonObject.put(&quot;tripCode&quot;, post.getTripCode());</span>
+<span class="nc" id="L70">            jsonObject.put(&quot;numDays&quot;, post.getDays());</span>
+<span class="nc" id="L71">            jsonObject.put(&quot;postID&quot;, post.getPostID());</span>
+
+            // Convert comments list to JSON array
+<span class="nc" id="L74">            JSONArray commentsArray = new JSONArray();</span>
+<span class="nc bnc" id="L75" title="All 2 branches missed.">            for (Post_Itinerary.Comment comment : post.getComments()) {</span>
+<span class="nc" id="L76">                JSONObject commentObject = new JSONObject();</span>
+<span class="nc" id="L77">                commentObject.put(&quot;username&quot;, comment.getUsername());</span>
+<span class="nc" id="L78">                commentObject.put(&quot;commentText&quot;, comment.getCommentText());</span>
+<span class="nc" id="L79">                commentsArray.put(commentObject);</span>
+<span class="nc" id="L80">            }</span>
+<span class="nc" id="L81">            jsonObject.put(&quot;comments&quot;, commentsArray);</span>
+
+<span class="nc" id="L83">            return jsonObject.toString();</span>
+<span class="nc" id="L84">        } catch (JSONException e) {</span>
+<span class="nc" id="L85">            e.printStackTrace();</span>
+<span class="nc" id="L86">            return null;</span>
+        }
+    }
+
+    public void disconnectWebSocket(){
+
+<span class="nc bnc" id="L92" title="All 2 branches missed.">        if(webSocketClient != null){</span>
+<span class="nc" id="L93">            webSocketClient.close();</span>
+        }
+<span class="nc" id="L95">    }</span>
+
+    //a private inner class: MyWebSocketClient
+
+    private class MyWebSocketClient extends WebSocketClient{
+
+<span class="nc" id="L101">        private MyWebSocketClient(URI serverUri){</span>
+<span class="nc" id="L102">            super(serverUri);</span>
+<span class="nc" id="L103">        }</span>
+
+        @Override
+        public void onOpen(ServerHandshake handshakedata){
+<span class="nc" id="L107">            Log.d(&quot;WebSocket&quot;, &quot;Connected&quot;);</span>
+
+<span class="nc bnc" id="L109" title="All 2 branches missed.">            if(webSocketListener != null){</span>
+<span class="nc" id="L110">                webSocketListener.onWebSocketOpen(handshakedata);</span>
+            }
+<span class="nc" id="L112">        }</span>
+
+        @Override
+        public void onMessage(String message){
+
+<span class="nc" id="L117">            Log.d(&quot;WebSocket&quot;, &quot;Received message: &quot; + message);</span>
+<span class="nc bnc" id="L118" title="All 2 branches missed.">            if (webSocketListener != null) {</span>
+<span class="nc" id="L119">                webSocketListener.onWebSocketMessage(message);</span>
+            }
+<span class="nc" id="L121">        }</span>
+
+        @Override
+        public void onClose(int code, String reason, boolean remote){
+
+<span class="nc" id="L126">            Log.d(&quot;WebSocket&quot;, &quot;Closed&quot;);</span>
+
+<span class="nc bnc" id="L128" title="All 2 branches missed.">            if(webSocketListener != null){</span>
+<span class="nc" id="L129">                webSocketListener.onWebSocketClose(code, reason, remote);</span>
+            }
+<span class="nc" id="L131">        }</span>
+
+        @Override
+        public void onError(Exception ex){
+<span class="nc" id="L135">            Log.d(&quot;WebSocket&quot;, &quot;Error&quot;);</span>
+
+<span class="nc bnc" id="L137" title="All 2 branches missed.">            if(webSocketListener!= null){</span>
+<span class="nc" id="L138">                webSocketListener.onWebSocketError(ex);</span>
+            }
+<span class="nc" id="L140">        }</span>
+
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span>Generated by the Android Gradle plugin 8.3.2</div></body></html>

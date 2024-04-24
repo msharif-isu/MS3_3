@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GroupChatActivity.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=0;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">debug</a> &gt; <a href="index.source.html" class="el_package">com.example.itinerarybuddy.ui.home</a> &gt; <span class="el_source">GroupChatActivity.java</span></div><h1>GroupChatActivity.java</h1><pre class="source lang-java linenums">package com.example.itinerarybuddy.ui.home;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.itinerarybuddy.R;
+import com.example.itinerarybuddy.data.Group;
+import com.example.itinerarybuddy.data.UserData;
+import com.example.itinerarybuddy.databinding.FragmentGroupChatBinding;
+import com.example.itinerarybuddy.util.ChatWebSockets.ChatAdapter;
+import com.example.itinerarybuddy.util.ChatWebSockets.ChatData;
+import com.example.itinerarybuddy.util.ChatWebSockets.ChatWebsocketManager;
+import com.example.itinerarybuddy.util.ChatWebSockets.WebsocketListener;
+
+import org.java_websocket.client.WebSocketClient;
+import org.java_websocket.handshake.ServerHandshake;
+
+import java.util.ArrayList;
+import java.util.Objects;
+
+/**
+ * The activity for a group's chat.
+ */
+<span class="nc" id="L38">public class GroupChatActivity extends AppCompatActivity implements WebsocketListener {</span>
+
+    /**
+     * The binding for the view.
+     */
+    private FragmentGroupChatBinding binding;
+
+    /**
+     * Referenced group for this chat.
+     */
+    private Group group;
+
+    /**
+     * Manager for the websocket connection.
+     */
+    private ChatWebsocketManager chatWebsocket;
+
+    /**
+     * List to display each message.
+     */
+    private ListView chatList;
+
+    /**
+     * Custom adapter to generate our list of messages.
+     */
+    private ChatAdapter adapter;
+
+    /**
+     * Input to send a new message to the chat.
+     */
+    private EditText message;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+<span class="nc" id="L72">        super.onCreate(savedInstanceState);</span>
+<span class="nc" id="L73">        requestWindowFeature(Window.FEATURE_NO_TITLE);</span>
+<span class="nc" id="L74">        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);</span>
+<span class="nc" id="L75">        this.getSupportActionBar().hide();</span>
+<span class="nc" id="L76">        binding = FragmentGroupChatBinding.inflate(getLayoutInflater());</span>
+<span class="nc" id="L77">        View view = binding.getRoot();</span>
+<span class="nc" id="L78">        setContentView(view);</span>
+
+<span class="nc" id="L80">        TextView title = view.findViewById(R.id.chat_title);</span>
+<span class="nc" id="L81">        chatList = view.findViewById(R.id.chat_text);</span>
+<span class="nc" id="L82">        message = view.findViewById(R.id.message_input);</span>
+<span class="nc" id="L83">        ImageButton send = view.findViewById(R.id.send_button);</span>
+
+<span class="nc" id="L85">        group = LoadGroup.group;</span>
+
+<span class="nc bnc" id="L87" title="All 2 branches missed.">        assert group != null;</span>
+<span class="nc" id="L88">        String text = group.getTravelGroupName() + &quot; Chat&quot;;</span>
+<span class="nc" id="L89">        title.setText(text);</span>
+
+<span class="nc" id="L91">        adapter = new ChatAdapter(getApplicationContext());</span>
+<span class="nc" id="L92">        chatList.setAdapter(adapter);</span>
+<span class="nc" id="L93">        chatList.setClickable(false);</span>
+<span class="nc" id="L94">        chatList.setDivider(null);</span>
+<span class="nc" id="L95">        chatList.setDividerHeight(0);</span>
+
+<span class="nc" id="L97">        chatWebsocket = new ChatWebsocketManager(GroupChatActivity.this);</span>
+<span class="nc" id="L98">        String ws = &quot;ws://coms-309-035.class.las.iastate.edu:8080/chat/&quot; + group.getTravelGroupID() + &quot;/&quot; + UserData.getUsername();</span>
+<span class="nc" id="L99">        chatWebsocket.connect(ws);</span>
+
+<span class="nc" id="L101">        send.setOnClickListener(new View.OnClickListener() {</span>
+            @Override
+            public void onClick(View v) {
+<span class="nc" id="L104">                String text = message.getText().toString();</span>
+<span class="nc bnc" id="L105" title="All 2 branches missed.">                if (!text.isEmpty()) {</span>
+                    try {
+<span class="nc" id="L107">                        chatWebsocket.sendMessage(text);</span>
+<span class="nc" id="L108">                        message.setText(&quot;&quot;);</span>
+<span class="nc" id="L109">                    } catch (Exception e) {</span>
+<span class="nc" id="L110">                        Log.e(&quot;Message error: &quot;, e.toString());</span>
+<span class="nc" id="L111">                    }</span>
+                }
+<span class="nc" id="L113">            }</span>
+        });
+
+<span class="nc" id="L116">        ImageButton back = findViewById(R.id.back_button);</span>
+<span class="nc" id="L117">        back.setOnClickListener(new View.OnClickListener() {</span>
+            @Override
+            public void onClick(View v) {
+<span class="nc" id="L120">                chatWebsocket.disconnect();</span>
+<span class="nc" id="L121">                Intent i = new Intent(getApplicationContext(), LoadGroup.class);</span>
+<span class="nc" id="L122">                Bundle bundle = new Bundle();</span>
+<span class="nc" id="L123">                bundle.putString(&quot;POSITION&quot;, Integer.valueOf(LoadGroup.index).toString());</span>
+<span class="nc" id="L124">                i.putExtras(bundle);</span>
+<span class="nc" id="L125">                startActivity(i);</span>
+<span class="nc" id="L126">            }</span>
+        });
+<span class="nc" id="L128">    }</span>
+
+    @Override
+<span class="nc" id="L131">    public void onOpen(ServerHandshake handshake) {}</span>
+
+    @Override
+    public void onMessage(String msg) {
+<span class="nc" id="L135">        runOnUiThread(() -&gt; {</span>
+            // Split into separate messages given chat history.
+<span class="nc" id="L137">            String[] messages = msg.split(&quot;\n&quot;);</span>
+<span class="nc bnc" id="L138" title="All 2 branches missed.">            for(String s : messages){</span>
+                // Parse out the message and the sender.
+<span class="nc bnc" id="L140" title="All 2 branches missed.">                if(!s.isEmpty()){</span>
+<span class="nc bnc" id="L141" title="All 2 branches missed.">                    if(!s.contains(&quot; disconnected&quot;)){</span>
+<span class="nc" id="L142">                        String sender = s.substring(0, s.indexOf(&quot;:&quot;));</span>
+<span class="nc" id="L143">                        String message = s.substring(s.indexOf(&quot;:&quot;) + 2);</span>
+<span class="nc bnc" id="L144" title="All 2 branches missed.">                        if(sender.equals(UserData.getUsername())){</span>
+<span class="nc" id="L145">                            sender = &quot;You&quot;;</span>
+                        }
+<span class="nc" id="L147">                        adapter.add(new ChatData(message, sender));</span>
+                    }
+                }
+            }
+
+<span class="nc" id="L152">            adapter.notifyDataSetChanged();</span>
+
+            // Automatically scrolls the list down to latest message.
+<span class="nc" id="L155">            chatList.post(new Runnable() {</span>
+                @Override
+                public void run() {
+<span class="nc" id="L158">                    chatList.smoothScrollToPosition(adapter.getCount() - 1);</span>
+<span class="nc" id="L159">                }</span>
+            });
+<span class="nc" id="L161">        });</span>
+<span class="nc" id="L162">    }</span>
+
+    @Override
+<span class="nc" id="L165">    public void onClose(int code, String reason, boolean remote) {}</span>
+
+    @Override
+    public void onError(Exception ex) {
+<span class="nc" id="L169">        Toast.makeText(getApplicationContext(), &quot;There was an error with the connection!&quot;, Toast.LENGTH_LONG).show();</span>
+<span class="nc" id="L170">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span>Generated by the Android Gradle plugin 8.3.2</div></body></html>

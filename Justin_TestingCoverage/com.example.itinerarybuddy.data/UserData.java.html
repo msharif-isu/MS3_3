@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserData.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=0;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">debug</a> &gt; <a href="index.source.html" class="el_package">com.example.itinerarybuddy.data</a> &gt; <span class="el_source">UserData.java</span></div><h1>UserData.java</h1><pre class="source lang-java linenums">package com.example.itinerarybuddy.data;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import android.util.Log;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+
+import java.util.ArrayList;
+
+/** This class stores a static JSON object for the current app user. Includes getters for data. */
+<span class="nc" id="L17">public class UserData {</span>
+
+    /** JSON object to be used in the various activities. */
+    public static JSONObject userInfo;
+
+    public static RequestQueue queue;
+
+    /** Extract the username from the stored JSON. */
+    public static String getUsername(){
+<span class="fc" id="L26">        String username = null;</span>
+        try{
+<span class="fc" id="L28">           username = userInfo.getString(&quot;userName&quot;);</span>
+<span class="nc" id="L29">        } catch (JSONException e) {</span>
+<span class="nc" id="L30">            Log.e(&quot;Error: &quot;, e.toString());</span>
+<span class="fc" id="L31">        }</span>
+<span class="fc" id="L32">        return username;</span>
+    }
+
+    /** Extract the username from the stored JSON. */
+    public static String getEmail(){
+<span class="nc" id="L37">        String email = null;</span>
+        try{
+<span class="nc" id="L39">            email = userInfo.getString(&quot;email&quot;);</span>
+<span class="nc" id="L40">        } catch (JSONException e) {</span>
+<span class="nc" id="L41">            Log.e(&quot;Error: &quot;, e.toString());</span>
+<span class="nc" id="L42">        }</span>
+<span class="nc" id="L43">        return email;</span>
+    }
+
+    /** Extract the usertype from the stored JSON.
+     * &quot;user&quot;, &quot;ambassador&quot;, &quot;admin&quot;
+     */
+    public static String getUsertype(){
+<span class="fc" id="L50">        String usertype = null;</span>
+        try{
+<span class="fc" id="L52">            usertype = userInfo.getString(&quot;userType&quot;);</span>
+<span class="nc" id="L53">        } catch (JSONException e) {</span>
+<span class="nc" id="L54">            Log.e(&quot;Error: &quot;, e.toString());</span>
+<span class="fc" id="L55">        }</span>
+<span class="fc" id="L56">        return usertype;</span>
+    }
+
+    /** Extract the city from the stored JSON. */
+    public static String getCity(){
+<span class="nc" id="L61">        String city = null;</span>
+        try{
+<span class="nc" id="L63">            city = userInfo.getString(&quot;city&quot;);</span>
+<span class="nc" id="L64">        } catch (JSONException e) {</span>
+<span class="nc" id="L65">            Log.e(&quot;Error: &quot;, e.toString());</span>
+<span class="nc" id="L66">        }</span>
+<span class="nc" id="L67">        return city;</span>
+    }
+
+    /** Extract the username from the stored JSON. */
+    public static String getState(){
+<span class="nc" id="L72">        String state = null;</span>
+        try{
+<span class="nc" id="L74">            state = userInfo.getString(&quot;username&quot;);</span>
+<span class="nc" id="L75">        } catch (JSONException e) {</span>
+<span class="nc" id="L76">            Log.e(&quot;Error: &quot;, e.toString());</span>
+<span class="nc" id="L77">        }</span>
+<span class="nc" id="L78">        return state;</span>
+    }
+
+    /** Returns a list of groups the user is in. */
+    public static ArrayList&lt;String&gt; getGroupIds(){
+<span class="fc" id="L83">        ArrayList&lt;String&gt; groupIDs = new ArrayList&lt;String&gt;();</span>
+        try{
+<span class="fc" id="L85">            JSONArray array = userInfo.getJSONArray(&quot;userCodes&quot;);</span>
+<span class="fc bfc" id="L86" title="All 2 branches covered.">            for(int i = 0; i &lt; array.length(); i++){</span>
+<span class="fc" id="L87">                groupIDs.add(array.getString(i));</span>
+<span class="fc" id="L88">                Log.d(&quot;Group found: &quot;, array.getString(i));</span>
+            }
+<span class="nc" id="L90">        } catch (JSONException e) {</span>
+<span class="nc" id="L91">            Log.e(&quot;Error: &quot;, e.toString());</span>
+<span class="fc" id="L92">        }</span>
+<span class="fc" id="L93">        return groupIDs;</span>
+    }
+
+    /**
+     * Used to make a request to the server to update the current user's data by resetting the userInfo field.
+     */
+    public static void updateUserData(){
+<span class="fc" id="L100">        String url = &quot;http://coms-309-035.class.las.iastate.edu:8080/Users/&quot; + getUsername();</span>
+<span class="fc" id="L101">        JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener&lt;JSONObject&gt;() {</span>
+            @Override
+            public void onResponse(JSONObject response) {
+<span class="fc" id="L104">                Log.d(&quot;Volley Response: &quot;, response.toString());</span>
+
+<span class="fc" id="L106">                userInfo = response;</span>
+<span class="fc" id="L107">            }</span>
+<span class="fc" id="L108">        }, new Response.ErrorListener() {</span>
+            @Override
+            public void onErrorResponse(VolleyError error) {
+<span class="nc" id="L111">                Log.e(&quot;Volley Error: &quot;, error.toString());</span>
+<span class="nc" id="L112">            }</span>
+        });
+<span class="fc" id="L114">        queue.add(req);</span>
+<span class="fc" id="L115">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span>Generated by the Android Gradle plugin 8.3.2</div></body></html>
