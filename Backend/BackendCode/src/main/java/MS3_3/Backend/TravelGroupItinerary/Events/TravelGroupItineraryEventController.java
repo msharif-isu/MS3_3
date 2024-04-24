@@ -1,13 +1,10 @@
 package MS3_3.Backend.TravelGroupItinerary.Events;
 
-import MS3_3.Backend.Groups.TravelGroupRepository;
+import MS3_3.Backend.TravelGroups.TravelGroupRepository;
 //import MS3_3.Backend.TravelGroupItinerary.Days.TravelGroupItineraryDay;
 //import MS3_3.Backend.TravelGroupItinerary.Days.TravelGroupItineraryDayRepository;
-import MS3_3.Backend.TravelGroupItinerary.TravelGroupItinerary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 public class TravelGroupItineraryEventController {

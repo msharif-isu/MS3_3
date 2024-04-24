@@ -1,22 +1,19 @@
-package MS3_3.Backend.Groups;
+package MS3_3.Backend.TravelGroups;
 
 import MS3_3.Backend.AdminDashboard.AdminRepository;
 import MS3_3.Backend.Ambassador.Ambassador;
 import MS3_3.Backend.Ambassador.AmbassadorRepository;
 import MS3_3.Backend.FileUpload.Image;
 import MS3_3.Backend.FileUpload.ImageRepository;
-import MS3_3.Backend.Itinerary.Itinerary;
 import MS3_3.Backend.TravelGroupItinerary.TravelGroupItinerary;
 import MS3_3.Backend.TravelGroupItinerary.TravelGroupItineraryRepository;
 import MS3_3.Backend.UserTypes.User;
 import MS3_3.Backend.UserTypes.UserRepository;
-import MS3_3.Backend.TravelGroupChat.Message;
 import MS3_3.Backend.TravelGroupChat.MessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 public class TravelGroupController {

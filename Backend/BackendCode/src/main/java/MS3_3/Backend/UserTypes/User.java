@@ -1,6 +1,6 @@
 package MS3_3.Backend.UserTypes;
 
-import MS3_3.Backend.Groups.TravelGroup;
+import MS3_3.Backend.TravelGroups.TravelGroup;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 

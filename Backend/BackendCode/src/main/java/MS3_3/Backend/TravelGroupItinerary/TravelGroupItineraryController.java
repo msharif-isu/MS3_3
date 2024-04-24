@@ -1,15 +1,11 @@
 package MS3_3.Backend.TravelGroupItinerary;
 
-import MS3_3.Backend.Day.Day;
-import MS3_3.Backend.Groups.TravelGroup;
-import MS3_3.Backend.Groups.TravelGroupRepository;
+import MS3_3.Backend.TravelGroups.TravelGroupRepository;
 import MS3_3.Backend.TravelGroupItinerary.Events.TravelGroupItineraryEvent;
 import MS3_3.Backend.TravelGroupItinerary.Events.TravelGroupItineraryEventRepository;
-import jakarta.persistence.Access;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController

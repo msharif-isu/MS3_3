@@ -1,13 +1,12 @@
 package MS3_3.Backend.FileUpload;
 
-import MS3_3.Backend.Groups.TravelGroup;
-import MS3_3.Backend.Groups.TravelGroupRepository;
+import MS3_3.Backend.TravelGroups.TravelGroup;
+import MS3_3.Backend.TravelGroups.TravelGroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Optional;
 
 @Service
 public class StorageService {
