@@ -25,7 +25,7 @@ maven-test:
     - mvn test         # maven test
 
 auto-deploy:
-  stage: mavendeploy    # one of the stages listed above
+  stage: mavendeploy    
   tags:
     - collalti_tag      # change to your runner's tag
   script:               # script to run the deployment service you created

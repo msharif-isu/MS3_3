@@ -42,6 +42,7 @@
                 android:id="@+id/chat_button"
                 android:layout_width="50dp"
                 android:layout_height="75dp"
+                android:layout_marginRight="8dp"
                 android:background="@android:color/transparent"
                 android:contentDescription="@string/chat_button"
                 app:layout_constraintEnd_toStartOf="@+id/options_button"

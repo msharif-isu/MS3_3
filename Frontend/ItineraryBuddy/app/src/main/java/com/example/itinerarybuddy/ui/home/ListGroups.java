@@ -304,4 +304,8 @@ public class ListGroups extends AppCompatActivity {
         adapter.getItem(adapter.getCount()-1);
         list.performItemClick(list, adapter.getCount()-1, (adapter.getItemId(adapter.getCount()-1)));
     }
+
+    public static ArrayAdapter<Group> getAdapter(){
+        return adapter;
+    }
 }
