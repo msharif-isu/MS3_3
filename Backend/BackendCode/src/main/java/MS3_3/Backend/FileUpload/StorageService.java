@@ -37,9 +37,13 @@ public class StorageService {
                 .type(file.getContentType())
                 .imageData(ImageUtils.compressImage(file.getBytes())).build()
         );
+        long oldId = travelGroupRepository.findById(groupId).getGroupImage().getId();
         travelGroupRepository.findById(groupId).setGroupImage(imageData);
         if (imageData != null) {
             return "file uploaded successfully to Group " + travelGroupRepository.findById(groupId).getTravelGroupName() + " : " + file.getOriginalFilename();
+        }
+        if(oldId != 38) {
+            repository.deleteById(oldId);
         }
         return null;
     }
@@ -52,10 +56,14 @@ public class StorageService {
                 .imageData(ImageUtils.compressImage(file.getBytes())).build()
         );
         TravelGroup travelGroup =  travelGroupRepository.findById(groupId);
+        long oldId = travelGroup.getGroupImage().getId();
         travelGroup.setGroupImage(imageData);
         travelGroupRepository.save(travelGroup);
         if (imageData != null) {
             return "file uploaded successfully to Group " + travelGroupRepository.findById(groupId).getTravelGroupName() + " : " + file.getOriginalFilename();
+        }
+        if(travelGroup.getGroupImage().getId() != 38) {
+            repository.deleteById(oldId);
         }
         return null;
     }
@@ -80,8 +88,12 @@ public class StorageService {
 
     public String changeImageByGroupId(int groupId, Image newImage){
         TravelGroup travelGroup =  travelGroupRepository.findById(groupId);
+        long oldId = travelGroup.getGroupImage().getId();
         travelGroup.setGroupImage(newImage);
         travelGroupRepository.save(travelGroup);
+        if(travelGroup.getGroupImage().getId() != 38) {
+            repository.deleteById(oldId);
+        }
         return "file successfully deleted from Group: " + travelGroupRepository.findById(groupId).getTravelGroupName();
     }
 
