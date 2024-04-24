@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AdminDashboardActivity.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=0;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">debug</a> &gt; <a href="index.source.html" class="el_package">com.example.itinerarybuddy.activities</a> &gt; <span class="el_source">AdminDashboardActivity.java</span></div><h1>AdminDashboardActivity.java</h1><pre class="source lang-java linenums">package com.example.itinerarybuddy.activities;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+import androidx.appcompat.app.AppCompatActivity;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.example.itinerarybuddy.R;
+import com.example.itinerarybuddy.data.UserData;
+import com.example.itinerarybuddy.util.Singleton;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/** Control panel where an admin will be able to moderate activity. */
+<span class="nc" id="L23">public class AdminDashboardActivity extends AppCompatActivity {</span>
+
+    private EditText input1;
+
+    private EditText input2;
+
+    private EditText input3;
+
+    private EditText input4;
+
+    private EditText input5;
+
+    private EditText input6;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+<span class="nc" id="L39">        super.onCreate(savedInstanceState);</span>
+<span class="nc" id="L40">        setContentView(R.layout.admin_dashboard_activity);</span>
+
+        Button button1;
+        Button button2;
+        Button button3;
+        Button button4;
+        Button button5;
+        Button button6;
+        Button buttonReturn;
+
+<span class="nc" id="L50">        input1 = findViewById(R.id.id_input1);</span>
+<span class="nc" id="L51">        input2 = findViewById(R.id.id_input2);</span>
+<span class="nc" id="L52">        input3 = findViewById(R.id.id_input3);</span>
+<span class="nc" id="L53">        input4 = findViewById(R.id.id_input4);</span>
+<span class="nc" id="L54">        input5 = findViewById(R.id.id_input5);</span>
+<span class="nc" id="L55">        input6 = findViewById(R.id.id_input6);</span>
+<span class="nc" id="L56">        button1 = findViewById(R.id.confirm1);</span>
+<span class="nc" id="L57">        button2 = findViewById(R.id.confirm2);</span>
+<span class="nc" id="L58">        button3 = findViewById(R.id.confirm3);</span>
+<span class="nc" id="L59">        button4 = findViewById(R.id.confirm4);</span>
+<span class="nc" id="L60">        button5 = findViewById(R.id.confirm5);</span>
+<span class="nc" id="L61">        button6 = findViewById(R.id.confirm6);</span>
+<span class="nc" id="L62">        buttonReturn = findViewById(R.id.return_home);</span>
+
+<span class="nc" id="L64">        buttonReturn.setOnClickListener(new View.OnClickListener() {</span>
+            @Override
+            public void onClick(View view) {
+<span class="nc" id="L67">                startActivity(new Intent(AdminDashboardActivity.this, MainActivity.class));</span>
+<span class="nc" id="L68">            }</span>
+        });
+
+        // Revoke ambassador status
+<span class="nc" id="L72">        button1.setOnClickListener(new View.OnClickListener() {</span>
+            @Override
+            public void onClick(View view) {
+<span class="nc" id="L75">                String admin = UserData.getUsername();</span>
+<span class="nc" id="L76">                String username = input1.getText().toString();</span>
+<span class="nc" id="L77">                updateData(&quot;http://coms-309-035.class.las.iastate.edu:8080/Ambassador/Revoke/&quot; + admin + &quot;/&quot; + username, &quot;is no longer an Ambassador.&quot;);</span>
+<span class="nc" id="L78">                input1.setText(&quot;&quot;);</span>
+<span class="nc" id="L79">            }</span>
+        });
+
+        // Grant ambassador status
+<span class="nc" id="L83">        button2.setOnClickListener(new View.OnClickListener() {</span>
+            @Override
+            public void onClick(View view) {
+<span class="nc" id="L86">                String admin = UserData.getUsername();</span>
+<span class="nc" id="L87">                String username = input2.getText().toString();</span>
+<span class="nc" id="L88">                updateData(&quot;http://coms-309-035.class.las.iastate.edu:8080/Ambassador/Grant/&quot; + admin + &quot;/&quot; + username, &quot;is now an Ambassador.&quot;);</span>
+<span class="nc" id="L89">                input2.setText(&quot;&quot;);</span>
+<span class="nc" id="L90">            }</span>
+        });
+
+        // Revoke Admin status
+<span class="nc" id="L94">        button3.setOnClickListener(new View.OnClickListener() {</span>
+            @Override
+            public void onClick(View view) {
+<span class="nc" id="L97">                String username = input3.getText().toString();</span>
+<span class="nc" id="L98">                String admin = UserData.getUsername();</span>
+<span class="nc" id="L99">                updateData(&quot;http://coms-309-035.class.las.iastate.edu:8080/Admin/Revoke/&quot; + admin + &quot;/&quot; + username, &quot;is no longer an Admin.&quot;);</span>
+<span class="nc" id="L100">                input3.setText(&quot;&quot;);</span>
+<span class="nc" id="L101">            }</span>
+        });
+
+        // Grant admin status
+<span class="nc" id="L105">        button4.setOnClickListener(new View.OnClickListener() {</span>
+            @Override
+            public void onClick(View view) {
+<span class="nc" id="L108">                String admin = UserData.getUsername();</span>
+<span class="nc" id="L109">                String username = input4.getText().toString();</span>
+<span class="nc" id="L110">                updateData(&quot;http://coms-309-035.class.las.iastate.edu:8080/Admin/Grant/&quot; + admin + &quot;/&quot; + username, &quot;is now an Admin.&quot;);</span>
+<span class="nc" id="L111">                input4.setText(&quot;&quot;);</span>
+<span class="nc" id="L112">            }</span>
+        });
+
+        // Disable user posting
+<span class="nc" id="L116">        button5.setOnClickListener(new View.OnClickListener() {</span>
+            @Override
+            public void onClick(View view) {
+<span class="nc" id="L119">                String username = input5.getText().toString();</span>
+<span class="nc" id="L120">                String admin = UserData.getUsername();</span>
+<span class="nc" id="L121">                updateData(&quot;http://coms-309-035.class.las.iastate.edu:8080/Admin/DisablePosting/&quot;+ admin + &quot;/&quot; + username, &quot;can no longer post.&quot;);</span>
+<span class="nc" id="L122">                input5.setText(&quot;&quot;);</span>
+<span class="nc" id="L123">            }</span>
+        });
+
+        // Enable user posting
+<span class="nc" id="L127">        button6.setOnClickListener(new View.OnClickListener() {</span>
+            @Override
+            public void onClick(View view) {
+<span class="nc" id="L130">                String username = input6.getText().toString();</span>
+<span class="nc" id="L131">                String admin = UserData.getUsername();</span>
+<span class="nc" id="L132">                updateData(&quot;http://coms-309-035.class.las.iastate.edu:8080/Admin/EnablePosting/&quot;+ admin + &quot;/&quot; + username, &quot;can now post.&quot;);</span>
+<span class="nc" id="L133">                input6.setText(&quot;&quot;);</span>
+<span class="nc" id="L134">            }</span>
+        });
+<span class="nc" id="L136">    }</span>
+
+    /** Update the users data given the admin dashboard commands. */
+    private void updateData(String url, String change) {
+<span class="nc" id="L140">        JsonObjectRequest req = new JsonObjectRequest(Request.Method.PUT, url, null, new Response.Listener&lt;JSONObject&gt;() {</span>
+            @Override
+            public void onResponse(JSONObject response) {
+<span class="nc" id="L143">                Log.d(&quot;Volley: &quot;, response.toString());</span>
+                try {
+<span class="nc" id="L145">                    String user = response.getString(&quot;userName&quot;);</span>
+<span class="nc" id="L146">                    Toast.makeText(getApplicationContext(), user + &quot; &quot; + change, Toast.LENGTH_LONG).show();</span>
+<span class="nc" id="L147">                } catch (JSONException e) {</span>
+<span class="nc" id="L148">                    throw new RuntimeException(e);</span>
+<span class="nc" id="L149">                }</span>
+<span class="nc" id="L150">            }</span>
+<span class="nc" id="L151">        }, new Response.ErrorListener() {</span>
+            @Override
+            public void onErrorResponse(VolleyError error) {
+<span class="nc" id="L154">                Log.d(&quot;Volley: &quot;, error.toString());</span>
+<span class="nc" id="L155">                Toast.makeText(getApplicationContext(), &quot;Failed to update user!&quot;, Toast.LENGTH_LONG).show();</span>
+<span class="nc" id="L156">            }</span>
+        });
+<span class="nc" id="L158">        Singleton.getInstance(getApplicationContext()).addRequest(req);</span>
+<span class="nc" id="L159">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span>Generated by the Android Gradle plugin 8.3.2</div></body></html>

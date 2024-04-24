@@ -1,0 +1,757 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DashboardFragment.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=0;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">debug</a> &gt; <a href="index.source.html" class="el_package">com.example.itinerarybuddy.ui.dashboard</a> &gt; <span class="el_source">DashboardFragment.java</span></div><h1>DashboardFragment.java</h1><pre class="source lang-java linenums">package com.example.itinerarybuddy.ui.dashboard;
+
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Spinner;
+import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.example.itinerarybuddy.R;
+import com.example.itinerarybuddy.activities.SavedPost;
+import com.example.itinerarybuddy.activities.WebSocketListener;
+import com.example.itinerarybuddy.activities.WebSocketManager;
+import com.example.itinerarybuddy.data.Itinerary;
+import com.example.itinerarybuddy.data.Post_Itinerary;
+import com.example.itinerarybuddy.data.Spinner_ItineraryInfo;
+import com.example.itinerarybuddy.data.UserData;
+import com.example.itinerarybuddy.databinding.FragmentDashboardBinding;
+import com.example.itinerarybuddy.util.Singleton;
+
+import org.java_websocket.handshake.ServerHandshake;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+
+import android.os.Handler;
+import android.os.Looper;
+import android.text.format.DateUtils;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
+
+
+<span class="nc" id="L64">public class DashboardFragment extends Fragment implements WebSocketListener, OnItemClickListener {</span>
+
+    private WebSocketManager webSocketManager;
+    private FragmentDashboardBinding binding;
+    private RecyclerView recyclerView;
+    private PostAdapter postAdapter;
+<span class="nc" id="L70">    private List&lt;Spinner_ItineraryInfo&gt; itineraryInfos = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L71">    private List&lt;Post_Itinerary&gt; posts = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L72">    private String BASE_URL = &quot;ws://localhost:8080/post/&quot;;</span>
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             ViewGroup container, Bundle savedInstanceState) {
+<span class="nc" id="L76">        DashboardViewModel dashboardViewModel =</span>
+<span class="nc" id="L77">                new ViewModelProvider(this).get(DashboardViewModel.class);</span>
+
+<span class="nc" id="L79">        View root = inflater.inflate(R.layout.fragment_dashboard, container, false);</span>
+
+<span class="nc" id="L81">        recyclerView = root.findViewById(R.id.recyclerViewPost);</span>
+<span class="nc" id="L82">        LinearLayoutManager layoutManager = new LinearLayoutManager(requireContext());</span>
+<span class="nc" id="L83">        recyclerView.setLayoutManager(layoutManager);</span>
+
+<span class="nc" id="L85">        postAdapter = new PostAdapter(posts, requireContext(), this);</span>
+<span class="nc" id="L86">        recyclerView.setAdapter(postAdapter);</span>
+
+<span class="nc" id="L88">        connectWebSocket();</span>
+
+<span class="nc" id="L90">        WebSocketManager.getInstance().setWebSocketListener(this);</span>
+
+<span class="nc" id="L92">        ImageView postButton = root.findViewById(R.id.postContent);</span>
+<span class="nc" id="L93">        postButton.setOnClickListener(new View.OnClickListener() {</span>
+            @Override
+            public void onClick(View v) {
+<span class="nc" id="L96">                showPostDialog();</span>
+<span class="nc" id="L97">            }</span>
+        });
+
+<span class="nc" id="L100">        ImageView savedContent = root.findViewById(R.id.savedContent);</span>
+
+<span class="nc" id="L102">        savedContent.setOnClickListener(new View.OnClickListener() {</span>
+            @Override
+            public void onClick(View v) {
+
+<span class="nc" id="L106">                Intent intent = new Intent(requireContext(), SavedPost.class);</span>
+<span class="nc" id="L107">                startActivity(intent);</span>
+<span class="nc" id="L108">            }</span>
+        });
+
+       // GET_previousPosts();
+<span class="nc" id="L112">        GET_fetch_Destinations_TripCode();</span>
+<span class="nc" id="L113">        loadPosts();</span>
+
+<span class="nc" id="L115">        return root;</span>
+    }
+
+    /**
+     * Generates a unique post ID consisting of 3 random letters followed by 4 random numbers.
+     *
+     * @return A string representing the generated post ID.
+     */
+    public static String generatePostID(){
+
+<span class="nc" id="L125">        String letters = &quot;ABCDEFGHIJKLMNOPQRSTUVWXYZ&quot;;</span>
+<span class="nc" id="L126">        String numbers = &quot;0123456789&quot;;</span>
+
+<span class="nc" id="L128">        Random random = new Random();</span>
+
+<span class="nc" id="L130">        StringBuilder postIDBuilder = new StringBuilder();</span>
+
+        //Generate 3 random letters
+<span class="nc bnc" id="L133" title="All 2 branches missed.">        for(int i = 0; i &lt; 3; i++){</span>
+<span class="nc" id="L134">            postIDBuilder.append(letters.charAt(random.nextInt(letters.length())));</span>
+        }
+
+<span class="nc bnc" id="L137" title="All 2 branches missed.">        for(int i = 0; i &lt; 4; i++){</span>
+<span class="nc" id="L138">            postIDBuilder.append(numbers.charAt(random.nextInt(numbers.length())));</span>
+        }
+
+<span class="nc" id="L141">        return postIDBuilder.toString();</span>
+    }
+
+    /**
+     * Connects to the WebSocket server using the BASE_URL and a specific username.
+     * Adjust the server URL based on your requirements.
+     */
+    private void connectWebSocket() {
+
+       // String serverUrl = BASE_URL + UserData.getUsername();
+<span class="nc" id="L151">        String serverUrl = BASE_URL + &quot;Aina&quot;; // Adjust this based on your requirements</span>
+<span class="nc" id="L152">        WebSocketManager.getInstance().connectWebSocket(serverUrl);</span>
+<span class="nc" id="L153">    }</span>
+
+
+    /**
+     * Parses a Post_Itinerary object from a WebSocket message.
+     *
+     * @param message The WebSocket message to parse.
+     * @return A Post_Itinerary object parsed from the message, or null if parsing fails.
+     */
+    private Post_Itinerary parsePostFromMessage(String message) {
+        // Parse the message and construct a Post_Itinerary object
+        // This will depend on the format of the message sent by your server
+        // Replace this with actual parsing logic based on your server's message format
+        try {
+<span class="nc" id="L167">            JSONObject jsonObject = new JSONObject(message);</span>
+<span class="nc" id="L168">            String username = jsonObject.getString(&quot;username&quot;);</span>
+<span class="nc" id="L169">            String postFile = jsonObject.getString(&quot;postFile&quot;);</span>
+<span class="nc" id="L170">            String caption = jsonObject.getString(&quot;caption&quot;);</span>
+<span class="nc" id="L171">            int likeCount = jsonObject.getInt(&quot;likeCount&quot;);</span>
+            //boolean likeValue = jsonObject.getBoolean(&quot;likeValue&quot;);
+<span class="nc" id="L173">            int saveCount = jsonObject.getInt(&quot;saveCount&quot;);</span>
+            //boolean saveValue = jsonObject.getBoolean(&quot;saveValue&quot;);
+<span class="nc" id="L175">            String tripCode = jsonObject.getString(&quot;tripCode&quot;);</span>
+<span class="nc" id="L176">            int numDays = jsonObject.getInt(&quot;numDays&quot;);</span>
+<span class="nc" id="L177">            String postID = jsonObject.getString(&quot;postID&quot;);</span>
+
+            // Parse comments array
+<span class="nc" id="L180">            JSONArray commentsArray = jsonObject.getJSONArray(&quot;comments&quot;);</span>
+<span class="nc" id="L181">            ArrayList&lt;Post_Itinerary.Comment&gt; comments = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L182" title="All 2 branches missed.">            for (int i = 0; i &lt; commentsArray.length(); i++) {</span>
+<span class="nc" id="L183">                JSONObject commentObject = commentsArray.getJSONObject(i);</span>
+<span class="nc" id="L184">                String commenterUsername = commentObject.getString(&quot;username&quot;);</span>
+<span class="nc" id="L185">                String commentText = commentObject.getString(&quot;commentText&quot;);</span>
+<span class="nc" id="L186">                comments.add(new Post_Itinerary.Comment(commenterUsername, commentText));</span>
+            }
+
+            // Create and return a new Post_Itinerary object
+<span class="nc" id="L190">            Post_Itinerary returning_post =  new Post_Itinerary(username, postFile, tripCode, numDays, caption, postID);</span>
+
+<span class="nc" id="L192">            returning_post.setLikeCount(likeCount);</span>
+<span class="nc" id="L193">            returning_post.setSaveCount(saveCount);</span>
+
+<span class="nc" id="L195">            return returning_post;</span>
+
+<span class="nc" id="L197">        } catch (JSONException e) {</span>
+<span class="nc" id="L198">            e.printStackTrace();</span>
+<span class="nc" id="L199">            return null;</span>
+        }
+    }
+
+
+    /**
+     * Shows a dialog for posting an itinerary.
+     */
+    public void showPostDialog() {
+<span class="nc" id="L208">        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());</span>
+<span class="nc" id="L209">        builder.setTitle(&quot;Post Itinerary&quot;);</span>
+
+        // Inflate the dialog layout
+<span class="nc" id="L212">        View dialogView = getLayoutInflater().inflate(R.layout.dialog_post_itinerary, null);</span>
+<span class="nc" id="L213">        builder.setView(dialogView);</span>
+
+<span class="nc" id="L215">        EditText captionEditText = dialogView.findViewById(R.id.captionEditText);</span>
+
+        // Find the itinerarySpinner in the dialog view
+<span class="nc" id="L218">        Spinner itinerarySpinner = dialogView.findViewById(R.id.itinerarySpinner);</span>
+
+<span class="nc bnc" id="L220" title="All 2 branches missed.">        if (itinerarySpinner != null) {</span>
+
+<span class="nc bnc" id="L222" title="All 2 branches missed.">            if (itineraryInfos.size() &lt; 1) {</span>
+                // If no itineraries, set a hint message
+<span class="nc" id="L224">                ArrayAdapter&lt;String&gt; adapter = new ArrayAdapter&lt;&gt;(requireContext(), android.R.layout.simple_spinner_item, new String[]{&quot;No Personal Itinerary to be Posted&quot;});</span>
+<span class="nc" id="L225">                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);</span>
+<span class="nc" id="L226">                itinerarySpinner.setAdapter(adapter);</span>
+<span class="nc" id="L227">                itinerarySpinner.setEnabled(false); // Disable the spinner</span>
+<span class="nc" id="L228">            } else {</span>
+
+                // If there are itineraries, populate the spinner with destinations
+<span class="nc" id="L231">                ItineraryInfoAdapter adapter = new ItineraryInfoAdapter(requireContext(), itineraryInfos);</span>
+<span class="nc" id="L232">                itinerarySpinner.setAdapter(adapter);</span>
+<span class="nc" id="L233">                itinerarySpinner.setEnabled(true); // Enable the spinner</span>
+<span class="nc" id="L234">            }</span>
+        } else {
+<span class="nc" id="L236">            Log.e(&quot;DashboardFragment&quot;, &quot;itinerarySpinner is null&quot;);</span>
+        }
+
+<span class="nc" id="L239">        builder.setPositiveButton(&quot;Post&quot;, new DialogInterface.OnClickListener() {</span>
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+<span class="nc bnc" id="L243" title="All 2 branches missed.">                if (itinerarySpinner != null) {</span>
+<span class="nc" id="L244">                    String selectedItinerary = itinerarySpinner.getSelectedItem().toString();</span>
+
+                    // Split selected itinerary to extract destination and trip code
+<span class="nc" id="L247">                    String[] itineraryParts = selectedItinerary.split(&quot;,&quot;);</span>
+<span class="nc bnc" id="L248" title="All 2 branches missed.">                    if (itineraryParts.length != 2) {</span>
+<span class="nc" id="L249">                        Log.e(&quot;DashboardFragment&quot;, &quot;Invalid selected itinerary format: &quot; + selectedItinerary);</span>
+<span class="nc" id="L250">                        return;</span>
+                    }
+<span class="nc" id="L252">                    String destination = itineraryParts[0].trim();</span>
+<span class="nc" id="L253">                    String tripCode = itineraryParts[1].trim();</span>
+
+<span class="nc" id="L255">                    String caption = captionEditText.getText().toString();</span>
+
+                    // Retrieve the trip code and number of days corresponding to the selected itinerary
+<span class="nc" id="L258">                    String choosen_tripCode = &quot;&quot;;</span>
+<span class="nc" id="L259">                    int choosen_numDays = 0;</span>
+
+<span class="nc bnc" id="L261" title="All 2 branches missed.">                    for (Spinner_ItineraryInfo itineraryInfo : itineraryInfos) {</span>
+<span class="nc bnc" id="L262" title="All 4 branches missed.">                        if (itineraryInfo.getDestination().equals(destination) &amp;&amp; itineraryInfo.getTripCode().equals(tripCode)) {</span>
+<span class="nc" id="L263">                            choosen_tripCode = itineraryInfo.getTripCode();</span>
+<span class="nc" id="L264">                            choosen_numDays = itineraryInfo.getNumDays();</span>
+<span class="nc" id="L265">                            break;</span>
+                        }
+<span class="nc" id="L267">                    }</span>
+
+<span class="nc bnc" id="L269" title="All 2 branches missed.">                    if (caption.split(&quot;\\s+&quot;).length &gt; 50) {</span>
+<span class="nc" id="L270">                        Toast.makeText(requireContext(), &quot;Caption should be less than 50 words&quot;, Toast.LENGTH_SHORT).show();</span>
+<span class="nc" id="L271">                        return;</span>
+                    }
+
+<span class="nc" id="L274">                    String postID = generatePostID();</span>
+
+                    //Post_Itinerary newPost = new Post_Itinerary(UserData.getUsername(),&quot;Just Now&quot;, selectedItinerary,caption );
+<span class="nc" id="L277">                    Post_Itinerary newPost = new Post_Itinerary(&quot;Aina&quot;, destination, choosen_tripCode, choosen_numDays, caption, postID);</span>
+
+<span class="nc" id="L279">                    POST_newPost(newPost);</span>
+<span class="nc" id="L280">                    WebSocketManager.getInstance().sendPost(newPost);</span>
+
+<span class="nc" id="L282">                    posts.add(0, newPost);</span>
+<span class="nc" id="L283">                    postAdapter.notifyItemInserted(0);</span>
+
+<span class="nc" id="L285">                } else {</span>
+<span class="nc" id="L286">                    Log.e(&quot;DashboardFragment&quot;, &quot;itinerarySpinner is null&quot;);</span>
+                }
+<span class="nc" id="L288">            }</span>
+        });
+
+<span class="nc" id="L291">        builder.setNegativeButton(&quot;Cancel&quot;, new DialogInterface.OnClickListener() {</span>
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+<span class="nc" id="L294">                dialog.cancel();</span>
+<span class="nc" id="L295">            }</span>
+        });
+
+
+<span class="nc" id="L299">        builder.show();</span>
+
+<span class="nc" id="L301">    }</span>
+
+    /**
+     * Posts a new itinerary to the server.
+     *
+     * @param post The Post_Itinerary object representing the itinerary to be posted.
+     */
+    private void POST_newPost(Post_Itinerary post){
+
+        //String url = &quot;http://coms-309-035.class.las.iastate.edu:8080/Itinerary/Share&quot; + username;
+        //String url = &quot;https://1064bd8c-7f0f-4802-94f1-71b8b5568975.mock.pstmn.io/Itinerary/Share&quot;;
+
+<span class="nc" id="L313">        String url = &quot;http://coms-309-035.class.las.iastate.edu:8080/Itinerary/Share&quot;;</span>
+
+        // Create a new JSONObject to hold the post data
+<span class="nc" id="L316">        JSONObject postData = new JSONObject();</span>
+        try {
+<span class="nc" id="L318">            postData.put(&quot;username&quot;, post.getUsername());</span>
+<span class="nc" id="L319">            postData.put(&quot;postFile&quot;, post.getPostFile());</span>
+<span class="nc" id="L320">            postData.put(&quot;postID&quot;, post.getPostID());</span>
+<span class="nc" id="L321">            postData.put(&quot;tripCode&quot;, post.getTripCode());</span>
+<span class="nc" id="L322">            postData.put(&quot;number of days&quot;, post.getDays());</span>
+<span class="nc" id="L323">            postData.put(&quot;caption&quot;, post.getCaption());</span>
+<span class="nc" id="L324">            postData.put(&quot;likeCount&quot;, post.getLikeCount());</span>
+<span class="nc" id="L325">            postData.put(&quot;saveCount&quot;, post.getSaveCount());</span>
+
+            // Convert comments list to JSON array
+<span class="nc" id="L328">            JSONArray commentsArray = new JSONArray();</span>
+<span class="nc bnc" id="L329" title="All 2 branches missed.">            for (Post_Itinerary.Comment comment : post.getComments()) {</span>
+<span class="nc" id="L330">                JSONObject commentObject = new JSONObject();</span>
+<span class="nc" id="L331">                commentObject.put(&quot;username&quot;, comment.getUsername());</span>
+<span class="nc" id="L332">                commentObject.put(&quot;commentText&quot;, comment.getCommentText());</span>
+<span class="nc" id="L333">                commentsArray.put(commentObject);</span>
+<span class="nc" id="L334">            }</span>
+<span class="nc" id="L335">            postData.put(&quot;comments&quot;, commentsArray);</span>
+<span class="nc" id="L336">        } catch (JSONException e) {</span>
+<span class="nc" id="L337">            e.printStackTrace();</span>
+<span class="nc" id="L338">        }</span>
+
+<span class="nc" id="L340">        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, postData,</span>
+<span class="nc" id="L341">                new Response.Listener&lt;JSONObject&gt;() {</span>
+                    @Override
+                    public void onResponse(JSONObject response) {
+<span class="nc" id="L344">                        Log.d(&quot;Volley Response: &quot;, response.toString());</span>
+<span class="nc" id="L345">                        Toast.makeText(requireContext(), &quot;Posted!&quot;, Toast.LENGTH_SHORT).show();</span>
+<span class="nc" id="L346">                    }</span>
+                },
+<span class="nc" id="L348">                new Response.ErrorListener() {</span>
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+<span class="nc" id="L351">                        Log.e(&quot;Volley Error POST: &quot;, error.toString());</span>
+<span class="nc" id="L352">                        Toast.makeText(requireContext(), &quot;Error posting itinerary&quot;, Toast.LENGTH_SHORT).show();</span>
+<span class="nc" id="L353">                    }</span>
+                });
+
+        // Add the request to the RequestQueue
+<span class="nc" id="L357">        Singleton.getInstance(requireContext()).addRequest(jsonObjectRequest);</span>
+<span class="nc" id="L358">    }</span>
+
+    /**
+     * Fetches previous posts from the server.
+     */
+    private void GET_previousPosts() {
+        // URL for fetching previous posts
+
+        //String url = &quot;http://coms-309-035.class.las.iastate.edu:8080/Itinerary/Share&quot; + username;
+        //String url = &quot;https://1064bd8c-7f0f-4802-94f1-71b8b5568975.mock.pstmn.io/Itinerary/Share&quot;;
+
+<span class="nc" id="L369">        String url = &quot;http://coms-309-035.class.las.iastate.edu:8080/Itinerary/Share&quot;;</span>
+
+        // RequestQueue for handling Volley requests
+<span class="nc" id="L372">        RequestQueue queue = Volley.newRequestQueue(requireContext());</span>
+
+        // Create a GET request
+<span class="nc" id="L375">        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,</span>
+<span class="nc" id="L376">                new Response.Listener&lt;JSONObject&gt;() {</span>
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        // Handle successful response
+                        try {
+<span class="nc" id="L381">                            JSONArray postsArray = response.getJSONArray(&quot;posts&quot;);</span>
+                            // Iterate through the array of posts
+<span class="nc bnc" id="L383" title="All 2 branches missed.">                            for (int i = 0; i &lt; postsArray.length(); i++) {</span>
+<span class="nc" id="L384">                                JSONObject postObject = postsArray.getJSONObject(i);</span>
+                                // Parse each post from the JSON object
+<span class="nc" id="L386">                                Post_Itinerary post = parsePostFromJson(postObject);</span>
+                                // Add the parsed post to your list of posts
+<span class="nc" id="L388">                                posts.add(post);</span>
+                            }
+                            // Notify the adapter of data change
+<span class="nc" id="L391">                            postAdapter.notifyDataSetChanged();</span>
+<span class="nc" id="L392">                        } catch (JSONException e) {</span>
+<span class="nc" id="L393">                            e.printStackTrace();</span>
+<span class="nc" id="L394">                            Toast.makeText(requireContext(), &quot;Error parsing JSON response&quot;, Toast.LENGTH_SHORT).show();</span>
+<span class="nc" id="L395">                        }</span>
+<span class="nc" id="L396">                    }</span>
+<span class="nc" id="L397">                }, new Response.ErrorListener() {</span>
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                // Handle errors in the response
+<span class="nc" id="L401">                Log.e(&quot;Volley Error GET: &quot;, error.toString());</span>
+<span class="nc" id="L402">                Toast.makeText(requireContext(), &quot;Error fetching previous posts&quot;, Toast.LENGTH_SHORT).show();</span>
+<span class="nc" id="L403">            }</span>
+        });
+
+        // Add the request to the RequestQueue
+<span class="nc" id="L407">        queue.add(jsonObjectRequest);</span>
+<span class="nc" id="L408">    }</span>
+
+    /**
+     * Parses a Post_Itinerary object from a JSON object.
+     *
+     * @param jsonObject The JSON object representing the post.
+     * @return A Post_Itinerary object parsed from the JSON object, or null if parsing fails.
+     */
+    private Post_Itinerary parsePostFromJson(JSONObject jsonObject) {
+        try {
+<span class="nc" id="L418">            String username = jsonObject.getString(&quot;username&quot;);</span>
+<span class="nc" id="L419">            String postFile = jsonObject.getString(&quot;postFile&quot;);</span>
+<span class="nc" id="L420">            String postID = jsonObject.getString(&quot;postID&quot;);</span>
+<span class="nc" id="L421">            String tripCode = jsonObject.getString(&quot;tripCode&quot;);</span>
+<span class="nc" id="L422">            int numOfDays = jsonObject.getInt(&quot;number of days&quot;);</span>
+<span class="nc" id="L423">            String caption = jsonObject.getString(&quot;caption&quot;);</span>
+<span class="nc" id="L424">            int likeCount = jsonObject.getInt(&quot;likeCount&quot;);</span>
+<span class="nc" id="L425">            int saveCount = jsonObject.getInt(&quot;saveCount&quot;);</span>
+
+
+<span class="nc" id="L428">            JSONArray commentsArray = jsonObject.getJSONArray(&quot;comments&quot;);</span>
+<span class="nc" id="L429">            List&lt;Post_Itinerary.Comment&gt; comments = new ArrayList&lt;&gt;();</span>
+
+            // Iterate through the comments array
+<span class="nc bnc" id="L432" title="All 2 branches missed.">            for (int j = 0; j &lt; commentsArray.length(); j++) {</span>
+<span class="nc" id="L433">                JSONObject commentObject = commentsArray.getJSONObject(j);</span>
+<span class="nc" id="L434">                String commenterUsername = commentObject.getString(&quot;username&quot;);</span>
+<span class="nc" id="L435">                String commentText = commentObject.getString(&quot;commentText&quot;);</span>
+                // Create a Comment object and add it to the comments list
+<span class="nc" id="L437">                comments.add(new Post_Itinerary.Comment(commenterUsername, commentText));</span>
+            }
+
+<span class="nc" id="L440">            Post_Itinerary postItinerary = new Post_Itinerary(username, postFile, tripCode, numOfDays, caption, postID);</span>
+
+<span class="nc" id="L442">            postItinerary.setLikeCount(likeCount);</span>
+<span class="nc" id="L443">            postItinerary.setSaveCount(saveCount);</span>
+
+            // Create and return a new Post_Itinerary object using the constructor
+<span class="nc" id="L446">            return postItinerary;</span>
+
+<span class="nc" id="L448">        } catch (JSONException e) {</span>
+<span class="nc" id="L449">            e.printStackTrace();</span>
+<span class="nc" id="L450">            return null;</span>
+        }
+    }
+
+
+    /**
+     * Handles the click event for editing a post's caption.
+     *
+     * @param position The position of the post in the list.
+     */
+        @Override
+    public void onEditClicked(int position) {
+        // Call EditClicked method in DashboardFragment
+<span class="nc" id="L463">        EditClicked(position);</span>
+<span class="nc" id="L464">    }</span>
+
+    /**
+     * Handles the click event for deleting a post.
+     *
+     * @param position The position of the post in the list.
+     */
+    @Override
+    public void onDeleteClicked(int position) {
+        // Call DeleteClicked method in DashboardFragment
+<span class="nc" id="L474">        DeleteClicked(position);</span>
+<span class="nc" id="L475">    }</span>
+
+    /**
+     * Shows a dialog for editing the caption of a post.
+     *
+     * @param position The position of the post in the list.
+     */
+    public void EditClicked(int position) {
+        // Get the post at the specified position
+<span class="nc" id="L484">        Post_Itinerary post = posts.get(position);</span>
+
+        // Show a dialog for editing the caption
+<span class="nc" id="L487">        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());</span>
+<span class="nc" id="L488">        builder.setTitle(&quot;Edit Caption&quot;);</span>
+
+<span class="nc" id="L490">        EditText editText = new EditText(requireContext());</span>
+<span class="nc" id="L491">        editText.setText(post.getCaption());</span>
+        
+<span class="nc" id="L493">        builder.setView(editText);</span>
+<span class="nc" id="L494">        builder.setPositiveButton(&quot;Save&quot;, new DialogInterface.OnClickListener() {</span>
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Update the caption of the post
+<span class="nc" id="L498">                String newCaption = editText.getText().toString();</span>
+<span class="nc" id="L499">                post.setCaption(newCaption);</span>
+
+<span class="nc" id="L501">                PUT_editCaption(post, newCaption);</span>
+
+                // Update the RecyclerView
+<span class="nc" id="L504">                postAdapter.notifyItemChanged(position);</span>
+
+
+<span class="nc" id="L507">                dialog.dismiss();</span>
+<span class="nc" id="L508">            }</span>
+        });
+<span class="nc" id="L510">        builder.setNegativeButton(&quot;Cancel&quot;, new DialogInterface.OnClickListener() {</span>
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+<span class="nc" id="L513">                dialog.dismiss();</span>
+<span class="nc" id="L514">            }</span>
+        });
+<span class="nc" id="L516">        builder.show();</span>
+<span class="nc" id="L517">    }</span>
+
+    /**
+     * Updates the caption of a post on the server.
+     *
+     * @param post       The Post_Itinerary object representing the post to be updated.
+     * @param newCaption The new caption to be set for the post.
+     */
+    private void PUT_editCaption(Post_Itinerary post, String newCaption){
+
+        //String url = &quot;http://coms-309-035.class.las.iastate.edu:8080/Itinerary/Share/&quot; + username + post.getPostID();
+       // String url = &quot;https://1064bd8c-7f0f-4802-94f1-71b8b5568975.mock.pstmn.io/Itinerary/Share&quot;;
+
+<span class="nc" id="L530">        String url = &quot;http://coms-309-035.class.las.iastate.edu:8080/Itinerary/Share/&quot; + post.getPostID();</span>
+
+<span class="nc" id="L532">        JSONObject captionData = new JSONObject();</span>
+
+        try{
+<span class="nc" id="L535">            captionData.put(&quot;caption&quot;, newCaption);</span>
+
+<span class="nc" id="L537">        }catch (JSONException e){</span>
+<span class="nc" id="L538">            e.printStackTrace();</span>
+           // Toast.makeText(requireContext(), &quot;Error updating JSON file&quot;, Toast.LENGTH_SHORT).show();
+<span class="nc" id="L540">        }</span>
+
+<span class="nc" id="L542">        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, captionData,</span>
+<span class="nc" id="L543">                new Response.Listener&lt;JSONObject&gt;() {</span>
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        // Handle successful response
+<span class="nc" id="L548">                        Log.d(&quot;Volley Response&quot;, &quot;Caption updated successfully&quot;);</span>
+<span class="nc" id="L549">                        Toast.makeText(requireContext(), &quot;Caption updated successfully!&quot;, Toast.LENGTH_SHORT).show();</span>
+<span class="nc" id="L550">                    }</span>
+                },
+
+<span class="nc" id="L553">                new Response.ErrorListener() {</span>
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // Handle errors in the response
+<span class="nc" id="L557">                        Log.e(&quot;Volley Error&quot;, &quot;Error updating caption: &quot; + error.toString());</span>
+<span class="nc" id="L558">                        Toast.makeText(requireContext(), &quot;Error updating caption&quot;, Toast.LENGTH_SHORT).show();</span>
+<span class="nc" id="L559">                    }</span>
+                });
+
+<span class="nc" id="L562">        Singleton.getInstance(requireContext()).addRequest(jsonObjectRequest);</span>
+<span class="nc" id="L563">    }</span>
+
+
+    /**
+     * Deletes a post from the server and the local list.
+     *
+     * @param position The position of the post to be deleted.
+     */
+    public void DeleteClicked(int position) {
+        // Remove the post from the list
+
+<span class="nc" id="L574">        Post_Itinerary deleting_post = posts.get(position);</span>
+<span class="nc" id="L575">        String postId = deleting_post.getPostID();</span>
+
+<span class="nc" id="L577">        posts.remove(position);</span>
+
+        // Update the RecyclerView
+<span class="nc" id="L580">        postAdapter.notifyItemRemoved(position);</span>
+
+<span class="nc" id="L582">        DELETE_post(postId);</span>
+
+<span class="nc" id="L584">    }</span>
+
+    /**
+     * Sends a DELETE request to delete a post from the server.
+     *
+     * @param postID The ID of the post to be deleted.
+     */
+    private void DELETE_post(String postID){
+
+        //String url = &quot;http://coms-309-035.class.las.iastate.edu:8080/Itinerary/Share/&quot; + username + postID;
+        //String url = &quot;https://1064bd8c-7f0f-4802-94f1-71b8b5568975.mock.pstmn.io/Itinerary/Share&quot; + postID;
+
+<span class="nc" id="L596">        String url = &quot;http://coms-309-035.class.las.iastate.edu:8080/Itinerary/Share/&quot; + postID;</span>
+
+<span class="nc" id="L598">        StringRequest stringRequest = new StringRequest(Request.Method.DELETE, url,</span>
+<span class="nc" id="L599">                new Response.Listener&lt;String&gt;() {</span>
+                    @Override
+                    public void onResponse(String response) {
+
+<span class="nc" id="L603">                        Log.d(&quot;Volley Response&quot;, &quot;Post deleted successfully&quot;);</span>
+<span class="nc" id="L604">                        Toast.makeText(requireContext(), &quot;Post deleted successfully!&quot;, Toast.LENGTH_SHORT).show();</span>
+<span class="nc" id="L605">                    }</span>
+                },
+
+<span class="nc" id="L608">                new Response.ErrorListener() {</span>
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+<span class="nc" id="L611">                        Log.e(&quot;Volley Error&quot;, &quot;Error deleting post: &quot; + error.toString());</span>
+<span class="nc" id="L612">                        Toast.makeText(requireContext(), &quot;Error deleting post&quot;, Toast.LENGTH_SHORT).show();</span>
+<span class="nc" id="L613">                    }</span>
+                });
+<span class="nc" id="L615">        Singleton.getInstance(requireContext()).addRequest(stringRequest);</span>
+<span class="nc" id="L616">    }</span>
+
+    /**
+     * Fetches destinations and trip codes from the server.
+     */
+    private void GET_fetch_Destinations_TripCode(){
+
+        //String url = &quot;http://coms-309-035.class.las.iastate.edu:8080/Itinerary/&quot; + username;
+       // String url = &quot;https://5569939f-7918-4af9-937a-86edcfe9bc7f.mock.pstmn.io/Itinerary/GetInfo&quot;;
+
+<span class="nc" id="L626">        String url = &quot;http://coms-309-035.class.las.iastate.edu:8080/Itinerary&quot;;</span>
+
+<span class="nc" id="L628">        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null,</span>
+<span class="nc" id="L629">                new Response.Listener&lt;JSONArray&gt;() {</span>
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        // Check if the fragment is attached to a context
+<span class="nc bnc" id="L633" title="All 2 branches missed.">                        if (getContext() != null) {</span>
+<span class="nc bnc" id="L634" title="All 2 branches missed.">                            for (int i = 0; i &lt; response.length(); i++) {</span>
+                                try {
+
+<span class="nc" id="L637">                                    JSONObject itineraryObj = response.getJSONObject(i);</span>
+<span class="nc" id="L638">                                    String destination = itineraryObj.getString(&quot;destination&quot;);</span>
+<span class="nc" id="L639">                                    String tripCode = itineraryObj.getString(&quot;tripCode&quot;);</span>
+<span class="nc" id="L640">                                    int numDays = itineraryObj.getInt(&quot;number of days&quot;);</span>
+
+<span class="nc" id="L642">                                    itineraryInfos.add(new Spinner_ItineraryInfo(destination, tripCode, numDays));</span>
+
+<span class="nc" id="L644">                                } catch (JSONException e) {</span>
+<span class="nc" id="L645">                                    e.printStackTrace();</span>
+<span class="nc" id="L646">                                }</span>
+                            }
+                        } else {
+<span class="nc" id="L649">                            Log.e(&quot;DashboardFragment&quot;, &quot;Fragment is not attached to a context&quot;);</span>
+                        }
+<span class="nc" id="L651">                    }</span>
+
+<span class="nc" id="L653">                }, new Response.ErrorListener() {</span>
+            @Override
+            public void onErrorResponse(VolleyError error) {
+<span class="nc" id="L656">                Log.e(&quot;Volley Error GET: &quot;, error.toString());</span>
+<span class="nc bnc" id="L657" title="All 2 branches missed.">                if (error.networkResponse != null) {</span>
+<span class="nc" id="L658">                    Log.e(&quot;Volley Error&quot;, &quot;Status Code: &quot; + error.networkResponse.statusCode);</span>
+<span class="nc" id="L659">                    Log.e(&quot;Volley Error: &quot;, &quot;Error Response: &quot; + new String(error.networkResponse.data));</span>
+                }
+
+<span class="nc" id="L662">                Toast.makeText(requireContext(), &quot;Error fetching itinerary info&quot;, Toast.LENGTH_SHORT).show();</span>
+<span class="nc" id="L663">            }</span>
+        });
+
+<span class="nc" id="L666">        Itinerary.requestQueue.add(jsonArrayRequest);</span>
+
+<span class="nc" id="L668">    }</span>
+
+    /**
+     * Loads posts from the server or database.
+     */
+    private void loadPosts() {
+        // Fetch posts from backend or database
+        // For demo, let's add some sample posts
+<span class="nc" id="L676">        posts.add(new Post_Itinerary(&quot;user1&quot;, &quot;post1.jpg&quot;, &quot;12345678&quot;, 2, &quot;This is the first post.&quot;, &quot;ABC1234&quot;));</span>
+        //posts.add(new Post_Itinerary(&quot;user2&quot;, &quot;1 hour ago&quot;, &quot;post2.jpg&quot;, &quot;This is the second post.&quot;));
+        //posts.add(new Post_Itinerary(&quot;user3&quot;, &quot;30 minutes ago&quot;, &quot;post3.jpg&quot;, &quot;This is the third post.&quot;));
+
+<span class="nc" id="L680">        GET_previousPosts();</span>
+
+        // Notify adapter of data change
+<span class="nc" id="L683">        postAdapter.notifyDataSetChanged();</span>
+<span class="nc" id="L684">    }</span>
+
+
+    @Override
+    public void onWebSocketOpen(ServerHandshake handshakedata) {
+
+<span class="nc" id="L690">        Toast.makeText(requireContext(), &quot;WebSocket connected successfully&quot;, Toast.LENGTH_LONG).show();</span>
+
+<span class="nc" id="L692">    }</span>
+
+    @Override
+    public void onWebSocketMessage(String message) {
+<span class="nc" id="L696">        handleWebSocketMessage(message);</span>
+<span class="nc" id="L697">    }</span>
+
+
+    /**
+     * Handles the message received from the WebSocket server.
+     *
+     * @param message The message received from the server.
+     */
+    private void handleWebSocketMessage(String message) {
+
+        // Parse the message received from the WebSocket server
+<span class="nc" id="L708">        Post_Itinerary newPost = parsePostFromMessage(message);</span>
+
+<span class="nc bnc" id="L710" title="All 2 branches missed.">        if (newPost != null) {</span>
+            // Check if the post already exists in the list
+<span class="nc" id="L712">            boolean postExist = false;</span>
+
+<span class="nc bnc" id="L714" title="All 2 branches missed.">            for(int i = 0; i &lt; posts.size(); i++){</span>
+
+<span class="nc" id="L716">                Post_Itinerary postItinerary = posts.get(i);</span>
+
+<span class="nc bnc" id="L718" title="All 4 branches missed.">                if(postItinerary.getUsername().equals(newPost.getUsername()) &amp;&amp; postItinerary.getPostID().equals(newPost.getPostID())){</span>
+
+                    //Update the existing post with the new data
+<span class="nc" id="L721">                    posts.set(i, newPost);</span>
+<span class="nc" id="L722">                    postExist = true;</span>
+<span class="nc" id="L723">                    break;</span>
+                }
+            }
+
+<span class="nc bnc" id="L727" title="All 2 branches missed.">            if(!postExist){</span>
+                //If the post does not exist in the list, add it
+<span class="nc" id="L729">                posts.add(0, newPost);</span>
+            }
+
+            //Notify the adapter of data change
+<span class="nc" id="L733">            postAdapter.notifyItemInserted(0);</span>
+        }
+<span class="nc" id="L735">    }</span>
+
+
+    @Override
+    public void onWebSocketClose(int code, String reason, boolean remote){
+
+<span class="nc" id="L741">    }</span>
+
+    @Override
+<span class="nc" id="L744">    public void onWebSocketError(Exception ex){}</span>
+
+
+    @Override
+    public void onDestroyView() {
+<span class="nc" id="L749">        super.onDestroyView();</span>
+
+        //Remove the WebSocketListener when the fragment is destroyed
+<span class="nc bnc" id="L752" title="All 2 branches missed.">        if(webSocketManager != null){</span>
+<span class="nc" id="L753">            webSocketManager.removeWebSocketListener();</span>
+        }
+<span class="nc" id="L755">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span>Generated by the Android Gradle plugin 8.3.2</div></body></html>

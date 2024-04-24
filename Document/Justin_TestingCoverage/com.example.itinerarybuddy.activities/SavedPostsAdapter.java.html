@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SavedPostsAdapter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=0;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">debug</a> &gt; <a href="index.source.html" class="el_package">com.example.itinerarybuddy.activities</a> &gt; <span class="el_source">SavedPostsAdapter.java</span></div><h1>SavedPostsAdapter.java</h1><pre class="source lang-java linenums">package com.example.itinerarybuddy.activities;
+
+import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.example.itinerarybuddy.R;
+import com.example.itinerarybuddy.data.Post_Itinerary;
+import com.example.itinerarybuddy.util.Singleton;
+
+import org.json.JSONObject;
+
+import java.util.List;
+
+/**
+ * Adapter class for displaying saved posts in a RecyclerView.
+ */
+class SavedPostsAdapter extends RecyclerView.Adapter&lt;SavedPostsAdapter.SavedPostViewHolder&gt; {
+
+    private List&lt;Post_Itinerary&gt; savedPosts;
+    private Context context;
+
+    private RequestQueue requestQueue;
+
+    /**
+     * Constructor to initialize the adapter with a list of saved posts and context.
+     *
+     * @param savedPosts The list of saved posts to be displayed.
+     * @param context The context of the application.
+     */
+<span class="nc" id="L46">    public SavedPostsAdapter(List&lt;Post_Itinerary&gt; savedPosts, Context context) {</span>
+<span class="nc" id="L47">        this.savedPosts = savedPosts;</span>
+<span class="nc" id="L48">        this.context = context;</span>
+
+<span class="nc" id="L50">        requestQueue = Volley.newRequestQueue(context);</span>
+<span class="nc" id="L51">    }</span>
+
+    /**
+     * ViewHolder class to hold the views for each saved post item.
+     */
+    public static class SavedPostViewHolder extends RecyclerView.ViewHolder {
+        public TextView usernameTextView;
+        public TextView postFileTextView;
+        public TextView captionTextView;
+
+        public ImageView saveIcon;
+
+        /**
+         * Constructor for ViewHolder.
+         *
+         * @param itemView The view containing the UI elements for the saved post item.
+         */
+        public SavedPostViewHolder(View itemView) {
+<span class="nc" id="L69">            super(itemView);</span>
+<span class="nc" id="L70">            usernameTextView = itemView.findViewById(R.id.text_username);</span>
+<span class="nc" id="L71">            postFileTextView = itemView.findViewById(R.id.text_post_file);</span>
+<span class="nc" id="L72">            captionTextView = itemView.findViewById(R.id.text_caption);</span>
+
+<span class="nc" id="L74">            saveIcon = itemView.findViewById(R.id.icon_savePost);</span>
+<span class="nc" id="L75">        }</span>
+    }
+
+
+    /**
+     * Called when RecyclerView needs a new RecyclerView.ViewHolder of the given type to represent an item.
+     *
+     * @param parent The ViewGroup into which the new View will be added after it is bound to an adapter position.
+     * @param viewType The view type of the new View.
+     * @return A new ViewHolder that holds a View of the given view type.
+     */
+    @NonNull
+    @Override
+    public SavedPostViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        // Create a new view
+<span class="nc" id="L90">        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_saved_post, parent, false);</span>
+<span class="nc" id="L91">        return new SavedPostViewHolder(view);</span>
+    }
+
+    /**
+     * Called by RecyclerView to display the data at the specified position.
+     *
+     * @param holder The ViewHolder which should be updated to represent the contents of the item at the given position in the data set.
+     * @param position The position of the item within the adapter's data set.
+     */
+    @Override
+    public void onBindViewHolder(@NonNull SavedPostViewHolder holder, int position) {
+        // Get the data model based on position
+<span class="nc" id="L103">        Post_Itinerary savedPost = savedPosts.get(position);</span>
+
+        // Set the data for the views
+<span class="nc" id="L106">        holder.usernameTextView.setText(savedPost.getUsername());</span>
+<span class="nc" id="L107">        holder.postFileTextView.setText(savedPost.getPostFile());</span>
+<span class="nc" id="L108">        holder.captionTextView.setText(savedPost.getCaption());</span>
+
+<span class="nc" id="L110">        holder.saveIcon.setOnClickListener(new View.OnClickListener() {</span>
+            @Override
+            public void onClick(View v) {
+
+<span class="nc bnc" id="L114" title="All 2 branches missed.">                if(savedPost.isSaved()){</span>
+
+<span class="nc" id="L116">                    holder.saveIcon.setImageResource(R.drawable.ic_bookmark_bfr);</span>
+<span class="nc" id="L117">                    savedPost.setSaved(false);</span>
+
+<span class="nc" id="L119">                    DELETE_savedPost(savedPost);</span>
+
+                }
+
+                else{
+<span class="nc" id="L124">                    holder.saveIcon.setImageResource(R.drawable.ic_bookmark_aftr);</span>
+<span class="nc" id="L125">                    savedPost.setSaved(true);</span>
+                }
+<span class="nc" id="L127">            }</span>
+        });
+<span class="nc" id="L129">        holder.postFileTextView.setOnClickListener(new View.OnClickListener() {</span>
+            @Override
+            public void onClick(View v) {
+                // Obtain the context from the adapter
+<span class="nc" id="L133">                Context context = holder.itemView.getContext();</span>
+
+                // Use the context to start the activity
+<span class="nc" id="L136">                Intent intent = new Intent(context, DayCard.class);</span>
+
+                // Pass the number of days to the intent
+<span class="nc" id="L139">                intent.putExtra(&quot;NUM_OF_DAYS&quot;, savedPost.getDays());</span>
+<span class="nc" id="L140">                intent.putExtra(&quot;IS_EDITABLE&quot;, false);</span>
+<span class="nc" id="L141">                intent.putExtra(&quot;SOURCE&quot;, &quot;Community&quot;);</span>
+<span class="nc" id="L142">                context.startActivity(intent);</span>
+<span class="nc" id="L143">            }</span>
+        });
+<span class="nc" id="L145">    }</span>
+
+    /**
+     * Sends a DELETE request to remove a saved post.
+     *
+     * @param post The Post_Itinerary object representing the post to be removed.
+     */
+    public void DELETE_savedPost(Post_Itinerary post){
+
+<span class="nc" id="L154">        String url = &quot;https://1064bd8c-7f0f-4802-94f1-71b8b5568975.mock.pstmn.io/Itinerary/Share/SavedPost&quot; + post.getPostID();</span>
+
+        //String url = &quot;https://1064bd8c-7f0f-4802-94f1-71b8b5568975.mock.pstmn.io/Itinerary/Share/SavedPost&quot;;
+
+<span class="nc" id="L158">        StringRequest stringRequest = new StringRequest(Request.Method.DELETE, url,</span>
+<span class="nc" id="L159">                new Response.Listener&lt;String&gt;() {</span>
+                    @Override
+                    public void onResponse(String response) {
+
+<span class="nc" id="L163">                        Log.d(&quot;Volley Response&quot;, &quot;Post removed successfully&quot;);</span>
+<span class="nc" id="L164">                    }</span>
+                },
+
+<span class="nc" id="L167">                new Response.ErrorListener() {</span>
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+<span class="nc" id="L170">                        Log.e(&quot;Volley Error&quot;, &quot;Error removing post: &quot; + error.toString());</span>
+
+<span class="nc" id="L172">                    }</span>
+                });
+
+<span class="nc" id="L175">        requestQueue.add(stringRequest);</span>
+<span class="nc" id="L176">    }</span>
+
+    /**
+     * Returns the total number of items in the data set held by the adapter.
+     *
+     * @return The total number of items in this adapter.
+     */
+    @Override
+    public int getItemCount() {
+<span class="nc" id="L185">        return savedPosts.size();</span>
+    }
+
+    /**
+     * Method to update the list of saved posts.
+     *
+     * @param savedPosts The new list of saved posts.
+     */
+    public void setSavedPosts(List&lt;Post_Itinerary&gt; savedPosts) {
+<span class="nc" id="L194">        this.savedPosts = savedPosts;</span>
+<span class="nc" id="L195">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span>Generated by the Android Gradle plugin 8.3.2</div></body></html>
