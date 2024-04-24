@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @Service
 public class StorageService {
@@ -55,10 +56,11 @@ public class StorageService {
         travelGroup.setGroupImage(imageData);
         travelGroupRepository.save(travelGroup);
         if (imageData != null) {
-            return "file uploaded successfully to Group " + travelGroupRepository.findById(groupId).getTravelGroupName() + " : " + file.getOriginalFilename();
+            return "file uploaded successfully to Group " + travelGroupRepository.findByTravelGroupId(groupId).getTravelGroupName() + " : " + file.getOriginalFilename();
         }
         return null;
     }
+
 
     public byte[] downloadImageByFileName(String fileName){
         Image dbImageData = repository.findByName(fileName);
@@ -67,7 +69,7 @@ public class StorageService {
     }
 
     public byte[] downloadImageByGroupId(int groupId){
-        Image dbImageData = travelGroupRepository.findById(groupId).getGroupImage();
+        Image dbImageData = travelGroupRepository.findByTravelGroupId(groupId).getGroupImage();
         byte[] images=ImageUtils.decompressImage(dbImageData.getImageData());
         return images;
     }
@@ -79,10 +81,15 @@ public class StorageService {
     }
 
     public String changeImageByGroupId(int groupId, Image newImage){
-        TravelGroup travelGroup =  travelGroupRepository.findById(groupId);
+        TravelGroup travelGroup =  travelGroupRepository.findByTravelGroupId(groupId);
+        long oldId = travelGroup.getGroupImage().getId();
         travelGroup.setGroupImage(newImage);
         travelGroupRepository.save(travelGroup);
-        return "file successfully deleted from Group: " + travelGroupRepository.findById(groupId).getTravelGroupName();
+        if(travelGroup.getGroupImage().getId() != 1) {
+            repository.deleteById(oldId);
+        }
+        return "file successfully deleted from Group: " + travelGroupRepository.findByTravelGroupId(groupId).getTravelGroupName();
     }
+
 
 }
