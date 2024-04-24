@@ -2,10 +2,7 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="JustinSystemTest">
-        <State />
-      </entry>
-      <entry key="Tests in 'com.example.itinerarybuddy'">
+      <entry key="AinaSystemTest">
         <State />
       </entry>
       <entry key="app">
@@ -24,7 +21,10 @@
           <timeTargetWasSelectedWithDropDown value="2024-03-20T21:36:32.782733500Z" />
         </State>
       </entry>
-      <entry key="editGroupTest()">
+      <entry key="testGenerateUniqueTripCode()">
+        <State />
+      </entry>
+      <entry key="testShowAddItineraryDialog()">
         <State />
       </entry>
     </value>
