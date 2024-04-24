@@ -24,13 +24,13 @@
       <entry key="testCreateItinerary()">
         <State />
       </entry>
+      <entry key="testDeleteItinerary()">
+        <State />
+      </entry>
+      <entry key="testEndDateBeforeStartDate()">
+        <State />
+      </entry>
       <entry key="testGenerateUniqueTripCode()">
-        <State />
-      </entry>
-      <entry key="testShowAddItineraryDialog()">
-        <State />
-      </entry>
-      <entry key="testShowDatePickerDialog()">
         <State />
       </entry>
     </value>
