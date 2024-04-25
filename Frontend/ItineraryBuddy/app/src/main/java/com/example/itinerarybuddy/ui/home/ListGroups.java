@@ -63,6 +63,7 @@ public class ListGroups extends AppCompatActivity {
         // Initialize adapter by configuring it with group data from UserData class
         adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1);
         UserData.queue = Volley.newRequestQueue(getApplicationContext());
+        UserData.updateUserData();
         initializeGroups();
 
         list.setAdapter(adapter);
