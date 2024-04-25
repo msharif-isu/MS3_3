@@ -21,6 +21,11 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+
+        debug{
+            testCoverageEnabled true
+        }
+
     }
 
     compileOptions {
@@ -79,7 +84,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0"
     implementation "androidx.navigation:navigation-fragment:2.7.7"
     implementation "androidx.navigation:navigation-ui:2.7.7"
-    implementation 'androidx.fragment:fragment-testing:1.6.2'
+    debugImplementation 'androidx.fragment:fragment-testing:1.6.2'
     implementation 'androidx.test.espresso:espresso-contrib:3.5.1'
     implementation 'androidx.test.espresso:espresso-intents:3.5.1'
 

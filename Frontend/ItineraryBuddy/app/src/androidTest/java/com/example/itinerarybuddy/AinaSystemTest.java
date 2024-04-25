@@ -10,7 +10,6 @@ import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
-
 import static org.hamcrest.Matchers.containsString;
 
 import android.widget.DatePicker;
@@ -45,18 +44,6 @@ public class AinaSystemTest {
 
         // Verify that the "Add Itinerary" dialog is displayed
         onView(withText("Add Itinerary")).check(matches(isDisplayed()));
-    }
-
-    @Test
-    public void testShowDatePickerDialog() {
-
-        onView(withId(R.id.addItinerary)).perform(click());
-
-        // Click on the "Start Date" input field
-        onView(withId(R.id.startDateEditText)).perform(click());
-
-        // Verify that the date picker dialog is displayed
-        onView(withText("OK")).check(matches(isDisplayed()));
     }
 
 
@@ -95,6 +82,57 @@ public class AinaSystemTest {
         onView(withText(containsString("Paris"))).check(matches(isDisplayed()));
     }
 
+    @Test
+    public void testEditItinerary() {
+        // Click on the button to add a new itinerary
+        onView(withId(R.id.addItinerary)).perform(click());
+
+        // Enter destination "Indonesia"
+        onView(withId(R.id.destinationEditText))
+                .perform(typeText("Indo"), closeSoftKeyboard());
+
+        // Set start date to today
+        onView(withId(R.id.startDateEditText))
+                .perform(click());
+        // Set date and click OK
+        onView(withClassName(Matchers.equalTo(DatePicker.class.getName())))
+                .perform(PickerActions.setDate(2024, 4, 22)); // Set your desired date
+        onView(withText("OK")).perform(click());
+
+        // Wait for end date EditText to become visible
+        onView(withId(R.id.endDateEditText)).check(matches(isDisplayed()));
+
+        // Set end date to two days later
+        onView(withId(R.id.endDateEditText))
+                .perform(click());
+        // Set date and click OK
+        onView(withClassName(Matchers.equalTo(DatePicker.class.getName())))
+                .perform(PickerActions.setDate(2024, 4, 28)); // Set your desired date
+        onView(withText("OK")).perform(click());
+
+        // Click on continue
+        onView(withText("Continue")).perform(click());
+
+        // Click on the popup menu icon
+        onView(withId(R.id.iconPopUp)).perform(click());
+
+        // Click on the "Edit" option
+        onView(withText("Edit")).perform(click());
+
+        // Verify that the "Edit Itinerary" screen is displayed
+        onView(withText("Edit Itinerary")).check(matches(isDisplayed()));
+
+
+        // Enter new destination "Korea"
+        onView(withId(R.id.destinationEditText))
+                .perform(typeText("nesia"), closeSoftKeyboard());
+
+        // Click on "Save" to save the changes
+        onView(withText("Save")).perform(click());
+
+        // Now, let's check if the itinerary is updated with the edited destination
+        onView(withText(containsString("Destination: Indonesia"))).check(matches(isDisplayed()));
+    }
     @Test
     public void testDeleteItinerary(){
         onView(withId(R.id.addItinerary)).perform(click());
