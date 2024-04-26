@@ -1,0 +1,562 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LoadGroup.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=0;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">debug</a> &gt; <a href="index.source.html" class="el_package">com.example.itinerarybuddy.ui.home</a> &gt; <span class="el_source">LoadGroup.java</span></div><h1>LoadGroup.java</h1><pre class="source lang-java linenums">package com.example.itinerarybuddy.ui.home;
+
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.PopupMenu;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.android.volley.NetworkResponse;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.example.itinerarybuddy.R;
+import com.example.itinerarybuddy.data.Group;
+import com.example.itinerarybuddy.data.UserData;
+import com.example.itinerarybuddy.databinding.DialogCreateGroupBinding;
+import com.example.itinerarybuddy.databinding.DialogGroupDetailsBinding;
+import com.example.itinerarybuddy.databinding.DialogSelectImageBinding;
+import com.example.itinerarybuddy.util.CustomImageRequest;
+import com.example.itinerarybuddy.util.Singleton;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+
+/**
+ * This is where a specific group can be loaded. Will contain group details, settings, chat, etc.
+ */
+<span class="nc" id="L59">public class LoadGroup extends AppCompatActivity {</span>
+
+    /**
+     * This is the travel group object that this page represents. Passed in from the ListGroups list adapter and displayed here.
+     */
+    protected static Group group;
+
+    protected static int index;
+
+    /**
+     * Prompt for selecting image from library.
+     */
+    private ActivityResultLauncher&lt;String&gt; getImage;
+
+    /**
+     * Cover image within the main group page.
+     */
+    private ImageView groupImage;
+
+    /**
+     * Image view for the image selection page in settings.
+     */
+    private ImageView selectImage;
+
+    /**
+     * URI associated with selected image to upload.
+     */
+    private Uri uploadImageUri;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+<span class="nc" id="L90">        super.onCreate(savedInstanceState);</span>
+<span class="nc" id="L91">        requestWindowFeature(Window.FEATURE_NO_TITLE);</span>
+<span class="nc" id="L92">        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);</span>
+<span class="nc" id="L93">        this.getSupportActionBar().hide();</span>
+<span class="nc" id="L94">        setContentView(R.layout.fragment_group_page);</span>
+
+        // Instantiate buttons
+<span class="nc" id="L97">        ImageButton back = findViewById(R.id.back_button);</span>
+<span class="nc" id="L98">        ImageButton groupOptions = findViewById(R.id.options_button);</span>
+<span class="nc" id="L99">        ImageButton chat = findViewById(R.id.chat_button);</span>
+<span class="nc" id="L100">        groupImage = findViewById(R.id.group_image);</span>
+
+        // Extract the group from the previous activity using bundle
+<span class="nc" id="L103">        Bundle bundle = getIntent().getExtras();</span>
+<span class="nc bnc" id="L104" title="All 2 branches missed.">        if(bundle != null) {</span>
+<span class="nc" id="L105">            index = Integer.parseInt(Objects.requireNonNull(bundle.getString(&quot;POSITION&quot;)));</span>
+<span class="nc" id="L106">            group = ListGroups.adapter.getItem(index);</span>
+
+            // Instantiate text views
+<span class="nc" id="L109">            TextView name = findViewById(R.id.group_title);</span>
+<span class="nc" id="L110">            TextView description = findViewById(R.id.group_description);</span>
+<span class="nc" id="L111">            TextView destination = findViewById(R.id.group_destination);</span>
+
+            // Set data to the various views
+<span class="nc bnc" id="L114" title="All 2 branches missed.">            assert group != null;</span>
+<span class="nc" id="L115">            name.setText(group.getTravelGroupName());</span>
+<span class="nc" id="L116">            description.setText(group.getTravelGroupDescription());</span>
+<span class="nc" id="L117">            String destinationText = &quot;Traveling to: &quot; + group.getTravelGroupDestination();</span>
+<span class="nc" id="L118">            destination.setText(destinationText);</span>
+<span class="nc" id="L119">            getImage(groupImage);</span>
+        }
+
+        /*
+        // Instantiate text views
+        TextView name = findViewById(R.id.group_title);
+        TextView description = findViewById(R.id.group_description);
+        TextView destination = findViewById(R.id.group_destination);
+
+        assert group != null;
+        name.setText(group.getTravelGroupName());
+        description.setText(group.getTravelGroupDescription());
+        String destinationText = &quot;Traveling to: &quot; + group.getTravelGroupDestination();
+        destination.setText(destinationText);
+        */
+        // Set click listener for back button
+<span class="nc" id="L135">        back.setOnClickListener(new View.OnClickListener() {</span>
+            @Override
+            public void onClick(View v) {
+<span class="nc" id="L138">                startActivity(new Intent(getApplicationContext(), ListGroups.class));</span>
+<span class="nc" id="L139">            }</span>
+        });
+
+<span class="nc" id="L142">        chat.setOnClickListener(new View.OnClickListener() {</span>
+            @Override
+            public void onClick(View v) {
+<span class="nc" id="L145">                Intent i = new Intent(getApplicationContext(), GroupChatActivity.class);</span>
+<span class="nc" id="L146">                Bundle bundle = new Bundle();</span>
+<span class="nc" id="L147">                bundle.putString(&quot;POSITION&quot;, Integer.valueOf(index).toString());</span>
+<span class="nc" id="L148">                i.putExtras(bundle);</span>
+<span class="nc" id="L149">                startActivity(i);</span>
+<span class="nc" id="L150">            }</span>
+        });
+
+        // Set click listener for options button
+<span class="nc" id="L154">        groupOptions.setOnClickListener(new View.OnClickListener() {</span>
+            @Override
+            public void onClick(View v) {
+                // Display a menu with three options given XML resource
+<span class="nc" id="L158">                PopupMenu menu = new PopupMenu(getApplicationContext(), v);</span>
+<span class="nc" id="L159">                MenuInflater inflater = menu.getMenuInflater();</span>
+
+<span class="nc" id="L161">                inflater.inflate(R.menu.group_settings_menu, menu.getMenu());</span>
+
+                // Set click listener for each option
+<span class="nc" id="L164">                menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {</span>
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+<span class="nc bnc" id="L167" title="All 2 branches missed.">                        if(item.getItemId() == R.id.action_group_members){</span>
+<span class="nc" id="L168">                            showGroupDetails();</span>
+<span class="nc" id="L169">                            return true;</span>
+                        }
+<span class="nc bnc" id="L171" title="All 2 branches missed.">                        else if(item.getItemId() == R.id.action_leave_group){</span>
+<span class="nc" id="L172">                            leaveGroupDialog();</span>
+<span class="nc" id="L173">                            return true;</span>
+                        }
+<span class="nc bnc" id="L175" title="All 2 branches missed.">                        else if(item.getItemId() == R.id.action_edit_group){</span>
+<span class="nc bnc" id="L176" title="All 2 branches missed.">                            if(UserData.getUsertype().equals(&quot;User&quot;)){</span>
+<span class="nc" id="L177">                                Toast.makeText(getApplicationContext(), &quot;Only Travel Ambassadors can edit the group.&quot;, Toast.LENGTH_LONG).show();</span>
+                            }
+                            else{
+<span class="nc" id="L180">                                editGroup();</span>
+                            }
+<span class="nc" id="L182">                            return true;</span>
+                        }
+                        else{
+<span class="nc" id="L185">                            return false;</span>
+                        }
+                    }
+                });
+<span class="nc" id="L189">                menu.show();</span>
+<span class="nc" id="L190">            }</span>
+        });
+
+<span class="nc" id="L193">        chat.setOnClickListener(new View.OnClickListener() {</span>
+            @Override
+            public void onClick(View v) {
+<span class="nc" id="L196">                Intent i = new Intent(getApplicationContext(), GroupChatActivity.class);</span>
+<span class="nc" id="L197">                Bundle bundle = new Bundle();</span>
+<span class="nc" id="L198">                bundle.putString(&quot;POSITION&quot;, Integer.valueOf(index).toString());</span>
+<span class="nc" id="L199">                i.putExtras(bundle);</span>
+<span class="nc" id="L200">                startActivity(i);</span>
+<span class="nc" id="L201">            }</span>
+        });
+
+        // Image selection process
+<span class="nc" id="L205">        getImage = registerForActivityResult(new ActivityResultContracts.GetContent(), uri -&gt; {</span>
+<span class="nc bnc" id="L206" title="All 2 branches missed.">            if(uri != null){</span>
+<span class="nc" id="L207">                uploadImageUri = uri;</span>
+<span class="nc" id="L208">                selectImage.setImageURI(uri);</span>
+<span class="nc" id="L209">                Toast.makeText(getApplicationContext(), &quot;Image Selected!&quot;, Toast.LENGTH_LONG).show();</span>
+            }
+<span class="nc" id="L211">        });</span>
+
+<span class="nc" id="L213">        groupImage.setOnClickListener(new View.OnClickListener() {</span>
+            @Override
+            public void onClick(View v) {
+                // Allow user to change group image if they are an ambassador.
+<span class="nc bnc" id="L217" title="All 2 branches missed.">                if(UserData.getUsertype().equals(&quot;Ambassador&quot;)){</span>
+<span class="nc" id="L218">                    selectGroupImage();</span>
+                }
+                else{
+<span class="nc" id="L221">                    Toast.makeText(getApplicationContext(), &quot;Only Travel Ambassadors can edit the group.&quot;, Toast.LENGTH_LONG).show();</span>
+                }
+<span class="nc" id="L223">            }</span>
+        });
+<span class="nc" id="L225">    }</span>
+
+    /**
+     * Initiates a dialog popup that displays the details of the group, such as members and the group code.
+     */
+    private void showGroupDetails(){
+        // Create new alert dialog
+<span class="nc" id="L232">        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.layout.dialog_group_details);</span>
+<span class="nc" id="L233">        builder.setTitle(&quot;Travel Group Details&quot;);</span>
+
+<span class="nc" id="L235">        View v = DialogGroupDetailsBinding.inflate(getLayoutInflater()).getRoot();</span>
+<span class="nc" id="L236">        builder.setView(v);</span>
+
+        // Set text elements
+<span class="nc" id="L239">        ListView members = v.findViewById(R.id.group_members_list);</span>
+<span class="nc" id="L240">        ArrayAdapter&lt;String&gt; adapter = new ArrayAdapter&lt;String&gt;(this, android.R.layout.simple_list_item_1, group.getMembers());</span>
+<span class="nc" id="L241">        members.setAdapter(adapter);</span>
+
+<span class="nc" id="L243">        TextView code = v.findViewById(R.id.group_code_label);</span>
+<span class="nc" id="L244">        String codeText = &quot;Group Code: &quot; + group.getTravelGroupID() + &quot;\n(Share this code with others to join this group)&quot;;</span>
+<span class="nc" id="L245">        code.setText(codeText);</span>
+
+<span class="nc" id="L247">        builder.setNegativeButton(&quot;Back&quot;, new DialogInterface.OnClickListener() {</span>
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+<span class="nc" id="L250">                dialog.cancel();</span>
+<span class="nc" id="L251">            }</span>
+        });
+
+<span class="nc" id="L254">        builder.show();</span>
+<span class="nc" id="L255">    }</span>
+
+    /**
+     * Initiates a dialog popup where the user may enter edits to the group information, such as name etc.
+     */
+    private void editGroup(){
+<span class="nc" id="L261">        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.layout.dialog_create_group);</span>
+<span class="nc" id="L262">        builder.setTitle(&quot;Edit Travel Group&quot;);</span>
+<span class="nc" id="L263">        View editView = DialogCreateGroupBinding.inflate(getLayoutInflater()).getRoot();</span>
+<span class="nc" id="L264">        builder.setView(editView);</span>
+
+<span class="nc" id="L266">        EditText nameInput = editView.findViewById(R.id.group_name_input);</span>
+<span class="nc" id="L267">        nameInput.setText(group.getTravelGroupName());</span>
+<span class="nc" id="L268">        EditText destinationInput = editView.findViewById(R.id.group_destination_input);</span>
+<span class="nc" id="L269">        destinationInput.setText(group.getTravelGroupDestination());</span>
+<span class="nc" id="L270">        EditText descriptionInput = editView.findViewById(R.id.group_description_input);</span>
+<span class="nc" id="L271">        descriptionInput.setText(group.getTravelGroupDescription());</span>
+
+<span class="nc" id="L273">        builder.setPositiveButton(&quot;Save&quot;, new DialogInterface.OnClickListener() {</span>
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+<span class="nc" id="L276">                String name = nameInput.getText().toString();</span>
+<span class="nc" id="L277">                String destination = destinationInput.getText().toString();</span>
+<span class="nc" id="L278">                String description = descriptionInput.getText().toString();</span>
+<span class="nc" id="L279">                updateGroup(name, destination, description);</span>
+<span class="nc" id="L280">            }</span>
+        });
+
+<span class="nc" id="L283">        builder.setNegativeButton(&quot;Cancel&quot;, new DialogInterface.OnClickListener() {</span>
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+<span class="nc" id="L286">                dialog.cancel();</span>
+<span class="nc" id="L287">            }</span>
+        });
+
+<span class="nc" id="L290">        builder.show();</span>
+<span class="nc" id="L291">    }</span>
+
+    /**
+     * Helper method for editGroup() that makes a PUT request for the given modifications to the group.
+     * @param name of the group.
+     * @param destination of the group.
+     * @param description of the group.
+     */
+    private void updateGroup(String name, String destination, String description){
+        // Create JSON for group, along with array for group members
+<span class="nc" id="L301">        JSONObject groupData = new JSONObject();</span>
+<span class="nc" id="L302">        JSONArray memberData = new JSONArray();</span>
+
+        try {
+<span class="nc" id="L305">            groupData.put(&quot;travelGroupName&quot;, name);</span>
+<span class="nc" id="L306">            groupData.put(&quot;travelGroupCode&quot;, &quot;null&quot;);</span>
+<span class="nc" id="L307">            groupData.put(&quot;travelGroupDestination&quot;, destination);</span>
+<span class="nc" id="L308">            groupData.put(&quot;travelGroupAmbassador&quot;, UserData.getUsername());</span>
+<span class="nc" id="L309">            groupData.put(&quot;travelGroupDescription&quot;, description);</span>
+<span class="nc" id="L310">            groupData.put(&quot;members&quot;, memberData);</span>
+<span class="nc" id="L311">        }catch(JSONException e){</span>
+<span class="nc" id="L312">            Log.e(&quot;JSON Error: &quot;, e.toString());</span>
+<span class="nc" id="L313">        }</span>
+
+        // Make the post request given the url and group json
+<span class="nc" id="L316">        final String url = &quot;http://coms-309-035.class.las.iastate.edu:8080/Group/&quot; + group.getTravelGroupID();</span>
+<span class="nc" id="L317">        JsonObjectRequest req = new JsonObjectRequest(Request.Method.PUT, url, groupData, new Response.Listener&lt;JSONObject&gt;() {</span>
+            @Override
+            public void onResponse(JSONObject response) {
+<span class="nc" id="L320">                Log.d(&quot;Volley Response: &quot;, response.toString());</span>
+<span class="nc" id="L321">                UserData.updateUserData();</span>
+<span class="nc" id="L322">                Toast.makeText(getApplicationContext(), &quot;Group Successfully Modified!&quot;, Toast.LENGTH_LONG).show();</span>
+<span class="nc" id="L323">                startActivity(new Intent(getApplicationContext(), ListGroups.class));</span>
+<span class="nc" id="L324">            }</span>
+<span class="nc" id="L325">        }, new Response.ErrorListener() {</span>
+            @Override
+            public void onErrorResponse(VolleyError error) {
+<span class="nc" id="L328">                Log.e(&quot;Volley Error: &quot;, error.toString());</span>
+<span class="nc" id="L329">                Toast.makeText(getApplicationContext(), &quot;Error Updating Group!&quot;, Toast.LENGTH_LONG).show();</span>
+<span class="nc" id="L330">            }</span>
+<span class="nc" id="L331">        }){</span>
+            @Override
+            protected Map&lt;String, String&gt; getParams(){
+<span class="nc" id="L334">                HashMap&lt;String, String&gt; g = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L335">                g.put(&quot;travelGroupName&quot;, name);</span>
+<span class="nc" id="L336">                g.put(&quot;travelGroupCode&quot;, group.getTravelGroupID());</span>
+<span class="nc" id="L337">                g.put(&quot;travelGroupDestination&quot;, destination);</span>
+<span class="nc" id="L338">                g.put(&quot;travelGroupCreator&quot;, group.getTravelGroupAmbassador());</span>
+<span class="nc" id="L339">                g.put(&quot;travelGroupDescription&quot;, description);</span>
+<span class="nc" id="L340">                g.put(&quot;travelGroupMembers&quot;, &quot;\&quot;travelGroupMembers\&quot;: []&quot;);</span>
+<span class="nc" id="L341">                return g;</span>
+            }
+
+            @Override
+            public Map&lt;String, String&gt; getHeaders(){
+<span class="nc" id="L346">                HashMap&lt;String, String&gt; map = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L347">                map.put(&quot;Content-Type&quot;, &quot;application/json&quot;);</span>
+<span class="nc" id="L348">                return map;</span>
+            }
+        };
+<span class="nc" id="L351">        Singleton.getInstance(getApplicationContext()).addRequest(req);</span>
+<span class="nc" id="L352">    }</span>
+
+    /**
+     * Initiates a dialog popup to prompt the user if they want to leave the travel group.
+     */
+    private void leaveGroupDialog(){
+<span class="nc" id="L358">        AlertDialog.Builder builder = new AlertDialog.Builder(this);</span>
+<span class="nc" id="L359">        builder.setTitle(&quot;Are you sure you want to leave this travel group?&quot;);</span>
+
+<span class="nc" id="L361">        builder.setPositiveButton(&quot;Leave Group&quot;, new DialogInterface.OnClickListener() {</span>
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+<span class="nc" id="L364">                leaveGroup();</span>
+<span class="nc" id="L365">            }</span>
+        });
+
+<span class="nc" id="L368">        builder.setNegativeButton(&quot;Cancel&quot;, new DialogInterface.OnClickListener() {</span>
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+<span class="nc" id="L371">                dialog.cancel();</span>
+<span class="nc" id="L372">            }</span>
+        });
+
+<span class="nc" id="L375">        builder.show();</span>
+<span class="nc" id="L376">    }</span>
+
+    /**
+     * Helper method for leaveGroupDialog() to make a PUT request to remove the user from the group.
+     */
+    private void leaveGroup(){
+<span class="nc" id="L382">        String user = UserData.getUsername();</span>
+<span class="nc" id="L383">        String groupId = group.getTravelGroupID();</span>
+<span class="nc" id="L384">        String url = &quot;http://coms-309-035.class.las.iastate.edu:8080/Group/RemoveUser/&quot; + groupId + &quot;/&quot; + user;</span>
+<span class="nc" id="L385">        JsonObjectRequest req = new JsonObjectRequest(Request.Method.PUT, url, null, new Response.Listener&lt;JSONObject&gt;() {</span>
+            @Override
+            public void onResponse(JSONObject response) {
+<span class="nc" id="L388">                Log.d(&quot;Volley Response: &quot;, response.toString());</span>
+<span class="nc" id="L389">                UserData.updateUserData();</span>
+<span class="nc" id="L390">                Toast.makeText(getApplicationContext(), &quot;You have left the group!&quot;, Toast.LENGTH_LONG).show();</span>
+<span class="nc" id="L391">                deleteGroup();</span>
+<span class="nc" id="L392">                startActivity(new Intent(getApplicationContext(), ListGroups.class));</span>
+<span class="nc" id="L393">            }</span>
+<span class="nc" id="L394">        }, new Response.ErrorListener() {</span>
+            @Override
+            public void onErrorResponse(VolleyError error) {
+<span class="nc" id="L397">                Log.e(&quot;Volley Error: &quot;, error.toString());</span>
+<span class="nc" id="L398">                Toast.makeText(getApplicationContext(), &quot;Error Leaving Group!&quot;, Toast.LENGTH_LONG).show();</span>
+<span class="nc" id="L399">            }</span>
+        });
+<span class="nc" id="L401">        Singleton.getInstance(getApplicationContext()).addRequest(req);</span>
+<span class="nc" id="L402">    }</span>
+
+    /**
+     * Helper method for leaveGroup() to remove the travel group locally from the group list.
+     */
+    private void deleteGroup(){
+<span class="nc" id="L408">        ListGroups.adapter.remove(group);</span>
+<span class="nc" id="L409">        ListGroups.adapter.notifyDataSetChanged();</span>
+<span class="nc" id="L410">    }</span>
+    
+
+    // THE FOLLOWING FUNCTIONS ARE RELATED TO FEATURE 2: IMAGE UPLOAD!
+
+    /**
+     * Initiates the dialog to allow ambassador to modify the group image.
+     */
+    private void selectGroupImage(){
+<span class="nc" id="L419">        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.layout.dialog_select_image);</span>
+<span class="nc" id="L420">        builder.setTitle(&quot;Edit Travel Group&quot;);</span>
+<span class="nc" id="L421">        View view = DialogSelectImageBinding.inflate(getLayoutInflater()).getRoot();</span>
+<span class="nc" id="L422">        builder.setView(view);</span>
+
+<span class="nc" id="L424">        Button select = view.findViewById(R.id.select_image_button);</span>
+<span class="nc" id="L425">        Button delete = view.findViewById(R.id.delete_image);</span>
+<span class="nc" id="L426">        selectImage = view.findViewById(R.id.selected_image);</span>
+<span class="nc" id="L427">        getImage(selectImage);</span>
+
+<span class="nc" id="L429">        int[] method = {-1};</span>
+<span class="nc" id="L430">        select.setOnClickListener(new View.OnClickListener() {</span>
+            @Override
+            public void onClick(View view) {
+<span class="nc" id="L433">                getImage.launch(&quot;image/*&quot;);</span>
+<span class="nc" id="L434">                method[0] = 0;</span>
+<span class="nc" id="L435">            }</span>
+        });
+
+<span class="nc" id="L438">        delete.setOnClickListener(new View.OnClickListener() {</span>
+            @Override
+            public void onClick(View view) {
+<span class="nc" id="L441">                selectImage.setImageResource(R.drawable.add_a_photo);</span>
+<span class="nc" id="L442">                method[0] = 1;</span>
+<span class="nc" id="L443">            }</span>
+        });
+
+<span class="nc" id="L446">        builder.setPositiveButton(&quot;Save&quot;, new DialogInterface.OnClickListener() {</span>
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+<span class="nc bnc" id="L449" title="All 2 branches missed.">                if(method[0] == 0){</span>
+<span class="nc" id="L450">                    imageMethod(uriToImage(uploadImageUri), Request.Method.PUT);</span>
+                }
+<span class="nc bnc" id="L452" title="All 2 branches missed.">                else if(method[0] == 1){</span>
+<span class="nc" id="L453">                    imageMethod(null, Request.Method.DELETE);</span>
+                }
+                else{
+<span class="nc" id="L456">                    Toast.makeText(getApplicationContext(), &quot;please Make a Selection&quot;, Toast.LENGTH_LONG).show();</span>
+                }
+
+<span class="nc" id="L459">            }</span>
+        });
+
+<span class="nc" id="L462">        builder.setNegativeButton(&quot;Cancel&quot;, new DialogInterface.OnClickListener() {</span>
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+<span class="nc" id="L465">                dialog.cancel();</span>
+<span class="nc" id="L466">            }</span>
+        });
+
+<span class="nc" id="L469">        builder.show();</span>
+<span class="nc" id="L470">    }</span>
+
+    /**
+     * Helper method to convert the image data format to be uploaded.
+     * @param image uri.
+     * @return uri as bytes.
+     */
+    private byte[] uriToImage(Uri image){
+<span class="nc" id="L478">        byte[] bytes = new byte[4*1024];</span>
+        try{
+<span class="nc" id="L480">            @SuppressLint(&quot;Recycle&quot;) InputStream input = getContentResolver().openInputStream(image);</span>
+<span class="nc" id="L481">            ByteArrayOutputStream buffer = new ByteArrayOutputStream();</span>
+
+            while (true) {
+<span class="nc bnc" id="L484" title="All 2 branches missed.">                assert input != null;</span>
+<span class="nc bnc" id="L485" title="All 2 branches missed.">                if (input.read(bytes) == -1){</span>
+<span class="nc" id="L486">                    break;</span>
+                }
+                else{
+<span class="nc" id="L489">                    buffer.write(bytes, 0, bytes.length);</span>
+                }
+            }
+
+<span class="nc" id="L493">            bytes = buffer.toByteArray();</span>
+<span class="nc" id="L494">        }catch(IOException e){</span>
+<span class="nc" id="L495">            Log.e(&quot;Error: &quot;, e.toString());</span>
+<span class="nc" id="L496">        }</span>
+
+<span class="nc" id="L498">        return bytes;</span>
+    }
+
+    /**
+     * Network requests will be made here based on the passed in method type. Image will be uploaded or deleted.
+     * @param data of the image in bytes.
+     * @param method for the request.
+     */
+    private void imageMethod(byte[] data, int method){
+<span class="nc" id="L507">        String url = &quot;http://coms-309-035.class.las.iastate.edu:8080/Group/Image/&quot; + group.getTravelGroupID();</span>
+
+<span class="nc bnc" id="L509" title="All 2 branches missed.">        if(method == Request.Method.PUT){</span>
+<span class="nc" id="L510">            CustomImageRequest request = new CustomImageRequest(url, data, new Response.Listener&lt;NetworkResponse&gt;() {</span>
+                @Override
+                public void onResponse(NetworkResponse networkResponse) {
+<span class="nc" id="L513">                    Log.d(&quot;Upload&quot;, &quot;Response: &quot; + networkResponse.toString());</span>
+<span class="nc" id="L514">                    getImage(groupImage);</span>
+<span class="nc" id="L515">                }</span>
+<span class="nc" id="L516">            }, new Response.ErrorListener() {</span>
+                @Override
+                public void onErrorResponse(VolleyError volleyError) {
+<span class="nc" id="L519">                    Log.e(&quot;Upload&quot;, &quot;Error: &quot; + volleyError.getMessage());</span>
+<span class="nc" id="L520">                }</span>
+            });
+<span class="nc" id="L522">            Singleton.getInstance(getApplicationContext()).addRequest(request);</span>
+<span class="nc" id="L523">        }</span>
+<span class="nc bnc" id="L524" title="All 2 branches missed.">        else if(method == Request.Method.DELETE){</span>
+<span class="nc" id="L525">            CustomImageRequest request = new CustomImageRequest(url, new Response.Listener&lt;NetworkResponse&gt;() {</span>
+                @Override
+                public void onResponse(NetworkResponse networkResponse) {
+<span class="nc" id="L528">                    Log.d(&quot;Image deleted:&quot;, networkResponse.toString());</span>
+<span class="nc" id="L529">                    getImage(groupImage);</span>
+<span class="nc" id="L530">                }</span>
+<span class="nc" id="L531">            }, new Response.ErrorListener() {</span>
+                @Override
+                public void onErrorResponse(VolleyError volleyError) {
+<span class="nc" id="L534">                    Log.e(&quot;Delete&quot;, &quot;Error: &quot; + volleyError.getMessage());</span>
+<span class="nc" id="L535">                }</span>
+            });
+<span class="nc" id="L537">            Singleton.getInstance(getApplicationContext()).addRequest(request);</span>
+        }
+<span class="nc" id="L539">    }</span>
+
+    /**
+     * Makes an image request to get the group image.
+     * @param image desired ImageView to set.
+     */
+    private void getImage(ImageView image){
+<span class="nc" id="L546">        String url = &quot;http://coms-309-035.class.las.iastate.edu:8080/Group/Image/&quot; + group.getTravelGroupID();</span>
+<span class="nc" id="L547">        ImageRequest request = new ImageRequest(url, new Response.Listener&lt;Bitmap&gt;() {</span>
+            @Override
+            public void onResponse(Bitmap bitmap) {
+<span class="nc" id="L550">                Log.d(&quot;Volley Image: &quot;, bitmap.toString());</span>
+<span class="nc" id="L551">                image.setImageBitmap(bitmap);</span>
+<span class="nc" id="L552">            }</span>
+<span class="nc" id="L553">        }, 0, 0, ImageView.ScaleType.FIT_XY, Bitmap.Config.RGB_565, new Response.ErrorListener() {</span>
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+<span class="nc" id="L556">                Log.e(&quot;Volley Error: &quot;, volleyError.toString());</span>
+<span class="nc" id="L557">            }</span>
+        });
+<span class="nc" id="L559">        Singleton.getInstance(getApplicationContext()).addRequest(request);</span>
+<span class="nc" id="L560">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span>Generated by the Android Gradle plugin 8.2.2</div></body></html>

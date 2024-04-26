@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CustomImageRequest.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=0;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">debug</a> &gt; <a href="index.source.html" class="el_package">com.example.itinerarybuddy.util</a> &gt; <span class="el_source">CustomImageRequest.java</span></div><h1>CustomImageRequest.java</h1><pre class="source lang-java linenums">package com.example.itinerarybuddy.util;
+
+import android.util.Log;
+
+import androidx.annotation.Nullable;
+
+import com.android.volley.NetworkResponse;
+import com.android.volley.ParseError;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
+
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ *
+ */
+public class CustomImageRequest extends Request&lt;NetworkResponse&gt; {
+
+    /**
+     * Response Listener for this request.
+     */
+    private final Response.Listener&lt;NetworkResponse&gt; listener;
+
+    /**
+     * Response Error Listener for this request.
+     */
+    private final Response.ErrorListener errorListener;
+
+    /**
+     * Image data. Only used for a PUT request.
+     */
+    private final byte[] image;
+
+<span class="nc" id="L40">    private final String boundary = &quot;apiclient-&quot; + System.currentTimeMillis();</span>
+
+    /**
+     * Constructor to create a PUT request to add a group image.
+     * @param url for the request.
+     * @param image data for the body.
+     * @param listener for the request.
+     * @param errorListener for the request.
+     */
+    public CustomImageRequest(String url, byte[] image, Response.Listener&lt;NetworkResponse&gt; listener, Response.ErrorListener errorListener) {
+<span class="nc" id="L50">        super(Request.Method.PUT, url, errorListener);</span>
+<span class="nc" id="L51">        this.image = image;</span>
+<span class="nc" id="L52">        this.listener = listener;</span>
+<span class="nc" id="L53">        this.errorListener = errorListener;</span>
+<span class="nc" id="L54">    }</span>
+
+    /**
+     * Constructor to create a DELETE request to remove a group image.
+     * @param url for the request.
+     * @param listener for the request.
+     * @param errorListener for the request.
+     */
+    public CustomImageRequest(String url, Response.Listener&lt;NetworkResponse&gt; listener, Response.ErrorListener errorListener) {
+<span class="nc" id="L63">        super(Request.Method.DELETE, url, errorListener);</span>
+<span class="nc" id="L64">        this.image = null;</span>
+<span class="nc" id="L65">        this.listener = listener;</span>
+<span class="nc" id="L66">        this.errorListener = errorListener;</span>
+<span class="nc" id="L67">    }</span>
+
+    @Override
+    public String getBodyContentType() {
+<span class="nc" id="L71">        return &quot;multipart/form-data;boundary=&quot; + boundary;</span>
+    }
+
+    @Override
+    public byte[] getBody(){
+<span class="nc" id="L76">        byte[] byteArray = null;</span>
+<span class="nc" id="L77">        ByteArrayOutputStream bos = new ByteArrayOutputStream();</span>
+<span class="nc" id="L78">        DataOutputStream dos = new DataOutputStream(bos);</span>
+
+        try{
+<span class="nc" id="L81">            dos.writeBytes(&quot;--&quot; + boundary + &quot;\r\n&quot;);</span>
+<span class="nc" id="L82">            dos.writeBytes(&quot;Content-Disposition: form-data; name=\&quot;image\&quot;;filename=\&quot;image.jpeg\&quot;\r\n&quot;);</span>
+<span class="nc" id="L83">            dos.writeBytes(&quot;\r\n&quot;);</span>
+
+<span class="nc" id="L85">            dos.write(image);</span>
+
+<span class="nc" id="L87">            dos.writeBytes(&quot;\r\n&quot;);</span>
+<span class="nc" id="L88">            dos.writeBytes(&quot;--&quot; + boundary + &quot;--\r\n&quot;);</span>
+
+<span class="nc" id="L90">            byteArray = bos.toByteArray();</span>
+<span class="nc" id="L91">        }catch(IOException e){</span>
+<span class="nc" id="L92">            Log.e(&quot;Error: &quot;, e.toString());</span>
+<span class="nc" id="L93">        }</span>
+
+<span class="nc" id="L95">        return byteArray;</span>
+    }
+
+    @Nullable
+    @Override
+    protected Map&lt;String, String&gt; getParams(){
+<span class="nc" id="L101">        HashMap&lt;String, String&gt; map = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L102">        map.put(&quot;type&quot;, &quot;image/jpeg&quot;);</span>
+<span class="nc" id="L103">        return map;</span>
+    }
+
+    @Override
+    protected Response&lt;NetworkResponse&gt; parseNetworkResponse(NetworkResponse networkResponse) {
+        try {
+<span class="nc" id="L109">            return Response.success(networkResponse,</span>
+<span class="nc" id="L110">                    HttpHeaderParser.parseCacheHeaders(networkResponse));</span>
+<span class="nc" id="L111">        } catch (Exception e) {</span>
+<span class="nc" id="L112">            return Response.error(new ParseError(e));</span>
+        }
+    }
+
+    @Override
+    protected void deliverResponse(NetworkResponse networkResponse) {
+<span class="nc" id="L118">        listener.onResponse(networkResponse);</span>
+<span class="nc" id="L119">    }</span>
+
+    @Override
+    public void deliverError(VolleyError error) {
+<span class="nc" id="L123">        errorListener.onErrorResponse(error);</span>
+<span class="nc" id="L124">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span>Generated by the Android Gradle plugin 8.2.2</div></body></html>

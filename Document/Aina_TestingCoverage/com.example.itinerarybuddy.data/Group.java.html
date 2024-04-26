@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Group.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=0;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">debug</a> &gt; <a href="index.source.html" class="el_package">com.example.itinerarybuddy.data</a> &gt; <span class="el_source">Group.java</span></div><h1>Group.java</h1><pre class="source lang-java linenums">package com.example.itinerarybuddy.data;
+
+import android.util.Log;
+
+import androidx.annotation.NonNull;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+
+/** Represents a travel group object that the user may be a member of. All fields are final because the group objects are all recreated upon modification. */
+public class Group {
+
+    /**
+     * The name for the travel group.
+     */
+    private final String travelGroupName;
+
+    /**
+     * The ID for the travel group.
+     */
+    private final String travelGroupID;
+
+    /**
+     * The destination for the travel group.
+     */
+    private final String travelGroupDestination;
+
+    /**
+     * The description for the travel group.
+     */
+    private final String travelGroupDescription;
+
+    /**
+     * The creator of the travel group.
+     */
+    private final String travelGroupAmbassador;
+
+    /**
+     * The members of the travel group.
+     */
+    private final ArrayList&lt;String&gt; members;
+
+    /**
+     * The constructor for a travel group.
+     * @param name of the travel group.
+     * @param id of the travel group.
+     * @param destination of the travel group.
+     * @param description of the travel group.
+     * @param travelGroupAmbassador of the travel group.
+     * @param members of the travel group.
+     */
+<span class="nc" id="L55">    public Group(String name, String id, String destination, String description, String travelGroupAmbassador, ArrayList&lt;String&gt; members) {</span>
+<span class="nc" id="L56">        this.travelGroupName = name;</span>
+<span class="nc" id="L57">        this.travelGroupID = id;</span>
+<span class="nc" id="L58">        this.travelGroupDestination = destination;</span>
+<span class="nc" id="L59">        this.travelGroupDescription = description;</span>
+<span class="nc" id="L60">        this.travelGroupAmbassador = travelGroupAmbassador;</span>
+<span class="nc" id="L61">        this.members = members;</span>
+<span class="nc" id="L62">    }</span>
+
+    /**
+     * Getter for the group name.
+     * @return travelGroupName.
+     */
+    public String getTravelGroupName() {
+<span class="nc" id="L69">        return travelGroupName;</span>
+    }
+
+    /**
+     * Getter for the group ID.
+     * @return travelGroupID.
+     */
+    public String getTravelGroupID() {
+<span class="nc" id="L77">        return travelGroupID;</span>
+    }
+
+    /**
+     * Getter for the group destination.
+     * @return travelGroupDestination.
+     */
+    public String getTravelGroupDestination() {
+<span class="nc" id="L85">        return travelGroupDestination;</span>
+    }
+
+    /**
+     * Getter for the group description.
+     * @return travelGroupDescription.
+     */
+    public String getTravelGroupDescription() {
+<span class="nc" id="L93">        return travelGroupDescription;</span>
+    }
+
+    /**
+     * Getter for the group ambassador.
+     * @return travelGroupAmbassador.
+     */
+    public String getTravelGroupAmbassador() {
+<span class="nc" id="L101">        return travelGroupAmbassador;</span>
+    }
+
+    /**
+     * Getter for the group members.
+     * @return members.
+     */
+    public ArrayList&lt;String&gt; getMembers() {
+<span class="nc" id="L109">        return members;</span>
+    }
+
+    /**
+     * The string representation of the group for the list adapter.
+     * @return group details.
+     */
+    @NonNull
+    @Override
+    public String toString() {
+<span class="nc" id="L119">        return travelGroupName + &quot;\nDestination: &quot; + travelGroupDestination;</span>
+    }
+
+    /**
+     * Static method to parse the group JSON for the group name.
+     * @param json containing group data.
+     * @return travelGroupName from the passed in JSON.
+     */
+    public static String getGroupName(JSONObject json){
+<span class="nc" id="L128">        String groupName = null;</span>
+        try{
+<span class="nc" id="L130">            groupName = json.getString(&quot;travelGroupName&quot;);</span>
+<span class="nc" id="L131">        } catch (JSONException e) {</span>
+<span class="nc" id="L132">            Log.e(&quot;Error: &quot;, e.toString());</span>
+<span class="nc" id="L133">        }</span>
+<span class="nc" id="L134">        return groupName;</span>
+    }
+
+    /**
+     * Static method to parse the group JSON for the group ID.
+     * @param json containing group data.
+     * @return travelGroupId from the passed in JSON.
+     */
+    public static String getGroupID(JSONObject json){
+<span class="nc" id="L143">        String groupCode = null;</span>
+        try{
+<span class="nc" id="L145">            groupCode = json.getString(&quot;travelGroupId&quot;);</span>
+<span class="nc" id="L146">        } catch (JSONException e) {</span>
+<span class="nc" id="L147">            Log.e(&quot;Error: &quot;, e.toString());</span>
+<span class="nc" id="L148">        }</span>
+<span class="nc" id="L149">        return groupCode;</span>
+    }
+
+    /**
+     * Static method to parse the group JSON for the group destination.
+     * @param json containing group data.
+     * @return travelGroupDestination from the passed in JSON.
+     */
+    public static String getGroupDestination(JSONObject json){
+<span class="nc" id="L158">        String groupDestination = null;</span>
+        try{
+<span class="nc" id="L160">            groupDestination = json.getString(&quot;travelGroupDestination&quot;);</span>
+<span class="nc" id="L161">        } catch (JSONException e) {</span>
+<span class="nc" id="L162">            Log.e(&quot;Error: &quot;, e.toString());</span>
+<span class="nc" id="L163">        }</span>
+<span class="nc" id="L164">        return groupDestination;</span>
+    }
+
+    /**
+     * Static method to parse the group JSON for the group description.
+     * @param json containing group data.
+     * @return travelGroupDescription from the passed in JSON.
+     */
+    public static String getGroupDescription(JSONObject json){
+<span class="nc" id="L173">        String groupDescription = null;</span>
+        try{
+<span class="nc" id="L175">            groupDescription = json.getString(&quot;travelGroupDescription&quot;);</span>
+<span class="nc" id="L176">        } catch (JSONException e) {</span>
+<span class="nc" id="L177">            Log.e(&quot;Error: &quot;, e.toString());</span>
+<span class="nc" id="L178">        }</span>
+<span class="nc" id="L179">        return groupDescription;</span>
+    }
+
+    /**
+     * Static method to parse the group JSON for the group ambassador.
+     * @param json containing group data.
+     * @return travelGroupAmbassador from the passed in JSON.
+     */
+    public static String getGroupAmbassador(JSONObject json){
+<span class="nc" id="L188">        String GroupAmbassador = null;</span>
+        try{
+<span class="nc" id="L190">            GroupAmbassador = json.getString(&quot;travelGroupAmbassador&quot;);</span>
+<span class="nc" id="L191">        } catch (JSONException e) {</span>
+<span class="nc" id="L192">            Log.e(&quot;Error: &quot;, e.toString());</span>
+<span class="nc" id="L193">        }</span>
+<span class="nc" id="L194">        return GroupAmbassador;</span>
+    }
+
+    /**
+     * Static method to parse the group JSON for the group members.
+     * @param json containing group data.
+     * @return list of members from the passed in JSON.
+     */
+    public static ArrayList&lt;String&gt; getGroupMembers(JSONObject json){
+<span class="nc" id="L203">        ArrayList&lt;String&gt; groupMembers = new ArrayList&lt;String&gt;();</span>
+        try{
+<span class="nc" id="L205">            JSONArray array = json.getJSONArray(&quot;members&quot;);</span>
+<span class="nc bnc" id="L206" title="All 2 branches missed.">            for(int i = 0; i &lt; array.length(); i++){</span>
+<span class="nc bnc" id="L207" title="All 2 branches missed.">                if(json.getString(&quot;travelGroupAmbassador&quot;).equals(array.getJSONObject(i).getString(&quot;userName&quot;))){</span>
+<span class="nc" id="L208">                    groupMembers.add(array.getJSONObject(i).getString(&quot;userName&quot;) + &quot; (Group Creator)&quot;);</span>
+                }
+                else {
+<span class="nc" id="L211">                    groupMembers.add(array.getJSONObject(i).getString(&quot;userName&quot;));</span>
+                }
+            }
+<span class="nc" id="L214">        } catch (JSONException e) {</span>
+<span class="nc" id="L215">            Log.e(&quot;Error: &quot;, e.toString());</span>
+<span class="nc" id="L216">        }</span>
+<span class="nc" id="L217">        return groupMembers;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span>Generated by the Android Gradle plugin 8.2.2</div></body></html>
