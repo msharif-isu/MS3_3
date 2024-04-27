@@ -1,10 +1,11 @@
 package MS3_3.Backend.Ambassador;
 
-import MS3_3.Backend.TravelGroups.TravelGroup;
+import MS3_3.Backend.AmbassadorBlogPost.BlogPost;
+import MS3_3.Backend.AmbassadorBlogPost.Images.BlogPostImage;
+import MS3_3.Backend.FileUpload.Image;
+import MS3_3.Backend.Groups.TravelGroup;
 import MS3_3.Backend.UserTypes.User;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,9 @@ public class Ambassador {
     private String city;
 
     private String userType;
+
+    @OneToMany(mappedBy = "ambassador", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BlogPost> blogPosts;
 
     private int numPosts;
 
@@ -45,10 +49,20 @@ public class Ambassador {
         this.numLikes = user.getAccountLikes();
         this.canPost = true;
         this.groups_created = new ArrayList<>();
+        this.blogPosts = new ArrayList<>();
     }
 
     public Ambassador() {
         this.groups_created = new ArrayList<>();
+        this.blogPosts = new ArrayList<>();
+    }
+
+    public List<BlogPost> getBlogPosts() {
+        return blogPosts;
+    }
+
+    public void setBlogPosts(List<BlogPost> blogPost) {
+        this.blogPosts = blogPost;
     }
 
     public List<TravelGroup> getGroups_created() {

@@ -22,7 +22,7 @@ public class BlogPostImage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
     private String name;
     private String type;
@@ -49,7 +49,7 @@ public class BlogPostImage {
         this.blogPost = blogPost;
     }
 
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
