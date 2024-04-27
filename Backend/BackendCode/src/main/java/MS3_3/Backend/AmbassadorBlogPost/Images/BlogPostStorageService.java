@@ -19,7 +19,6 @@ public class BlogPostStorageService {
     private BlogPostRepository blogPostRepository;
 
     public String uploadImage(MultipartFile file) throws IOException {
-
         BlogPostImage imageData = imageRepository.save(BlogPostImage.builder()
                 .name(file.getOriginalFilename())
                 .type(file.getContentType())
@@ -32,14 +31,14 @@ public class BlogPostStorageService {
     }
 
     public String addBlogImage(MultipartFile file, int blogId) throws IOException {
-
         BlogPostImage imageData = imageRepository.save(BlogPostImage.builder()
+                        .blogPost(blogPostRepository.findByBlogPostId(blogId))
                 .name(file.getOriginalFilename())
                 .type(file.getContentType())
                 .imageData(BlogPostImageUtils.compressImage(file.getBytes())).build()
         );
         BlogPost tempBlogPost = blogPostRepository.findByBlogPostId(blogId);
-        tempBlogPost.getGroupImageList().add(imageData);
+        tempBlogPost.getBlogImageList().add(imageData);
         blogPostRepository.save(tempBlogPost);
         if (imageData != null) {
             return "file uploaded successfully to Blog " + blogPostRepository.findByBlogPostId(blogId).getId() + " : " + file.getOriginalFilename();
@@ -48,10 +47,9 @@ public class BlogPostStorageService {
     }
 
     public String deleteBlogImage(int imageId, int blogId) throws IOException {
-
         BlogPostImage imageData = imageRepository.findById(imageId);
         BlogPost tempBlogPost = blogPostRepository.findByBlogPostId(blogId);
-        tempBlogPost.getGroupImageList().remove(imageData);
+        tempBlogPost.getBlogImageList().remove(imageData);
         blogPostRepository.save(tempBlogPost);
         if (imageData != null) {
             return "file deleted successfully from Blog " + blogPostRepository.findByBlogPostId(blogId).getId();
