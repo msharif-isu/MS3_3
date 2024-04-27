@@ -511,12 +511,14 @@ public class LoadGroup extends AppCompatActivity {
                 @Override
                 public void onResponse(NetworkResponse networkResponse) {
                     Log.d("Upload", "Response: " + networkResponse.toString());
+                    Toast.makeText(getApplicationContext(), "Image Saved!", Toast.LENGTH_LONG).show();
                     getImage(groupImage);
                 }
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError volleyError) {
                     Log.e("Upload", "Error: " + volleyError.getMessage());
+                    Toast.makeText(getApplicationContext(), "There was an error!", Toast.LENGTH_LONG).show();
                 }
             });
             Singleton.getInstance(getApplicationContext()).addRequest(request);
