@@ -29,14 +29,10 @@ import com.example.itinerarybuddy.data.BlogItem;
 import com.example.itinerarybuddy.util.CustomImageRequest;
 import com.example.itinerarybuddy.util.Singleton;
 
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 public class BlogCardAdapter extends RecyclerView.Adapter<BlogCardAdapter.ViewHolder> {
 
@@ -79,7 +75,6 @@ public class BlogCardAdapter extends RecyclerView.Adapter<BlogCardAdapter.ViewHo
             }
         });
     }
-
 
 
     private void openImagePicker() {
@@ -131,7 +126,7 @@ public class BlogCardAdapter extends RecyclerView.Adapter<BlogCardAdapter.ViewHo
         builder.show();
     }
 
-    private byte[] uriToImage(Uri imageUri) {
+    public byte[] uriToImage(Uri imageUri) {
         byte[] bytes = null;
         try {
             InputStream inputStream = context.getContentResolver().openInputStream(imageUri);
@@ -150,7 +145,7 @@ public class BlogCardAdapter extends RecyclerView.Adapter<BlogCardAdapter.ViewHo
         return bytes;
     }
 
-    private void imageMethod(byte[] data, int method) {
+    public void imageMethod(byte[] data, int method) {
         String url = "http://coms-309-035.class.las.iastate.edu:8080/Group/Image/";
 
         if (method == Request.Method.PUT) {

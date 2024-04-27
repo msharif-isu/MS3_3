@@ -4,23 +4,21 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -49,16 +47,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
-
-import android.os.Handler;
-import android.os.Looper;
-import android.text.format.DateUtils;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 
 public class DashboardFragment extends Fragment implements WebSocketListener, OnItemClickListener {
@@ -275,7 +263,7 @@ public class DashboardFragment extends Fragment implements WebSocketListener, On
                     String postID = generatePostID();
 
                     //Post_Itinerary newPost = new Post_Itinerary(UserData.getUsername(),"Just Now", selectedItinerary,caption );
-                    Post_Itinerary newPost = new Post_Itinerary("Aina", destination, choosen_tripCode, choosen_numDays, caption, postID);
+                    Post_Itinerary newPost = new Post_Itinerary(UserData.getUsername(), destination, choosen_tripCode, choosen_numDays, caption, postID);
 
                     POST_newPost(newPost);
                     WebSocketManager.getInstance().sendPost(newPost);

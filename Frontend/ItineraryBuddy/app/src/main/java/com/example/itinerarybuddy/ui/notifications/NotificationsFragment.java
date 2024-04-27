@@ -1,7 +1,10 @@
 package com.example.itinerarybuddy.ui.notifications;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,10 +12,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -26,7 +29,6 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.itinerarybuddy.R;
 import com.example.itinerarybuddy.activities.BlogCardAdapter;
 import com.example.itinerarybuddy.data.BlogItem;
-import com.example.itinerarybuddy.data.Post_Itinerary;
 import com.example.itinerarybuddy.data.UserData;
 import com.example.itinerarybuddy.databinding.FragmentNotificationsBinding;
 import com.example.itinerarybuddy.util.Singleton;
@@ -59,6 +61,19 @@ public class NotificationsFragment extends Fragment {
         postBlogAdapter = new BlogCardAdapter(cardItems, requireContext());
         recyclerView.setAdapter(postBlogAdapter);
 
+        // Register for activity result
+       /* ActivityResultLauncher<String> launcher = registerForActivityResult(
+                new ActivityResultContracts.GetContent(),
+                uri -> {
+                    if(uri != null) {
+                        postBlogAdapter.handleImageSelection(uri);
+                    }
+                }
+        );
+
+        // Pass the launcher to adapter
+        postBlogAdapter.setActivityResultLauncher(launcher);*/
+
         ImageView postButton = root.findViewById(R.id.postBlog);
         postButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,6 +84,20 @@ public class NotificationsFragment extends Fragment {
 
         return root;
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1 && resultCode == Activity.RESULT_OK && data != null) {
+            // Get the selected image URI
+            Uri selectedImageUri = data.getData();
+            // Convert URI to byte array and perform further operations
+            byte[] imageData = postBlogAdapter.uriToImage(selectedImageUri);
+            // Call your method to handle the image
+            postBlogAdapter.imageMethod(imageData, Request.Method.PUT);
+        }
+    }
+
 
     private void showPostBlogDialog() {
 
@@ -90,7 +119,7 @@ public class NotificationsFragment extends Fragment {
 
                 String BlogTitle = titleEditText.getText().toString();
 
-                BlogItem newBlogItem = new BlogItem(BlogTitle, "Aina", formattedDate);
+                BlogItem newBlogItem = new BlogItem(BlogTitle, UserData.getUsername(), formattedDate);
                 cardItems.add(0, newBlogItem);
 
                 POST_BlogItem(newBlogItem);
@@ -153,7 +182,6 @@ public class NotificationsFragment extends Fragment {
 
 
     private void loadPosts() {
-
 
         GET_previousBlogPosts();
         // Notify adapter of data change
