@@ -16,11 +16,8 @@ public class DayCard extends AppCompatActivity {
     private DayCardAdapter dayCardAdapter;
     private ArrayList<String> dayTitles;
     private ArrayList<String> dayContents;
-
-
     private String source;
     private boolean isEditable;
-
 
     /**
      * Called when the activity is starting.

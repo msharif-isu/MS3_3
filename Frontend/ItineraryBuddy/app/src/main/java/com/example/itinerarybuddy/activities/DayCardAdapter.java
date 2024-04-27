@@ -27,7 +27,6 @@ public class DayCardAdapter extends RecyclerView.Adapter<DayCardAdapter.ViewHold
     private ArrayList<String> dayTitles;
     private ArrayList<String> dayContents;
 
-
     /**
      * Constructs a new DayCardAdapter.
      *
@@ -116,7 +115,13 @@ public class DayCardAdapter extends RecyclerView.Adapter<DayCardAdapter.ViewHold
             int position = getAdapterPosition();
             if (position != RecyclerView.NO_POSITION) {
                 String title = dayTitles.get(position);
-                Intent intent = new Intent(context, ScheduleTemplate.class);
+                Intent intent;
+                if(source.equals("GROUP")) {
+                    intent = new Intent(context, com.example.itinerarybuddy.ui.home.GroupSchedule.class);
+                }
+                else{
+                    intent = new Intent(context, ScheduleTemplate.class);
+                }
                 intent.putExtra("TITLE", title);
 
                 //Retrieve extras from the intent that started DayCard
