@@ -50,14 +50,22 @@ public class BlogPostController {
 
     @GetMapping("BlogPost/CoverImage/{blogId}")
     public ResponseEntity<?> downloadCoverImageById(@PathVariable int blogId){
-        Random rand = new Random();
-        int size = blogPostRepository.findByBlogPostId(blogId).getBlogImageList().size()-1;
-        int tempId = rand.nextInt(size+1);
-        int CoverId = blogPostRepository.findByBlogPostId(blogId).getBlogImageList().get(tempId).getId();
-        byte[] imageData=service.downloadImageByImageId(CoverId);
-        return ResponseEntity.status(HttpStatus.OK)
-                .contentType(MediaType.valueOf("image/png"))
-                .body(imageData);
+        if(blogPostRepository.findByBlogPostId(blogId).getBlogImageList().size() != 0) {
+            Random rand = new Random();
+            int size = blogPostRepository.findByBlogPostId(blogId).getBlogImageList().size() - 1;
+            int tempId = rand.nextInt(size + 1);
+            int CoverId = blogPostRepository.findByBlogPostId(blogId).getBlogImageList().get(tempId).getId();
+            byte[] imageData = service.downloadImageByImageId(CoverId);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .contentType(MediaType.valueOf("image/png"))
+                    .body(imageData);
+        }
+        else{
+            byte[] imageData = service.downloadImageByImageId(1);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .contentType(MediaType.valueOf("image/png"))
+                    .body(imageData);
+        }
     }
 
     @PostMapping("/BlogPost/{userName}/{blogName}/{postDate}")
