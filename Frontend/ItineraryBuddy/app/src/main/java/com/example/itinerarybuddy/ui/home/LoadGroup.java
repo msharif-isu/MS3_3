@@ -558,4 +558,5 @@ public class LoadGroup extends AppCompatActivity {
         });
         Singleton.getInstance(getApplicationContext()).addRequest(request);
     }
+
 }

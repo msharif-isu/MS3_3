@@ -4,10 +4,8 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -28,7 +26,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.example.itinerarybuddy.R;
+import com.example.itinerarybuddy.data.BlogImage;
 import com.example.itinerarybuddy.data.UserData;
 import com.example.itinerarybuddy.databinding.BlogImageConfirmationBinding;
 import com.example.itinerarybuddy.util.CustomImageRequest;
@@ -42,12 +42,20 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * Activity launches blog photo album.
+ */
 public class BlogPhotoAlbum extends AppCompatActivity {
 
     /**
      * Adapter for the list of images to display for this blog.
      */
     private ImageAdapter adapter;
+
+    /**
+     * Grid to arrange images in.
+     */
+    private GridView grid;
 
     /**
      * URI for a selected image to be uploaded.
@@ -66,18 +74,10 @@ public class BlogPhotoAlbum extends AppCompatActivity {
         this.getSupportActionBar().hide();
         setContentView(R.layout.blog_album);
 
-        //id = getIntent().getStringExtra("ID");
+        id = getIntent().getStringExtra("ID");
         String poster = getIntent().getStringExtra("USER");
-        id = "1";
 
-        GridView grid = findViewById(R.id.grid);
-        adapter = new ImageAdapter(getApplicationContext());
-        grid.setAdapter(adapter);
-//        adapter.add(BitmapFactory.decodeResource(getResources(), R.drawable.earth_icon));
-//        adapter.add(BitmapFactory.decodeResource(getResources(), R.drawable.airplane_trip));
-//        adapter.add(BitmapFactory.decodeResource(getResources(), R.drawable.airplane_trip));
-//        adapter.add(BitmapFactory.decodeResource(getResources(), R.drawable.earth_icon));
-//        adapter.notifyDataSetChanged();
+        grid = findViewById(R.id.grid);
 
         // Load images
         getAlbum();
@@ -118,8 +118,7 @@ public class BlogPhotoAlbum extends AppCompatActivity {
         ImageButton addPhoto = findViewById(R.id.add_photo);
 
         // Blog post will only be editable to the user that posted it.
-        //if(UserData.getUsername().equals(poster)){
-        if(true){
+        if(UserData.getUsername().equals(poster)){
             addPhoto.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -130,7 +129,7 @@ public class BlogPhotoAlbum extends AppCompatActivity {
             grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                    dialogDeleteImage(position);
                 }
             });
         }
@@ -144,7 +143,10 @@ public class BlogPhotoAlbum extends AppCompatActivity {
      * Retrieve the blog item and parse through the list of images to load the adapter.
      */
     private void getAlbum(){
-        final String url = "http://coms-309-035.class.las.iastate.edu:8080/BlogPost/1";
+        adapter = new ImageAdapter(getApplicationContext());
+        grid.setAdapter(adapter);
+
+        final String url = "http://coms-309-035.class.las.iastate.edu:8080/BlogPost/" + id;
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject jsonObject) {
@@ -177,7 +179,7 @@ public class BlogPhotoAlbum extends AppCompatActivity {
             @Override
             public void onResponse(Bitmap bitmap) {
                 Log.d("Volley Image: ", bitmap.toString());
-                adapter.insert(bitmap, 0);
+                adapter.insert(new BlogImage(bitmap, id), 0);
                 adapter.notifyDataSetChanged();
             }
         }, 0, 0, ImageView.ScaleType.FIT_XY, Bitmap.Config.RGB_565, new Response.ErrorListener() {
@@ -228,14 +230,50 @@ public class BlogPhotoAlbum extends AppCompatActivity {
             @Override
             public void onResponse(NetworkResponse networkResponse) {
                 Log.d("Uploaded Image", networkResponse.toString());
+                Toast.makeText(getApplicationContext(), "Photo Uploaded!", Toast.LENGTH_LONG).show();
+
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
                 Log.e("Image Upload Error", volleyError.toString());
+                Toast.makeText(getApplicationContext(), "There was an Error!", Toast.LENGTH_LONG).show();
+
             }
         });
         Singleton.getInstance(getApplicationContext()).addRequest(request);
+
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+        }
+
+        // Update album
+        getAlbum();
+    }
+
+    private void dialogDeleteImage(int position){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Would you like to delete this image?");
+
+        builder.setPositiveButton("Continue", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                BlogImage blog = adapter.getItem((position));
+                assert blog != null;
+                int imageId = blog.getId();
+                deleteImage(Integer.toString(imageId));
+            }
+        });
+
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
     }
 
     /**
@@ -244,5 +282,28 @@ public class BlogPhotoAlbum extends AppCompatActivity {
      */
     private void deleteImage(String id){
         final String url = "http://coms-309-035.class.las.iastate.edu:8080/BlogPost/Image/" + id;
+        StringRequest request = new StringRequest(Request.Method.DELETE, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String s) {
+                Log.d("Volley Response:", s);
+                Toast.makeText(getApplicationContext(), "Photo Deleted!", Toast.LENGTH_LONG).show();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                Log.e("Volley Error:", volleyError.toString());
+                Toast.makeText(getApplicationContext(), "There was an Error!", Toast.LENGTH_LONG).show();
+
+            }
+        });
+        Singleton.getInstance(getApplicationContext()).addRequest(request);
+
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+        }
+
+        // Update album
+        getAlbum();
     }
 }

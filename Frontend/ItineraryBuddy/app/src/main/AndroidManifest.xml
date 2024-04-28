@@ -23,7 +23,7 @@
             android:exported="false"></activity>
 
         <activity
-            android:name=".ui.notifications.BlogPhotoAlbum"
+            android:name=".activities.LoginActivity"
             android:exported="true">
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
@@ -59,7 +59,7 @@
             android:exported="false"/>
 
         <activity
-            android:name=".activities.LoginActivity"
+            android:name=".ui.notifications.BlogPhotoAlbum"
             android:exported="false"/>
 
         <meta-data
