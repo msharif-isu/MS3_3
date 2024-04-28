@@ -25,9 +25,9 @@ maven-test:
     - mvn test         # maven test
 
 auto-deploy:
-  stage: mavendeploy    
+  stage: mavendeploy
   tags:
-    - springboot_tag      # change to your runner's tag
+    - collalti_tag      # change to your runner's tag
   script:               # script to run the deployment service you created
     - cd Backend/BackendCode        # change 'Backend' to to where you have the pom.xml (do not add / in the beginning)
     - sudo mv target/*.jar /target/web-demo.jar
@@ -57,3 +57,4 @@ android-test:
   script:
     - cd Frontend/ItineraryBuddy                 # change 'Frontend' to where you have 'gradlew' (do not add / in the beginning)
     - ./gradlew test               # gradle test
+
