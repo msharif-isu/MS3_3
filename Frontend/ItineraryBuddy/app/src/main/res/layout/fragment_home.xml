@@ -103,7 +103,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.8"
             app:layout_constraintStart_toEndOf="@+id/textView4"
-            app:srcCompat="@drawable/add_circle" />
+            app:srcCompat="@drawable/add_circle"
+            android:contentDescription="@string/create_itinerary" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -21,7 +21,7 @@
         android:layout_width="280dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="96dp"
-        android:background="#7a9143"
+        android:background="@drawable/round_button_green"
         android:fontFamily="sans-serif-condensed-medium"
         android:text="@string/signup"
         android:textColor="@color/white"
@@ -35,7 +35,7 @@
         android:id="@+id/username_register_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
+        android:layout_marginBottom="8dp"
         android:fontFamily="sans-serif-condensed-medium"
         android:labelFor="@id/username_register_input"
         android:text="@string/username_text"
@@ -43,14 +43,14 @@
         android:textSize="25sp"
         app:layout_constraintBottom_toTopOf="@+id/username_register_input"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.2"
+        app:layout_constraintHorizontal_bias="0.21"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/email_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
+        android:layout_marginBottom="8dp"
         android:fontFamily="sans-serif-condensed-medium"
         android:labelFor="@id/email_register_input"
         android:text="@string/email_text"
@@ -58,7 +58,7 @@
         android:textSize="25sp"
         app:layout_constraintBottom_toTopOf="@+id/email_register_input"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.17"
+        app:layout_constraintHorizontal_bias="0.182"
         app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
@@ -89,21 +89,21 @@
         android:background="@drawable/rounded_edittext"
         android:fontFamily="sans-serif-condensed-medium"
         android:inputType="textPersonName"
-        android:text=""
-        android:textSize="25sp"
         android:paddingStart="15dp"
         android:paddingEnd="15dp"
         android:paddingBottom="8dp"
+        android:text=""
+        android:textSize="25sp"
         app:layout_constraintBottom_toTopOf="@+id/email_register_input"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/password_register_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
+        android:layout_marginBottom="8dp"
         android:fontFamily="sans-serif-condensed-medium"
         android:labelFor="@id/password_confirm_input"
         android:text="@string/password_text"
@@ -111,14 +111,14 @@
         android:textSize="25sp"
         app:layout_constraintBottom_toTopOf="@+id/password_register_input"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.2"
+        app:layout_constraintHorizontal_bias="0.21"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/password_confirm_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
+        android:layout_marginBottom="8dp"
         android:fontFamily="sans-serif-condensed-medium"
         android:labelFor="@id/password_register_input"
         android:text="@string/confirm_password_text"
@@ -138,14 +138,14 @@
         android:background="@drawable/rounded_edittext"
         android:fontFamily="sans-serif-condensed-medium"
         android:inputType="textPassword"
-        android:text=""
-        android:textSize="25sp"
         android:paddingStart="15dp"
         android:paddingEnd="15dp"
         android:paddingBottom="8dp"
+        android:text=""
+        android:textSize="25sp"
         app:layout_constraintBottom_toTopOf="@+id/password_confirm_input"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
@@ -157,14 +157,14 @@
         android:background="@drawable/rounded_edittext"
         android:fontFamily="sans-serif-condensed-medium"
         android:inputType="textEmailAddress"
-        android:text=""
-        android:textSize="25sp"
         android:paddingStart="15dp"
         android:paddingEnd="15dp"
         android:paddingBottom="8dp"
+        android:text=""
+        android:textSize="25sp"
         app:layout_constraintBottom_toTopOf="@+id/password_register_input"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
@@ -187,13 +187,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="85dp"
-        android:background="@color/white"
+        android:background="@drawable/round_button_green"
         android:fontFamily="sans-serif-condensed-medium"
         android:text="@string/sign_in_here_text"
         android:textColor="@color/white"
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/username_register_input"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

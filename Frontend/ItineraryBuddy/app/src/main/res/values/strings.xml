@@ -74,5 +74,6 @@
     <string name="remove_group_image">Remove Group Image</string>
     <string name="logout">Logout</string>
     <string name="your_itineraries">YOUR ITINERARIES</string>
+    <string name="create_itinerary">Create Itinerary</string>
 
 </resources>
