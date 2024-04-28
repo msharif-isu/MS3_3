@@ -37,8 +37,10 @@ public class StorageService {
                 .type(file.getContentType())
                 .imageData(ImageUtils.compressImage(file.getBytes())).build()
         );
-        long oldId = travelGroupRepository.findById(groupId).getGroupImage().getId();
-        travelGroupRepository.findById(groupId).setGroupImage(imageData);
+        travelGroupRepository.findByTravelGroupId(groupId).setGroupImage(imageData);
+
+        long oldId = travelGroupRepository.findByTravelGroupId(groupId).getGroupImage().getId();
+        travelGroupRepository.findByTravelGroupId(groupId).setGroupImage(imageData);
         if (imageData != null) {
             return "file uploaded successfully to Group " + travelGroupRepository.findByTravelGroupId(groupId).getTravelGroupName() + " : " + file.getOriginalFilename();
         }
