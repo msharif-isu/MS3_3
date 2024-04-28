@@ -17,6 +17,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 @RestController
 public class BlogPostController {
@@ -33,6 +35,11 @@ public class BlogPostController {
     @Autowired
     private AmbassadorRepository ambassadorRepository;
 
+    @GetMapping("/BlogPost/Username/{userName}")
+    public List<BlogPost> getBlogByUserName(@PathVariable String userName){
+        return ambassadorRepository.findByUserName(userName).getBlogPosts();
+    }
+
     @GetMapping("BlogPost/Image/{Id}")
     public ResponseEntity<?> downloadImageByName(@PathVariable int Id){
         byte[] imageData=service.downloadImageByImageId(Id);
@@ -41,9 +48,21 @@ public class BlogPostController {
                 .body(imageData);
     }
 
+    @GetMapping("BlogPost/CoverImage/{blogId}")
+    public ResponseEntity<?> downloadCoverImageById(@PathVariable int blogId){
+        Random rand = new Random();
+        int size = blogPostRepository.findByBlogPostId(blogId).getBlogImageList().size()-1;
+        int tempId = rand.nextInt(size+1);
+        int CoverId = blogPostRepository.findByBlogPostId(blogId).getBlogImageList().get(tempId).getId();
+        byte[] imageData=service.downloadImageByImageId(CoverId);
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.valueOf("image/png"))
+                .body(imageData);
+    }
+
     @PostMapping("/BlogPost/{userName}/{blogName}/{postDate}")
     public BlogPost createBlogPost(@PathVariable String userName,@PathVariable String blogName,@PathVariable String postDate) {
-        BlogPost blogPost = new BlogPost(blogName,postDate);
+        BlogPost blogPost = new BlogPost(blogName,postDate, ambassadorRepository.findByUserName(userName).getUserName());
         blogPost.setAmbassador(ambassadorRepository.findByUserName(userName));
         blogPostRepository.save(blogPost);
         return blogPostRepository.findByBlogPostId(blogPost.getId());
@@ -82,13 +101,19 @@ public class BlogPostController {
         return output;
     }
 
-    @DeleteMapping("/BlogPost/{blogId}")
-    public BlogPost deleteBlogPost(@PathVariable int blogId) {
+    @DeleteMapping("/BlogPost/Blank/{blogId}")
+    public BlogPost resetBlogPost(@PathVariable int blogId) {
         BlogPost temp = blogPostRepository.findByBlogPostId(blogId);
         temp.setBlogPostTitle("");
         temp.getBlogImageList().clear();
         BlogPost output = blogPostRepository.save(temp);
         return output;
+    }
+
+    @DeleteMapping("/BlogPost/{blogId}")
+    public String deleteBlogPost(@PathVariable int blogId) {
+        blogPostRepository.deleteByBlogPostId(blogId);
+        return "Blog Deleted";
     }
 
     @DeleteMapping("/BlogPost/Image/{blogImageId}")

@@ -13,13 +13,14 @@ import java.util.List;
 public class BlogPost {
 
     @ManyToOne
-    @JoinColumn(name = "userName")
     @JsonIgnore
     private Ambassador ambassador;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int blogPostId;
+
+    private String userName;
 
     private String blogPostTitle;
 
@@ -29,10 +30,19 @@ public class BlogPost {
     private List<BlogPostImage> blogImageList;
 
 
-    public BlogPost(String blogPostTitle, String postDate) {
+    public BlogPost(String blogPostTitle, String postDate, String userName) {
+        this.userName = userName;
         this.postDate = postDate;
         this.blogPostTitle = blogPostTitle;
         this.blogImageList = new ArrayList<>();
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public int getId() {
