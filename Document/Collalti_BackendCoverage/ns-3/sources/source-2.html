@@ -1,0 +1,191 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > AmbassadorController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">MS3_3.Backend.Ambassador</a>
+</div>
+
+<h1>Coverage Summary for Class: AmbassadorController (MS3_3.Backend.Ambassador)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">AmbassadorController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    28.6%
+  </span>
+  <span class="absValue">
+    (2/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    25%
+  </span>
+  <span class="absValue">
+    (1/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    25%
+  </span>
+  <span class="absValue">
+    (6/24)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package MS3_3.Backend.Ambassador;
+&nbsp;
+&nbsp;
+&nbsp;import MS3_3.Backend.AdminDashboard.AdminRepository;
+&nbsp;import MS3_3.Backend.UserTypes.User;
+&nbsp;import MS3_3.Backend.UserTypes.UserRepository;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.web.bind.annotation.*;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;@RestController
+<b class="fc">&nbsp;public class AmbassadorController {</b>
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    AdminRepository adminRepository;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    UserRepository userRepository;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    AmbassadorRepository ambassadorRepository;
+&nbsp;
+&nbsp;    @PostMapping(&quot;/Ambassador/Create&quot;)
+&nbsp;    public Ambassador createPerson(@RequestBody Ambassador person) {
+<b class="nc">&nbsp;        person.setUserType(&quot;Ambassador&quot;);</b>
+<b class="nc">&nbsp;        ambassadorRepository.save(person);</b>
+<b class="nc">&nbsp;        userRepository.save(new User(person.getEmail(), person.getUserName(), person.getPassword(), person.getState(), person.getCity(),</b>
+<b class="nc">&nbsp;                person.getUserType()));</b>
+<b class="nc">&nbsp;        return ambassadorRepository.findByUserName(person.getUserName());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @PutMapping(&quot;/Ambassador/Revoke/{adminUserName}/{userName}&quot;)
+&nbsp;    public User revokeAmbassador(@PathVariable String adminUserName, @PathVariable String userName) {
+<b class="pc">&nbsp;        if (adminRepository.existsById(adminUserName)) {</b>
+<b class="fc">&nbsp;            ambassadorRepository.deleteByUserName(userName);</b>
+<b class="fc">&nbsp;            userRepository.findByUserName(userName).setUserType(&quot;User&quot;);</b>
+<b class="fc">&nbsp;            userRepository.save(userRepository.findByUserName(userName));</b>
+&nbsp;        } else {
+&nbsp;        }
+<b class="fc">&nbsp;        return userRepository.findByUserName(userName);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    @PutMapping(&quot;/Ambassador/Grant/{adminUserName}/{userName}&quot;)
+&nbsp;    public Ambassador grantAmbassador(@PathVariable String adminUserName, @PathVariable String userName) {
+<b class="nc">&nbsp;        if (adminRepository.existsById(adminUserName)) {</b>
+<b class="nc">&nbsp;            userRepository.findByUserName(userName).setUserType(&quot;Ambassador&quot;);</b>
+<b class="nc">&nbsp;            ambassadorRepository.save(new Ambassador(userRepository.findByUserName(userName)));</b>
+<b class="nc">&nbsp;            userRepository.save(userRepository.findByUserName(userName));</b>
+&nbsp;        } else {
+&nbsp;        }
+<b class="nc">&nbsp;        return ambassadorRepository.findByUserName(userName);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @PutMapping(&quot;/Users/FirstAmbassador/{userName}&quot;)
+&nbsp;    public Ambassador changeInfo(@PathVariable String userName) {
+<b class="nc">&nbsp;        userRepository.findByUserName(userName).setUserType(&quot;Ambassador&quot;);</b>
+<b class="nc">&nbsp;        ambassadorRepository.save(new Ambassador(userRepository.findByUserName(userName)));</b>
+<b class="nc">&nbsp;        userRepository.save(userRepository.findByUserName(userName));</b>
+<b class="nc">&nbsp;        return ambassadorRepository.findByUserName(userName);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/Ambassador/All&quot;)
+&nbsp;    public List&lt;Ambassador&gt; getAllAmbassadors() {
+<b class="nc">&nbsp;        return ambassadorRepository.findAll();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @DeleteMapping(&quot;/Ambassador/Remove/{userName}&quot;)
+&nbsp;    public String deleteAmbassador(@PathVariable String userName) {
+<b class="nc">&nbsp;        userRepository.deleteByUserName(userName);</b>
+<b class="nc">&nbsp;        ambassadorRepository.deleteByUserName(userName);</b>
+<b class="nc">&nbsp;        return &quot;Ambassador &quot; + userName + &quot; Deleted&quot;;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-04-24 12:58</div>
+</div>
+</body>
+</html>
