@@ -73,6 +73,15 @@ public class BlogPostController {
                 .body(uploadImage);
     }
 
+    @PutMapping("/BlogPost/{blogId}/{blogName}/{postDate}")
+    public BlogPost updateBlogPost(@PathVariable int blogId, @PathVariable String blogName,@PathVariable String postDate) {
+        BlogPost blogPost = blogPostRepository.findByBlogPostId(blogId);
+        blogPost.setBlogPostTitle(blogName);
+        blogPost.setPostDate(postDate);
+        BlogPost output = blogPostRepository.save(blogPost);
+        return output;
+    }
+
     @DeleteMapping("/BlogPost/{blogId}")
     public BlogPost deleteBlogPost(@PathVariable int blogId) {
         BlogPost temp = blogPostRepository.findByBlogPostId(blogId);
@@ -82,6 +91,10 @@ public class BlogPostController {
         return output;
     }
 
-
+    @DeleteMapping("/BlogPost/Image/{blogImageId}")
+    public String deleteBlogPostImage(@PathVariable int blogImageId) {
+        imageRepository.deleteById(blogImageId);
+        return "Image " + blogImageId + " deleted";
+    }
 
 }
