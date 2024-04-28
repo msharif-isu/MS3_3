@@ -2,8 +2,6 @@ package MS3_3.Backend.TravelGroupChat;
 
 import java.util.Date;
 
-import MS3_3.Backend.Groups.TravelGroup;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import lombok.Data;

@@ -1,6 +1,6 @@
 package MS3_3.Backend.FileUpload;
 
-import MS3_3.Backend.Groups.TravelGroupRepository;
+import MS3_3.Backend.TravelGroups.TravelGroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -8,9 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 
 @RestController
 public class ImageController {
@@ -64,9 +62,9 @@ public class ImageController {
     @DeleteMapping("/Group/Image/{groupId}")
     public ResponseEntity<?> deleteGroupImage(@PathVariable int groupId) {
         Image copy = new Image();
-        copy.setImageData(imageRepository.findById(38).getImageData());
-        copy.setType(imageRepository.findById(38).getType());
-        copy.setName(imageRepository.findById(38).getName());
+        copy.setImageData(imageRepository.findById(1).getImageData());
+        copy.setType(imageRepository.findById(1).getType());
+        copy.setName(imageRepository.findById(1).getName());
         imageRepository.save(copy);
         String uploadImage = service.changeImageByGroupId(groupId,copy);
         return ResponseEntity.status(HttpStatus.OK)

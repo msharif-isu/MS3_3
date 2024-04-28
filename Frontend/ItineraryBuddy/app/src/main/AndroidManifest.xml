@@ -60,6 +60,16 @@
             android:name=".activities.ScheduleTemplate"
             android:exported="false" />
 
+
+        <activity
+            android:name=".ui.home.GroupSchedule"
+            android:exported="false"/>
+
+
+        <activity
+            android:name=".ui.notifications.BlogPhotoAlbum"
+            android:exported="false"/>
+
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

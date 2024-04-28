@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CustomAdapter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=0;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">debug</a> &gt; <a href="index.source.html" class="el_package">com.example.itinerarybuddy.ui.home</a> &gt; <span class="el_source">CustomAdapter.java</span></div><h1>CustomAdapter.java</h1><pre class="source lang-java linenums">package com.example.itinerarybuddy.ui.home;
+
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.PopupMenu;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+
+import com.example.itinerarybuddy.R;
+
+import java.util.List;
+
+/**
+ * CustomAdapter is an ArrayAdapter implementation for displaying a list of itineraries
+ * in a ListView with customized layout.
+ */
+public class CustomAdapter extends ArrayAdapter&lt;String&gt; {
+
+    private List&lt;String&gt; itineraries; //List of itineraries to display
+    private Context context;          //Context of the application
+    private OnEditClickListener editClickListener; //Listener for edit button click events
+    private OnDeleteClickListener deleteClickListener; //Listener for delete button click events
+
+    /**
+     * Constructor for CustomAdapter.
+     *
+     * @param context            The context of the calling activity or fragment.
+     * @param resource           The resource ID for a layout file containing a TextView to use when
+     *                           instantiating views.
+     * @param objects            The objects to represent in the ListView.
+     * @param editClickListener Listener for edit button click events.
+     * @param deleteClickListener Listener for delete button click events.
+     */
+    public CustomAdapter(@NonNull Context context, int resource, @NonNull List&lt;String&gt; objects, OnEditClickListener editClickListener, OnDeleteClickListener deleteClickListener) {
+<span class="fc" id="L43">        super(context, resource, objects);</span>
+<span class="fc" id="L44">        this.context = context;</span>
+<span class="fc" id="L45">        this.itineraries = objects;</span>
+<span class="fc" id="L46">        this.editClickListener = editClickListener;</span>
+<span class="fc" id="L47">        this.deleteClickListener = deleteClickListener;</span>
+<span class="fc" id="L48">    }</span>
+
+    /**
+     * Provides a view for an AdapterView (ListView, GridView, etc.).
+     *
+     * @param position    The position of the item within the adapter's data set of the item whose view we want.
+     * @param convertView The old view to reuse, if possible.
+     * @param parent      The parent that this view will eventually be attached to.
+     * @return A View corresponding to the data at the specified position.
+     */
+    @NonNull
+    @Override
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
+        ViewHolder viewHolder;
+
+<span class="fc bfc" id="L63" title="All 2 branches covered.">        if (convertView == null) {</span>
+<span class="fc" id="L64">            convertView = LayoutInflater.from(context).inflate(R.layout.list_item_layout, parent, false);</span>
+<span class="fc" id="L65">            viewHolder = new ViewHolder();</span>
+<span class="fc" id="L66">            viewHolder.textViewItinerary = convertView.findViewById(R.id.textViewItinerary);</span>
+<span class="fc" id="L67">            viewHolder.imageViewIcon = convertView.findViewById(R.id.iconPopUp);</span>
+
+<span class="fc" id="L69">            viewHolder.imageViewIcon.setOnClickListener(new View.OnClickListener() {</span>
+                @Override
+                public void onClick(View v) {
+<span class="fc" id="L72">                    showPopupMenu(v, position); // Call showPopupMenu when the image is clicked</span>
+<span class="fc" id="L73">                }</span>
+            });
+
+<span class="fc" id="L76">            convertView.setTag(viewHolder);</span>
+        } else {
+<span class="fc" id="L78">            viewHolder = (ViewHolder) convertView.getTag();</span>
+        }
+
+<span class="fc" id="L81">        String itineraryInfo = getItem(position);</span>
+<span class="pc bpc" id="L82" title="1 of 2 branches missed.">        if (itineraryInfo != null) {</span>
+<span class="fc" id="L83">            String[] itineraryData = itineraryInfo.split(&quot;\n&quot;);</span>
+
+            // Set itinerary information
+<span class="fc" id="L86">            StringBuilder fullItinerary = new StringBuilder();</span>
+<span class="fc bfc" id="L87" title="All 2 branches covered.">            for (String data : itineraryData) {</span>
+<span class="fc" id="L88">                fullItinerary.append(data).append(&quot;\n&quot;);</span>
+            }
+<span class="fc" id="L90">            viewHolder.textViewItinerary.setText(fullItinerary.toString().trim());</span>
+        }
+
+
+<span class="fc" id="L94">        return convertView;</span>
+    }
+
+    /**
+     * Displays a popup menu when the icon is clicked.
+     *
+     * @param view     The anchor view for the popup menu.
+     * @param position The position of the item clicked.
+     */
+    private void showPopupMenu(View view, int position) {
+<span class="fc" id="L104">        PopupMenu popupMenu = new PopupMenu(context, view);</span>
+<span class="fc" id="L105">        popupMenu.getMenuInflater().inflate(R.menu.itinerary_menu, popupMenu.getMenu());</span>
+<span class="fc" id="L106">        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {</span>
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+
+<span class="fc bfc" id="L110" title="All 2 branches covered.">                if(item.getItemId() == R.id.action_edit){</span>
+<span class="fc" id="L111">                    editClickListener.onEditClicked(position);</span>
+<span class="fc" id="L112">                    return true;</span>
+                }
+
+<span class="pc bpc" id="L115" title="1 of 2 branches missed.">                else if(item.getItemId() == R.id.action_delete){</span>
+<span class="fc" id="L116">                    deleteClickListener.onDeleteClicked(position);</span>
+<span class="fc" id="L117">                    return true;</span>
+                }
+                else{
+<span class="nc" id="L120">                    return false;</span>
+                }
+            }
+        });
+<span class="fc" id="L124">        popupMenu.show();</span>
+<span class="fc" id="L125">    }</span>
+
+    /**
+     * Interface definition for a callback to be invoked when a delete button is clicked.
+     */
+    public interface OnDeleteClickListener {
+
+        void onDeleteClicked(int position);
+    }
+
+    /**
+     * Interface definition for a callback to be invoked when an edit button is clicked.
+     */
+    public interface OnEditClickListener {
+        void onEditClicked(int position);
+    }
+
+
+    /**
+     * ViewHolder class to hold views to avoid unnecessary calls to findViewById().
+     */
+    private static class ViewHolder {
+        TextView textViewItinerary; // TextView to display itinerary information
+        ImageView imageViewIcon;  // ImageView for popup menu
+    }
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span>Generated by the Android Gradle plugin 8.2.2</div></body></html>

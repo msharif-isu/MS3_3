@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserData.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=0;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">debug</a> &gt; <a href="index.source.html" class="el_package">com.example.itinerarybuddy.data</a> &gt; <span class="el_source">UserData.java</span></div><h1>UserData.java</h1><pre class="source lang-java linenums">package com.example.itinerarybuddy.data;
+
+import android.util.Log;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+
+/** This class stores a static JSON object for the current app user. Includes getters for data. */
+<span class="nc" id="L18">public class UserData {</span>
+
+    /** JSON object to be used in the various activities. */
+    public static JSONObject userInfo;
+
+    public static RequestQueue queue;
+
+    /** Extract the username from the stored JSON. */
+  /*  public static String getUsername(){
+        String username = null;
+        try{
+           username = userInfo.getString(&quot;userName&quot;);
+        } catch (JSONException e) {
+            Log.e(&quot;Error: &quot;, e.toString());
+        }
+        return username;
+    }*/
+
+    public static String getUsername() {
+<span class="nc" id="L37">        String username = null;</span>
+<span class="nc bnc" id="L38" title="All 2 branches missed.">        if (userInfo != null) {</span>
+            try {
+<span class="nc" id="L40">                username = userInfo.getString(&quot;userName&quot;);</span>
+<span class="nc" id="L41">            } catch (JSONException e) {</span>
+<span class="nc" id="L42">                Log.e(&quot;Error: &quot;, e.toString());</span>
+<span class="nc" id="L43">            }</span>
+        } else {
+<span class="nc" id="L45">            Log.e(&quot;Error: &quot;, &quot;userInfo is null&quot;);</span>
+        }
+<span class="nc" id="L47">        return username;</span>
+    }
+
+
+    /** Extract the username from the stored JSON. */
+  /*  public static String getEmail(){
+        String email = null;
+        try{
+            email = userInfo.getString(&quot;email&quot;);
+        } catch (JSONException e) {
+            Log.e(&quot;Error: &quot;, e.toString());
+        }
+        return email;
+    }*/
+
+    public static String getEmail() {
+<span class="nc" id="L63">        String email = null;</span>
+<span class="nc bnc" id="L64" title="All 2 branches missed.">        if (userInfo != null) { // Assuming userInfo is your JSONObject</span>
+            try {
+<span class="nc" id="L66">                email = userInfo.getString(&quot;email&quot;);</span>
+<span class="nc" id="L67">            } catch (JSONException e) {</span>
+<span class="nc" id="L68">                Log.e(&quot;Error: &quot;, e.toString());</span>
+<span class="nc" id="L69">            }</span>
+        } else {
+<span class="nc" id="L71">            Log.e(&quot;Error: &quot;, &quot;userInfo is null&quot;);</span>
+        }
+<span class="nc" id="L73">        return email;</span>
+    }
+
+
+    /** Extract the usertype from the stored JSON.
+     * &quot;user&quot;, &quot;ambassador&quot;, &quot;admin&quot;
+     */
+    public static String getUsertype(){
+<span class="nc" id="L81">        String usertype = null;</span>
+        try{
+<span class="nc" id="L83">            usertype = userInfo.getString(&quot;userType&quot;);</span>
+<span class="nc" id="L84">        } catch (JSONException e) {</span>
+<span class="nc" id="L85">            Log.e(&quot;Error: &quot;, e.toString());</span>
+<span class="nc" id="L86">        }</span>
+<span class="nc" id="L87">        return usertype;</span>
+    }
+
+    /** Extract the city from the stored JSON. */
+    public static String getCity(){
+<span class="nc" id="L92">        String city = null;</span>
+        try{
+<span class="nc" id="L94">            city = userInfo.getString(&quot;city&quot;);</span>
+<span class="nc" id="L95">        } catch (JSONException e) {</span>
+<span class="nc" id="L96">            Log.e(&quot;Error: &quot;, e.toString());</span>
+<span class="nc" id="L97">        }</span>
+<span class="nc" id="L98">        return city;</span>
+    }
+
+    /** Extract the username from the stored JSON. */
+    public static String getState(){
+<span class="nc" id="L103">        String state = null;</span>
+        try{
+<span class="nc" id="L105">            state = userInfo.getString(&quot;username&quot;);</span>
+<span class="nc" id="L106">        } catch (JSONException e) {</span>
+<span class="nc" id="L107">            Log.e(&quot;Error: &quot;, e.toString());</span>
+<span class="nc" id="L108">        }</span>
+<span class="nc" id="L109">        return state;</span>
+    }
+
+    /** Returns a list of groups the user is in. */
+    public static ArrayList&lt;String&gt; getGroupIds(){
+<span class="nc" id="L114">        ArrayList&lt;String&gt; groupIDs = new ArrayList&lt;String&gt;();</span>
+        try{
+<span class="nc" id="L116">            JSONArray array = userInfo.getJSONArray(&quot;userCodes&quot;);</span>
+<span class="nc bnc" id="L117" title="All 2 branches missed.">            for(int i = 0; i &lt; array.length(); i++){</span>
+<span class="nc" id="L118">                groupIDs.add(array.getString(i));</span>
+<span class="nc" id="L119">                Log.d(&quot;Group found: &quot;, array.getString(i));</span>
+            }
+<span class="nc" id="L121">        } catch (JSONException e) {</span>
+<span class="nc" id="L122">            Log.e(&quot;Error: &quot;, e.toString());</span>
+<span class="nc" id="L123">        }</span>
+<span class="nc" id="L124">        return groupIDs;</span>
+    }
+
+    /**
+     * Used to make a request to the server to update the current user's data by resetting the userInfo field.
+     */
+    public static void updateUserData(){
+<span class="nc" id="L131">        String url = &quot;http://coms-309-035.class.las.iastate.edu:8080/Users/&quot; + getUsername();</span>
+<span class="nc" id="L132">        JsonObjectRequest req = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener&lt;JSONObject&gt;() {</span>
+            @Override
+            public void onResponse(JSONObject response) {
+<span class="nc" id="L135">                Log.d(&quot;Volley Response: &quot;, response.toString());</span>
+
+<span class="nc" id="L137">                userInfo = response;</span>
+<span class="nc" id="L138">            }</span>
+<span class="nc" id="L139">        }, new Response.ErrorListener() {</span>
+            @Override
+            public void onErrorResponse(VolleyError error) {
+<span class="nc" id="L142">                Log.e(&quot;Volley Error: &quot;, error.toString());</span>
+<span class="nc" id="L143">            }</span>
+        });
+<span class="nc" id="L145">        queue.add(req);</span>
+<span class="nc" id="L146">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span>Generated by the Android Gradle plugin 8.2.2</div></body></html>

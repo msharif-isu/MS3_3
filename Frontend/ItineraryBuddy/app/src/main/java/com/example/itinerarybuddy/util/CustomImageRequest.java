@@ -46,8 +46,8 @@ public class CustomImageRequest extends Request<NetworkResponse> {
      * @param listener for the request.
      * @param errorListener for the request.
      */
-    public CustomImageRequest(String url, byte[] image, Response.Listener<NetworkResponse> listener, Response.ErrorListener errorListener) {
-        super(Request.Method.PUT, url, errorListener);
+    public CustomImageRequest(int method, String url, byte[] image, Response.Listener<NetworkResponse> listener, Response.ErrorListener errorListener) {
+        super(method, url, errorListener);
         this.image = image;
         this.listener = listener;
         this.errorListener = errorListener;
