@@ -1,5 +1,8 @@
 package com.example.itinerarybuddy.ui.home;
 
+import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,52 +12,45 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.DatePicker;
+import android.widget.Toast;
 
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.StringRequest;
-import com.example.itinerarybuddy.activities.DayCard;
-import com.example.itinerarybuddy.activities.ScheduleTemplate;
-import com.example.itinerarybuddy.data.Itinerary;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-
-import android.app.AlertDialog;
-import android.app.DatePickerDialog;
-import android.content.DialogInterface;
-import android.widget.EditText;
-import android.widget.Toast;
-
-import java.text.ParseException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-import java.util.HashSet;
-import java.util.Set;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.itinerarybuddy.R;
-import com.example.itinerarybuddy.data.UserData;
+import com.example.itinerarybuddy.activities.DayCard;
+import com.example.itinerarybuddy.activities.ScheduleTemplate;
+import com.example.itinerarybuddy.data.Itinerary;
 import com.example.itinerarybuddy.databinding.FragmentHomeBinding;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -119,7 +115,7 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
             }
         });
 
-        FloatingActionButton fab = root.findViewById(R.id.addItinerary);
+        ImageButton fab = root.findViewById(R.id.addItinerary);
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -183,16 +179,16 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
 
         // Set click listeners for date input fields to show date picker dialogs
         startDateInput.setOnClickListener(new View.OnClickListener() {
-
+            @Override
             public void onClick(View v) {
-                showDatePickerDialog(startDateInput);
+                showStartDatePickerDialog(startDateInput);
             }
         });
 
         endDateInput.setOnClickListener(new View.OnClickListener() {
-
+            @Override
             public void onClick(View v) {
-                showDatePickerDialog(endDateInput);
+                showEndDatePickerDialog(endDateInput);
             }
         });
 
@@ -248,50 +244,42 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
     }
 
 
-    /**
-     * Displays a DatePickerDialog to allow the user to select a date.
-     * The selected date is then set to the provided EditText field.
-     * Additionally, upon selecting a date, it triggers the display of an EndDatePickerDialog.
-     *
-     * @param date The EditText field where the selected date will be set.
-     */
-    private void showDatePickerDialog(final EditText date) {
-
+    private void showStartDatePickerDialog(final EditText startDateInput) {
         final Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-        DatePickerDialog datePickerDialog = new DatePickerDialog(requireContext(),
+        DatePickerDialog startDatePickerDialog = new DatePickerDialog(requireContext(),
                 new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                         calendar.set(year, monthOfYear, dayOfMonth);
                         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
                         startDateInput.setText(dateFormat.format(calendar.getTime()));
-
-                        showEndDatePickerDialog(calendar, endDateInput);
                     }
                 }, year, month, day);
 
-        datePickerDialog.show();
+        startDatePickerDialog.show();
     }
 
-    /**
-     * Displays a DatePickerDialog to allow the user to select an end date for the itinerary.
-     * The selected end date is then set to the provided EditText field.
-     * Additionally, it checks if the selected end date is before the provided start date,
-     * and displays a toast message if so, indicating that the end date cannot be before the start date.
-     *
-     * @param startDateCalendar The Calendar instance representing the start date of the itinerary.
-     * @param endDate The EditText field where the selected end date will be set.
-     */
-    private void showEndDatePickerDialog(final Calendar startDateCalendar, final EditText endDate) {
+    private void showEndDatePickerDialog(final EditText endDateInput) {
+        // Get the text from the startDateInput EditText
+        String startDateText = startDateInput.getText().toString();
+
+        // Check if the start date is empty
+        if (startDateText.isEmpty()) {
+            // If start date is empty, show a message and return
+            Toast.makeText(requireContext(), "Please select a start date first", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Parse the start date to a Calendar object
+        Calendar startDateCalendar = parseDate(startDateText);
 
         int year = startDateCalendar.get(Calendar.YEAR);
         int month = startDateCalendar.get(Calendar.MONTH);
         int day = startDateCalendar.get(Calendar.DAY_OF_MONTH);
-
 
         DatePickerDialog endDatePickerDialog = new DatePickerDialog(requireContext(),
                 new DatePickerDialog.OnDateSetListener() {
@@ -300,19 +288,29 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
                         Calendar endDateCalendar = Calendar.getInstance();
                         endDateCalendar.set(year, monthOfYear, dayOfMonth);
 
-
                         if (endDateCalendar.before(startDateCalendar)) {
-
                             Toast.makeText(requireContext(), "End date cannot be before start date", Toast.LENGTH_SHORT).show();
                         } else {
-
                             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-                            endDate.setText(dateFormat.format(endDateCalendar.getTime()));
+                            endDateInput.setText(dateFormat.format(endDateCalendar.getTime()));
                         }
                     }
                 }, year, month, day);
 
         endDatePickerDialog.show();
+    }
+
+    private Calendar parseDate(String dateString) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+        try {
+            Date date = dateFormat.parse(dateString);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            return calendar;
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     /**
@@ -377,7 +375,6 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
     private void POST_itinerary(String destination, String tripCode, String startDate, String endDate, int numOfDays){
 
         //Make a network request using Volley
-         //String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary";
 
         String url = "https://5569939f-7918-4af9-937a-86edcfe9bc7f.mock.pstmn.io/Itinerary/Create";
         //String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary";
@@ -459,23 +456,23 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
      */
     private int extractNumOfDays(String itinerary){
 
-     String label = "Number of Days: ";
+        String label = "Number of Days: ";
 
-     int labelIndex = itinerary.indexOf(label);
+        int labelIndex = itinerary.indexOf(label);
 
-     if(labelIndex != -1){
+        if(labelIndex != -1){
 
-         String numOfDaysString = itinerary.substring(labelIndex+label.length());
+            String numOfDaysString = itinerary.substring(labelIndex+label.length());
 
-         try{
+            try{
 
-             return Integer.parseInt(numOfDaysString.trim());
+                return Integer.parseInt(numOfDaysString.trim());
 
-         }catch (NumberFormatException e){
-             e.printStackTrace();
-         }
-     }
-   return 0;
+            }catch (NumberFormatException e){
+                e.printStackTrace();
+            }
+        }
+        return 0;
     }
 
 
@@ -542,19 +539,19 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
 
         }
 
-        startDateInput.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v){
-                showDatePickerDialog(startDateInput);
+        startDateInput.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showStartDatePickerDialog(startDateInput);
             }
         });
 
-        endDateInput.setOnClickListener(new View.OnClickListener(){
-
-            public void onClick(View v){
-                showEndDatePickerDialog(Calendar.getInstance(), endDateInput);
+        endDateInput.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showEndDatePickerDialog(endDateInput);
             }
         });
-
         builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
