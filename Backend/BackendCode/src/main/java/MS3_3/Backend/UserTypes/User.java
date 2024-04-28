@@ -1,5 +1,7 @@
 package MS3_3.Backend.UserTypes;
 
+import MS3_3.Backend.PersonalItinerary.Events.PersonalItineraryEvent;
+import MS3_3.Backend.PersonalItinerary.PersonalItinerary;
 import MS3_3.Backend.TravelGroups.TravelGroup;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -21,6 +23,9 @@ public class User {
     private String city;
 
     private String userType;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PersonalItinerary> personalItineraries;
 
     private int numPosts;
 
@@ -54,11 +59,21 @@ public class User {
         this.canPost = true;
         this.MemberOf = new ArrayList<>();
         this.groupCodes = new ArrayList<>();
+        this.personalItineraries = new ArrayList<>();
     }
 
     public User() {
         this.MemberOf = new ArrayList<>();
         this.groupCodes = new ArrayList<>();
+        this.personalItineraries = new ArrayList<>();
+    }
+
+    public List<PersonalItinerary> getPersonalItineraries() {
+        return personalItineraries;
+    }
+
+    public void setPersonalItineraries(List<PersonalItinerary> personalItinerary) {
+        this.personalItineraries = personalItinerary;
     }
 
     public List<Integer> getUserCodes() {
