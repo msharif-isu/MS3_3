@@ -54,7 +54,7 @@ public class StorageService {
                 .type(file.getContentType())
                 .imageData(ImageUtils.compressImage(file.getBytes())).build()
         );
-        TravelGroup travelGroup =  travelGroupRepository.findById(groupId);
+        TravelGroup travelGroup =  travelGroupRepository.findByTravelGroupId(groupId);
         travelGroup.setGroupImage(imageData);
         travelGroupRepository.save(travelGroup);
         if (imageData != null) {
