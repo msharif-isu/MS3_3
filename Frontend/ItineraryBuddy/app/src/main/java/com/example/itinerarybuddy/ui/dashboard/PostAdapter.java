@@ -1,13 +1,10 @@
 package com.example.itinerarybuddy.ui.dashboard;
 
-import static androidx.core.content.ContextCompat.startActivity;
-
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -17,8 +14,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.Toast;
-
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -31,11 +26,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.itinerarybuddy.R;
 import com.example.itinerarybuddy.activities.DayCard;
-import com.example.itinerarybuddy.data.Itinerary;
 import com.example.itinerarybuddy.data.Post_Itinerary;
-import com.example.itinerarybuddy.data.Spinner_ItineraryInfo;
-import com.example.itinerarybuddy.data.UserData;
-import com.example.itinerarybuddy.ui.home.CustomAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -45,10 +36,10 @@ import java.util.List;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
 
-    private RequestQueue requestQueue;
-    private List<Post_Itinerary> posts;
-    private Context context;
-    private DashboardFragment fragment;
+    private final RequestQueue requestQueue;
+    private final List<Post_Itinerary> posts;
+    private final Context context;
+    private final DashboardFragment fragment;
 
     // Constructor to initialize the adapter with a list of posts
     public PostAdapter(List<Post_Itinerary> posts, Context context, DashboardFragment fragment) {
@@ -214,13 +205,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
                     post.setLiked(false);
                     post.decreaseLikeCount();
-                    holder.likeCountView.setText("Liked: " + String.valueOf(post.getLikeCount()));
+                    holder.likeCountView.setText("Liked: " + post.getLikeCount());
                     holder.likeImageView.setImageResource(R.drawable.ic_like_before);
                 } else {
 
                     post.setLiked(true);
                     post.increaseLikeCount();
-                    holder.likeCountView.setText("Liked: " + String.valueOf(post.getLikeCount()));
+                    holder.likeCountView.setText("Liked: " + post.getLikeCount());
                     holder.likeImageView.setImageResource(R.drawable.ic_like_after);
 
                 }
@@ -251,7 +242,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
                     post.setSaved(false);
                     post.decreaseSaveCount();
-                    holder.saveCountView.setText("Saved: " + String.valueOf(post.getSaveCount()));
+                    holder.saveCountView.setText("Saved: " + post.getSaveCount());
                     holder.saveImageView.setImageResource(R.drawable.ic_bookmark_bfr);
 
                     POST_updateSavedPost(post);
@@ -260,7 +251,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
                     post.setSaved(true);
                     post.increaseSaveCount();
-                    holder.saveCountView.setText("Saved: " + String.valueOf(post.getSaveCount()));
+                    holder.saveCountView.setText("Saved: " + post.getSaveCount());
                     holder.saveImageView.setImageResource(R.drawable.ic_bookmark_aftr);
 
                     POST_updateSavedPost(post);

@@ -1,13 +1,12 @@
 package com.example.itinerarybuddy.activities;
 
-import static android.content.Intent.*;
-
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,9 +22,9 @@ import java.util.ArrayList;
  */
 public class DayCardAdapter extends RecyclerView.Adapter<DayCardAdapter.ViewHolder> {
 
-    private Context context;
-    private ArrayList<String> dayTitles;
-    private ArrayList<String> dayContents;
+    private final Context context;
+    private final ArrayList<String> dayTitles;
+    private final ArrayList<String> dayContents;
 
 
     /**
@@ -36,8 +35,8 @@ public class DayCardAdapter extends RecyclerView.Adapter<DayCardAdapter.ViewHold
      * @param dayContents The list of day contents.
      */
 
-    private boolean isEditable;
-    private String source;
+    private final boolean isEditable;
+    private final String source;
     public DayCardAdapter(Context context, ArrayList<String> dayTitles, ArrayList<String> dayContents, boolean isEditable, String source) {
 
         this.context = context;

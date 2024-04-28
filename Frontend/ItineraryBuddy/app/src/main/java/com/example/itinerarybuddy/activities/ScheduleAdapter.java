@@ -31,10 +31,10 @@ class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHolder> {
     private static final int VIEW_TYPE_HEADER = 0;
     private static final int VIEW_TYPE_DATA = 1;
 
-    private String dayTitle;
+    private final String dayTitle;
     private static List<ScheduleItem> scheduleData;
 
-    private boolean isEditable;
+    private final boolean isEditable;
 
 
     /**
@@ -48,7 +48,7 @@ class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHolder> {
 
     public ScheduleAdapter(List<ScheduleItem> scheduleData, String dayTitle, boolean isEditable) {
 
-        this.scheduleData = scheduleData;
+        ScheduleAdapter.scheduleData = scheduleData;
         this.dayTitle = dayTitle;
         this.isEditable = isEditable;
     }
@@ -152,7 +152,7 @@ class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHolder> {
         private TextView headerTextViewPlaces;
         private TextView headerTextViewNote;
 
-        private TextView dayTitleTextView;
+        private final TextView dayTitleTextView;
         private EditText dataEditTextTime;
         private EditText dataEditTextPlaces;
         private EditText dataEditTextNote;

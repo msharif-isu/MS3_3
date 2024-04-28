@@ -1,5 +1,8 @@
 package com.example.itinerarybuddy.ui.home;
 
+import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,59 +12,50 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.DatePicker;
+import android.widget.PopupMenu;
+import android.widget.Toast;
 
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.StringRequest;
-import com.example.itinerarybuddy.activities.DayCard;
-import com.example.itinerarybuddy.activities.LoginActivity;
-import com.example.itinerarybuddy.activities.ScheduleTemplate;
-import com.example.itinerarybuddy.data.Itinerary;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.app.AlertDialog;
-import android.app.DatePickerDialog;
-import android.content.DialogInterface;
-import android.widget.EditText;
-import android.widget.PopupMenu;
-import android.widget.Toast;
-
-import java.text.ParseException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Random;
-import java.util.HashSet;
-import java.util.Set;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
-import java.util.concurrent.TimeUnit;
-
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.itinerarybuddy.R;
+import com.example.itinerarybuddy.activities.DayCard;
+import com.example.itinerarybuddy.activities.LoginActivity;
+import com.example.itinerarybuddy.activities.ScheduleTemplate;
+import com.example.itinerarybuddy.data.Itinerary;
 import com.example.itinerarybuddy.data.UserData;
 import com.example.itinerarybuddy.databinding.FragmentHomeBinding;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 
 /**

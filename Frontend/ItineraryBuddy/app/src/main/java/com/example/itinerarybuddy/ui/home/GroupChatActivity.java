@@ -4,11 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -26,26 +23,12 @@ import com.example.itinerarybuddy.util.ChatWebSockets.ChatData;
 import com.example.itinerarybuddy.util.ChatWebSockets.ChatWebsocketManager;
 import com.example.itinerarybuddy.util.ChatWebSockets.WebsocketListener;
 
-import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
-
-import java.util.ArrayList;
-import java.util.Objects;
 
 /**
  * The activity for a group's chat.
  */
 public class GroupChatActivity extends AppCompatActivity implements WebsocketListener {
-
-    /**
-     * The binding for the view.
-     */
-    private FragmentGroupChatBinding binding;
-
-    /**
-     * Referenced group for this chat.
-     */
-    private Group group;
 
     /**
      * Manager for the websocket connection.
@@ -73,7 +56,10 @@ public class GroupChatActivity extends AppCompatActivity implements WebsocketLis
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         this.getSupportActionBar().hide();
-        binding = FragmentGroupChatBinding.inflate(getLayoutInflater());
+        /**
+         * The binding for the view.
+         */
+        com.example.itinerarybuddy.databinding.FragmentGroupChatBinding binding = FragmentGroupChatBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
 
@@ -82,7 +68,10 @@ public class GroupChatActivity extends AppCompatActivity implements WebsocketLis
         message = view.findViewById(R.id.message_input);
         ImageButton send = view.findViewById(R.id.send_button);
 
-        group = LoadGroup.group;
+        /**
+         * Referenced group for this chat.
+         */
+        Group group = LoadGroup.group;
 
         assert group != null;
         String text = group.getTravelGroupName() + " Chat";

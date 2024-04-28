@@ -17,7 +17,7 @@ public class Post_Itinerary {
 
     public String postID;
 
-    private ArrayList<Comment> comments;
+    private final ArrayList<Comment> comments;
     public Post_Itinerary(String username, String postFile, String tripCode, int numDays, String caption, String postID){
 
         this.username = username;
@@ -147,8 +147,8 @@ public class Post_Itinerary {
     //Inner class to represent a comment with username
     public static class Comment{
 
-        private String username;
-        private String commentText;
+        private final String username;
+        private final String commentText;
 
         public Comment(String username, String commentText){
 

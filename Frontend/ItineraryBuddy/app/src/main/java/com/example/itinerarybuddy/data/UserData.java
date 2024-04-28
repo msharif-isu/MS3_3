@@ -1,8 +1,5 @@
 package com.example.itinerarybuddy.data;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import android.util.Log;
 
 import com.android.volley.Request;
@@ -10,6 +7,10 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -54,28 +55,6 @@ public class UserData {
             Log.e("Error: ", e.toString());
         }
         return usertype;
-    }
-
-    /** Extract the city from the stored JSON. */
-    public static String getCity(){
-        String city = null;
-        try{
-            city = userInfo.getString("city");
-        } catch (JSONException e) {
-            Log.e("Error: ", e.toString());
-        }
-        return city;
-    }
-
-    /** Extract the username from the stored JSON. */
-    public static String getState(){
-        String state = null;
-        try{
-            state = userInfo.getString("username");
-        } catch (JSONException e) {
-            Log.e("Error: ", e.toString());
-        }
-        return state;
     }
 
     /** Returns a list of groups the user is in. */

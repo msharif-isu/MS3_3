@@ -1,7 +1,5 @@
 package com.example.itinerarybuddy.activities;
 
-import com.example.itinerarybuddy.data.Post_Itinerary;
-
 import org.java_websocket.handshake.ServerHandshake;
 public interface WebSocketListener {
 

@@ -15,7 +15,7 @@ import com.example.itinerarybuddy.data.Spinner_ItineraryInfo;
 import java.util.List;
 
 public class ItineraryInfoAdapter extends ArrayAdapter<Spinner_ItineraryInfo> {
-    private LayoutInflater inflater;
+    private final LayoutInflater inflater;
 
     public ItineraryInfoAdapter(Context context, List<Spinner_ItineraryInfo> itineraryInfos) {
         super(context, 0, itineraryInfos);

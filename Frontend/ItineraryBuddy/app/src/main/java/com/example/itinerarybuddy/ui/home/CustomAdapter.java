@@ -2,8 +2,6 @@ package com.example.itinerarybuddy.ui.home;
 
 import android.content.Context;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,10 +22,10 @@ import java.util.List;
  */
 public class CustomAdapter extends ArrayAdapter<String> {
 
-    private List<String> itineraries; //List of itineraries to display
-    private Context context;          //Context of the application
-    private OnEditClickListener editClickListener; //Listener for edit button click events
-    private OnDeleteClickListener deleteClickListener; //Listener for delete button click events
+    private final List<String> itineraries; //List of itineraries to display
+    private final Context context;          //Context of the application
+    private final OnEditClickListener editClickListener; //Listener for edit button click events
+    private final OnDeleteClickListener deleteClickListener; //Listener for delete button click events
 
     /**
      * Constructor for CustomAdapter.

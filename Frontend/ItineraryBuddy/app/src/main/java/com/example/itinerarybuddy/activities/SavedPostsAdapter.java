@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,9 +20,6 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.itinerarybuddy.R;
 import com.example.itinerarybuddy.data.Post_Itinerary;
-import com.example.itinerarybuddy.util.Singleton;
-
-import org.json.JSONObject;
 
 import java.util.List;
 
@@ -33,9 +29,9 @@ import java.util.List;
 class SavedPostsAdapter extends RecyclerView.Adapter<SavedPostsAdapter.SavedPostViewHolder> {
 
     private List<Post_Itinerary> savedPosts;
-    private Context context;
+    private final Context context;
 
-    private RequestQueue requestQueue;
+    private final RequestQueue requestQueue;
 
     /**
      * Constructor to initialize the adapter with a list of saved posts and context.

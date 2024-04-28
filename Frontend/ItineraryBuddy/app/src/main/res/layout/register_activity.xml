@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -10,9 +9,12 @@
         android:layout_width="fill_parent"
         android:layout_height="55dp"
         android:background="@drawable/login_register_gradient"
+        app:layout_constraintBottom_toTopOf="@+id/create_account_text"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
     <Button
         android:id="@+id/register_button"
@@ -33,7 +35,6 @@
         android:id="@+id/username_register_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="56dp"
         android:layout_marginBottom="4dp"
         android:fontFamily="sans-serif-condensed-medium"
         android:labelFor="@id/username_register_input"
@@ -42,10 +43,8 @@
         android:textSize="25sp"
         app:layout_constraintBottom_toTopOf="@+id/username_register_input"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.189"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sign_in_here_button"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintHorizontal_bias="0.2"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/email_text"
@@ -92,6 +91,9 @@
         android:inputType="textPersonName"
         android:text=""
         android:textSize="25sp"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
+        android:paddingBottom="8dp"
         app:layout_constraintBottom_toTopOf="@+id/email_register_input"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.495"
@@ -138,6 +140,9 @@
         android:inputType="textPassword"
         android:text=""
         android:textSize="25sp"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
+        android:paddingBottom="8dp"
         app:layout_constraintBottom_toTopOf="@+id/password_confirm_input"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.495"
@@ -154,6 +159,9 @@
         android:inputType="textEmailAddress"
         android:text=""
         android:textSize="25sp"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
+        android:paddingBottom="8dp"
         app:layout_constraintBottom_toTopOf="@+id/password_register_input"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.495"
@@ -163,29 +171,29 @@
         android:id="@+id/create_account_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
+        android:layout_marginBottom="6dp"
         android:fontFamily="sans-serif-condensed-medium"
         android:text="@string/create_account_text"
         android:textColor="#7A9143"
         android:textSize="30sp"
+        app:layout_constraintBottom_toTopOf="@+id/sign_in_here_button"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.494"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/register_gradient" />
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/sign_in_here_button"
         style="?android:attr/borderlessButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginBottom="85dp"
         android:background="@color/white"
         android:fontFamily="sans-serif-condensed-medium"
         android:text="@string/sign_in_here_text"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/username_register_input"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/create_account_text" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
