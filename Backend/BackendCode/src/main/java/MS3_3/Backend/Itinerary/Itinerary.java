@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import MS3_3.Backend.Day.Day;
-import MS3_3.Backend.Groups.TravelGroup;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -13,10 +11,6 @@ public class Itinerary {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int shareCode;
-
-    @OneToOne
-    @JsonIgnore
-    private TravelGroup travelGroup;
 
     @OneToMany(mappedBy = "itinerary", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Day> days;

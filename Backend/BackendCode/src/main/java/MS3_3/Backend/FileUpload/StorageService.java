@@ -1,7 +1,7 @@
 package MS3_3.Backend.FileUpload;
 
-import MS3_3.Backend.Groups.TravelGroup;
-import MS3_3.Backend.Groups.TravelGroupRepository;
+import MS3_3.Backend.TravelGroups.TravelGroup;
+import MS3_3.Backend.TravelGroups.TravelGroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -37,13 +37,12 @@ public class StorageService {
                 .type(file.getContentType())
                 .imageData(ImageUtils.compressImage(file.getBytes())).build()
         );
-        long oldId = travelGroupRepository.findById(groupId).getGroupImage().getId();
-        travelGroupRepository.findById(groupId).setGroupImage(imageData);
+        travelGroupRepository.findByTravelGroupId(groupId).setGroupImage(imageData);
+
+        long oldId = travelGroupRepository.findByTravelGroupId(groupId).getGroupImage().getId();
+        travelGroupRepository.findByTravelGroupId(groupId).setGroupImage(imageData);
         if (imageData != null) {
-            return "file uploaded successfully to Group " + travelGroupRepository.findById(groupId).getTravelGroupName() + " : " + file.getOriginalFilename();
-        }
-        if(oldId != 38) {
-            repository.deleteById(oldId);
+            return "file uploaded successfully to Group " + travelGroupRepository.findByTravelGroupId(groupId).getTravelGroupName() + " : " + file.getOriginalFilename();
         }
         return null;
     }
@@ -55,18 +54,15 @@ public class StorageService {
                 .type(file.getContentType())
                 .imageData(ImageUtils.compressImage(file.getBytes())).build()
         );
-        TravelGroup travelGroup =  travelGroupRepository.findById(groupId);
-        long oldId = travelGroup.getGroupImage().getId();
+        TravelGroup travelGroup =  travelGroupRepository.findByTravelGroupId(groupId);
         travelGroup.setGroupImage(imageData);
         travelGroupRepository.save(travelGroup);
         if (imageData != null) {
-            return "file uploaded successfully to Group " + travelGroupRepository.findById(groupId).getTravelGroupName() + " : " + file.getOriginalFilename();
-        }
-        if(travelGroup.getGroupImage().getId() != 38) {
-            repository.deleteById(oldId);
+            return "file uploaded successfully to Group " + travelGroupRepository.findByTravelGroupId(groupId).getTravelGroupName() + " : " + file.getOriginalFilename();
         }
         return null;
     }
+
 
     public byte[] downloadImageByFileName(String fileName){
         Image dbImageData = repository.findByName(fileName);
@@ -75,7 +71,7 @@ public class StorageService {
     }
 
     public byte[] downloadImageByGroupId(int groupId){
-        Image dbImageData = travelGroupRepository.findById(groupId).getGroupImage();
+        Image dbImageData = travelGroupRepository.findByTravelGroupId(groupId).getGroupImage();
         byte[] images=ImageUtils.decompressImage(dbImageData.getImageData());
         return images;
     }
@@ -87,14 +83,15 @@ public class StorageService {
     }
 
     public String changeImageByGroupId(int groupId, Image newImage){
-        TravelGroup travelGroup =  travelGroupRepository.findById(groupId);
+        TravelGroup travelGroup =  travelGroupRepository.findByTravelGroupId(groupId);
         long oldId = travelGroup.getGroupImage().getId();
         travelGroup.setGroupImage(newImage);
         travelGroupRepository.save(travelGroup);
-        if(travelGroup.getGroupImage().getId() != 38) {
+        if(travelGroup.getGroupImage().getId() != 1) {
             repository.deleteById(oldId);
         }
-        return "file successfully deleted from Group: " + travelGroupRepository.findById(groupId).getTravelGroupName();
+        return "file successfully deleted from Group: " + travelGroupRepository.findByTravelGroupId(groupId).getTravelGroupName();
     }
+
 
 }
