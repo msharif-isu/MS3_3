@@ -77,5 +77,9 @@
     <string name="end_date">End Date:</string>
     <string name="number_of_days">Number of Days:</string>
     <string name="edit">Edit</string>
+    <string name="photo">Photo</string>
+    <string name="add_a_photo">Add a Photo</string>
+    <string name="photo_gallery">Photo Gallery</string>
+
 
 </resources>
