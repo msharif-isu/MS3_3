@@ -9,10 +9,12 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +29,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.example.itinerarybuddy.R;
 import com.example.itinerarybuddy.data.BlogItem;
+import com.example.itinerarybuddy.ui.notifications.NotificationsFragment;
 import com.example.itinerarybuddy.util.CustomImageRequest;
 import com.example.itinerarybuddy.util.Singleton;
 
@@ -43,9 +46,12 @@ public class BlogCardAdapter extends RecyclerView.Adapter<BlogCardAdapter.ViewHo
     private ImageView selectedImage;
     private Uri uploadImageUri;
 
-    public BlogCardAdapter(List<BlogItem> blogItems, Context context) {
+    NotificationsFragment fragment;
+
+    public BlogCardAdapter(List<BlogItem> blogItems, Context context, NotificationsFragment fragment) {
         this.blogItems = blogItems;
         this.context = context;
+        this.fragment = fragment;
     }
 
     @NonNull
@@ -88,7 +94,45 @@ public class BlogCardAdapter extends RecyclerView.Adapter<BlogCardAdapter.ViewHo
                 openImagePicker();
             }
         });
+
+        holder.iconMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showPopupMenu(v, position);
+            }
+
+        });
     }
+
+    /**
+     * Displays a popup menu for the options related to a post.
+     *
+     * @param view The anchor view for the popup menu.
+     * @param position The position of the post in the RecyclerView.
+     */
+    private void showPopupMenu(View view, int position) {
+        PopupMenu popupMenu = new PopupMenu(context, view);
+        popupMenu.getMenuInflater().inflate(R.menu.itinerary_menu, popupMenu.getMenu());
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+
+                if (item.getItemId() == R.id.action_edit) {
+                    fragment.EditClicked(position);
+                    return true;
+                } else if (item.getItemId() == R.id.action_delete) {
+                    fragment.DeleteClicked(position);
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        });
+        popupMenu.show();
+    }
+
+
+
 
     private void openImagePicker() {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -181,6 +225,21 @@ public class BlogCardAdapter extends RecyclerView.Adapter<BlogCardAdapter.ViewHo
         }
     }
 
+    /**
+     * Interface definition for a callback to be invoked when a delete button is clicked.
+     */
+    public interface OnDeleteClickListener {
+
+        void onDeleteClickedBlog(int position);
+    }
+
+    /**
+     * Interface definition for a callback to be invoked when an edit button is clicked.
+     */
+    public interface OnEditClickListener {
+        void onEditClickedBlog(int position);
+    }
+
     public void setSelectedImage(Uri imageUri) {
         uploadImageUri = imageUri;
         // Update the UI to display the selected image if needed
@@ -199,12 +258,15 @@ public class BlogCardAdapter extends RecyclerView.Adapter<BlogCardAdapter.ViewHo
         TextView blogPostDate;
         ImageView blogMainImage;
 
+        ImageView iconMore;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             blogTitle = itemView.findViewById(R.id.blogTitle);
             username = itemView.findViewById(R.id.blogUsername);
             blogPostDate = itemView.findViewById(R.id.blogPostDate);
             blogMainImage = itemView.findViewById(R.id.blogImage);
+            iconMore = itemView.findViewById(R.id.iconBlogMore);
         }
     }
 }

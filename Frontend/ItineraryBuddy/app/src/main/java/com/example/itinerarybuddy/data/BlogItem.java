@@ -1,7 +1,5 @@
 package com.example.itinerarybuddy.data;
 
-import java.util.Date;
-
 public class BlogItem {
 
     private String title;
@@ -9,15 +7,27 @@ public class BlogItem {
     private String postDate;
     private String imageUrl;
 
-    public BlogItem(String title, String username, String postDate){
+    private String blogID;
+
+    public BlogItem(String title, String username, String postDate, String blogID){
 
         this.title = title;
         this.username = username;
         this.postDate = postDate;
+        this.blogID = blogID;
     }
 
     public String getTitle(){
         return title;
+    }
+
+    public void setTitle(String changedTitle){
+
+        title = changedTitle;
+    }
+
+    public String getBlogID() {
+        return blogID;
     }
 
     public String getUsername(){
