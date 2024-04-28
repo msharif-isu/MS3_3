@@ -2,8 +2,8 @@ package MS3_3.Backend.AmbassadorBlogPost.Images;
 
 import MS3_3.Backend.AmbassadorBlogPost.BlogPost;
 import MS3_3.Backend.AmbassadorBlogPost.BlogPostRepository;
-import MS3_3.Backend.Groups.TravelGroup;
-import MS3_3.Backend.Groups.TravelGroupRepository;
+import MS3_3.Backend.TravelGroups.TravelGroup;
+import MS3_3.Backend.TravelGroups.TravelGroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;

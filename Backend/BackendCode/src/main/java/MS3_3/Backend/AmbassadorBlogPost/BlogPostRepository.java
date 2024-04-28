@@ -2,7 +2,7 @@ package MS3_3.Backend.AmbassadorBlogPost;
 
 import MS3_3.Backend.AmbassadorBlogPost.Images.BlogPostImage;
 import MS3_3.Backend.FileUpload.Image;
-import MS3_3.Backend.Groups.TravelGroup;
+import MS3_3.Backend.TravelGroups.TravelGroup;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
