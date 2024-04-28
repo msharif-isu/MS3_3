@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SavedPost.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=0;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">debug</a> &gt; <a href="index.source.html" class="el_package">com.example.itinerarybuddy.activities</a> &gt; <span class="el_source">SavedPost.java</span></div><h1>SavedPost.java</h1><pre class="source lang-java linenums">package com.example.itinerarybuddy.activities;
+
+import static androidx.core.content.ContentProviderCompat.requireContext;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+import com.example.itinerarybuddy.R;
+import com.example.itinerarybuddy.data.Post_Itinerary;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Activity class for displaying saved posts.
+ */
+<span class="nc" id="L35">public class SavedPost extends AppCompatActivity {</span>
+
+    private RecyclerView recyclerView;
+    private TextView initialView;
+    private List&lt;Post_Itinerary&gt; savedPostsLists;
+    private SavedPostsAdapter savedPostAdapter;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+<span class="nc" id="L44">        super.onCreate(savedInstanceState);</span>
+<span class="nc" id="L45">        setContentView(R.layout.activity_saved_post);</span>
+
+<span class="nc" id="L47">        recyclerView = findViewById(R.id.recyclerSavedPost);</span>
+<span class="nc" id="L48">        initialView = findViewById(R.id.initial_savedPost);</span>
+
+<span class="nc" id="L50">        savedPostsLists = new ArrayList&lt;&gt;(); // Initialize the list</span>
+
+<span class="nc" id="L52">        LinearLayoutManager layoutManager = new LinearLayoutManager(this);</span>
+<span class="nc" id="L53">        recyclerView.setLayoutManager(layoutManager);</span>
+
+<span class="nc" id="L55">        savedPostAdapter = new SavedPostsAdapter(savedPostsLists, this);</span>
+<span class="nc" id="L56">        recyclerView.setAdapter(savedPostAdapter);</span>
+
+
+<span class="nc" id="L59">        GET_SavedPostsData();</span>
+
+
+
+<span class="nc" id="L63">    }</span>
+
+
+    /**
+     * Fetches saved posts data from the server.
+     */
+    private void GET_SavedPostsData() {
+        // URL for fetching previous posts
+
+        //String url = &quot;http://coms-309-035.class.las.iastate.edu:8080/Itinerary/Share&quot; + username;
+<span class="nc" id="L73">        String url = &quot;https://1064bd8c-7f0f-4802-94f1-71b8b5568975.mock.pstmn.io/Itinerary/Share&quot;;</span>
+
+        // RequestQueue for handling Volley requests
+<span class="nc" id="L76">        RequestQueue queue = Volley.newRequestQueue(this);</span>
+
+        // Create a GET request
+<span class="nc" id="L79">        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,</span>
+<span class="nc" id="L80">                new Response.Listener&lt;JSONObject&gt;() {</span>
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        // Handle successful response
+                        try {
+<span class="nc" id="L85">                            JSONArray postsArray = response.getJSONArray(&quot;posts&quot;);</span>
+                            // Iterate through the array of posts
+<span class="nc bnc" id="L87" title="All 2 branches missed.">                            for (int i = 0; i &lt; postsArray.length(); i++) {</span>
+<span class="nc" id="L88">                                JSONObject postObject = postsArray.getJSONObject(i);</span>
+                                // Parse each post from the JSON object
+<span class="nc" id="L90">                                Post_Itinerary post = parsePostFromJson(postObject);</span>
+                                // Add the parsed post to your list of posts
+<span class="nc" id="L92">                                savedPostsLists.add(post);</span>
+
+                            }
+                            // Notify the adapter of data change
+<span class="nc" id="L96">                            savedPostAdapter.notifyDataSetChanged();</span>
+<span class="nc" id="L97">                            updateRecyclerView();</span>
+<span class="nc" id="L98">                        } catch (JSONException e) {</span>
+<span class="nc" id="L99">                            e.printStackTrace();</span>
+<span class="nc" id="L100">                            Toast.makeText(SavedPost.this, &quot;Error parsing JSON response&quot;, Toast.LENGTH_SHORT).show();</span>
+<span class="nc" id="L101">                        }</span>
+<span class="nc" id="L102">                    }</span>
+<span class="nc" id="L103">                }, new Response.ErrorListener() {</span>
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                // Handle errors in the response
+<span class="nc" id="L107">                Log.e(&quot;Volley Error GET: &quot;, error.toString());</span>
+<span class="nc" id="L108">                Toast.makeText(SavedPost.this, &quot;Error fetching previous posts&quot;, Toast.LENGTH_SHORT).show();</span>
+<span class="nc" id="L109">            }</span>
+        });
+
+        // Add the request to the RequestQueue
+<span class="nc" id="L113">        queue.add(jsonObjectRequest);</span>
+<span class="nc" id="L114">    }</span>
+
+    /**
+     * Parses a JSON object to extract post data.
+     *
+     * @param jsonObject The JSON object representing a post.
+     * @return The parsed Post_Itinerary object.
+     */
+    private Post_Itinerary parsePostFromJson(JSONObject jsonObject) {
+        try {
+<span class="nc" id="L124">            String username = jsonObject.getString(&quot;username&quot;);</span>
+<span class="nc" id="L125">            String postFile = jsonObject.getString(&quot;postFile&quot;);</span>
+<span class="nc" id="L126">            String postID = jsonObject.getString(&quot;postID&quot;);</span>
+<span class="nc" id="L127">            String tripCode = jsonObject.getString(&quot;tripCode&quot;);</span>
+<span class="nc" id="L128">            int numOfDays = jsonObject.getInt(&quot;number of days&quot;);</span>
+<span class="nc" id="L129">            String caption = jsonObject.getString(&quot;caption&quot;);</span>
+<span class="nc" id="L130">            int likeCount = jsonObject.getInt(&quot;likeCount&quot;);</span>
+<span class="nc" id="L131">            int saveCount = jsonObject.getInt(&quot;saveCount&quot;);</span>
+
+
+<span class="nc" id="L134">            JSONArray commentsArray = jsonObject.getJSONArray(&quot;comments&quot;);</span>
+<span class="nc" id="L135">            List&lt;Post_Itinerary.Comment&gt; comments = new ArrayList&lt;&gt;();</span>
+
+            // Iterate through the comments array
+<span class="nc bnc" id="L138" title="All 2 branches missed.">            for (int j = 0; j &lt; commentsArray.length(); j++) {</span>
+<span class="nc" id="L139">                JSONObject commentObject = commentsArray.getJSONObject(j);</span>
+<span class="nc" id="L140">                String commenterUsername = commentObject.getString(&quot;username&quot;);</span>
+<span class="nc" id="L141">                String commentText = commentObject.getString(&quot;commentText&quot;);</span>
+                // Create a Comment object and add it to the comments list
+<span class="nc" id="L143">                comments.add(new Post_Itinerary.Comment(commenterUsername, commentText));</span>
+            }
+
+<span class="nc" id="L146">            Post_Itinerary postItinerary = new Post_Itinerary(username, postFile, tripCode, numOfDays, caption, postID);</span>
+
+<span class="nc" id="L148">            postItinerary.setLikeCount(likeCount);</span>
+<span class="nc" id="L149">            postItinerary.setSaveCount(saveCount);</span>
+
+            // Create and return a new Post_Itinerary object using the constructor
+<span class="nc" id="L152">            return postItinerary;</span>
+
+<span class="nc" id="L154">        } catch (JSONException e) {</span>
+<span class="nc" id="L155">            e.printStackTrace();</span>
+<span class="nc" id="L156">            return null;</span>
+        }
+    }
+
+
+    /**
+     * Updates the RecyclerView based on the availability of saved posts.
+     */
+    private void updateRecyclerView() {
+
+<span class="nc bnc" id="L166" title="All 4 branches missed.">        if(savedPostsLists != null &amp;&amp; !savedPostsLists.isEmpty()){</span>
+
+<span class="nc" id="L168">            recyclerView.setVisibility(View.VISIBLE);</span>
+<span class="nc" id="L169">            initialView.setVisibility(View.GONE);</span>
+
+<span class="nc" id="L171">            savedPostAdapter.setSavedPosts(savedPostsLists);</span>
+<span class="nc" id="L172">            savedPostAdapter.notifyDataSetChanged();</span>
+        }
+
+        else{
+<span class="nc" id="L176">            recyclerView.setVisibility(View.GONE);</span>
+<span class="nc" id="L177">            initialView.setVisibility(View.VISIBLE);</span>
+        }
+<span class="nc" id="L179">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span>Generated by the Android Gradle plugin 8.3.2</div></body></html>

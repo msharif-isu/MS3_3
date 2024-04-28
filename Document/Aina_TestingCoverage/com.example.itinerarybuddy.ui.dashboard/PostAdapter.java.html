@@ -1,0 +1,573 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PostAdapter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=0;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">debug</a> &gt; <a href="index.source.html" class="el_package">com.example.itinerarybuddy.ui.dashboard</a> &gt; <span class="el_source">PostAdapter.java</span></div><h1>PostAdapter.java</h1><pre class="source lang-java linenums">package com.example.itinerarybuddy.ui.dashboard;
+
+import static androidx.core.content.ContextCompat.startActivity;
+
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.text.Html;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.PopupMenu;
+import android.widget.TextView;
+import android.widget.Toast;
+
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+import com.example.itinerarybuddy.R;
+import com.example.itinerarybuddy.activities.DayCard;
+import com.example.itinerarybuddy.data.Itinerary;
+import com.example.itinerarybuddy.data.Post_Itinerary;
+import com.example.itinerarybuddy.data.Spinner_ItineraryInfo;
+import com.example.itinerarybuddy.data.UserData;
+import com.example.itinerarybuddy.ui.home.CustomAdapter;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.List;
+
+public class PostAdapter extends RecyclerView.Adapter&lt;PostAdapter.PostViewHolder&gt; {
+
+    private RequestQueue requestQueue;
+    private List&lt;Post_Itinerary&gt; posts;
+    private Context context;
+    private DashboardFragment fragment;
+
+    // Constructor to initialize the adapter with a list of posts
+<span class="nc" id="L54">    public PostAdapter(List&lt;Post_Itinerary&gt; posts, Context context, DashboardFragment fragment) {</span>
+<span class="nc" id="L55">        this.posts = posts;</span>
+<span class="nc" id="L56">        this.context = context;</span>
+<span class="nc" id="L57">        this.fragment = fragment;</span>
+
+<span class="nc" id="L59">        requestQueue = Volley.newRequestQueue(context);</span>
+<span class="nc" id="L60">    }</span>
+
+    // ViewHolder class to hold the views for each post item
+    public static class PostViewHolder extends RecyclerView.ViewHolder {
+        public TextView usernameTextView;
+        public TextView postFileTextView;
+        public TextView captionTextView;
+
+        public TextView commentsTextView;
+        public ImageView commentIcon;
+        public TextView moreComments;
+
+        public TextView likeCountView;
+        public ImageView likeImageView;
+
+        public TextView saveCountView;
+        public ImageView saveImageView;
+
+        public ImageView moreView;
+
+
+        /**
+         * ViewHolder class for holding views of a post item.
+         */
+        public PostViewHolder(View itemView) {
+<span class="nc" id="L85">            super(itemView);</span>
+
+<span class="nc" id="L87">            usernameTextView = itemView.findViewById(R.id.text_username);</span>
+<span class="nc" id="L88">            postFileTextView = itemView.findViewById(R.id.text_post_file);</span>
+<span class="nc" id="L89">            captionTextView = itemView.findViewById(R.id.text_caption);</span>
+
+<span class="nc" id="L91">            commentIcon = itemView.findViewById(R.id.icon_comment);</span>
+<span class="nc" id="L92">            commentsTextView = itemView.findViewById(R.id.text_comments);</span>
+<span class="nc" id="L93">            moreComments = itemView.findViewById(R.id.more_comments);</span>
+
+<span class="nc" id="L95">            likeImageView = itemView.findViewById(R.id.icon_like);</span>
+<span class="nc" id="L96">            likeCountView = itemView.findViewById(R.id.like_count);</span>
+
+<span class="nc" id="L98">            saveImageView = itemView.findViewById(R.id.icon_save);</span>
+<span class="nc" id="L99">            saveCountView = itemView.findViewById(R.id.save_count);</span>
+
+<span class="nc" id="L101">            moreView = itemView.findViewById(R.id.icon_more);</span>
+
+<span class="nc" id="L103">        }</span>
+    }
+
+
+    /**
+     * Implementation of onCreateViewHolder method in RecyclerView.Adapter.
+     * This method is responsible for creating a new ViewHolder when needed.
+     *
+     * @param parent The ViewGroup into which the new View will be added after it is bound to an adapter position.
+     * @param viewType The view type of the new View.
+     * @return A new ViewHolder that holds a View of the given view type.
+     */
+    @NonNull
+    @Override
+    public PostViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        // Create a new view
+<span class="nc" id="L119">        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_post, parent, false);</span>
+<span class="nc" id="L120">        return new PostViewHolder(view);</span>
+    }
+
+    /**
+     * Implementation of onBindViewHolder method in RecyclerView.Adapter.
+     * This method is responsible for binding data to the views within a ViewHolder.
+     *
+     * @param holder The ViewHolder which should be updated to represent the contents of the item at the given position in the data set.
+     * @param position The position of the item within the adapter's data set.
+     */
+    @Override
+    public void onBindViewHolder(@NonNull PostViewHolder holder, @SuppressLint(&quot;RecyclerView&quot;) int position) {
+        // Get the data model based on position
+<span class="nc" id="L133">        Post_Itinerary post = posts.get(position);</span>
+
+        // Set the data for the views
+<span class="nc" id="L136">        holder.usernameTextView.setText(post.getUsername());</span>
+<span class="nc" id="L137">        holder.postFileTextView.setText(post.getPostFile());</span>
+<span class="nc" id="L138">        holder.captionTextView.setText(post.getCaption());</span>
+<span class="nc" id="L139">        holder.commentsTextView.setText(post.getComments().toString());</span>
+
+
+        // Set OnClickListener for postFileTextView to start DayCard activity
+<span class="nc" id="L143">        holder.postFileTextView.setOnClickListener(new View.OnClickListener() {</span>
+            @Override
+            public void onClick(View v) {
+                // Obtain the context from the adapter
+<span class="nc" id="L147">                Context context = holder.itemView.getContext();</span>
+
+                // Use the context to start the activity
+<span class="nc" id="L150">                Intent intent = new Intent(context, DayCard.class);</span>
+
+                // Pass the number of days to the intent
+<span class="nc" id="L153">                intent.putExtra(&quot;NUM_OF_DAYS&quot;, post.getDays());</span>
+<span class="nc" id="L154">                intent.putExtra(&quot;IS_EDITABLE&quot;, false);</span>
+<span class="nc" id="L155">                intent.putExtra(&quot;SOURCE&quot;, &quot;Community&quot;);</span>
+<span class="nc" id="L156">                context.startActivity(intent);</span>
+<span class="nc" id="L157">            }</span>
+        });
+
+
+    // Show only first 2 comments initially
+<span class="nc" id="L162">        StringBuilder seeComment = new StringBuilder();</span>
+<span class="nc" id="L163">        List&lt;Post_Itinerary.Comment&gt; showComment = post.getComments();</span>
+<span class="nc" id="L164">        int numCommentsToShow = Math.min(2, showComment.size());</span>
+<span class="nc bnc" id="L165" title="All 2 branches missed.">        for (int i = 0; i &lt; numCommentsToShow; i++) {</span>
+<span class="nc" id="L166">            Post_Itinerary.Comment comment = showComment.get(i);</span>
+<span class="nc" id="L167">            seeComment.append(&quot;&lt;b&gt;&quot;)</span>
+<span class="nc" id="L168">                    .append(comment.getUsername())</span>
+<span class="nc" id="L169">                    .append(&quot;&lt;/b&gt;  &quot;)</span>
+<span class="nc" id="L170">                    .append(comment.getCommentText())</span>
+<span class="nc" id="L171">                    .append(&quot;&lt;br&gt;&quot;);</span>
+        }
+<span class="nc" id="L173">        holder.commentsTextView.setText(android.text.Html.fromHtml(seeComment.toString()));</span>
+
+        // If there are more than 2 comments, show &quot;View more comments&quot; text
+<span class="nc bnc" id="L176" title="All 2 branches missed.">        if (showComment.size() &gt; 2) {</span>
+<span class="nc" id="L177">            holder.moreComments.setVisibility(View.VISIBLE);</span>
+<span class="nc" id="L178">            holder.moreComments.setText(&quot;View all comments&quot;);</span>
+        } else {
+<span class="nc" id="L180">            holder.moreComments.setVisibility(View.GONE);</span>
+        }
+
+        // Set click listener for &quot;View More Comments&quot; text
+<span class="nc" id="L184">        holder.moreComments.setOnClickListener(new View.OnClickListener() {</span>
+            @Override
+            public void onClick(View v) {
+                // Show all comments
+<span class="nc" id="L188">                StringBuilder allCommentsText = new StringBuilder();</span>
+<span class="nc bnc" id="L189" title="All 2 branches missed.">                for (Post_Itinerary.Comment comment : showComment) {</span>
+<span class="nc" id="L190">                    allCommentsText.append(&quot;&lt;b&gt;&quot;)</span>
+<span class="nc" id="L191">                            .append(comment.getUsername())</span>
+<span class="nc" id="L192">                            .append(&quot;&lt;/b&gt;  &quot;)</span>
+<span class="nc" id="L193">                            .append(comment.getCommentText())</span>
+<span class="nc" id="L194">                            .append(&quot;&lt;br&gt;&quot;);</span>
+<span class="nc" id="L195">                }</span>
+<span class="nc" id="L196">                holder.commentsTextView.setText(android.text.Html.fromHtml(allCommentsText.toString()));</span>
+<span class="nc" id="L197">                holder.moreComments.setVisibility(View.GONE); // Hide &quot;View more comments&quot; text after showing all comments</span>
+<span class="nc" id="L198">            }</span>
+        });
+
+<span class="nc" id="L201">        holder.likeCountView.setText(String.valueOf(post.getLikeCount()));</span>
+
+<span class="nc bnc" id="L203" title="All 2 branches missed.">        if (post.isLiked()) {</span>
+<span class="nc" id="L204">            holder.likeImageView.setImageResource(R.drawable.ic_like_after);</span>
+        } else {
+<span class="nc" id="L206">            holder.likeImageView.setImageResource(R.drawable.ic_like_before);</span>
+        }
+
+<span class="nc" id="L209">        holder.likeImageView.setOnClickListener(new View.OnClickListener() {</span>
+            @Override
+            public void onClick(View v) {
+
+<span class="nc bnc" id="L213" title="All 2 branches missed.">                if (post.isLiked()) {</span>
+
+<span class="nc" id="L215">                    post.setLiked(false);</span>
+<span class="nc" id="L216">                    post.decreaseLikeCount();</span>
+<span class="nc" id="L217">                    holder.likeCountView.setText(&quot;Liked: &quot; + String.valueOf(post.getLikeCount()));</span>
+<span class="nc" id="L218">                    holder.likeImageView.setImageResource(R.drawable.ic_like_before);</span>
+                } else {
+
+<span class="nc" id="L221">                    post.setLiked(true);</span>
+<span class="nc" id="L222">                    post.increaseLikeCount();</span>
+<span class="nc" id="L223">                    holder.likeCountView.setText(&quot;Liked: &quot; + String.valueOf(post.getLikeCount()));</span>
+<span class="nc" id="L224">                    holder.likeImageView.setImageResource(R.drawable.ic_like_after);</span>
+
+                }
+
+<span class="nc" id="L228">                PUT_updateLikeCount(post);</span>
+<span class="nc" id="L229">            }</span>
+        });
+
+<span class="nc" id="L232">        holder.commentIcon.setOnClickListener(new View.OnClickListener() {</span>
+            @Override
+            public void onClick(View v) {
+<span class="nc" id="L235">                showCommentDialog(holder, post);</span>
+<span class="nc" id="L236">            }</span>
+        });
+
+<span class="nc" id="L239">        holder.saveCountView.setText(String.valueOf(post.getSaveCount()));</span>
+<span class="nc bnc" id="L240" title="All 2 branches missed.">        if (post.isSaved()) {</span>
+<span class="nc" id="L241">            holder.saveImageView.setImageResource(R.drawable.ic_bookmark_aftr);</span>
+        } else {
+<span class="nc" id="L243">            holder.saveImageView.setImageResource(R.drawable.ic_bookmark_bfr);</span>
+        }
+
+<span class="nc" id="L246">        holder.saveImageView.setOnClickListener(new View.OnClickListener() {</span>
+            @Override
+            public void onClick(View v) {
+
+<span class="nc bnc" id="L250" title="All 2 branches missed.">                if (post.isSaved()) {</span>
+
+<span class="nc" id="L252">                    post.setSaved(false);</span>
+<span class="nc" id="L253">                    post.decreaseSaveCount();</span>
+<span class="nc" id="L254">                    holder.saveCountView.setText(&quot;Saved: &quot; + String.valueOf(post.getSaveCount()));</span>
+<span class="nc" id="L255">                    holder.saveImageView.setImageResource(R.drawable.ic_bookmark_bfr);</span>
+
+<span class="nc" id="L257">                    POST_updateSavedPost(post);</span>
+
+                } else {
+
+<span class="nc" id="L261">                    post.setSaved(true);</span>
+<span class="nc" id="L262">                    post.increaseSaveCount();</span>
+<span class="nc" id="L263">                    holder.saveCountView.setText(&quot;Saved: &quot; + String.valueOf(post.getSaveCount()));</span>
+<span class="nc" id="L264">                    holder.saveImageView.setImageResource(R.drawable.ic_bookmark_aftr);</span>
+
+<span class="nc" id="L266">                    POST_updateSavedPost(post);</span>
+                }
+
+<span class="nc" id="L269">                PUT_updateSaveCount(post);</span>
+<span class="nc" id="L270">            }</span>
+
+        });
+
+<span class="nc" id="L274">        holder.moreView.setOnClickListener(new View.OnClickListener() {</span>
+            @Override
+            public void onClick(View v) {
+<span class="nc" id="L277">                showPopupMenu(v, position);</span>
+<span class="nc" id="L278">            }</span>
+        });
+
+<span class="nc" id="L281">    }</span>
+
+    /**
+     * Sends a POST request to update the saved status of a post.
+     *
+     * @param post The Post_Itinerary object representing the post to be updated.
+     */
+    private void POST_updateSavedPost(Post_Itinerary post) {
+
+        //String url = &quot;http://coms-309-035.class.las.iastate.edu:8080/Itinerary/Share/&quot; + username + post.getPostID();
+        //String url = &quot;https://1064bd8c-7f0f-4802-94f1-71b8b5568975.mock.pstmn.io/Itinerary/Share/SavedPost&quot;;
+
+<span class="nc" id="L293">        String url = &quot;http://coms-309-035.class.las.iastate.edu:8080/Itinerary/Share/&quot; + post.getPostID();</span>
+
+<span class="nc" id="L295">        JSONObject postData = new JSONObject();</span>
+
+        try {
+            // Add the data of the post
+<span class="nc" id="L299">            postData.put(&quot;username&quot;, post.getUsername());</span>
+<span class="nc" id="L300">            postData.put(&quot;postFile&quot;, post.getPostFile());</span>
+<span class="nc" id="L301">            postData.put(&quot;postID&quot;, post.getPostID());</span>
+<span class="nc" id="L302">            postData.put(&quot;tripCode&quot;, post.getTripCode());</span>
+<span class="nc" id="L303">            postData.put(&quot;number of days&quot;, post.getDays());</span>
+<span class="nc" id="L304">            postData.put(&quot;caption&quot;, post.getCaption());</span>
+<span class="nc" id="L305">            postData.put(&quot;likeCount&quot;, post.getLikeCount());</span>
+<span class="nc" id="L306">            postData.put(&quot;saveCount&quot;, post.getSaveCount());</span>
+
+
+            // Convert comments list to JSON array
+<span class="nc" id="L310">            JSONArray commentsArray = new JSONArray();</span>
+<span class="nc bnc" id="L311" title="All 2 branches missed.">            for (Post_Itinerary.Comment comment : post.getComments()) {</span>
+<span class="nc" id="L312">                JSONObject commentObject = new JSONObject();</span>
+<span class="nc" id="L313">                commentObject.put(&quot;username&quot;, comment.getUsername());</span>
+<span class="nc" id="L314">                commentObject.put(&quot;commentText&quot;, comment.getCommentText());</span>
+<span class="nc" id="L315">                commentsArray.put(commentObject);</span>
+<span class="nc" id="L316">            }</span>
+<span class="nc" id="L317">            postData.put(&quot;comments&quot;, commentsArray);</span>
+<span class="nc" id="L318">        } catch (JSONException e) {</span>
+<span class="nc" id="L319">            e.printStackTrace();</span>
+<span class="nc" id="L320">        }</span>
+
+        int method;
+
+<span class="nc bnc" id="L324" title="All 2 branches missed.">        if(post.isSaved()){</span>
+
+<span class="nc" id="L326">            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, postData,</span>
+<span class="nc" id="L327">                    new Response.Listener&lt;JSONObject&gt;() {</span>
+                        @Override
+                        public void onResponse(JSONObject response) {
+<span class="nc" id="L330">                            Log.d(&quot;Volley Response Saved: &quot;, response.toString());</span>
+
+<span class="nc" id="L332">                        }</span>
+                    },
+
+<span class="nc" id="L335">                    new Response.ErrorListener() {</span>
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+<span class="nc" id="L338">                            Log.e(&quot;Volley Error Post Saved: &quot;, error.toString());</span>
+<span class="nc" id="L339">                        }</span>
+                    });
+
+<span class="nc" id="L342">            requestQueue.add(jsonObjectRequest);</span>
+
+<span class="nc" id="L344">        }</span>
+
+        else{
+
+           // url += post.getPostID();
+
+<span class="nc" id="L350">            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.DELETE, url, postData,</span>
+<span class="nc" id="L351">                    new Response.Listener&lt;JSONObject&gt;() {</span>
+                        @Override
+                        public void onResponse(JSONObject response) {
+<span class="nc" id="L354">                            Log.d(&quot;Volley Response Delete Saved:&quot;, response.toString());</span>
+<span class="nc" id="L355">                        }</span>
+                    },
+
+<span class="nc" id="L358">                    new Response.ErrorListener() {</span>
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+<span class="nc" id="L361">                            Log.e(&quot;Volley Error Delete Saved Post: &quot;, error.toString());</span>
+<span class="nc" id="L362">                        }</span>
+                    });
+
+<span class="nc" id="L365">            requestQueue.add(jsonObjectRequest);</span>
+        }
+
+
+
+<span class="nc" id="L370">    }</span>
+
+    /**
+     * Sends a PUT request to update the save count of a post.
+     *
+     * @param post The Post_Itinerary object representing the post to be updated.
+     */
+    private void PUT_updateSaveCount(Post_Itinerary post) {
+
+       // String url = &quot;https://1064bd8c-7f0f-4802-94f1-71b8b5568975.mock.pstmn.io/Itinerary/Share/SaveCount&quot; + post.getPostID();
+
+        //String url = &quot;https://1064bd8c-7f0f-4802-94f1-71b8b5568975.mock.pstmn.io/Itinerary/Share/SaveCount&quot;;
+
+<span class="nc" id="L383">        String url = &quot;http://coms-309-035.class.las.iastate.edu:8080/Itinerary/Share/SaveCount&quot; + post.getPostID();</span>
+
+<span class="nc" id="L385">        JSONObject requestData = new JSONObject();</span>
+
+        try{
+<span class="nc" id="L388">            requestData.put(&quot;saveCount&quot;, post.getSaveCount());</span>
+
+<span class="nc" id="L390">        } catch (JSONException e){</span>
+<span class="nc" id="L391">            e.printStackTrace();</span>
+<span class="nc" id="L392">        }</span>
+
+<span class="nc" id="L394">        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, requestData,</span>
+<span class="nc" id="L395">                new Response.Listener&lt;JSONObject&gt;() {</span>
+                    @Override
+                    public void onResponse(JSONObject response) {
+<span class="nc" id="L398">                        Log.d(&quot;Update Save Count&quot;, &quot;Success&quot;);</span>
+<span class="nc" id="L399">                    }</span>
+<span class="nc" id="L400">                }, new Response.ErrorListener() {</span>
+            @Override
+            public void onErrorResponse(VolleyError error) {
+<span class="nc" id="L403">                Log.e(&quot;Update Save Count Error&quot;, error.toString());</span>
+<span class="nc" id="L404">            }</span>
+        });
+
+<span class="nc" id="L407">        requestQueue.add(jsonObjectRequest);</span>
+<span class="nc" id="L408">    }</span>
+
+    /**
+     * Sends a PUT request to update the like count of a post.
+     *
+     * @param post The Post_Itinerary object representing the post to be updated.
+     */
+    private void PUT_updateLikeCount(Post_Itinerary post) {
+
+
+        //String url = &quot;https://1064bd8c-7f0f-4802-94f1-71b8b5568975.mock.pstmn.io/Itinerary/Share/LikeCount&quot;;
+
+<span class="nc" id="L420">        String url = &quot;http://coms-309-035.class.las.iastate.edu:8080/Itinerary/Share/LikeCount&quot; + post.getPostID();</span>
+
+<span class="nc" id="L422">        JSONObject requestData = new JSONObject();</span>
+
+        try{
+<span class="nc" id="L425">            requestData.put(&quot;likeCount&quot;, post.getSaveCount());</span>
+
+<span class="nc" id="L427">        } catch (JSONException e){</span>
+<span class="nc" id="L428">            e.printStackTrace();</span>
+<span class="nc" id="L429">        }</span>
+
+<span class="nc" id="L431">        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, requestData,</span>
+<span class="nc" id="L432">                new Response.Listener&lt;JSONObject&gt;() {</span>
+                    @Override
+                    public void onResponse(JSONObject response) {
+<span class="nc" id="L435">                        Log.d(&quot;Update Like Count&quot;, &quot;Success&quot;);</span>
+<span class="nc" id="L436">                    }</span>
+<span class="nc" id="L437">                }, new Response.ErrorListener() {</span>
+            @Override
+            public void onErrorResponse(VolleyError error) {
+<span class="nc" id="L440">                Log.e(&quot;Update Like Count Error&quot;, error.toString());</span>
+<span class="nc" id="L441">            }</span>
+        });
+
+<span class="nc" id="L444">        requestQueue.add(jsonObjectRequest);</span>
+<span class="nc" id="L445">    }</span>
+
+    /**
+     * Displays a dialog for adding a comment to a post.
+     *
+     * @param holder The PostViewHolder instance associated with the post.
+     * @param post The Post_Itinerary object representing the post to add a comment to.
+     */
+    private void showCommentDialog(PostViewHolder holder, Post_Itinerary post) {
+<span class="nc" id="L454">        AlertDialog.Builder builder = new AlertDialog.Builder(context);</span>
+<span class="nc" id="L455">        builder.setTitle(&quot;Add Comment&quot;);</span>
+
+        // Set the input field
+<span class="nc" id="L458">        final EditText input = new EditText(context);</span>
+<span class="nc" id="L459">        input.setHint(&quot;Enter your comment&quot;);</span>
+<span class="nc" id="L460">        builder.setView(input);</span>
+
+        // Set up the buttons
+<span class="nc" id="L463">        builder.setPositiveButton(&quot;Post&quot;, new DialogInterface.OnClickListener() {</span>
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+<span class="nc" id="L466">                String commentText = input.getText().toString().trim();</span>
+<span class="nc bnc" id="L467" title="All 2 branches missed.">                if (!commentText.isEmpty()) {</span>
+
+                    //String username = UserData.getUsername();
+<span class="nc" id="L470">                    String username = &quot;Aina&quot;;</span>
+<span class="nc" id="L471">                    post.addComment(username, commentText);</span>
+<span class="nc" id="L472">                    notifyDataSetChanged();</span>
+
+<span class="nc" id="L474">                    POST_addComment(post, username, commentText);</span>
+                }
+<span class="nc" id="L476">                dialog.dismiss();</span>
+<span class="nc" id="L477">            }</span>
+        });
+
+<span class="nc" id="L480">        builder.setNegativeButton(&quot;Cancel&quot;, new DialogInterface.OnClickListener() {</span>
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+<span class="nc" id="L483">                dialog.cancel();</span>
+<span class="nc" id="L484">            }</span>
+        });
+
+<span class="nc" id="L487">        builder.show();</span>
+<span class="nc" id="L488">    }</span>
+
+    /**
+     * Sends a POST request to add a comment to a post.
+     *
+     * @param post The Post_Itinerary object representing the post to add a comment to.
+     * @param username The username of the commenter.
+     * @param commentText The text of the comment.
+     */
+    private void POST_addComment(Post_Itinerary post, String username, String commentText) {
+
+<span class="nc" id="L499">        String url = &quot;http://coms-309-035.class.las.iastate.edu:8080/Itinerary/Share/Comment&quot;;</span>
+        //String url = &quot;https://1064bd8c-7f0f-4802-94f1-71b8b5568975.mock.pstmn.io/Itinerary/Share/Comment&quot;;
+
+<span class="nc" id="L502">        JSONObject commentData = new JSONObject();</span>
+
+        try{
+<span class="nc" id="L505">            commentData.put(&quot;username&quot;, username);</span>
+<span class="nc" id="L506">            commentData.put(&quot;commentText&quot;, commentText);</span>
+        }
+
+<span class="nc" id="L509">        catch(JSONException e){</span>
+
+<span class="nc" id="L511">            e.printStackTrace();</span>
+<span class="nc" id="L512">        }</span>
+
+<span class="nc" id="L514">        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, commentData,</span>
+<span class="nc" id="L515">                new Response.Listener&lt;JSONObject&gt;() {</span>
+                    @Override
+                    public void onResponse(JSONObject response) {
+<span class="nc" id="L518">                        Log.d(&quot;Add Comment Response&quot;, response.toString());</span>
+<span class="nc" id="L519">                    }</span>
+<span class="nc" id="L520">                }, new Response.ErrorListener() {</span>
+            @Override
+            public void onErrorResponse(VolleyError error) {
+<span class="nc" id="L523">                Log.e(&quot;Add comment Error&quot;, error.toString());</span>
+<span class="nc" id="L524">            }</span>
+        });
+
+<span class="nc" id="L527">        requestQueue.add(jsonObjectRequest);</span>
+<span class="nc" id="L528">    }</span>
+
+    /**
+     * Displays a popup menu for the options related to a post.
+     *
+     * @param view The anchor view for the popup menu.
+     * @param position The position of the post in the RecyclerView.
+     */
+    private void showPopupMenu(View view, int position) {
+<span class="nc" id="L537">        PopupMenu popupMenu = new PopupMenu(context, view);</span>
+<span class="nc" id="L538">        popupMenu.getMenuInflater().inflate(R.menu.itinerary_menu, popupMenu.getMenu());</span>
+<span class="nc" id="L539">        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {</span>
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+
+<span class="nc bnc" id="L543" title="All 2 branches missed.">                if (item.getItemId() == R.id.action_edit) {</span>
+<span class="nc" id="L544">                    fragment.EditClicked(position);</span>
+<span class="nc" id="L545">                    return true;</span>
+<span class="nc bnc" id="L546" title="All 2 branches missed.">                } else if (item.getItemId() == R.id.action_delete) {</span>
+<span class="nc" id="L547">                    fragment.DeleteClicked(position);</span>
+<span class="nc" id="L548">                    return true;</span>
+                } else {
+<span class="nc" id="L550">                    return false;</span>
+                }
+            }
+        });
+<span class="nc" id="L554">        popupMenu.show();</span>
+<span class="nc" id="L555">    }</span>
+
+
+    /**
+     * Returns the total number of items in the data set held by the adapter.
+     *
+     * @return The total number of items in this adapter.
+     */
+    @Override
+    public int getItemCount() {
+<span class="nc" id="L565">        return posts.size();</span>
+    }
+
+
+}
+
+
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span>Generated by the Android Gradle plugin 8.2.2</div></body></html>

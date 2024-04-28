@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Post_Itinerary.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=0;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">debug</a> &gt; <a href="index.source.html" class="el_package">com.example.itinerarybuddy.data</a> &gt; <span class="el_source">Post_Itinerary.java</span></div><h1>Post_Itinerary.java</h1><pre class="source lang-java linenums">package com.example.itinerarybuddy.data;
+
+import java.util.ArrayList;
+
+public class Post_Itinerary {
+
+    public String username;
+
+    public String postFile;
+    public String caption;
+    public int likeCount;
+    public boolean likeValue;
+    public int saveCount;
+    public boolean saveValue;
+    public String tripCode;
+    public int numDays;
+
+    public String postID;
+
+    private ArrayList&lt;Comment&gt; comments;
+<span class="nc" id="L21">    public Post_Itinerary(String username, String postFile, String tripCode, int numDays, String caption, String postID){</span>
+
+<span class="nc" id="L23">        this.username = username;</span>
+        //this.timePosted = timePosted;
+
+<span class="nc" id="L26">        this.postFile = postFile;</span>
+<span class="nc" id="L27">        this.tripCode  = tripCode;</span>
+<span class="nc" id="L28">        this.numDays = numDays;</span>
+
+<span class="nc" id="L30">        this.caption = caption;</span>
+
+<span class="nc" id="L32">        this.postID = postID;</span>
+
+<span class="nc" id="L34">        this.likeCount = 0;</span>
+<span class="nc" id="L35">        this.likeValue = false;</span>
+
+<span class="nc" id="L37">        this.saveCount = 0;</span>
+<span class="nc" id="L38">        this.saveValue = false;</span>
+
+<span class="nc" id="L40">        this.comments = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L41">    }</span>
+
+    public String getPostID(){
+<span class="nc" id="L44">        return postID;</span>
+    }
+    public String getUsername(){
+<span class="nc" id="L47">        return username;</span>
+    }
+
+    public String getPostFile(){
+
+<span class="nc" id="L52">        String shown = postFile.split(&quot;,&quot;)[0];</span>
+<span class="nc" id="L53">        return shown;</span>
+    }
+
+    public String getTripCode(){
+<span class="nc" id="L57">        return tripCode;</span>
+    }
+
+    public int getDays(){
+<span class="nc" id="L61">        return numDays;</span>
+    }
+    public String getCaption(){
+<span class="nc" id="L64">        return caption;</span>
+    }
+
+
+    public boolean isLiked() {
+
+<span class="nc" id="L70">        return likeValue;</span>
+    }
+
+    public void setLikeCount(int numLike){
+
+<span class="nc" id="L75">        likeCount = numLike;</span>
+
+<span class="nc" id="L77">    }</span>
+
+    public int getLikeCount() {
+
+<span class="nc" id="L81">        return likeCount;</span>
+    }
+
+    public void setLiked(boolean b) {
+
+<span class="nc" id="L86">        likeValue = b;</span>
+<span class="nc" id="L87">    }</span>
+
+    public void decreaseLikeCount() {
+
+<span class="nc" id="L91">        likeCount--;</span>
+
+<span class="nc" id="L93">    }</span>
+
+    public void increaseLikeCount() {
+
+<span class="nc" id="L97">        likeCount++;</span>
+<span class="nc" id="L98">    }</span>
+
+    public void setSaved(boolean b) {
+
+<span class="nc" id="L102">        saveValue = b;</span>
+<span class="nc" id="L103">    }</span>
+
+    public void increaseSaveCount() {
+
+<span class="nc" id="L107">        saveCount++;</span>
+<span class="nc" id="L108">    }</span>
+
+    public void decreaseSaveCount() {
+
+<span class="nc" id="L112">        saveCount--;</span>
+<span class="nc" id="L113">    }</span>
+
+
+    public boolean isSaved() {
+
+<span class="nc" id="L118">        return saveValue;</span>
+    }
+
+    public void setSaveCount(int numSave){
+
+<span class="nc" id="L123">        saveCount = numSave;</span>
+<span class="nc" id="L124">    }</span>
+    public int getSaveCount() {
+
+<span class="nc" id="L127">        return saveCount;</span>
+    }
+
+    public ArrayList&lt;Comment&gt; getComments() {
+
+<span class="nc" id="L132">        return comments;</span>
+
+    }
+
+    public void addComment(String username, String comment) {
+
+<span class="nc" id="L138">        Comment comment1 = new Comment(username, comment);</span>
+<span class="nc" id="L139">        comments.add(comment1);</span>
+<span class="nc" id="L140">    }</span>
+
+    public void setCaption(String newCaption) {
+
+<span class="nc" id="L144">        caption = newCaption;</span>
+<span class="nc" id="L145">    }</span>
+
+    //Inner class to represent a comment with username
+    public static class Comment{
+
+        private String username;
+        private String commentText;
+
+<span class="nc" id="L153">        public Comment(String username, String commentText){</span>
+
+<span class="nc" id="L155">            this.username = username;</span>
+<span class="nc" id="L156">            this.commentText = commentText;</span>
+<span class="nc" id="L157">        }</span>
+
+        public String getUsername(){
+<span class="nc" id="L160">            return username;</span>
+        }
+
+        public String getCommentText(){
+<span class="nc" id="L164">            return commentText;</span>
+        }
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span>Generated by the Android Gradle plugin 8.2.2</div></body></html>

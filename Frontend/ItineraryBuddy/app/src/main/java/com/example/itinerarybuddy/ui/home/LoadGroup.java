@@ -2,6 +2,7 @@ package com.example.itinerarybuddy.ui.home;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -15,9 +16,11 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -34,9 +37,11 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.itinerarybuddy.R;
+import com.example.itinerarybuddy.activities.DayCard;
 import com.example.itinerarybuddy.data.Group;
 import com.example.itinerarybuddy.data.UserData;
 import com.example.itinerarybuddy.databinding.DialogCreateGroupBinding;
+import com.example.itinerarybuddy.databinding.DialogEditItineraryBinding;
 import com.example.itinerarybuddy.databinding.DialogGroupDetailsBinding;
 import com.example.itinerarybuddy.databinding.DialogSelectImageBinding;
 import com.example.itinerarybuddy.util.CustomImageRequest;
@@ -49,7 +54,12 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
@@ -63,6 +73,16 @@ public class LoadGroup extends AppCompatActivity {
      */
     protected static Group group;
 
+    protected static String groupID;
+
+    /**
+     * JSON object holding all of the data for the group itinerary.
+     */
+    protected static JSONObject groupItinerary;
+
+    /**
+     * Index of list adapter for this group.
+     */
     protected static int index;
 
     /**
@@ -85,12 +105,42 @@ public class LoadGroup extends AppCompatActivity {
      */
     private Uri uploadImageUri;
 
+    /**
+     * Displays itinerary destination on main itinerary view.
+     */
+    private TextView itineraryDestination;
+
+    /**
+     * Displays itinerary start date on main itinerary view.
+     */
+    private TextView itineraryStart;
+
+    /**
+     * Displays itinerary end date on main itinerary view.
+     */
+    private TextView itineraryEnd;
+
+    /**
+     * Displays itinerary trip length on main itinerary view.
+     */
+    private TextView itineraryLength;
+
+    /**
+     * Edit texts for editing the group itinerary.
+     */
+    private EditText startDateInput;
+
+    /**
+     * Edit texts for editing the group itinerary.
+     */
+    private EditText endDateInput;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        this.getSupportActionBar().hide();
+        Objects.requireNonNull(this.getSupportActionBar()).hide();
         setContentView(R.layout.fragment_group_page);
 
         // Instantiate buttons
@@ -98,10 +148,16 @@ public class LoadGroup extends AppCompatActivity {
         ImageButton groupOptions = findViewById(R.id.options_button);
         ImageButton chat = findViewById(R.id.chat_button);
         groupImage = findViewById(R.id.group_image);
+        LinearLayout itinerary = findViewById(R.id.itinerary_details);
+        itineraryDestination = findViewById(R.id.group_itinerary_destination);
+        itineraryStart = findViewById(R.id.group_itinerary_start);
+        itineraryEnd = findViewById(R.id.group_itinerary_end);
+        itineraryLength = findViewById(R.id.group_itinerary_length);
+        ImageView itinerarySettings = findViewById(R.id.iconPopUp);
 
         // Extract the group from the previous activity using bundle
         Bundle bundle = getIntent().getExtras();
-        if(bundle != null) {
+        if (bundle != null) {
             index = Integer.parseInt(Objects.requireNonNull(bundle.getString("POSITION")));
             group = ListGroups.adapter.getItem(index);
 
@@ -112,25 +168,15 @@ public class LoadGroup extends AppCompatActivity {
 
             // Set data to the various views
             assert group != null;
+            groupID = group.getTravelGroupID();
             name.setText(group.getTravelGroupName());
             description.setText(group.getTravelGroupDescription());
             String destinationText = "Traveling to: " + group.getTravelGroupDestination();
             destination.setText(destinationText);
             getImage(groupImage);
+            getItinerary();
         }
 
-        /*
-        // Instantiate text views
-        TextView name = findViewById(R.id.group_title);
-        TextView description = findViewById(R.id.group_description);
-        TextView destination = findViewById(R.id.group_destination);
-
-        assert group != null;
-        name.setText(group.getTravelGroupName());
-        description.setText(group.getTravelGroupDescription());
-        String destinationText = "Traveling to: " + group.getTravelGroupDestination();
-        destination.setText(destinationText);
-        */
         // Set click listener for back button
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -164,24 +210,20 @@ public class LoadGroup extends AppCompatActivity {
                 menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
-                        if(item.getItemId() == R.id.action_group_members){
+                        if (item.getItemId() == R.id.action_group_members) {
                             showGroupDetails();
                             return true;
-                        }
-                        else if(item.getItemId() == R.id.action_leave_group){
+                        } else if (item.getItemId() == R.id.action_leave_group) {
                             leaveGroupDialog();
                             return true;
-                        }
-                        else if(item.getItemId() == R.id.action_edit_group){
-                            if(UserData.getUsertype().equals("User")){
+                        } else if (item.getItemId() == R.id.action_edit_group) {
+                            if (UserData.getUsertype().equals("User")) {
                                 Toast.makeText(getApplicationContext(), "Only Travel Ambassadors can edit the group.", Toast.LENGTH_LONG).show();
-                            }
-                            else{
+                            } else {
                                 editGroup();
                             }
                             return true;
-                        }
-                        else{
+                        } else {
                             return false;
                         }
                     }
@@ -203,7 +245,7 @@ public class LoadGroup extends AppCompatActivity {
 
         // Image selection process
         getImage = registerForActivityResult(new ActivityResultContracts.GetContent(), uri -> {
-            if(uri != null){
+            if (uri != null) {
                 uploadImageUri = uri;
                 selectImage.setImageURI(uri);
                 Toast.makeText(getApplicationContext(), "Image Selected!", Toast.LENGTH_LONG).show();
@@ -214,12 +256,38 @@ public class LoadGroup extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Allow user to change group image if they are an ambassador.
-                if(UserData.getUsertype().equals("Ambassador")){
+                if (UserData.getUsertype().equals("Ambassador")) {
                     selectGroupImage();
-                }
-                else{
+                } else {
                     Toast.makeText(getApplicationContext(), "Only Travel Ambassadors can edit the group.", Toast.LENGTH_LONG).show();
                 }
+            }
+        });
+
+        itinerary.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    int days = Integer.parseInt(groupItinerary.getString("numDays"));
+                    Intent intent = new Intent(getApplicationContext(), DayCard.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("NUM_OF_DAYS", days);
+                    bundle.putString("SOURCE", "GROUP");
+                    bundle.putBoolean("IS_EDITABLE", !UserData.getUsertype().equals("User"));
+                    bundle.putString("GROUPID", group.getTravelGroupID());
+                    intent.putExtras(bundle);
+
+                    startActivity(intent);
+                } catch (JSONException e) {
+                    Log.e("JSON Exception:", e.toString());
+                }
+            }
+        });
+
+        itinerarySettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                editItinerary();
             }
         });
     }
@@ -227,7 +295,7 @@ public class LoadGroup extends AppCompatActivity {
     /**
      * Initiates a dialog popup that displays the details of the group, such as members and the group code.
      */
-    private void showGroupDetails(){
+    private void showGroupDetails() {
         // Create new alert dialog
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.layout.dialog_group_details);
         builder.setTitle("Travel Group Details");
@@ -237,7 +305,7 @@ public class LoadGroup extends AppCompatActivity {
 
         // Set text elements
         ListView members = v.findViewById(R.id.group_members_list);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, group.getMembers());
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, group.getMembers());
         members.setAdapter(adapter);
 
         TextView code = v.findViewById(R.id.group_code_label);
@@ -257,7 +325,7 @@ public class LoadGroup extends AppCompatActivity {
     /**
      * Initiates a dialog popup where the user may enter edits to the group information, such as name etc.
      */
-    private void editGroup(){
+    private void editGroup() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.layout.dialog_create_group);
         builder.setTitle("Edit Travel Group");
         View editView = DialogCreateGroupBinding.inflate(getLayoutInflater()).getRoot();
@@ -292,11 +360,12 @@ public class LoadGroup extends AppCompatActivity {
 
     /**
      * Helper method for editGroup() that makes a PUT request for the given modifications to the group.
-     * @param name of the group.
+     *
+     * @param name        of the group.
      * @param destination of the group.
      * @param description of the group.
      */
-    private void updateGroup(String name, String destination, String description){
+    private void updateGroup(String name, String destination, String description) {
         // Create JSON for group, along with array for group members
         JSONObject groupData = new JSONObject();
         JSONArray memberData = new JSONArray();
@@ -308,7 +377,7 @@ public class LoadGroup extends AppCompatActivity {
             groupData.put("travelGroupAmbassador", UserData.getUsername());
             groupData.put("travelGroupDescription", description);
             groupData.put("members", memberData);
-        }catch(JSONException e){
+        } catch (JSONException e) {
             Log.e("JSON Error: ", e.toString());
         }
 
@@ -328,9 +397,9 @@ public class LoadGroup extends AppCompatActivity {
                 Log.e("Volley Error: ", error.toString());
                 Toast.makeText(getApplicationContext(), "Error Updating Group!", Toast.LENGTH_LONG).show();
             }
-        }){
+        }) {
             @Override
-            protected Map<String, String> getParams(){
+            protected Map<String, String> getParams() {
                 HashMap<String, String> g = new HashMap<>();
                 g.put("travelGroupName", name);
                 g.put("travelGroupCode", group.getTravelGroupID());
@@ -342,7 +411,7 @@ public class LoadGroup extends AppCompatActivity {
             }
 
             @Override
-            public Map<String, String> getHeaders(){
+            public Map<String, String> getHeaders() {
                 HashMap<String, String> map = new HashMap<>();
                 map.put("Content-Type", "application/json");
                 return map;
@@ -354,7 +423,7 @@ public class LoadGroup extends AppCompatActivity {
     /**
      * Initiates a dialog popup to prompt the user if they want to leave the travel group.
      */
-    private void leaveGroupDialog(){
+    private void leaveGroupDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Are you sure you want to leave this travel group?");
 
@@ -378,7 +447,7 @@ public class LoadGroup extends AppCompatActivity {
     /**
      * Helper method for leaveGroupDialog() to make a PUT request to remove the user from the group.
      */
-    private void leaveGroup(){
+    private void leaveGroup() {
         String user = UserData.getUsername();
         String groupId = group.getTravelGroupID();
         String url = "http://coms-309-035.class.las.iastate.edu:8080/Group/RemoveUser/" + groupId + "/" + user;
@@ -404,18 +473,18 @@ public class LoadGroup extends AppCompatActivity {
     /**
      * Helper method for leaveGroup() to remove the travel group locally from the group list.
      */
-    private void deleteGroup(){
+    private void deleteGroup() {
         ListGroups.adapter.remove(group);
         ListGroups.adapter.notifyDataSetChanged();
     }
-    
+
 
     // THE FOLLOWING FUNCTIONS ARE RELATED TO FEATURE 2: IMAGE UPLOAD!
 
     /**
      * Initiates the dialog to allow ambassador to modify the group image.
      */
-    private void selectGroupImage(){
+    private void selectGroupImage() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.layout.dialog_select_image);
         builder.setTitle("Edit Travel Group");
         View view = DialogSelectImageBinding.inflate(getLayoutInflater()).getRoot();
@@ -446,13 +515,11 @@ public class LoadGroup extends AppCompatActivity {
         builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                if(method[0] == 0){
+                if (method[0] == 0) {
                     imageMethod(uriToImage(uploadImageUri), Request.Method.PUT);
-                }
-                else if(method[0] == 1){
+                } else if (method[0] == 1) {
                     imageMethod(null, Request.Method.DELETE);
-                }
-                else{
+                } else {
                     Toast.makeText(getApplicationContext(), "please Make a Selection", Toast.LENGTH_LONG).show();
                 }
 
@@ -471,27 +538,27 @@ public class LoadGroup extends AppCompatActivity {
 
     /**
      * Helper method to convert the image data format to be uploaded.
+     *
      * @param image uri.
      * @return uri as bytes.
      */
-    private byte[] uriToImage(Uri image){
-        byte[] bytes = new byte[4*1024];
-        try{
+    private byte[] uriToImage(Uri image) {
+        byte[] bytes = new byte[4 * 1024];
+        try {
             @SuppressLint("Recycle") InputStream input = getContentResolver().openInputStream(image);
             ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 
             while (true) {
                 assert input != null;
-                if (input.read(bytes) == -1){
+                if (input.read(bytes) == -1) {
                     break;
-                }
-                else{
+                } else {
                     buffer.write(bytes, 0, bytes.length);
                 }
             }
 
             bytes = buffer.toByteArray();
-        }catch(IOException e){
+        } catch (IOException e) {
             Log.e("Error: ", e.toString());
         }
 
@@ -500,10 +567,11 @@ public class LoadGroup extends AppCompatActivity {
 
     /**
      * Network requests will be made here based on the passed in method type. Image will be uploaded or deleted.
-     * @param data of the image in bytes.
+     *
+     * @param data   of the image in bytes.
      * @param method for the request.
      */
-    private void imageMethod(byte[] data, int method){
+    private void imageMethod(byte[] data, int method) {
         String url = "http://coms-309-035.class.las.iastate.edu:8080/Group/Image/" + group.getTravelGroupID();
 
         if(method == Request.Method.PUT){
@@ -520,8 +588,7 @@ public class LoadGroup extends AppCompatActivity {
                 }
             });
             Singleton.getInstance(getApplicationContext()).addRequest(request);
-        }
-        else if(method == Request.Method.DELETE){
+        } else if (method == Request.Method.DELETE) {
             CustomImageRequest request = new CustomImageRequest(url, new Response.Listener<NetworkResponse>() {
                 @Override
                 public void onResponse(NetworkResponse networkResponse) {
@@ -540,9 +607,10 @@ public class LoadGroup extends AppCompatActivity {
 
     /**
      * Makes an image request to get the group image.
+     *
      * @param image desired ImageView to set.
      */
-    private void getImage(ImageView image){
+    private void getImage(ImageView image) {
         String url = "http://coms-309-035.class.las.iastate.edu:8080/Group/Image/" + group.getTravelGroupID();
         ImageRequest request = new ImageRequest(url, new Response.Listener<Bitmap>() {
             @Override
@@ -559,4 +627,201 @@ public class LoadGroup extends AppCompatActivity {
         Singleton.getInstance(getApplicationContext()).addRequest(request);
     }
 
+    /**
+     * Requests for this groups itinerary to display.
+     */
+    private void getItinerary() {
+        final String url = "http://coms-309-035.class.las.iastate.edu:8080/Group/Itinerary/" + group.getTravelGroupID();
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject jsonObject) {
+                try {
+                    groupItinerary = jsonObject;
+                    String destination = "Destination: " + group.getTravelGroupDestination();
+                    String start = "Start Date: " + jsonObject.getString("startDate");
+                    String end = "End Date: " + jsonObject.getString("endDate");
+                    String length = "Number of Days: " + jsonObject.getString("numDays");
+
+                    itineraryDestination.setText(destination);
+                    itineraryStart.setText(start);
+                    itineraryEnd.setText(end);
+                    itineraryLength.setText(length);
+                } catch (JSONException e) {
+                    Log.e("JSON Exception: ", e.toString());
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                Log.e("Volley Error: ", volleyError.toString());
+            }
+        });
+        Singleton.getInstance(getApplicationContext()).addRequest(request);
+    }
+
+    /**
+     * Prompts for making edits to the itinerary start or end date.
+     */
+    private void editItinerary() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.layout.dialog_edit_itinerary);
+        builder.setTitle("Edit Group Itinerary");
+        View view = DialogEditItineraryBinding.inflate(getLayoutInflater()).getRoot();
+        builder.setView(view);
+
+        startDateInput = view.findViewById(R.id.startDateEditText);
+        endDateInput = view.findViewById(R.id.endDateEditText);
+
+        startDateInput.setText(itineraryStart.getText().toString().substring(12));
+        endDateInput.setText(itineraryEnd.getText().toString().substring(10));
+
+        startDateInput.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                datePickerDialog(startDateInput);
+            }
+        });
+
+
+        endDateInput.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View v) {
+                datePickerDialog(endDateInput);
+            }
+        });
+
+        builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String startDate = startDateInput.getText().toString();
+                String endDate = endDateInput.getText().toString();
+
+                // Ensure start date is before the end date
+                Calendar start = Calendar.getInstance();
+                String startYear = startDate.substring(0, startDate.indexOf("-"));
+                String startMonth = startDate.substring(startDate.indexOf("-") + 1, startDate.lastIndexOf("-"));
+                String startDay = startDate.substring(startDate.lastIndexOf("-") + 1);
+                start.set(Integer.parseInt(startYear), Integer.parseInt(startMonth) - 1, Integer.parseInt(startDay));
+
+                Calendar end = Calendar.getInstance();
+                String endYear = endDate.substring(0, endDate.indexOf("-"));
+                String endMonth = endDate.substring(endDate.indexOf("-") + 1, endDate.lastIndexOf("-"));
+                String endDay = endDate.substring(endDate.lastIndexOf("-") + 1);
+                end.set(Integer.parseInt(endYear), Integer.parseInt(endMonth) - 1, Integer.parseInt(endDay));
+
+                if (end.before(start)) {
+                    Toast.makeText(getApplicationContext(), "End date cannot be before start date.", Toast.LENGTH_LONG).show();
+                } else {
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                        LocalDate e = LocalDate.of(Integer.parseInt(endYear), Integer.parseInt(endMonth), Integer.parseInt(endDay));
+                        LocalDate s = LocalDate.of(Integer.parseInt(startYear), Integer.parseInt(startMonth), Integer.parseInt(startDay));
+                        long days = ChronoUnit.DAYS.between(s, e) + 1;
+
+                        try {
+                            putItinerary(group.getTravelGroupDestination(), startDate, endDate, String.valueOf(days));
+                        } catch (JSONException ex) {
+                            Log.e("JSON Exception:", ex.toString());
+                        }
+                    }
+                }
+            }
+        });
+
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
+    }
+
+    /**
+     * Shows the date picker to select dates.
+     *
+     * @param input of the edit text to modify.
+     */
+    private void datePickerDialog(EditText input) {
+
+        final Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePicker = new DatePickerDialog(this,
+                new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                        calendar.set(year, monthOfYear, dayOfMonth);
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+                        input.setText(dateFormat.format(calendar.getTime()));
+                    }
+                }, year, month, day);
+        datePicker.show();
+    }
+
+    /**
+     * Makes a put request to update the group itinerary.
+     *
+     * @param destination trip destination.
+     * @param startDate   trip start date.
+     * @param endDate     trip end date.
+     * @param length      trip length in days.
+     */
+    private void putItinerary(String destination, String startDate, String endDate, String length) throws JSONException {
+        JSONObject itinerary = updateItinerary(destination, startDate, endDate, length);
+        final String url = "http://coms-309-035.class.las.iastate.edu:8080/Group/Itinerary/" + group.getTravelGroupID();
+
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.PUT, url, itinerary, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject jsonObject) {
+                Log.d("Volley Response: ", jsonObject.toString());
+                groupItinerary = jsonObject;
+                try {
+                    String start = "Start Date: " + jsonObject.getString("startDate");
+                    String end = "End Date: " + jsonObject.getString("endDate");
+                    String length = "Number of Days: " + jsonObject.getString("numDays");
+                    itineraryStart.setText(start);
+                    itineraryEnd.setText(end);
+                    itineraryLength.setText(length);
+                } catch (JSONException e) {
+                    Log.e("JSON Exception", e.toString());
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                Log.e("Volley Error: ", volleyError.toString());
+            }
+        });
+        Singleton.getInstance(getApplicationContext()).addRequest(request);
+    }
+
+    /**
+     * Gets the current itinerary schedule to be sent in the put request for itinerary edit.
+     * Removes schedule data that exceeds the trip length, should the dates be modified that way.
+     *
+     * @param destination trip destination.
+     * @param startDate   trip start date.
+     * @param endDate     trip end date.
+     * @param length      trip length in days.
+     * @return itinerary schedule
+     */
+    private JSONObject updateItinerary(String destination, String startDate, String endDate, String length) throws JSONException {
+        JSONArray schedule = LoadGroup.groupItinerary.getJSONArray("travelGroupItineraryEventsList");
+        for (int i = 0; i < schedule.length(); i++) {
+            if (Integer.parseInt(schedule.getJSONObject(i).getString("dayNumber")) > Integer.parseInt(length)) {
+                schedule.remove(i);
+            }
+        }
+
+        JSONObject itinerary = new JSONObject();
+        itinerary.put("itineraryName", destination);
+        itinerary.put("startDate", startDate);
+        itinerary.put("endDate", endDate);
+        itinerary.put("numDays", length);
+        itinerary.put("travelGroupItineraryEventsList", schedule);
+        Log.d("Itinerary:", itinerary.toString());
+
+        return itinerary;
+    }
 }

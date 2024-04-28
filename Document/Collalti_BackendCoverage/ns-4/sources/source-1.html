@@ -1,0 +1,198 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > Day</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">MS3_3.Backend.Day</a>
+</div>
+
+<h1>Coverage Summary for Class: Day (MS3_3.Backend.Day)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Day</td>
+<td class="coverageStat">
+  <span class="percent">
+    8.3%
+  </span>
+  <span class="absValue">
+    (1/12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    10.5%
+  </span>
+  <span class="absValue">
+    (2/19)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">Day$HibernateInstantiator$JTGW6jYc</td>
+  </tr>
+  <tr>
+    <td class="name">Day$HibernateProxy$QM2i3Fe8</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    8.3%
+  </span>
+  <span class="absValue">
+    (1/12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    10.5%
+  </span>
+  <span class="absValue">
+    (2/19)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package MS3_3.Backend.Day;
+&nbsp;
+&nbsp;import MS3_3.Backend.Itinerary.Itinerary;
+&nbsp;import MS3_3.Backend.Place.Place;
+&nbsp;import com.fasterxml.jackson.annotation.JsonIgnore;
+&nbsp;import jakarta.persistence.*;
+&nbsp;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;@Entity
+&nbsp;public class Day {
+&nbsp;    @Id
+&nbsp;    @GeneratedValue(strategy = GenerationType.IDENTITY)
+&nbsp;    private int uniqueCode;
+&nbsp;
+&nbsp;    @OneToMany(mappedBy = &quot;day&quot;, cascade = CascadeType.ALL, orphanRemoval = true)
+&nbsp;    private List&lt;Place&gt; places;
+&nbsp;
+&nbsp;    @ManyToOne
+&nbsp;    @JoinColumn(name = &quot;itinerary_id&quot;)
+&nbsp;    @JsonIgnore
+&nbsp;    private Itinerary itinerary;
+&nbsp;
+&nbsp;    private String destination;
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;    public Day() {</b>
+<b class="fc">&nbsp;        places = new ArrayList&lt;Place&gt;();</b>
+&nbsp;    }
+&nbsp;
+<b class="nc">&nbsp;    public Day(String destination, Itinerary itinerary) {</b>
+<b class="nc">&nbsp;        this.destination = destination;</b>
+<b class="nc">&nbsp;        this.places = new ArrayList&lt;Place&gt;();</b>
+<b class="nc">&nbsp;        this.itinerary = itinerary;</b>
+&nbsp;    }
+&nbsp;
+<b class="nc">&nbsp;    public Day(String destination, List&lt;Place&gt; places, Itinerary itinerary) {</b>
+<b class="nc">&nbsp;        this.destination = destination;</b>
+<b class="nc">&nbsp;        this.places = places;</b>
+<b class="nc">&nbsp;        this.itinerary = itinerary;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    public int getUniqueCode() {
+<b class="nc">&nbsp;        return uniqueCode;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public List&lt;Place&gt; getPlaces() {
+<b class="nc">&nbsp;        return places;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public Itinerary getItinerary() {
+<b class="nc">&nbsp;        return itinerary;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getDestination() {
+<b class="nc">&nbsp;        return destination;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    public void setUniqueCode(int uniqueCode) {
+<b class="nc">&nbsp;        this.uniqueCode = uniqueCode;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setPlaces(List&lt;Place&gt; places) {
+<b class="nc">&nbsp;        this.places = places;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void addPlace(Place place) {
+<b class="nc">&nbsp;        places.add(place);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setItinerary(Itinerary itinerary) {
+<b class="nc">&nbsp;        this.itinerary = itinerary;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setDestination(String destination) {
+<b class="nc">&nbsp;        this.destination = destination;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-04-24 12:58</div>
+</div>
+</body>
+</html>

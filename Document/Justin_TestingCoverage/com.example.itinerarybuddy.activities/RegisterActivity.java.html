@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RegisterActivity.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=0;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">debug</a> &gt; <a href="index.source.html" class="el_package">com.example.itinerarybuddy.activities</a> &gt; <span class="el_source">RegisterActivity.java</span></div><h1>RegisterActivity.java</h1><pre class="source lang-java linenums">package com.example.itinerarybuddy.activities;
+
+import androidx.appcompat.app.AppCompatActivity;
+import android.content.Intent;
+import android.util.Log;
+import android.view.*;
+import android.widget.*;
+import android.os.Bundle;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.example.itinerarybuddy.R;
+import com.example.itinerarybuddy.util.Singleton;
+import org.json.JSONException;
+import org.json.JSONObject;
+import java.util.HashMap;
+import java.util.Map;
+
+/** This is where the users will register. */
+<span class="nc" id="L21">public class RegisterActivity extends AppCompatActivity {</span>
+
+    /** Text input for username. */
+    private EditText usernameInput;
+
+    /** Text input for email. */
+    private EditText emailInput;
+
+    /** Text input for password. */
+    private EditText passwordInput;
+
+    /** Text input for password confirmation. */
+    private EditText confirmPasswordInput;
+
+    /** URL for POST request. */
+<span class="nc" id="L36">    private final String URL = &quot;http://coms-309-035.class.las.iastate.edu:8080/Users/Create&quot;;</span>
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState){
+<span class="nc" id="L40">        super.onCreate(savedInstanceState);</span>
+<span class="nc" id="L41">        requestWindowFeature(Window.FEATURE_NO_TITLE);</span>
+<span class="nc" id="L42">        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);</span>
+<span class="nc" id="L43">        this.getSupportActionBar().hide();</span>
+<span class="nc" id="L44">        setContentView(R.layout.register_activity);</span>
+
+        // Declare other fields;
+        Button registerButton;
+        Button loginButton;
+
+        // Instantiate needed fields by id
+<span class="nc" id="L51">        usernameInput = findViewById(R.id.username_register_input);</span>
+<span class="nc" id="L52">        emailInput = findViewById(R.id.email_register_input);</span>
+<span class="nc" id="L53">        passwordInput = findViewById(R.id.password_register_input);</span>
+<span class="nc" id="L54">        confirmPasswordInput = findViewById(R.id.password_confirm_input);</span>
+<span class="nc" id="L55">        registerButton = findViewById(R.id.register_button);</span>
+<span class="nc" id="L56">        loginButton = findViewById(R.id.sign_in_here_button);</span>
+
+        // Set listener for this button
+<span class="nc" id="L59">        loginButton.setOnClickListener(new View.OnClickListener() {</span>
+            @Override
+            public void onClick(View view) {
+                // Go to the login page
+<span class="nc" id="L63">                startActivity(new Intent(RegisterActivity.this, LoginActivity.class));</span>
+<span class="nc" id="L64">            }</span>
+        });
+
+        // Set listener for this button
+<span class="nc" id="L68">        registerButton.setOnClickListener(new View.OnClickListener() {</span>
+            @Override
+            public void onClick(View view) {
+                // Register the user if the passwords match
+<span class="nc bnc" id="L72" title="All 2 branches missed.">                if(passwordInput.getText().toString().equals(confirmPasswordInput.getText().toString())) {</span>
+                    // Input fields must not be empty.
+<span class="nc bnc" id="L74" title="All 6 branches missed.">                    if(!usernameInput.getText().toString().equals(&quot;&quot;) &amp;&amp; !emailInput.getText().toString().equals(&quot;&quot;) &amp;&amp; !passwordInput.getText().toString().equals(&quot;&quot;)) {</span>
+<span class="nc" id="L75">                        register();</span>
+                    }
+                    else{
+<span class="nc" id="L78">                        Toast.makeText(getApplicationContext(), &quot;Invalid inputs&quot;, Toast.LENGTH_LONG).show();</span>
+                    }
+                }
+                else {
+<span class="nc" id="L82">                    Toast.makeText(getApplicationContext(), &quot;Passwords do not match.&quot;, Toast.LENGTH_LONG).show();</span>
+                }
+<span class="nc" id="L84">            }</span>
+        });
+<span class="nc" id="L86">    }</span>
+
+    /** Extracts data from text inputs, forms it into a string, and is made into a JSON object and posted. */
+    private void register(){
+        // Extract strings from the text fields
+<span class="nc" id="L91">        String username = usernameInput.getText().toString();</span>
+<span class="nc" id="L92">        String email = emailInput.getText().toString();</span>
+<span class="nc" id="L93">        String password = passwordInput.getText().toString();</span>
+
+        //Form string for JSON object
+        /*
+        {
+            &quot;email&quot;: &quot;input&quot;,
+            &quot;userName&quot;: &quot;input&quot;,
+            &quot;password&quot;: &quot;input&quot;,
+            &quot;state&quot;: &quot;null&quot;,
+            &quot;city&quot;:&quot;null&quot;,
+            &quot;userType&quot;: &quot;User&quot;
+        }
+        */
+<span class="nc" id="L106">        String userString = &quot;{\n&quot; +</span>
+                &quot;\&quot;email\&quot;: \&quot;&quot; + email + &quot;\&quot;,\n&quot; +
+                &quot;\&quot;userName\&quot;: \&quot;&quot; + username + &quot;\&quot;,\n&quot; +
+                &quot;\&quot;password\&quot;: \&quot;&quot; + password + &quot;\&quot;,\n&quot; +
+                &quot;\&quot;state\&quot;: \&quot;&quot; + &quot;null&quot; + &quot;\&quot;,\n&quot; +
+                &quot;\&quot;city\&quot;: \&quot;&quot; + &quot;null&quot; + &quot;\&quot;,\n&quot; +
+                &quot;\&quot;userType\&quot;: \&quot;&quot; + &quot;User&quot; + &quot;\&quot;\n&quot; +
+                &quot;}&quot;;
+
+        JSONObject newUser;
+        try{
+            // Create the JSON object
+<span class="nc" id="L118">            newUser = new JSONObject(userString);</span>
+
+            // Post the JSON object
+<span class="nc" id="L121">            JsonObjectRequest json = new JsonObjectRequest(Request.Method.POST, URL, newUser , new Response.Listener&lt;JSONObject&gt;() {</span>
+                @Override
+                public void onResponse(JSONObject response) {
+<span class="nc" id="L124">                    Log.d(&quot;Volley Response: &quot;, response.toString());</span>
+<span class="nc" id="L125">                    Toast.makeText(getApplicationContext(), &quot;Account Created!&quot;, Toast.LENGTH_LONG).show();</span>
+<span class="nc" id="L126">                }</span>
+<span class="nc" id="L127">                }, new Response.ErrorListener() {</span>
+                @Override
+                public void onErrorResponse(VolleyError error) {
+<span class="nc" id="L130">                    Log.e(&quot;Volley Error: &quot;, error.toString());</span>
+<span class="nc" id="L131">                    Toast.makeText(getApplicationContext(), &quot;There was an error.&quot;, Toast.LENGTH_LONG).show();</span>
+<span class="nc" id="L132">                }</span>
+            })
+<span class="nc" id="L134">            {</span>
+                // Set the params and headers.
+                @Override
+                protected Map&lt;String, String&gt; getParams(){
+<span class="nc" id="L138">                    HashMap&lt;String, String&gt; map = new HashMap&lt;String, String&gt;();</span>
+<span class="nc" id="L139">                    map.put(&quot;email&quot;, email);</span>
+<span class="nc" id="L140">                    map.put(&quot;username&quot;, username);</span>
+<span class="nc" id="L141">                    map.put(&quot;password&quot;, password);</span>
+<span class="nc" id="L142">                    map.put(&quot;state&quot;, &quot;null&quot;);</span>
+<span class="nc" id="L143">                    map.put(&quot;city&quot;, &quot;null&quot;);</span>
+<span class="nc" id="L144">                    map.put(&quot;userType&quot;, &quot;User&quot;);</span>
+<span class="nc" id="L145">                    return map;</span>
+                }
+
+                @Override
+                public Map&lt;String, String&gt; getHeaders(){
+<span class="nc" id="L150">                    HashMap&lt;String, String&gt; map = new HashMap&lt;String, String&gt;();</span>
+<span class="nc" id="L151">                    map.put(&quot;Content-Type&quot;, &quot;application/json&quot;);</span>
+<span class="nc" id="L152">                    return map;</span>
+                }
+            };
+
+            // Add the request to our Singleton request queue.
+<span class="nc" id="L157">            Singleton.getInstance(getApplicationContext()).addRequest(json);</span>
+<span class="nc" id="L158">        }catch(JSONException e){</span>
+<span class="nc" id="L159">            Toast.makeText(getApplicationContext(), &quot;There was an error.&quot;, Toast.LENGTH_LONG).show();</span>
+<span class="nc" id="L160">        }</span>
+<span class="nc" id="L161">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span>Generated by the Android Gradle plugin 8.3.2</div></body></html>

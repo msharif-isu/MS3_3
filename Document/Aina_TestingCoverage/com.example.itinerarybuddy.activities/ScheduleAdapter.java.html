@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ScheduleAdapter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=0;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">debug</a> &gt; <a href="index.source.html" class="el_package">com.example.itinerarybuddy.activities</a> &gt; <span class="el_source">ScheduleAdapter.java</span></div><h1>ScheduleAdapter.java</h1><pre class="source lang-java linenums">package com.example.itinerarybuddy.activities;
+
+import android.app.TimePickerDialog;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.TimePicker;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.itinerarybuddy.R;
+import com.example.itinerarybuddy.data.ScheduleItem;
+
+import java.sql.Time;
+import java.util.Calendar;
+import java.util.List;
+
+
+/**
+ * The ScheduleAdapter class is a RecyclerView adapter responsible for managing the schedule data
+ * and binding it to the corresponding views in the RecyclerView.
+ */
+
+class ScheduleAdapter extends RecyclerView.Adapter&lt;ScheduleAdapter.ViewHolder&gt; {
+
+    private static final int VIEW_TYPE_HEADER = 0;
+    private static final int VIEW_TYPE_DATA = 1;
+
+    private String dayTitle;
+    private static List&lt;ScheduleItem&gt; scheduleData;
+
+    private boolean isEditable;
+
+
+    /**
+     * Constructs a new ScheduleAdapter.
+     *
+     * @param scheduleData The list of schedule items.
+     * @param dayTitle The title of the day.
+     * @param isEditable the ability to Edit schedule
+     */
+
+
+<span class="nc" id="L49">    public ScheduleAdapter(List&lt;ScheduleItem&gt; scheduleData, String dayTitle, boolean isEditable) {</span>
+
+<span class="nc" id="L51">        this.scheduleData = scheduleData;</span>
+<span class="nc" id="L52">        this.dayTitle = dayTitle;</span>
+<span class="nc" id="L53">        this.isEditable = isEditable;</span>
+<span class="nc" id="L54">    }</span>
+
+    /**
+     * Returns the list of schedule data.
+     *
+     * @return The list of schedule data.
+     */
+    public List&lt;ScheduleItem&gt; getScheduleData(){
+<span class="nc" id="L62">        return scheduleData;</span>
+    }
+
+    /**
+     * Called when RecyclerView needs a new ViewHolder of the given type to represent an item.
+     *
+     * @param parent The ViewGroup into which the new View will be added after it is bound to an adapter position.
+     * @param viewType The view type of the new View.
+     * @return A new ViewHolder that holds a View of the given view type.
+     */
+    @NonNull
+    @Override
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+
+        View view;
+
+<span class="nc bnc" id="L78" title="All 2 branches missed.">        if (viewType == VIEW_TYPE_HEADER) {</span>
+<span class="nc" id="L79">            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_schedule_header, parent, false);</span>
+
+<span class="nc" id="L81">            TextView dayTitleTV = view.findViewById(R.id.DayTitle);</span>
+
+<span class="nc bnc" id="L83" title="All 2 branches missed.">            if(dayTitleTV != null){</span>
+<span class="nc" id="L84">                dayTitleTV.setText(dayTitle);</span>
+            }
+
+
+<span class="nc" id="L88">        } else {</span>
+<span class="nc" id="L89">            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_schedule_data, parent, false);</span>
+        }
+<span class="nc" id="L91">        return new ViewHolder(view, dayTitle);</span>
+    }
+
+    /**
+     * Called by RecyclerView to display the data at the specified position.
+     *
+     * @param holder The ViewHolder which should be updated to represent the contents of the item at the given position.
+     * @param position The position of the item within the adapter's data set.
+     */
+    @Override
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+<span class="nc" id="L102">        int viewType = getItemViewType(position);</span>
+<span class="nc bnc" id="L103" title="All 2 branches missed.">        if (viewType == VIEW_TYPE_HEADER) {</span>
+<span class="nc" id="L104">            holder.setDayTitle(dayTitle);</span>
+<span class="nc bnc" id="L105" title="All 2 branches missed.">        } else if (viewType == VIEW_TYPE_DATA) {</span>
+<span class="nc bnc" id="L106" title="All 4 branches missed.">            if (position &gt; 0 &amp;&amp; position &lt;= scheduleData.size()) {</span>
+<span class="nc" id="L107">                ScheduleItem item = scheduleData.get(position - 1);</span>
+<span class="nc" id="L108">                holder.bindData(item);</span>
+
+<span class="nc" id="L110">                holder.setDataFieldsEditable(isEditable);</span>
+            }
+        }
+<span class="nc" id="L113">    }</span>
+
+
+
+    /**
+     * Returns the total number of items in the data set held by the adapter.
+     *
+     * @return The total number of items in the data set.
+     */
+    @Override
+    public int getItemCount() {
+<span class="nc" id="L124">        return scheduleData.size() + 1;</span>
+    }
+
+    /**
+     * Returns the view type of the item at the specified position.
+     *
+     * @param position The position of the item in the data set.
+     * @return An integer representing the view type of the item at the specified position.
+     */
+    public int getItemViewType(int position) {
+<span class="nc bnc" id="L134" title="All 2 branches missed.">        return position == 0 ? VIEW_TYPE_HEADER : VIEW_TYPE_DATA;</span>
+    }
+
+    /**
+     * Adds new data to the beginning of the schedule.
+     *
+     * @param newData The list of new schedule items to prepend.
+     */
+    public void prependData(List&lt;ScheduleItem&gt; newData){
+
+<span class="nc" id="L144">        scheduleData.addAll(0, newData);</span>
+<span class="nc" id="L145">        notifyItemRangeInserted(0, newData.size());</span>
+<span class="nc" id="L146">    }</span>
+
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+
+        private TextView headerTextViewTime;
+        private TextView headerTextViewPlaces;
+        private TextView headerTextViewNote;
+
+        private TextView dayTitleTextView;
+        private EditText dataEditTextTime;
+        private EditText dataEditTextPlaces;
+        private EditText dataEditTextNote;
+
+
+        public void setDataFieldsEditable(boolean isEditable){
+
+<span class="nc bnc" id="L163" title="All 2 branches missed.">            if(dataEditTextTime != null){</span>
+<span class="nc" id="L164">                dataEditTextTime.setEnabled(isEditable);</span>
+            }
+
+<span class="nc bnc" id="L167" title="All 2 branches missed.">            if(dataEditTextPlaces != null){</span>
+<span class="nc" id="L168">                dataEditTextPlaces.setEnabled(isEditable);</span>
+            }
+
+<span class="nc bnc" id="L171" title="All 2 branches missed.">            if(dataEditTextNote != null){</span>
+<span class="nc" id="L172">                dataEditTextNote.setEnabled(isEditable);</span>
+            }
+
+<span class="nc" id="L175">        }</span>
+
+
+        public ViewHolder(@NonNull View itemView, String dayTitle) {
+<span class="nc" id="L179">            super(itemView);</span>
+
+<span class="nc" id="L181">            dayTitleTextView = itemView.findViewById(R.id.DayTitle);</span>
+
+
+<span class="nc bnc" id="L184" title="All 2 branches missed.">            if (itemView.findViewById(R.id.headerTextViewTime) != null) {</span>
+                // This is a header view
+<span class="nc" id="L186">                headerTextViewTime = itemView.findViewById(R.id.headerTextViewTime);</span>
+<span class="nc" id="L187">                headerTextViewPlaces = itemView.findViewById(R.id.headerTextViewPlaces);</span>
+<span class="nc" id="L188">                headerTextViewNote = itemView.findViewById(R.id.headerTextViewNote);</span>
+            } else {
+                // This is a data view
+<span class="nc" id="L191">                dataEditTextTime = itemView.findViewById(R.id.dataEditTextTime);</span>
+<span class="nc" id="L192">                dataEditTextPlaces = itemView.findViewById(R.id.dataEditTextPlaces);</span>
+<span class="nc" id="L193">                dataEditTextNote = itemView.findViewById(R.id.dataEditTextNote);</span>
+
+                // Set click listener for time EditText to show time picker dialog
+<span class="nc" id="L196">                dataEditTextTime.setOnClickListener(new View.OnClickListener() {</span>
+                    @Override
+                    public void onClick(View v) {
+<span class="nc" id="L199">                        showTimePickerDialog();</span>
+<span class="nc" id="L200">                    }</span>
+                });
+
+                // Add text change listeners for places and notes EditTexts to update schedule item
+<span class="nc" id="L204">                dataEditTextPlaces.addTextChangedListener(new TextWatcher() {</span>
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+<span class="nc" id="L207">                    }</span>
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+<span class="nc bnc" id="L211" title="All 4 branches missed.">                        if (getAdapterPosition() &gt; 0 &amp;&amp; getAdapterPosition() &lt;= scheduleData.size()) {</span>
+<span class="nc" id="L212">                            ScheduleItem item = scheduleData.get(getAdapterPosition() - 1);</span>
+<span class="nc" id="L213">                            item.setPlaces(s.toString());</span>
+
+                        }
+<span class="nc" id="L216">                    }</span>
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+<span class="nc" id="L220">                    }</span>
+                });
+
+<span class="nc" id="L223">                dataEditTextNote.addTextChangedListener(new TextWatcher() {</span>
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+<span class="nc" id="L226">                    }</span>
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+<span class="nc bnc" id="L230" title="All 4 branches missed.">                        if (getAdapterPosition() &gt; 0 &amp;&amp; getAdapterPosition() &lt;= scheduleData.size()) {</span>
+<span class="nc" id="L231">                            ScheduleItem item = scheduleData.get(getAdapterPosition() - 1);</span>
+<span class="nc" id="L232">                            item.setNotes(s.toString());</span>
+
+                        }
+<span class="nc" id="L235">                    }</span>
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+<span class="nc" id="L239">                    }</span>
+                });
+
+
+            }
+
+<span class="nc" id="L245">        }</span>
+
+        private void showTimePickerDialog() {
+<span class="nc" id="L248">            TimePickerDialog.OnTimeSetListener timeSetListener = new TimePickerDialog.OnTimeSetListener() {</span>
+                @Override
+                public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                    // Create a Time object with the selected time
+<span class="nc" id="L252">                    Calendar calendar = Calendar.getInstance();</span>
+<span class="nc" id="L253">                    calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);</span>
+<span class="nc" id="L254">                    calendar.set(Calendar.MINUTE, minute);</span>
+<span class="nc" id="L255">                    Time selectedTime = new Time(calendar.getTimeInMillis());</span>
+
+                    // Update the ScheduleItem in the list with the selected time
+<span class="nc bnc" id="L258" title="All 4 branches missed.">                    if (getAdapterPosition() &gt; 0 &amp;&amp; getAdapterPosition() &lt;= scheduleData.size()) {</span>
+<span class="nc" id="L259">                        ScheduleItem item = scheduleData.get(getAdapterPosition() - 1);</span>
+<span class="nc" id="L260">                        item.setTime(selectedTime);</span>
+
+                        // Update the EditText field to display the selected time
+<span class="nc" id="L263">                        dataEditTextTime.setText(selectedTime.toString());</span>
+                    }
+<span class="nc" id="L265">                }</span>
+            };
+
+            // Show the TimePickerDialog
+<span class="nc" id="L269">            TimePickerDialog timePickerDialog = new TimePickerDialog(itemView.getContext(), timeSetListener, 0, 0, true);</span>
+<span class="nc" id="L270">            timePickerDialog.show();</span>
+<span class="nc" id="L271">        }</span>
+
+        /**
+         * Displays the day title.
+         *
+         * @param title The title of the day.
+         */
+        public void setDayTitle(String title) {
+<span class="nc bnc" id="L279" title="All 2 branches missed.">            if (dayTitleTextView != null) {</span>
+<span class="nc" id="L280">                dayTitleTextView.setText(title);</span>
+            }
+<span class="nc" id="L282">        }</span>
+
+        /**
+         * Binds data to the views in the ViewHolder.
+         *
+         * @param item The schedule item to bind.
+         */
+        public void bindData(ScheduleItem item) {
+<span class="nc bnc" id="L290" title="All 2 branches missed.">            if (item != null) {</span>
+<span class="nc bnc" id="L291" title="All 2 branches missed.">                if (headerTextViewTime != null) {</span>
+                    // This is a header view
+<span class="nc" id="L293">                    headerTextViewTime.setText(&quot;Time&quot;);</span>
+<span class="nc" id="L294">                    headerTextViewPlaces.setText(&quot;Places&quot;);</span>
+<span class="nc" id="L295">                    headerTextViewNote.setText(&quot;Note&quot;);</span>
+
+                } else {
+                    // This is a data view
+<span class="nc bnc" id="L299" title="All 2 branches missed.">                    if (dataEditTextTime != null) {</span>
+<span class="nc bnc" id="L300" title="All 2 branches missed.">                        dataEditTextTime.setText(item.getTime() != null ? item.getTime().toString() : &quot;&quot;);</span>
+                    }
+<span class="nc bnc" id="L302" title="All 2 branches missed.">                    if (dataEditTextPlaces != null) {</span>
+<span class="nc" id="L303">                        dataEditTextPlaces.setText(item.getPlaces());</span>
+                    }
+<span class="nc bnc" id="L305" title="All 2 branches missed.">                    if (dataEditTextNote != null) {</span>
+<span class="nc" id="L306">                        dataEditTextNote.setText(item.getNotes());</span>
+                    }
+                }
+            }
+<span class="nc" id="L310">        }</span>
+
+    }
+}
+
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span>Generated by the Android Gradle plugin 8.2.2</div></body></html>

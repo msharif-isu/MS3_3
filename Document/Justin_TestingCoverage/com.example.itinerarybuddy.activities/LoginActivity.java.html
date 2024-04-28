@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LoginActivity.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=0;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">debug</a> &gt; <a href="index.source.html" class="el_package">com.example.itinerarybuddy.activities</a> &gt; <span class="el_source">LoginActivity.java</span></div><h1>LoginActivity.java</h1><pre class="source lang-java linenums">package com.example.itinerarybuddy.activities;
+
+import androidx.appcompat.app.AppCompatActivity;
+import android.content.Intent;
+import android.util.Log;
+import android.view.*;
+import android.widget.*;
+import android.os.Bundle;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.example.itinerarybuddy.R;
+import com.example.itinerarybuddy.data.UserData;
+import com.example.itinerarybuddy.util.Singleton;
+import org.json.JSONObject;
+import java.util.HashMap;
+import java.util.Map;
+
+/** This is the login page. */
+<span class="fc" id="L21">public class LoginActivity extends AppCompatActivity {</span>
+
+    /** Input field for username. */
+    private EditText usernameInput;
+
+    /** Input field for password. */
+    private EditText passwordInput;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState){
+<span class="fc" id="L31">        super.onCreate(savedInstanceState);</span>
+<span class="fc" id="L32">        requestWindowFeature(Window.FEATURE_NO_TITLE);</span>
+<span class="fc" id="L33">        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);</span>
+<span class="fc" id="L34">        this.getSupportActionBar().hide();</span>
+<span class="fc" id="L35">        setContentView(R.layout.login_activity);</span>
+
+        // Declare buttons
+        Button loginButton;
+        Button registerButton;
+
+        //Instantiate needed fields by id
+<span class="fc" id="L42">        usernameInput = findViewById(R.id.username_input);</span>
+<span class="fc" id="L43">        passwordInput = findViewById(R.id.password_input);</span>
+<span class="fc" id="L44">        loginButton = findViewById(R.id.login_button);</span>
+<span class="fc" id="L45">        registerButton = findViewById(R.id.create_account_button);</span>
+
+        // Set listener for login button
+<span class="fc" id="L48">        loginButton.setOnClickListener(new View.OnClickListener() {</span>
+            @Override
+            public void onClick(View view) {
+                // Attempt login if the inputs are non empty
+<span class="pc bpc" id="L52" title="2 of 4 branches missed.">                if(!usernameInput.getText().toString().equals(&quot;&quot;) &amp;&amp; !passwordInput.getText().toString().equals(&quot;&quot;)) {</span>
+<span class="fc" id="L53">                    login();</span>
+                }
+<span class="fc" id="L55">            }</span>
+        });
+
+        // Set listener for register button
+<span class="fc" id="L59">        registerButton.setOnClickListener(new View.OnClickListener() {</span>
+            @Override
+            public void onClick(View view) {
+                // Go to the registration page
+<span class="nc" id="L63">                startActivity(new Intent(getApplicationContext(), RegisterActivity.class));</span>
+<span class="nc" id="L64">            }</span>
+        });
+<span class="fc" id="L66">    }</span>
+
+    /** Creates the url given the entered username and password and creates a GET request for the corresponding JSON object. */
+    private void login() {
+        // Get the inputted username and password and create a url to get a user
+<span class="fc" id="L71">        String enteredUsername = usernameInput.getText().toString();</span>
+<span class="fc" id="L72">        String enteredPassword = passwordInput.getText().toString();</span>
+<span class="fc" id="L73">        String url = &quot;http://coms-309-035.class.las.iastate.edu:8080/Users/login/&quot; + enteredUsername + &quot;/&quot; + enteredPassword;</span>
+        //String url = &quot;https://443da8f0-75e2-4be2-8e84-834c5d63eda6.mock.pstmn.io/user?username=Justin123&amp;password=J1&quot;;
+<span class="fc" id="L75">        JsonObjectRequest json = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener&lt;JSONObject&gt;() {</span>
+            @Override
+            public void onResponse(JSONObject response) {
+<span class="fc" id="L78">                Log.d(&quot;Volley Response: &quot;, response.toString());</span>
+
+                // Save user JSON and proceed to homepage
+<span class="fc" id="L81">                UserData.userInfo = response;</span>
+<span class="fc" id="L82">                startActivity(new Intent(getApplicationContext(), personalPage1.class));</span>
+<span class="fc" id="L83">            }</span>
+<span class="fc" id="L84">        }, new Response.ErrorListener() {</span>
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                // Log and display error toast
+<span class="nc" id="L88">                Log.e(&quot;Volley Error: &quot;, error.toString());</span>
+<span class="nc" id="L89">                Toast.makeText(getApplicationContext(), &quot;There was an error.&quot;, Toast.LENGTH_LONG).show();</span>
+<span class="nc" id="L90">            }</span>
+<span class="fc" id="L91">        }){</span>
+            @Override
+            protected Map&lt;String, String&gt; getParams(){
+<span class="nc" id="L94">                HashMap&lt;String, String&gt; map = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L95">                map.put(&quot;userName&quot;, enteredUsername);</span>
+<span class="nc" id="L96">                map.put(&quot;password&quot;, enteredPassword);</span>
+<span class="nc" id="L97">                return map;</span>
+            }
+
+            @Override
+            public Map&lt;String, String&gt; getHeaders(){
+<span class="fc" id="L102">                HashMap&lt;String, String&gt; map = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L103">                map.put(&quot;Content-Type&quot;, &quot;application/json&quot;);</span>
+<span class="fc" id="L104">                return map;</span>
+            }
+        };
+
+        // Add request to Singleton request queue.
+<span class="fc" id="L109">        Singleton.getInstance(getApplicationContext()).addRequest(json);</span>
+<span class="fc" id="L110">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span>Generated by the Android Gradle plugin 8.3.2</div></body></html>

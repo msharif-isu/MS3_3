@@ -1,15 +1,11 @@
 package MS3_3.Backend.FileUpload;
 
-import MS3_3.Backend.Groups.TravelGroup;
+import MS3_3.Backend.TravelGroups.TravelGroup;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "ImageData")

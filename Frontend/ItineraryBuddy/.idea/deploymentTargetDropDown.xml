@@ -2,6 +2,9 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
+      <entry key="JustinSystemTest">
+        <State />
+      </entry>
       <entry key="app">
         <State>
           <targetSelectedWithDropDown>
@@ -18,7 +21,7 @@
           <timeTargetWasSelectedWithDropDown value="2024-03-20T21:36:32.782733500Z" />
         </State>
       </entry>
-      <entry key="test5Chat()">
+      <entry key="editGroupTest()">
         <State />
       </entry>
     </value>
