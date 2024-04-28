@@ -6,7 +6,7 @@ import MS3_3.Backend.AmbassadorBlogPost.Images.BlogPostImageRepository;
 import MS3_3.Backend.AmbassadorBlogPost.Images.BlogPostImageUtils;
 import MS3_3.Backend.AmbassadorBlogPost.Images.BlogPostStorageService;
 import MS3_3.Backend.FileUpload.Image;
-import MS3_3.Backend.Groups.TravelGroupRepository;
+import MS3_3.Backend.TravelGroups.TravelGroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -31,7 +31,7 @@ public class BlogPostController {
     private BlogPostImageRepository imageRepository;
 
     @Autowired
-    AmbassadorRepository ambassadorRepository;
+    private AmbassadorRepository ambassadorRepository;
 
     @GetMapping("BlogPost/Image/{Id}")
     public ResponseEntity<?> downloadImageByName(@PathVariable int Id){

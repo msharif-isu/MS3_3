@@ -21,6 +21,15 @@ public class AmbassadorController {
     @Autowired
     AmbassadorRepository ambassadorRepository;
 
+    @GetMapping("/Ambassador/{userName}")
+    public Ambassador getAmbassador(@PathVariable String userName) {
+        if(ambassadorRepository.existsById(userName)){
+            return ambassadorRepository.findByUserName(userName);
+        }else{
+        return null;
+        }
+    }
+
     @PostMapping("/Ambassador/Create")
     public Ambassador createPerson(@RequestBody Ambassador person) {
         person.setUserType("Ambassador");
@@ -49,6 +58,7 @@ public class AmbassadorController {
             ambassadorRepository.save(new Ambassador(userRepository.findByUserName(userName)));
             userRepository.save(userRepository.findByUserName(userName));
         } else {
+            return null;
         }
         return ambassadorRepository.findByUserName(userName);
     }

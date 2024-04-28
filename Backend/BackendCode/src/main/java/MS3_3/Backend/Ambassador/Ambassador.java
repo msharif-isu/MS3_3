@@ -1,9 +1,7 @@
 package MS3_3.Backend.Ambassador;
 
 import MS3_3.Backend.AmbassadorBlogPost.BlogPost;
-import MS3_3.Backend.AmbassadorBlogPost.Images.BlogPostImage;
-import MS3_3.Backend.FileUpload.Image;
-import MS3_3.Backend.Groups.TravelGroup;
+import MS3_3.Backend.TravelGroups.TravelGroup;
 import MS3_3.Backend.UserTypes.User;
 import jakarta.persistence.*;
 
