@@ -1,5 +1,6 @@
 package com.example.itinerarybuddy.ui.notifications;
 
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -15,7 +16,6 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -61,41 +61,31 @@ public class NotificationsFragment extends Fragment {
         postBlogAdapter = new BlogCardAdapter(cardItems, requireContext());
         recyclerView.setAdapter(postBlogAdapter);
 
-        // Register for activity result
-       /* ActivityResultLauncher<String> launcher = registerForActivityResult(
-                new ActivityResultContracts.GetContent(),
-                uri -> {
-                    if(uri != null) {
-                        postBlogAdapter.handleImageSelection(uri);
-                    }
-                }
-        );
-
-        // Pass the launcher to adapter
-        postBlogAdapter.setActivityResultLauncher(launcher);*/
-
         ImageView postButton = root.findViewById(R.id.postBlog);
+
+           /* postButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick (View v){
+                        if(UserData.getUsertype().equals("Ambassador")){
+                    showPostBlogDialog();
+                }
+                        else{
+                             Toast.makeText(requireContext(), "Only Travel Ambassadors can post picture blog.", Toast.LENGTH_LONG).show();
+                        }
+                }
+            });*/
+
         postButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick (View v){
+
                 showPostBlogDialog();
+
             }
         });
 
+        loadPosts();
         return root;
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1 && resultCode == Activity.RESULT_OK && data != null) {
-            // Get the selected image URI
-            Uri selectedImageUri = data.getData();
-            // Convert URI to byte array and perform further operations
-            byte[] imageData = postBlogAdapter.uriToImage(selectedImageUri);
-            // Call your method to handle the image
-            postBlogAdapter.imageMethod(imageData, Request.Method.PUT);
-        }
     }
 
 
@@ -141,9 +131,19 @@ public class NotificationsFragment extends Fragment {
 
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1 && resultCode == Activity.RESULT_OK && data != null) {
+            Uri selectedImageUri = data.getData();
+            postBlogAdapter.setSelectedImage(selectedImageUri);
+        }
+    }
+
+
     private void POST_BlogItem(BlogItem blogItem) {
 
-        String url = "YOUR_BACKEND_POST_ENDPOINT_URL";
+        String url = "https://ff1e6a32-8cf4-4764-9239-e2a66d09085e.mock.pstmn.io";
 
         // Create a JSON object to hold the blog item data
         JSONObject blogData = new JSONObject();
@@ -190,7 +190,7 @@ public class NotificationsFragment extends Fragment {
 
     private void GET_previousBlogPosts() {
         // URL for fetching previous blog posts
-        String url = "YOUR_BACKEND_GET_ENDPOINT_URL";
+        String url = "https://ff1e6a32-8cf4-4764-9239-e2a66d09085e.mock.pstmn.io";
 
         // Create a GET request
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null,

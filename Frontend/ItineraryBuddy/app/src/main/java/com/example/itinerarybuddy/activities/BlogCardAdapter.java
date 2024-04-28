@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -67,6 +68,19 @@ public class BlogCardAdapter extends RecyclerView.Adapter<BlogCardAdapter.ViewHo
         layoutParams.width = layoutParams.width * (position % 2 == 0 ? 2 : 1);
         holder.itemView.setLayoutParams(layoutParams);
 
+        if (uploadImageUri != null) {
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), uploadImageUri);
+                holder.blogMainImage.setImageBitmap(bitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }else {
+            // Set a default image or clear the ImageView if no image is selected
+            holder.blogMainImage.setImageResource(R.drawable.add_a_photo); // Change this to your default image resource
+        }
+
+
         // Set OnClickListener for blogMainImage ImageView
         holder.blogMainImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,7 +89,6 @@ public class BlogCardAdapter extends RecyclerView.Adapter<BlogCardAdapter.ViewHo
             }
         });
     }
-
 
     private void openImagePicker() {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -167,6 +180,13 @@ public class BlogCardAdapter extends RecyclerView.Adapter<BlogCardAdapter.ViewHo
             Singleton.getInstance(context.getApplicationContext()).addRequest(request);
         }
     }
+
+    public void setSelectedImage(Uri imageUri) {
+        uploadImageUri = imageUri;
+        // Update the UI to display the selected image if needed
+        notifyDataSetChanged(); // This will trigger onBindViewHolder() to update the view
+    }
+
 
     @Override
     public int getItemCount() {
