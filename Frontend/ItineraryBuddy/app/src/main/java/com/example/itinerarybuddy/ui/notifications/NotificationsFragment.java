@@ -82,7 +82,8 @@ public class NotificationsFragment extends Fragment implements BlogCardAdapter.O
             @Override
             public void onClick (View v){
                 if(UserData.getUsertype().equals("Admin")){
-                    Intent intent = new Intent(requireContext(), AdminDashboardActivity.class);
+                    //Intent intent = new Intent(requireContext(), AdminDashboardActivity.class);
+                    startActivity(new Intent(requireContext(), AdminDashboardActivity.class));
                 }
                 else{
                     Toast.makeText(requireContext(), "Only for Admins.", Toast.LENGTH_LONG).show();
