@@ -23,7 +23,7 @@ public class UserData {
     public static RequestQueue queue;
 
     /** Extract the username from the stored JSON. */
-    public static String getUsername(){
+  /*  public static String getUsername(){
         String username = null;
         try{
            username = userInfo.getString("userName");
@@ -31,10 +31,25 @@ public class UserData {
             Log.e("Error: ", e.toString());
         }
         return username;
+    }*/
+
+    public static String getUsername() {
+        String username = null;
+        if (userInfo != null) {
+            try {
+                username = userInfo.getString("userName");
+            } catch (JSONException e) {
+                Log.e("Error: ", e.toString());
+            }
+        } else {
+            Log.e("Error: ", "userInfo is null");
+        }
+        return username;
     }
 
+
     /** Extract the username from the stored JSON. */
-    public static String getEmail(){
+  /*  public static String getEmail(){
         String email = null;
         try{
             email = userInfo.getString("email");
@@ -42,7 +57,22 @@ public class UserData {
             Log.e("Error: ", e.toString());
         }
         return email;
+    }*/
+
+    public static String getEmail() {
+        String email = null;
+        if (userInfo != null) { // Assuming userInfo is your JSONObject
+            try {
+                email = userInfo.getString("email");
+            } catch (JSONException e) {
+                Log.e("Error: ", e.toString());
+            }
+        } else {
+            Log.e("Error: ", "userInfo is null");
+        }
+        return email;
     }
+
 
     /** Extract the usertype from the stored JSON.
      * "user", "ambassador", "admin"

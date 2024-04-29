@@ -1,0 +1,206 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > TravelGroupItinerary</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">MS3_3.Backend.TravelGroupItinerary</a>
+</div>
+
+<h1>Coverage Summary for Class: TravelGroupItinerary (MS3_3.Backend.TravelGroupItinerary)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">TravelGroupItinerary</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (13/13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (19/19)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">TravelGroupItinerary$HibernateInstantiator$Wc2O2ue8</td>
+  </tr>
+  <tr>
+    <td class="name">TravelGroupItinerary$HibernateProxy$gejGHuvh</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (13/13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (19/19)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package MS3_3.Backend.TravelGroupItinerary;
+&nbsp;
+&nbsp;import MS3_3.Backend.TravelGroups.TravelGroup;
+&nbsp;import MS3_3.Backend.TravelGroupItinerary.Events.TravelGroupItineraryEvent;
+&nbsp;import jakarta.persistence.*;
+&nbsp;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;@Entity
+&nbsp;public class TravelGroupItinerary {
+&nbsp;    @Id
+&nbsp;    @GeneratedValue(strategy = GenerationType.IDENTITY)
+&nbsp;    private int travelGroupItineraryId;
+&nbsp;
+&nbsp;    private String itineraryName;
+&nbsp;
+&nbsp;    private String startDate;
+&nbsp;
+&nbsp;    private String endDate;
+&nbsp;
+&nbsp;    private int numDays;
+&nbsp;
+&nbsp;    @OneToOne(mappedBy = &quot;travelGroupItinerary&quot;)
+&nbsp;    private TravelGroup travelGroup;
+&nbsp;
+&nbsp;    @OneToMany(mappedBy = &quot;groupItinerary&quot;, cascade = CascadeType.ALL, orphanRemoval = true)
+&nbsp;    private List&lt;TravelGroupItineraryEvent&gt; travelGroupItineraryEventsList;
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;    public TravelGroupItinerary() {</b>
+<b class="fc">&nbsp;        this.travelGroupItineraryEventsList = new ArrayList&lt;&gt;();</b>
+&nbsp;    }
+&nbsp;
+<b class="fc">&nbsp;    public TravelGroupItinerary(String itineraryName, String startDate, String endDate, int numDays) {</b>
+<b class="fc">&nbsp;        this.itineraryName = itineraryName;</b>
+<b class="fc">&nbsp;        this.startDate = startDate;</b>
+<b class="fc">&nbsp;        this.endDate = endDate;</b>
+<b class="fc">&nbsp;        this.numDays = numDays;</b>
+<b class="fc">&nbsp;        this.travelGroupItineraryEventsList = new ArrayList&lt;&gt;();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    public int getNumDays() {
+<b class="fc">&nbsp;        return numDays;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setNumDays(int numDays) {
+<b class="fc">&nbsp;        this.numDays = numDays;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public List&lt;TravelGroupItineraryEvent&gt; getTravelGroupItineraryEventsList() {
+<b class="fc">&nbsp;        return travelGroupItineraryEventsList;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setTravelGroupItineraryEventsList(List&lt;TravelGroupItineraryEvent&gt; travelGroupItineraryEventsList) {
+<b class="fc">&nbsp;        this.travelGroupItineraryEventsList = travelGroupItineraryEventsList;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public int getId() {
+<b class="fc">&nbsp;        return travelGroupItineraryId;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    public String getItineraryName() {
+<b class="fc">&nbsp;        return itineraryName;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getStartDate() {
+<b class="fc">&nbsp;        return startDate;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getEndDate() {
+<b class="fc">&nbsp;        return endDate;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    public void setItineraryName(String itineraryName) {
+<b class="fc">&nbsp;        this.itineraryName = itineraryName;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setStartDate(String startDate) {
+<b class="fc">&nbsp;        this.startDate = startDate;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setEndDate(String endDate) {
+<b class="fc">&nbsp;        this.endDate = endDate;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-04-28 20:55</div>
+</div>
+</body>
+</html>

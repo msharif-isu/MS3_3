@@ -23,14 +23,14 @@ public class ImageController {
     private ImageRepository imageRepository;
 
     @PostMapping("/Image")
-    public ResponseEntity<?> uploadImage(@RequestParam("image")MultipartFile file) throws IOException {
+    public ResponseEntity<?> uploadFileImage(@RequestParam("image")MultipartFile file) throws IOException {
         String uploadImage = service.uploadImage(file);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(uploadImage);
     }
 
     @GetMapping("/Image/{Id}")
-    public ResponseEntity<?> downloadImageByName(@PathVariable int Id){
+    public ResponseEntity<?> downloadFileImageByName(@PathVariable int Id){
         byte[] imageData=service.downloadImageByImageId(Id);
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.valueOf("image/png"))

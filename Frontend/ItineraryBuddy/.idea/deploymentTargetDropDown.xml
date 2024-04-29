@@ -2,30 +2,8 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="JustinSystemTest">
-        <State />
-      </entry>
-      <entry key="JustinSystemTest (1)">
-        <State />
-      </entry>
-      <entry key="Tests in 'com.example.itinerarybuddy'">
-        <State />
-      </entry>
       <entry key="app">
-        <State>
-          <targetSelectedWithDropDown>
-            <Target>
-              <type value="QUICK_BOOT_TARGET" />
-              <deviceKey>
-                <Key>
-                  <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="C:\Users\Justin\.android\avd\Pixel_2_API_UpsideDownCakePrivacySandbox.avd" />
-                </Key>
-              </deviceKey>
-            </Target>
-          </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-03-20T21:36:32.782733500Z" />
-        </State>
+        <State />
       </entry>
     </value>
   </component>

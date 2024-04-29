@@ -1,0 +1,134 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > WelcomeController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">MS3_3.Backend</a>
+</div>
+
+<h1>Coverage Summary for Class: WelcomeController (MS3_3.Backend)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">WelcomeController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (1/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (1/2)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package MS3_3.Backend;
+&nbsp;
+&nbsp;
+&nbsp;import org.springframework.web.bind.annotation.GetMapping;
+&nbsp;import org.springframework.web.bind.annotation.RestController;
+&nbsp;
+&nbsp;
+&nbsp;@RestController
+<b class="fc">&nbsp;class WelcomeController {</b>
+&nbsp;
+&nbsp;    //modified messages of the first two
+&nbsp;    @GetMapping(&quot;/&quot;)
+&nbsp;    public String welcome() {
+<b class="nc">&nbsp;        return &quot;MS3_3 welcomes you to COMS 309&quot;;</b>
+&nbsp;    }
+&nbsp;/**
+&nbsp; @GetMapping(&quot;/{name}&quot;) public String welcome(@PathVariable String name) {
+&nbsp; return &quot;MS3_3 welcomes &quot; + name + &quot; to CS309&quot;;
+&nbsp; }
+&nbsp;
+&nbsp; //Two new mappings
+&nbsp; @GetMapping(&quot;/whatIs&quot;) public String whatIs() {
+&nbsp; return &quot;COMS 309 is a project class at ISU&quot;;
+&nbsp; }
+&nbsp;
+&nbsp; @GetMapping(&quot;/whatIs/{name}&quot;) public String whatIsName(@PathVariable String name) {
+&nbsp; return name + &quot; is curious about CS309&quot;;
+&nbsp; }
+&nbsp; */
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-04-28 20:55</div>
+</div>
+</body>
+</html>

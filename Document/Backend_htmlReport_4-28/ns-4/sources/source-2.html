@@ -1,0 +1,264 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > BlogPostController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">MS3_3.Backend.AmbassadorBlogPost</a>
+</div>
+
+<h1>Coverage Summary for Class: BlogPostController (MS3_3.Backend.AmbassadorBlogPost)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">BlogPostController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    14.3%
+  </span>
+  <span class="absValue">
+    (2/14)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    9.1%
+  </span>
+  <span class="absValue">
+    (5/55)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package MS3_3.Backend.AmbassadorBlogPost;
+&nbsp;
+&nbsp;import MS3_3.Backend.Ambassador.AmbassadorRepository;
+&nbsp;import MS3_3.Backend.AmbassadorBlogPost.Images.BlogPostImage;
+&nbsp;import MS3_3.Backend.AmbassadorBlogPost.Images.BlogPostImageRepository;
+&nbsp;import MS3_3.Backend.AmbassadorBlogPost.Images.BlogPostImageUtils;
+&nbsp;import MS3_3.Backend.AmbassadorBlogPost.Images.BlogPostStorageService;
+&nbsp;import MS3_3.Backend.FileUpload.Image;
+&nbsp;import MS3_3.Backend.TravelGroups.TravelGroupRepository;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.http.HttpStatus;
+&nbsp;import org.springframework.http.MediaType;
+&nbsp;import org.springframework.http.ResponseEntity;
+&nbsp;import org.springframework.web.bind.annotation.*;
+&nbsp;import org.springframework.web.multipart.MultipartFile;
+&nbsp;
+&nbsp;import java.io.IOException;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.List;
+&nbsp;import java.util.Random;
+&nbsp;import java.util.concurrent.ThreadLocalRandom;
+&nbsp;
+&nbsp;@RestController
+<b class="fc">&nbsp;public class BlogPostController {</b>
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private BlogPostStorageService service;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private BlogPostRepository blogPostRepository;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private BlogPostImageRepository imageRepository;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private AmbassadorRepository ambassadorRepository;
+&nbsp;
+&nbsp;    @GetMapping(&quot;/BlogPost/Username/{userName}&quot;)
+&nbsp;    public List&lt;BlogPost&gt; getBlogByUserName(@PathVariable String userName){
+<b class="nc">&nbsp;        return ambassadorRepository.findByUserName(userName).getBlogPosts();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;BlogPost/Image/{Id}&quot;)
+&nbsp;    public ResponseEntity&lt;?&gt; downloadBlogImageByName(@PathVariable int Id){
+<b class="nc">&nbsp;        byte[] imageData=service.downloadImageByImageId(Id);</b>
+<b class="nc">&nbsp;        return ResponseEntity.status(HttpStatus.OK)</b>
+<b class="nc">&nbsp;                .contentType(MediaType.valueOf(&quot;image/png&quot;))</b>
+<b class="nc">&nbsp;                .body(imageData);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;BlogPost/CoverImage/{blogId}&quot;)
+&nbsp;    public ResponseEntity&lt;?&gt; downloadCoverImageById(@PathVariable int blogId){
+<b class="nc">&nbsp;        if(blogPostRepository.findByBlogPostId(blogId).getBlogImageList().size() != 0) {</b>
+<b class="nc">&nbsp;            Random rand = new Random();</b>
+<b class="nc">&nbsp;            int size = blogPostRepository.findByBlogPostId(blogId).getBlogImageList().size() - 1;</b>
+<b class="nc">&nbsp;            int tempId = rand.nextInt(size + 1);</b>
+<b class="nc">&nbsp;            int CoverId = blogPostRepository.findByBlogPostId(blogId).getBlogImageList().get(tempId).getId();</b>
+<b class="nc">&nbsp;            byte[] imageData = service.downloadImageByImageId(CoverId);</b>
+<b class="nc">&nbsp;            return ResponseEntity.status(HttpStatus.OK)</b>
+<b class="nc">&nbsp;                    .contentType(MediaType.valueOf(&quot;image/png&quot;))</b>
+<b class="nc">&nbsp;                    .body(imageData);</b>
+&nbsp;        }
+&nbsp;        else{
+<b class="nc">&nbsp;            byte[] imageData = service.downloadImageByImageId(1);</b>
+<b class="nc">&nbsp;            return ResponseEntity.status(HttpStatus.OK)</b>
+<b class="nc">&nbsp;                    .contentType(MediaType.valueOf(&quot;image/png&quot;))</b>
+<b class="nc">&nbsp;                    .body(imageData);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @PostMapping(&quot;/BlogPost/{userName}/{blogName}/{postDate}&quot;)
+&nbsp;    public BlogPost createBlogPost(@PathVariable String userName,@PathVariable String blogName,@PathVariable String postDate) {
+<b class="fc">&nbsp;        BlogPost blogPost = new BlogPost(blogName,postDate, ambassadorRepository.findByUserName(userName).getUserName());</b>
+<b class="fc">&nbsp;        blogPost.setAmbassador(ambassadorRepository.findByUserName(userName));</b>
+<b class="fc">&nbsp;        blogPostRepository.save(blogPost);</b>
+<b class="fc">&nbsp;        return blogPostRepository.findByBlogPostId(blogPost.getId());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/BlogPost/{blogId}&quot;)
+&nbsp;    public BlogPost downloadBlogImage(@PathVariable int blogId){
+<b class="nc">&nbsp;        return blogPostRepository.findByBlogPostId(blogId);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/BlogPost/Images/{blogId}&quot;)
+&nbsp;    public List&lt;Integer&gt; downloadImagesByBlogId(@PathVariable int blogId) {
+<b class="nc">&nbsp;        List&lt;Integer&gt; responses = new ArrayList&lt;&gt;();</b>
+<b class="nc">&nbsp;        int i =0;</b>
+<b class="nc">&nbsp;        while(i &lt; blogPostRepository.findByBlogPostId(blogId).getBlogImageList().size()){</b>
+<b class="nc">&nbsp;            int j = blogPostRepository.findByBlogPostId(blogId).getBlogImageList().get(i).getId();</b>
+<b class="nc">&nbsp;            responses.add(j);</b>
+<b class="nc">&nbsp;            i++;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return responses;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @PutMapping(&quot;/BlogPost/Image/{blogId}&quot;)
+&nbsp;    public ResponseEntity&lt;?&gt; addBlogImage(@PathVariable int blogId, @RequestParam(&quot;image&quot;)MultipartFile file) throws IOException {
+<b class="nc">&nbsp;        String uploadImage = service.addBlogImage(file, blogId);</b>
+<b class="nc">&nbsp;        return ResponseEntity.status(HttpStatus.OK)</b>
+<b class="nc">&nbsp;                .body(uploadImage);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @PutMapping(&quot;/BlogPost/{blogId}/{blogName}/{postDate}&quot;)
+&nbsp;    public BlogPost updateBlogPost(@PathVariable int blogId, @PathVariable String blogName,@PathVariable String postDate) {
+<b class="nc">&nbsp;        BlogPost blogPost = blogPostRepository.findByBlogPostId(blogId);</b>
+<b class="nc">&nbsp;        blogPost.setBlogPostTitle(blogName);</b>
+<b class="nc">&nbsp;        blogPost.setPostDate(postDate);</b>
+<b class="nc">&nbsp;        BlogPost output = blogPostRepository.save(blogPost);</b>
+<b class="nc">&nbsp;        return output;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @DeleteMapping(&quot;/BlogPost/Blank/{blogId}&quot;)
+&nbsp;    public BlogPost resetBlogPost(@PathVariable int blogId) {
+<b class="nc">&nbsp;        BlogPost temp = blogPostRepository.findByBlogPostId(blogId);</b>
+<b class="nc">&nbsp;        temp.setBlogPostTitle(&quot;&quot;);</b>
+<b class="nc">&nbsp;        temp.getBlogImageList().clear();</b>
+<b class="nc">&nbsp;        BlogPost output = blogPostRepository.save(temp);</b>
+<b class="nc">&nbsp;        return output;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @DeleteMapping(&quot;/BlogPost/{blogId}&quot;)
+&nbsp;    public String deleteBlogPost(@PathVariable int blogId) {
+<b class="nc">&nbsp;        blogPostRepository.deleteByBlogPostId(blogId);</b>
+<b class="nc">&nbsp;        return &quot;Blog Deleted&quot;;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @DeleteMapping(&quot;/BlogPost/Image/{blogImageId}&quot;)
+&nbsp;    public String deleteBlogPostImage(@PathVariable int blogImageId) {
+<b class="nc">&nbsp;        imageRepository.deleteById(blogImageId);</b>
+<b class="nc">&nbsp;        return &quot;Image &quot; + blogImageId + &quot; deleted&quot;;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @PostMapping(&quot;/Blog/Image&quot;)
+&nbsp;    public ResponseEntity&lt;?&gt; uploadNewBlogImage(@RequestParam(&quot;image&quot;)MultipartFile file) throws IOException {
+<b class="nc">&nbsp;        String uploadImage = service.uploadImage(file);</b>
+<b class="nc">&nbsp;        return ResponseEntity.status(HttpStatus.OK)</b>
+<b class="nc">&nbsp;                .body(uploadImage);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;Blog/Image/{Id}&quot;)
+&nbsp;    public ResponseEntity&lt;?&gt; downloadNewBlogImageByName(@PathVariable int Id){
+<b class="nc">&nbsp;        byte[] imageData=service.downloadImageByImageId(Id);</b>
+<b class="nc">&nbsp;        return ResponseEntity.status(HttpStatus.OK)</b>
+<b class="nc">&nbsp;                .contentType(MediaType.valueOf(&quot;image/png&quot;))</b>
+<b class="nc">&nbsp;                .body(imageData);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-04-28 20:55</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,251 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > PersonalItineraryController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">MS3_3.Backend.PersonalItinerary</a>
+</div>
+
+<h1>Coverage Summary for Class: PersonalItineraryController (MS3_3.Backend.PersonalItinerary)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PersonalItineraryController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    14.3%
+  </span>
+  <span class="absValue">
+    (1/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    2.7%
+  </span>
+  <span class="absValue">
+    (1/37)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package MS3_3.Backend.PersonalItinerary;
+&nbsp;
+&nbsp;import MS3_3.Backend.PersonalItinerary.Events.PersonalItineraryEvent;
+&nbsp;import MS3_3.Backend.PersonalItinerary.Events.PersonalItineraryEventRepository;
+&nbsp;import MS3_3.Backend.TravelGroupItinerary.TravelGroupItinerary;
+&nbsp;import MS3_3.Backend.UserTypes.User;
+&nbsp;import MS3_3.Backend.UserTypes.UserRepository;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.web.bind.annotation.*;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;@RestController
+<b class="fc">&nbsp;public class PersonalItineraryController {</b>
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    PersonalItineraryRepository personalItineraryRepository;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    PersonalItineraryEventRepository personalItineraryEventRepository;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    UserRepository userRepository;
+&nbsp;
+&nbsp;    @PostMapping(&quot;/Personal/Itinerary/{userName}&quot;)
+&nbsp;    public PersonalItinerary createPersonalItinerary(@PathVariable String userName, @RequestBody PersonalItinerary personalItinerary) {
+&nbsp;        // Create a new PersonalItinerary
+<b class="nc">&nbsp;        PersonalItinerary newItinerary = new PersonalItinerary(</b>
+<b class="nc">&nbsp;                userRepository.findByUserName(userName),</b>
+<b class="nc">&nbsp;                personalItinerary.getItineraryName(),</b>
+<b class="nc">&nbsp;                personalItinerary.getStartDate(),</b>
+<b class="nc">&nbsp;                personalItinerary.getEndDate(),</b>
+<b class="nc">&nbsp;                personalItinerary.getNumDays()</b>
+&nbsp;        );
+&nbsp;
+&nbsp;        // Iterate through the events in the request body and add them to the new itinerary
+<b class="nc">&nbsp;        for (PersonalItineraryEvent event : personalItinerary.getPersonalItineraryEventsList()) {</b>
+<b class="nc">&nbsp;            PersonalItineraryEvent newEvent = new PersonalItineraryEvent(</b>
+&nbsp;                    newItinerary,
+<b class="nc">&nbsp;                    event.getDayNumber(),</b>
+<b class="nc">&nbsp;                    event.getTime(),</b>
+<b class="nc">&nbsp;                    event.getPlace(),</b>
+<b class="nc">&nbsp;                    event.getNotes()</b>
+&nbsp;            );
+<b class="nc">&nbsp;            newItinerary.getPersonalItineraryEventsList().add(newEvent);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // Save the new itinerary
+<b class="nc">&nbsp;        PersonalItinerary output = personalItineraryRepository.save(newItinerary);</b>
+<b class="nc">&nbsp;        return output;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/Personal/Itinerary/{personalItineraryId}&quot;)
+&nbsp;    public PersonalItinerary getTravelGroupItinerary(@PathVariable int personalItineraryId) {
+<b class="nc">&nbsp;        return personalItineraryRepository.findByPersonalItineraryId(personalItineraryId);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**     Example Json for Put Request
+&nbsp;     {
+&nbsp;         &quot;itineraryName&quot;: &quot;The UK&quot;,
+&nbsp;         &quot;startDate&quot;: &quot;1/12/2025&quot;,
+&nbsp;         &quot;endDate&quot;: &quot;1/14/2025&quot;,
+&nbsp;         &quot;numDays&quot;: 2,
+&nbsp;         &quot;personalItineraryEventsList&quot;: [
+&nbsp;             {
+&nbsp;                 &quot;dayNumber&quot;: 1,
+&nbsp;                 &quot;time&quot;: &quot;12:00 pm&quot;,
+&nbsp;                 &quot;place&quot;: &quot;St James&#39; Park&quot;,
+&nbsp;                 &quot;notes&quot;: &quot;New Castle United Game&quot;
+&nbsp;             },
+&nbsp;             {
+&nbsp;                 &quot;dayNumber&quot;: 1,
+&nbsp;                 &quot;time&quot;: &quot;6:00 pm&quot;,
+&nbsp;                 &quot;place&quot;: &quot;Hotel Name&quot;,
+&nbsp;                 &quot;notes&quot;: &quot;Check in Time&quot;
+&nbsp;             },
+&nbsp;             {
+&nbsp;                 &quot;dayNumber&quot;: 2,
+&nbsp;                 &quot;time&quot;: &quot;12:00 pm&quot;,
+&nbsp;                 &quot;place&quot;: &quot;Hotel Name&quot;,
+&nbsp;                 &quot;notes&quot;: &quot;Checkout Time&quot;
+&nbsp;             }
+&nbsp;         ]
+&nbsp;     }
+&nbsp;     */
+&nbsp;
+&nbsp;    @PutMapping(&quot;/Personal/Itinerary/{personalItineraryId}&quot;)
+&nbsp;    public PersonalItinerary updatePersonalItinerary(@PathVariable int personalItineraryId,
+&nbsp;                                                           @RequestBody PersonalItinerary updatedItinerary) {
+&nbsp;
+&nbsp;        // Retrieve the corresponding TravelGroup from the repository
+<b class="nc">&nbsp;        PersonalItinerary existingItinerary = personalItineraryRepository.findByPersonalItineraryId(personalItineraryId);</b>
+&nbsp;
+&nbsp;        // Update the existing itinerary with the values from the updated itinerary
+<b class="nc">&nbsp;        existingItinerary.setItineraryName(updatedItinerary.getItineraryName());</b>
+<b class="nc">&nbsp;        existingItinerary.setStartDate(updatedItinerary.getStartDate());</b>
+<b class="nc">&nbsp;        existingItinerary.setEndDate(updatedItinerary.getEndDate());</b>
+<b class="nc">&nbsp;        existingItinerary.setNumDays(updatedItinerary.getNumDays());</b>
+&nbsp;
+&nbsp;        // Clear the existing events list
+<b class="nc">&nbsp;        existingItinerary.getPersonalItineraryEventsList().clear();</b>
+&nbsp;
+&nbsp;        // Add the updated events to the existing itinerary
+<b class="nc">&nbsp;        for (PersonalItineraryEvent updatedEvent : updatedItinerary.getPersonalItineraryEventsList()) {</b>
+<b class="nc">&nbsp;            PersonalItineraryEvent newEvent = new PersonalItineraryEvent(existingItinerary,</b>
+<b class="nc">&nbsp;                    updatedEvent.getDayNumber(), updatedEvent.getTime(),</b>
+<b class="nc">&nbsp;                    updatedEvent.getPlace(), updatedEvent.getNotes());</b>
+<b class="nc">&nbsp;            existingItinerary.getPersonalItineraryEventsList().add(newEvent);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // Save the updated itinerary
+<b class="nc">&nbsp;        PersonalItinerary output = personalItineraryRepository.save(existingItinerary);</b>
+<b class="nc">&nbsp;        return output;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @DeleteMapping(&quot;/Personal/Itinerary/{personalItineraryId}&quot;)
+&nbsp;    public String deleteTravelGroupItinerary(@PathVariable int personalItineraryId) {
+<b class="nc">&nbsp;        User user = personalItineraryRepository.findByPersonalItineraryId(personalItineraryId).getUser();</b>
+<b class="nc">&nbsp;        user.getPersonalItineraries().remove(personalItineraryRepository.findByPersonalItineraryId(personalItineraryId));</b>
+<b class="nc">&nbsp;        userRepository.save(user);</b>
+<b class="nc">&nbsp;        personalItineraryRepository.deleteByPersonalItineraryId(personalItineraryId);</b>
+<b class="nc">&nbsp;        return &quot;Deleted personal itinerary &quot; + personalItineraryId;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/Personal/Itineraries/{userName}&quot;)
+&nbsp;    public List&lt;PersonalItinerary&gt; getPersonalItinerariesByUsername(@PathVariable String userName) {
+<b class="nc">&nbsp;        return userRepository.findByUserName(userName).getPersonalItineraries();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/Personal/Itineraries&quot;)
+&nbsp;    public List&lt;PersonalItinerary&gt; getTravelGroupItineraryRepository() {
+<b class="nc">&nbsp;        return personalItineraryRepository.findAll();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-04-28 20:55</div>
+</div>
+</body>
+</html>

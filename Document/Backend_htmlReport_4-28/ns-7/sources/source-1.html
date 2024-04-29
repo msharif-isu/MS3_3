@@ -1,0 +1,229 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > PersonalItinerary</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">MS3_3.Backend.PersonalItinerary</a>
+</div>
+
+<h1>Coverage Summary for Class: PersonalItinerary (MS3_3.Backend.PersonalItinerary)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PersonalItinerary</td>
+<td class="coverageStat">
+  <span class="percent">
+    5.9%
+  </span>
+  <span class="absValue">
+    (1/17)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    8%
+  </span>
+  <span class="absValue">
+    (2/25)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">PersonalItinerary$HibernateInstantiator$ACBLiFmp</td>
+  </tr>
+  <tr>
+    <td class="name">PersonalItinerary$HibernateProxy$ma4gNzMn</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    5.9%
+  </span>
+  <span class="absValue">
+    (1/17)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    8%
+  </span>
+  <span class="absValue">
+    (2/25)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package MS3_3.Backend.PersonalItinerary;
+&nbsp;
+&nbsp;import MS3_3.Backend.Ambassador.Ambassador;
+&nbsp;import MS3_3.Backend.PersonalItinerary.Events.PersonalItineraryEvent;
+&nbsp;import MS3_3.Backend.TravelGroups.TravelGroup;
+&nbsp;import MS3_3.Backend.UserTypes.User;
+&nbsp;import com.fasterxml.jackson.annotation.JsonIgnore;
+&nbsp;import jakarta.persistence.*;
+&nbsp;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;@Entity
+&nbsp;public class PersonalItinerary {
+&nbsp;    @Id
+&nbsp;    @GeneratedValue(strategy = GenerationType.IDENTITY)
+&nbsp;    private int personalItineraryId;
+&nbsp;
+&nbsp;    private String itineraryName;
+&nbsp;
+&nbsp;    private String startDate;
+&nbsp;
+&nbsp;    private String endDate;
+&nbsp;
+&nbsp;    private int numDays;
+&nbsp;
+&nbsp;    @ManyToOne
+&nbsp;    @JsonIgnore
+&nbsp;    private User user;
+&nbsp;
+&nbsp;    private String userName;
+&nbsp;
+&nbsp;    @OneToMany(mappedBy = &quot;personalItinerary&quot;, cascade = CascadeType.ALL, orphanRemoval = true)
+&nbsp;    private List&lt;PersonalItineraryEvent&gt; personalItineraryEventsList;
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;    public PersonalItinerary() {</b>
+<b class="fc">&nbsp;        this.personalItineraryEventsList = new ArrayList&lt;&gt;();</b>
+&nbsp;    }
+&nbsp;
+<b class="nc">&nbsp;    public PersonalItinerary(User user,String itineraryName, String startDate, String endDate, int numDays) {</b>
+<b class="nc">&nbsp;        this.user = user;</b>
+<b class="nc">&nbsp;        this.userName = user.getUserName();</b>
+<b class="nc">&nbsp;        this.itineraryName = itineraryName;</b>
+<b class="nc">&nbsp;        this.startDate = startDate;</b>
+<b class="nc">&nbsp;        this.endDate = endDate;</b>
+<b class="nc">&nbsp;        this.numDays = numDays;</b>
+<b class="nc">&nbsp;        this.personalItineraryEventsList = new ArrayList&lt;&gt;();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getUserName() {
+<b class="nc">&nbsp;        return userName;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setUserName(String userName) {
+<b class="nc">&nbsp;        this.userName = userName;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public User getUser() {
+<b class="nc">&nbsp;        return user;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setUser(User user) {
+<b class="nc">&nbsp;        this.user = user;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public int getNumDays() {
+<b class="nc">&nbsp;        return numDays;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setNumDays(int numDays) {
+<b class="nc">&nbsp;        this.numDays = numDays;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public List&lt;PersonalItineraryEvent&gt; getPersonalItineraryEventsList() {
+<b class="nc">&nbsp;        return personalItineraryEventsList;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setPersonalItineraryEventsList(List&lt;PersonalItineraryEvent&gt; travelGroupItineraryEventsList) {
+<b class="nc">&nbsp;        this.personalItineraryEventsList = travelGroupItineraryEventsList;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public int getId() {
+<b class="nc">&nbsp;        return personalItineraryId;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    public String getItineraryName() {
+<b class="nc">&nbsp;        return itineraryName;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getStartDate() {
+<b class="nc">&nbsp;        return startDate;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getEndDate() {
+<b class="nc">&nbsp;        return endDate;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    public void setItineraryName(String itineraryName) {
+<b class="nc">&nbsp;        this.itineraryName = itineraryName;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setStartDate(String startDate) {
+<b class="nc">&nbsp;        this.startDate = startDate;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setEndDate(String endDate) {
+<b class="nc">&nbsp;        this.endDate = endDate;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-04-28 20:55</div>
+</div>
+</body>
+</html>

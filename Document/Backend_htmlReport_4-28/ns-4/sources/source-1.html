@@ -1,0 +1,204 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > BlogPost</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">MS3_3.Backend.AmbassadorBlogPost</a>
+</div>
+
+<h1>Coverage Summary for Class: BlogPost (MS3_3.Backend.AmbassadorBlogPost)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">BlogPost</td>
+<td class="coverageStat">
+  <span class="percent">
+    84.6%
+  </span>
+  <span class="absValue">
+    (11/13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    88.9%
+  </span>
+  <span class="absValue">
+    (16/18)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">BlogPost$HibernateInstantiator$0TqnyZ2v</td>
+  </tr>
+  <tr>
+    <td class="name">BlogPost$HibernateProxy$weTEF6ro</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    84.6%
+  </span>
+  <span class="absValue">
+    (11/13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    88.9%
+  </span>
+  <span class="absValue">
+    (16/18)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package MS3_3.Backend.AmbassadorBlogPost;
+&nbsp;
+&nbsp;import MS3_3.Backend.Ambassador.Ambassador;
+&nbsp;import MS3_3.Backend.AmbassadorBlogPost.Images.BlogPostImage;
+&nbsp;import MS3_3.Backend.FileUpload.Image;
+&nbsp;import com.fasterxml.jackson.annotation.JsonIgnore;
+&nbsp;import jakarta.persistence.*;
+&nbsp;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;@Entity
+&nbsp;public class BlogPost {
+&nbsp;
+&nbsp;    @ManyToOne
+&nbsp;    @JsonIgnore
+&nbsp;    private Ambassador ambassador;
+&nbsp;
+&nbsp;    @Id
+&nbsp;    @GeneratedValue(strategy = GenerationType.IDENTITY)
+&nbsp;    private int blogPostId;
+&nbsp;
+&nbsp;    private String userName;
+&nbsp;
+&nbsp;    private String blogPostTitle;
+&nbsp;
+&nbsp;    private String postDate;
+&nbsp;
+&nbsp;    @OneToMany(mappedBy = &quot;blogPost&quot;, cascade = CascadeType.ALL, orphanRemoval = true)
+&nbsp;    private List&lt;BlogPostImage&gt; blogImageList;
+&nbsp;
+&nbsp;
+<b class="fc">&nbsp;    public BlogPost(String blogPostTitle, String postDate, String userName) {</b>
+<b class="fc">&nbsp;        this.userName = userName;</b>
+<b class="fc">&nbsp;        this.postDate = postDate;</b>
+<b class="fc">&nbsp;        this.blogPostTitle = blogPostTitle;</b>
+<b class="fc">&nbsp;        this.blogImageList = new ArrayList&lt;&gt;();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getUserName() {
+<b class="fc">&nbsp;        return userName;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setUserName(String userName) {
+<b class="fc">&nbsp;        this.userName = userName;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public int getId() {
+<b class="fc">&nbsp;        return blogPostId;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getBlogPostTitle() {
+<b class="fc">&nbsp;        return blogPostTitle;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getPostDate() {
+<b class="fc">&nbsp;        return postDate;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setPostDate(String postDate) {
+<b class="fc">&nbsp;        this.postDate = postDate;</b>
+&nbsp;    }
+&nbsp;
+<b class="fc">&nbsp;    public BlogPost() {</b>
+<b class="fc">&nbsp;        this.blogImageList = new ArrayList&lt;&gt;();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public List&lt;BlogPostImage&gt; getBlogImageList() {
+<b class="fc">&nbsp;        return blogImageList;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void blogImageList(List&lt;BlogPostImage&gt; blogImageList) {
+<b class="nc">&nbsp;        this.blogImageList = blogImageList;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setBlogPostTitle(String blogPostTitle) {
+<b class="fc">&nbsp;        this.blogPostTitle = blogPostTitle;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public Ambassador getAmbassador() {
+<b class="nc">&nbsp;        return ambassador;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setAmbassador(Ambassador ambassador) {
+<b class="fc">&nbsp;        this.ambassador = ambassador;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-04-28 20:55</div>
+</div>
+</body>
+</html>

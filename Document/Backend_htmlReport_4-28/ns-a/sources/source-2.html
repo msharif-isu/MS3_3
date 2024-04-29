@@ -1,0 +1,238 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > TravelGroupItineraryController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">MS3_3.Backend.TravelGroupItinerary</a>
+</div>
+
+<h1>Coverage Summary for Class: TravelGroupItineraryController (MS3_3.Backend.TravelGroupItinerary)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">TravelGroupItineraryController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    16.7%
+  </span>
+  <span class="absValue">
+    (1/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    3.8%
+  </span>
+  <span class="absValue">
+    (1/26)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package MS3_3.Backend.TravelGroupItinerary;
+&nbsp;
+&nbsp;import MS3_3.Backend.TravelGroups.TravelGroupRepository;
+&nbsp;import MS3_3.Backend.TravelGroupItinerary.Events.TravelGroupItineraryEvent;
+&nbsp;import MS3_3.Backend.TravelGroupItinerary.Events.TravelGroupItineraryEventRepository;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.web.bind.annotation.*;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;@RestController
+<b class="fc">&nbsp;public class TravelGroupItineraryController {</b>
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    TravelGroupRepository travelGroupRepository;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    TravelGroupItineraryRepository travelGroupItineraryRepository;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    TravelGroupItineraryEventRepository travelGroupItineraryEventRepository;
+&nbsp;
+&nbsp;
+&nbsp;    @PostMapping(&quot;/Group/Itinerary&quot;)
+&nbsp;    public TravelGroupItinerary createTravelGroupItinerary(@RequestBody TravelGroupItinerary travelGroupItinerary) {
+<b class="nc">&nbsp;        travelGroupItineraryRepository.save(travelGroupItinerary);</b>
+<b class="nc">&nbsp;        return travelGroupItinerary;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/Group/Itinerary/{groupId}&quot;)
+&nbsp;    public TravelGroupItinerary getTravelGroupItinerary(@PathVariable int groupId) {
+<b class="nc">&nbsp;        return travelGroupItineraryRepository.findByTravelGroupItineraryId(groupId);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**     Example Json for Put Request
+&nbsp;     {
+&nbsp;         &quot;itineraryName&quot;: &quot;London&quot;,
+&nbsp;         &quot;startDate&quot;: &quot;1/12/2025&quot;,
+&nbsp;         &quot;endDate&quot;: &quot;1/14/2025&quot;,
+&nbsp;         &quot;numDays&quot;: 2,
+&nbsp;         &quot;travelGroupItineraryEventsList&quot;: [
+&nbsp;             {
+&nbsp;             &quot;dayNumber&quot;: 1,
+&nbsp;             &quot;time&quot;: &quot;12:00 pm&quot;,
+&nbsp;             &quot;place&quot;: &quot;St James&#39; Park&quot;,
+&nbsp;             &quot;notes&quot;: &quot;New Castle United Game&quot;
+&nbsp;             },
+&nbsp;             {
+&nbsp;             &quot;dayNumber&quot;: 1,
+&nbsp;             &quot;time&quot;: &quot;1:00 pm&quot;,
+&nbsp;             &quot;place&quot;: &quot;St James&#39; Park&quot;,
+&nbsp;             &quot;notes&quot;: &quot;Halftime get a drink&quot;
+&nbsp;             },
+&nbsp;             {
+&nbsp;             &quot;dayNumber&quot;: 1,
+&nbsp;             &quot;time&quot;: &quot;6:00 pm&quot;,
+&nbsp;             &quot;place&quot;: &quot;Hotel Name&quot;,
+&nbsp;             &quot;notes&quot;: &quot;Check in Time&quot;
+&nbsp;             },
+&nbsp;             {
+&nbsp;             &quot;dayNumber&quot;: 2,
+&nbsp;             &quot;time&quot;: &quot;12:00 pm&quot;,
+&nbsp;             &quot;place&quot;: &quot;Hotel Name&quot;,
+&nbsp;             &quot;notes&quot;: &quot;Checkout Time&quot;
+&nbsp;             },
+&nbsp;             {
+&nbsp;             &quot;dayNumber&quot;: 2,
+&nbsp;             &quot;time&quot;: &quot;12:30 pm&quot;,
+&nbsp;             &quot;place&quot;: &quot;Train Station&quot;,
+&nbsp;             &quot;notes&quot;: &quot;Go somewhere and explore&quot;
+&nbsp;             },
+&nbsp;         ]
+&nbsp;     }
+&nbsp;     */
+&nbsp;
+&nbsp;    @PutMapping(&quot;/Group/Itinerary/{groupId}&quot;)
+&nbsp;    public TravelGroupItinerary updateTravelGroupItinerary(@PathVariable int groupId,
+&nbsp;                                                           @RequestBody TravelGroupItinerary updatedItinerary) {
+&nbsp;
+&nbsp;        // Retrieve the corresponding TravelGroup from the repository
+<b class="nc">&nbsp;        TravelGroupItinerary existingItinerary = travelGroupItineraryRepository.findByTravelGroupItineraryId(groupId);</b>
+&nbsp;
+&nbsp;        // Update the existing itinerary with the values from the updated itinerary
+<b class="nc">&nbsp;        existingItinerary.setItineraryName(updatedItinerary.getItineraryName());</b>
+<b class="nc">&nbsp;        existingItinerary.setStartDate(updatedItinerary.getStartDate());</b>
+<b class="nc">&nbsp;        existingItinerary.setEndDate(updatedItinerary.getEndDate());</b>
+<b class="nc">&nbsp;        existingItinerary.setNumDays(updatedItinerary.getNumDays());</b>
+&nbsp;
+&nbsp;        // Clear the existing events list
+<b class="nc">&nbsp;        existingItinerary.getTravelGroupItineraryEventsList().clear();</b>
+&nbsp;
+&nbsp;        // Add the updated events to the existing itinerary
+<b class="nc">&nbsp;        for (TravelGroupItineraryEvent updatedEvent : updatedItinerary.getTravelGroupItineraryEventsList()) {</b>
+<b class="nc">&nbsp;            TravelGroupItineraryEvent newEvent = new TravelGroupItineraryEvent(existingItinerary,</b>
+<b class="nc">&nbsp;                    updatedEvent.getDayNumber(), updatedEvent.getTime(),</b>
+<b class="nc">&nbsp;                    updatedEvent.getPlace(), updatedEvent.getNotes());</b>
+<b class="nc">&nbsp;            existingItinerary.getTravelGroupItineraryEventsList().add(newEvent);</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // Save the updated itinerary
+<b class="nc">&nbsp;        TravelGroupItinerary output = travelGroupItineraryRepository.save(existingItinerary);</b>
+<b class="nc">&nbsp;        return output;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;    @DeleteMapping(&quot;/Group/Itinerary/{groupId}&quot;)
+&nbsp;    public TravelGroupItinerary deleteTravelGroupItinerary(@PathVariable int groupId) {
+<b class="nc">&nbsp;        TravelGroupItinerary existingItinerary = travelGroupItineraryRepository.findByTravelGroupItineraryId(groupId);</b>
+<b class="nc">&nbsp;        existingItinerary.setItineraryName(&quot;&quot;);</b>
+<b class="nc">&nbsp;        existingItinerary.setStartDate(&quot;&quot;);</b>
+<b class="nc">&nbsp;        existingItinerary.setEndDate(&quot;&quot;);</b>
+<b class="nc">&nbsp;        existingItinerary.setNumDays(0);</b>
+<b class="nc">&nbsp;        existingItinerary.getTravelGroupItineraryEventsList().clear();</b>
+<b class="nc">&nbsp;        TravelGroupItinerary output = travelGroupItineraryRepository.save(existingItinerary);</b>
+<b class="nc">&nbsp;        return output;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/Group/Itineraries&quot;)
+&nbsp;    public List&lt;TravelGroupItinerary&gt; getTravelGroupItineraryRepository() {
+<b class="nc">&nbsp;        return travelGroupItineraryRepository.findAll();</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-04-28 20:55</div>
+</div>
+</body>
+</html>
