@@ -65,22 +65,13 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView" />
 
-
         <ImageButton
             android:id="@+id/group_button"
-<<<<<<< HEAD
             android:layout_width="55dp"
             android:layout_height="45dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="82dp"
             android:background="@drawable/round_button_white"
-=======
-            android:layout_width="50dp"
-            android:layout_height="40dp"
-            android:layout_marginTop="112dp"
-            android:layout_marginEnd="44dp"
-            android:background="@color/green"
->>>>>>> 41-blog-page
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toEndOf="@+id/textView7"
@@ -88,25 +79,16 @@
             app:srcCompat="@drawable/groups" />
 
         <TextView
-<<<<<<< HEAD
             android:id="@+id/textView4"
             android:layout_width="wrap_content"
             android:layout_height="32dp"
             android:layout_marginStart="104dp"
             android:layout_marginBottom="16dp"
-=======
-            android:id="@+id/textView3"
-            android:layout_width="213dp"
-            android:layout_height="32dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="120dp"
->>>>>>> 41-blog-page
             android:fontFamily="@font/dm_sans"
             android:text="Create a new itinerary"
             android:textColor="@color/white"
             android:textSize="20sp"
             android:textStyle="bold"
-<<<<<<< HEAD
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
@@ -124,21 +106,6 @@
             app:srcCompat="@drawable/add_circle"
             android:contentDescription="@string/create_itinerary" />
 
-=======
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/imageViewPersonal" />
-
-        <ImageButton
-            android:id="@+id/addItinerary"
-            android:layout_width="50dp"
-            android:layout_height="40dp"
-            android:layout_marginTop="112dp"
-            android:layout_marginEnd="112dp"
-            android:background="@color/white"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/add_circle" />
->>>>>>> 41-blog-page
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

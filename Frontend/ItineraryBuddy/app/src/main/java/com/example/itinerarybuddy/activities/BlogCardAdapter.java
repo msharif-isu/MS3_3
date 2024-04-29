@@ -118,7 +118,7 @@ public class BlogCardAdapter extends RecyclerView.Adapter<BlogCardAdapter.ViewHo
         popupMenu.show();
     }
 
-    
+
     public byte[] uriToImage(Uri imageUri) {
         byte[] bytes = null;
         try {
