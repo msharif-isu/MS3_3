@@ -88,7 +88,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 // Save user JSON and proceed to homepage
                 UserData.userInfo = response;
-                startActivity(new Intent(getApplicationContext(), BlogPhotoAlbum.class));
+                startActivity(new Intent(getApplicationContext(), personalPage1.class));
             }
         }, new Response.ErrorListener() {
             @Override
