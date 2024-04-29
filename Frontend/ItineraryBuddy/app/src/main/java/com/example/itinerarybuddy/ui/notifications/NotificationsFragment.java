@@ -28,6 +28,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.example.itinerarybuddy.R;
+import com.example.itinerarybuddy.activities.AdminDashboardActivity;
 import com.example.itinerarybuddy.activities.BlogCardAdapter;
 import com.example.itinerarybuddy.data.BlogItem;
 import com.example.itinerarybuddy.data.UserData;
@@ -63,6 +64,7 @@ public class NotificationsFragment extends Fragment implements BlogCardAdapter.O
         recyclerView.setAdapter(postBlogAdapter);
 
         ImageView postButton = root.findViewById(R.id.postBlog);
+        ImageView adminButton = root.findViewById(R.id.adminButton);
 
             postButton.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -75,6 +77,18 @@ public class NotificationsFragment extends Fragment implements BlogCardAdapter.O
                         }
                 }
             });
+
+        adminButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick (View v){
+                if(UserData.getUsertype().equals("Admin")){
+                    Intent intent = new Intent(requireContext(), AdminDashboardActivity.class);
+                }
+                else{
+                    Toast.makeText(requireContext(), "Only for Admins.", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
 
 
         postBlogAdapter.setOnItemClickListener(new BlogCardAdapter.OnItemClickListener() {
