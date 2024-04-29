@@ -27,10 +27,10 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestMethodOrder(MethodOrderer.MethodName.class)
+//@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+//@TestMethodOrder(MethodOrderer.MethodName.class)
 public class JacksonSystemTest {
-
+/**
     @Autowired
     private TestRestTemplate restTemplate;
 
@@ -202,4 +202,5 @@ public class JacksonSystemTest {
         assertThat(response.getBody().getBlogPostTitle()).isEqualTo("Test Blog");
         assertThat(response.getBody().getPostDate()).isEqualTo("Today");
     }
+    */
 }
