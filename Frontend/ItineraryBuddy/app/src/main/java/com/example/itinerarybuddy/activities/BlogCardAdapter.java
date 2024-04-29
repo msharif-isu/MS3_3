@@ -34,6 +34,8 @@ public class BlogCardAdapter extends RecyclerView.Adapter<BlogCardAdapter.ViewHo
 
     NotificationsFragment fragment;
 
+    private OnItemClickListener mListener;
+
     public BlogCardAdapter(List<BlogItem> blogItems, Context context, NotificationsFragment fragment) {
         this.blogItems = blogItems;
         this.context = context;
@@ -89,6 +91,15 @@ public class BlogCardAdapter extends RecyclerView.Adapter<BlogCardAdapter.ViewHo
             }
 
         });*/
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mListener != null) {
+                    mListener.onItemClick(position);
+                }
+            }
+        });
     }
 
     /**
@@ -136,6 +147,17 @@ public class BlogCardAdapter extends RecyclerView.Adapter<BlogCardAdapter.ViewHo
             e.printStackTrace();
         }
         return bytes;
+    }
+
+
+    // Method to set the click listener
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        mListener = listener;
+    }
+
+    // Interface for item click events
+    public interface OnItemClickListener {
+        void onItemClick(int position);
     }
 
 

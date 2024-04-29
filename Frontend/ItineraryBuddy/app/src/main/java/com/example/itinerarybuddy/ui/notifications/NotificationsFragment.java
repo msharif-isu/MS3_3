@@ -77,6 +77,21 @@ public class NotificationsFragment extends Fragment implements BlogCardAdapter.O
                 }
             });*/
 
+
+        postBlogAdapter.setOnItemClickListener(new BlogCardAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                // Get the clicked BlogItem
+                BlogItem clickedBlogItem = cardItems.get(position);
+
+                // Open the BlogPhotoAlbum activity and pass necessary data
+                Intent intent = new Intent(requireContext(), BlogPhotoAlbum.class);
+                intent.putExtra("ID", clickedBlogItem.getBlogID());
+                intent.putExtra("USER", clickedBlogItem.getUsername());
+                startActivity(intent);
+            }
+        });
+
         postButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View v){
@@ -87,6 +102,8 @@ public class NotificationsFragment extends Fragment implements BlogCardAdapter.O
         });
 
         loadPosts();
+
+
         return root;
     }
 

@@ -17,7 +17,6 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.itinerarybuddy.R;
 import com.example.itinerarybuddy.data.ScheduleItem;
-import com.example.itinerarybuddy.data.UserData;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
@@ -115,151 +114,122 @@ public class ScheduleTemplate extends AppCompatActivity {
          * @param day The day for which the schedule data is being saved.
          * @param scheduleData The list of schedule items to be saved.
          */
-        private void POST_schedule(String day, List<ScheduleItem> scheduleData){
+        private void POST_schedule(String day, List<ScheduleItem> scheduleData) {
+            // Construct the URL for the POST request
+            String url = "http://coms-309-035.class.las.iastate.edu:8080/Personal/Itinerary/" + tripCode;
 
-            String[] parts = day.split(" ");
-            String numericPart = parts[1];
-            int dayInt = Integer.parseInt(numericPart);
-
-            String url = "http://coms-309-035.class.las.iastate.edu:8080/Schedule";
-
-            //String url = "https://7557e865-ef05-4e77-beaf-a69fca370355.mock.pstmn.io/Schedule/Post/" + tripCode + day_url;
-
-
+            // Create a RequestQueue for the Volley library
             RequestQueue queue = Volley.newRequestQueue(this);
 
-            //Convert ScheduleItem list to JSONArray
+            // Convert ScheduleItem list to JSONArray
             JSONArray jsonArray = new JSONArray();
-
-            for(ScheduleItem item:scheduleData){
-
-                JSONObject jsonItem = new JSONObject();
-
-                try{
-
-                    jsonItem.put("time", item.getTime());
-                    jsonItem.put("place", item.getPlaces());
-                    jsonItem.put("note", item.getNotes());
-
-                    jsonArray.put(jsonItem);
-                }catch(JSONException e){
-                    e.printStackTrace();
-                }
-            }
-
-            //Request Body
-            JSONObject requestBody = new JSONObject();
-            try{
-
-                requestBody.put("scheduleData", jsonArray);
-            }
-            catch(JSONException e){
-                e.printStackTrace();
-            }
-
-            //JsonObjectRequest for the POST request
-            JsonObjectRequest jsonObject = new JsonObjectRequest(Request.Method.POST, url, requestBody,
-                    new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-
-                            Toast.makeText(ScheduleTemplate.this, "Data saved!", Toast.LENGTH_SHORT).show();
-
-                        }
-                    },
-
-                    new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Toast.makeText(ScheduleTemplate.this, "Error saving data", Toast.LENGTH_SHORT).show();
-                        }
-                    }){
-
-                public Map<String, String> getHeaders(){
-
-                    Map<String, String> headers = new HashMap<>();
-                    headers.put("Content-Type", "application/json");
-                    return headers;
-                }
-            };
-
-            //Add JsonObjectRequest to the request queue
-            queue.add(jsonObject);
-
-        }
-
-
-
-        //UPDATE the schedule data
-        private void PUT_schedule (String day, List < ScheduleItem > scheduleData){
-
-            String[] parts = day.split(" ");
-            String numericPart = parts[1];
-
-            // String url = "http://coms-309-035.class.las.iastate.edu:8080/Schedule/" + username + tripCode + day_url;
-            String url = "https://7557e865-ef05-4e77-beaf-a69fca370355.mock.pstmn.io/Schedule/Update/";
-
-            //String url = "http://coms-309-035.class.las.iastate.edu:8080/Schedule/" + tripCode + "/" + numericPart;
-
-            RequestQueue queue = Volley.newRequestQueue(this);
-
-            //Convert ScheduleItem list to JSONArray
-            JSONArray jsonArray = new JSONArray();
-
             for (ScheduleItem item : scheduleData) {
-
                 JSONObject jsonItem = new JSONObject();
-
                 try {
-
                     jsonItem.put("time", item.getTime());
                     jsonItem.put("place", item.getPlaces());
                     jsonItem.put("note", item.getNotes());
-
                     jsonArray.put(jsonItem);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
 
-            //Request body
+            // Construct the request body
             JSONObject requestBody = new JSONObject();
-
             try {
-
                 requestBody.put("scheduleData", jsonArray);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
-            //JsonObjectRequest for the UPDATE
-            JsonObjectRequest jsonObject = new JsonObjectRequest(Request.Method.PUT, url, requestBody,
+            // Create a JsonObjectRequest for the POST request
+            JsonObjectRequest jsonObject = new JsonObjectRequest(Request.Method.POST, url, requestBody,
                     new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
-                            Toast.makeText(ScheduleTemplate.this, "Data updated!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ScheduleTemplate.this, "Data saved!", Toast.LENGTH_SHORT).show();
                         }
                     },
-
                     new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            Toast.makeText(ScheduleTemplate.this, "Error updating data", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(ScheduleTemplate.this, "Error saving data", Toast.LENGTH_SHORT).show();
                         }
                     }) {
-
+                @Override
                 public Map<String, String> getHeaders() {
-
                     Map<String, String> headers = new HashMap<>();
                     headers.put("Content-Type", "application/json");
                     return headers;
                 }
             };
 
+            // Add the JsonObjectRequest to the request queue
             queue.add(jsonObject);
         }
 
-        /**
+
+
+
+    //UPDATE the schedule data
+    private void PUT_schedule(String day, List<ScheduleItem> scheduleData) {
+        // Construct the URL for the PUT request
+        String url = "http://coms-309-035.class.las.iastate.edu:8080/Personal/Itinerary/" + tripCode;
+
+        // Create a RequestQueue for the Volley library
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        // Convert ScheduleItem list to JSONArray
+        JSONArray jsonArray = new JSONArray();
+        for (ScheduleItem item : scheduleData) {
+            JSONObject jsonItem = new JSONObject();
+            try {
+                jsonItem.put("time", item.getTime());
+                jsonItem.put("place", item.getPlaces());
+                jsonItem.put("note", item.getNotes());
+                jsonArray.put(jsonItem);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // Construct the request body
+        JSONObject requestBody = new JSONObject();
+        try {
+            requestBody.put("scheduleData", jsonArray);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        // Create a JsonObjectRequest for the PUT request
+        JsonObjectRequest jsonObject = new JsonObjectRequest(Request.Method.PUT, url, requestBody,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Toast.makeText(ScheduleTemplate.this, "Data updated!", Toast.LENGTH_SHORT).show();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(ScheduleTemplate.this, "Error updating data", Toast.LENGTH_SHORT).show();
+                    }
+                }) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", "application/json");
+                return headers;
+            }
+        };
+
+        // Add the JsonObjectRequest to the request queue
+        queue.add(jsonObject);
+    }
+
+
+    /**
          * Retrieves schedule data from the server using a GET request.
          * Parses the JSON response and updates the RecyclerView with the fetched data.
          */
@@ -269,8 +239,8 @@ public class ScheduleTemplate extends AppCompatActivity {
             String[] parts = day.split(" ");
             String numericPart = parts[1];
 
-            //String url = "http://coms-309-035.class.las.iastate.edu:8080/Schedule/" + username + tripCode + day_url;
-             String url = "https://7557e865-ef05-4e77-beaf-a69fca370355.mock.pstmn.io/Schedule/Get/";
+            String url = "http://coms-309-035.class.las.iastate.edu:8080/Personal/Itinerary/" + tripCode;
+            //String url = "https://7557e865-ef05-4e77-beaf-a69fca370355.mock.pstmn.io/Schedule/Get/";
 
             //String url = "http://coms-309-035.class.las.iastate.edu:8080/Schedule/" + tripCode + "/" + numericPart;
 
