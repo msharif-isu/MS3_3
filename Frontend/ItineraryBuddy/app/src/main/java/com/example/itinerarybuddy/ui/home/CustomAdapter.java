@@ -38,7 +38,7 @@ public class CustomAdapter extends ArrayAdapter<String> {
      * @param deleteClickListener Listener for delete button click events.
      */
     public CustomAdapter(@NonNull Context context, int resource, @NonNull List<String> objects, OnEditClickListener editClickListener, OnDeleteClickListener deleteClickListener) {
-        super(context, resource, objects);
+        super(context, resource);
         this.context = context;
         this.itineraries = objects;
         this.editClickListener = editClickListener;

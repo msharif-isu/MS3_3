@@ -22,7 +22,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -40,9 +39,8 @@ import com.example.itinerarybuddy.activities.LoginActivity;
 import com.example.itinerarybuddy.activities.ScheduleTemplate;
 import com.example.itinerarybuddy.data.Itinerary;
 import com.example.itinerarybuddy.data.UserData;
-
-
 import com.example.itinerarybuddy.databinding.FragmentHomeBinding;
+import com.example.itinerarybuddy.util.Singleton;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -50,14 +48,13 @@ import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Random;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 
@@ -72,8 +69,9 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
     private CustomAdapter itineraryAdapter;
     private EditText startDateInput;
     private EditText endDateInput;
-
     public int numOfDays;
+
+    List<Itinerary> itineraries = new ArrayList<>();
 
     /**
      * Initializes the fragment's user interface and binds the data.
@@ -92,7 +90,6 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
         HomeViewModel homeViewModel =
                 new ViewModelProvider(this).get(HomeViewModel.class);
 
-        Itinerary.requestQueue = Volley.newRequestQueue(requireContext());
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
@@ -235,12 +232,11 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
 
                 // Retrieve values entered by the user
                 String destination = destinationEditText.getText().toString();
-                String tripCode = generateUniqueTripCode();
                 String startDate = startDateInput.getText().toString();
                 String endDate = endDateInput.getText().toString();
 
                 // Create a new itinerary with the provided details
-                createNewFrame(destination, tripCode, startDate, endDate);
+                createNewFrame(destination, startDate, endDate);
             }
         });
 
@@ -255,29 +251,6 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
         builder.show();
     }
 
-
-    /**
-     * Generates a unique trip code for a new itinerary.
-     * The trip code is an 8-digit alphanumeric code that is randomly generated.
-     * It ensures uniqueness by checking if the generated code is not already present in a set of generated codes.
-     *
-     * @return A unique trip code as a string.
-     */
-    private String generateUniqueTripCode() {
-
-        Random rand = new Random(System.currentTimeMillis());
-
-        Set<Integer> generatedNumbers = new HashSet<>();
-
-        while (true) {
-            int randomNum = rand.nextInt(10000000);
-
-            if (!generatedNumbers.contains(randomNum)) {
-                generatedNumbers.add(randomNum);
-                return String.format("%08d", randomNum);
-            }
-        }
-    }
 
 
     private void showStartDatePickerDialog(final EditText startDateInput) {
@@ -356,11 +329,11 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
      * Notifies the adapter of the data set change and initiates a POST request to add the itinerary to the server.
      *
      * @param destination The destination of the itinerary.
-     * @param tripCode The unique trip code associated with the itinerary.
+     *
      * @param startDate The start date of the itinerary in "yyyy-MM-dd" format.
      * @param endDate The end date of the itinerary in "yyyy-MM-dd" format.
      */
-    private void createNewFrame(String destination, String tripCode, String startDate, String endDate) {
+    private void createNewFrame(String destination, String startDate, String endDate) {
 
         // Initialize a SimpleDateFormat for parsing dates
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -382,10 +355,10 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
         }
 
         String itineraryInfo =
-                "itineraryName: " + destination
-                        + "\nstartDate: " + startDate
-                        + "\nendDate: " + endDate
-                        + "\nnumDays: " + numOfDays;
+                "Destination: " + destination
+                        + "\nStart Date: " + startDate
+                        + "\nEnd Date: " + endDate
+                        + "\nNumber of Days: " + numOfDays;
 
         // Insert the itinerary information into the itinerary adapter
         itineraryAdapter.insert(itineraryInfo, 0);
@@ -394,7 +367,11 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
         itineraryAdapter.notifyDataSetChanged();
 
         // Initiate a POST request to add the itinerary to the server
-        POST_itinerary(destination, tripCode, startDate, endDate, numOfDays);
+        try {
+            POST_itinerary(destination, startDate, endDate, numOfDays);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 
@@ -402,12 +379,12 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
      * Sends a POST request to create a new itinerary on the server.
      *
      * @param destination The destination of the itinerary.
-     * @param tripCode The unique trip code associated with the itinerary.
+     *
      * @param startDate The start date of the itinerary in "yyyy-MM-dd" format.
      * @param endDate The end date of the itinerary in "yyyy-MM-dd" format.
      * @param numOfDays The number of days for the itinerary.
      */
-    private void POST_itinerary(String destination, String tripCode, String startDate, String endDate, int numOfDays){
+    private void POST_itinerary(String destination, String startDate, String endDate, int numOfDays) throws InterruptedException {
 
         //Make a network request using Volley
 
@@ -419,11 +396,10 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
 
         //Convert itinerary information to JSON format
         String tripData = "{\n" +
-                "\"destination\": \"" + destination + "\",\n" +
-                "\"tripCode\": \"" + tripCode + "\",\n" +
-                "\"start date\": \"" + startDate + "\",\n" +
-                "\"end date\": \"" + endDate + "\"\n" +
-                "\"number of days\": \"" + numOfDays + "\"\n" +
+                "\"itineraryName\": \"" + destination + "\",\n" +
+                "\"startDate\": \"" + startDate + "\",\n" +
+                "\"endDate\": \"" + endDate + "\"\n" +
+                "\"numDays\": \"" + numOfDays + "\"\n" +
                 "}";
 
         Log.d("Volley Request Data: ", tripData);
@@ -440,6 +416,7 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
             JsonObjectRequest jsonObject = new JsonObjectRequest(Request.Method.POST, url, itineraryData, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
+
                     Log.d("Volley Response: ", response.toString());
                     Toast.makeText(requireContext(), "Itinerary created successfully", Toast.LENGTH_SHORT).show();
                 }
@@ -456,11 +433,10 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
 
                 // Override getParams() to provide parameters for the request body (not used for JSON request)
                 HashMap<String, String> map = new HashMap<String, String>();
-                map.put("destination", destination);
-                map.put("tripCode", tripCode);
-                map.put("start date", startDate);
-                map.put("end date", endDate);
-                map.put("number of days", String.valueOf(numOfDays));
+                map.put("itineraryName", destination);
+                map.put("startDate", startDate);
+                map.put("endDate", endDate);
+                map.put("numDays", String.valueOf(numOfDays));
 
                 return map;
             }
@@ -475,7 +451,9 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
             };
 
             //Add the JsonObjectRequest to the request queue
-            Itinerary.requestQueue.add(jsonObject);
+            Singleton.getInstance(requireContext()).addRequest(jsonObject);
+            Thread.sleep(500);
+            GET_itinerary();
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -638,7 +616,6 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
         }
 
         String updatedItineraryInfo = "Destination: " + destination +
-                "\nTrip Code: " + getTripCodeFromAdapterPosition(position) +
                 "\nStart Date: " + startDate +
                 "\nEnd Date: " + endDate +
                 "\nNumber of Days: " + numOfDays;
@@ -653,25 +630,6 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
     }
 
     /**
-     * Retrieves the trip code from the itinerary item at the specified position in the adapter.
-     *
-     * @param position The position of the itinerary item in the adapter.
-     * @return The trip code extracted from the itinerary item.
-     */
-    private String getTripCodeFromAdapterPosition(int position){
-        String itineraryInfo = itineraryAdapter.getItem(position);
-
-        if(itineraryInfo != null){
-
-            String[] itineraryData = itineraryInfo.split("\n");
-            String tripCode = itineraryData[1].substring("Trip Code:".length());
-            return tripCode;
-        }
-
-        return null;
-    }
-
-    /**
      * Sends a PUT request to update the itinerary information for the specified trip identified by its position.
      *
      * @param destination The updated destination for the itinerary.
@@ -679,14 +637,12 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
      * @param startDate   The updated start date for the itinerary.
      * @param endDate     The updated end date for the itinerary.
      */
-    private void PUT_itinerary(final String destination, final int position, final String startDate, final String endDate){
+    private void PUT_itinerary(String destination, final int position, String startDate, String endDate){
+
+        Itinerary personalItinerary = itineraries.get(position);
 
         // Retrieve the trip code for the specified itinerary position
-        String tripCode = getTripCodeFromAdapterPosition(position);
-        String url = "http://coms-309-035.class.las.iastate.edu:8080//Personal/Itinerary/" + tripCode;
-       // String url = "https://5569939f-7918-4af9-937a-86edcfe9bc7f.mock.pstmn.io/Itinerary/Update/" + tripCode;
-
-        //String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary/" + tripCode;
+        String url = "http://coms-309-035.class.las.iastate.edu:8080/Personal/Itinerary/" + personalItinerary.getItineraryID();
 
         // Create a StringRequest for the PUT request
         StringRequest updateRequest = new StringRequest(Request.Method.PUT, url,
@@ -712,10 +668,10 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
 
                 // Construct parameters for the PUT request
                 Map<String, String> params = new HashMap<>();
-                params.put("destination", destination);
-                params.put("start date", startDate);
-                params.put("end date", endDate);
-                params.put("number of days", String.valueOf(numOfDays));
+                params.put("itineraryName", destination);
+                params.put("startDate", startDate);
+                params.put("endDate", endDate);
+                params.put("numDays", String.valueOf(numOfDays));
                 return params;
             }
 
@@ -729,7 +685,7 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
         };
 
         // Add the PUT request to the request queue
-        Itinerary.requestQueue.add(updateRequest);
+        Singleton.getInstance(requireContext()).addRequest(updateRequest);
     }
 
 
@@ -774,7 +730,7 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
         };
 
         // Add the DELETE request to the request queue
-        Itinerary.requestQueue.add(deleteRequest);
+        Singleton.getInstance(requireContext()).addRequest(deleteRequest);
     }
 
 
@@ -795,14 +751,14 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
             public void onClick(DialogInterface dialog, int which) {
 
                 // Retrieve the trip code for the specified itinerary position
-                String tripCode = getTripCodeFromAdapterPosition(position);
+               // String tripCode = getTripCodeFromAdapterPosition(position);
 
                 //Remove the data from the adapter
                 itineraryAdapter.remove(itineraryAdapter.getItem(position));
                 itineraryAdapter.notifyDataSetChanged();
 
                 // Send a DELETE request to delete the itinerary
-                DELETE_itinerary(tripCode);
+                DELETE_itinerary(itineraryAdapter.getItem(position));
             }
         });
 
@@ -832,9 +788,11 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
-
                         //Parse the JSON array and update the adapter with itinerary information
-                        updateItineraryAdapter(response);
+
+                        Itinerary itinerary = updateItineraryAdapter(response);
+                        itineraries.add(itinerary);
+                        //updateItineraryAdapter(response);
                     }
                 },
                 new Response.ErrorListener() {
@@ -852,39 +810,47 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
                 });
 
         // Add the JsonArrayRequest to the request queue
-        Itinerary.requestQueue.add(jsonArrayRequest);
+        Singleton.getInstance(requireContext()).addRequest(jsonArrayRequest);
     }
 
     /**
      * Updates the adapter with itinerary data obtained from the JSON array.
      *
      * @param itineraryArray The JSON array containing itinerary information.
+     * @return
      */
-    private void updateItineraryAdapter(JSONArray itineraryArray) {
+    private Itinerary updateItineraryAdapter(JSONArray itineraryArray) {
 
         // Clear the existing data in the adapter
         itineraryAdapter.clear();
+
+        Itinerary itinerary = new Itinerary();
 
         // Iterate over the JSON array to extract itinerary information
         for (int i = 0; i < itineraryArray.length(); i++) {
             try {
                 JSONObject itineraryObject = itineraryArray.getJSONObject(i);
-                String destination = itineraryObject.getString("destination");
-                String tripCode = itineraryObject.getString("tripCode");
-                String startDate = itineraryObject.getString("start date");
-                String endDate = itineraryObject.getString("end date");
-                String numOfDays = itineraryObject.getString("number of days");
+                String destination = itineraryObject.getString("itineraryName");
+                String startDate = itineraryObject.getString("startDate");
+                String endDate = itineraryObject.getString("endDate");
+                int numOfDays = itineraryObject.getInt("numDays");
 
-                int numDays = Integer.parseInt(numOfDays);
+                int id = itineraryObject.getInt("id");
 
                 String itineraryInfo = "Destination: " + destination +
-                        "\nTrip Code: " + tripCode +
                         "\nStart Date: " + startDate +
                         "\nEnd Date: " + endDate +
-                        "\nNumber of Days: " + numDays;
+                        "\nNumber of Days: " + numOfDays;
+
 
                 // Add the itinerary information to the adapter
                 itineraryAdapter.add(itineraryInfo);
+
+                itinerary.setItineraryID(id);
+                itinerary.setDestination(destination);
+                itinerary.setStartDate(startDate);
+                itinerary.setEndDate(endDate);
+                itinerary.setNumOfDays(numOfDays);
 
 
             } catch (JSONException e) {
@@ -893,6 +859,7 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
         }
 
         itineraryAdapter.notifyDataSetChanged();
+        return itinerary;
     }
 
 }

@@ -48,7 +48,6 @@ public class NotificationsFragment extends Fragment implements BlogCardAdapter.O
 
     private FragmentNotificationsBinding binding;
     private RecyclerView recyclerView;
-
     private BlogCardAdapter postBlogAdapter;
     List<BlogItem> cardItems = new ArrayList<>();
     @Override
@@ -164,18 +163,6 @@ public class NotificationsFragment extends Fragment implements BlogCardAdapter.O
         //String url = "https://ff1e6a32-8cf4-4764-9239-e2a66d09085e.mock.pstmn.io/Blog";
 
         String url = "http://coms-309-035.class.las.iastate.edu:8080/BlogPost/"+ blogItem.getUsername() + "/" + blogItem.getTitle() + "/" + blogItem.getPostDate();
-
-        // Create a JSON object to hold the blog item data
-       /* JSONObject blogData = new JSONObject();
-
-        try {
-            blogData.put("title", blogItem.getTitle());
-            blogData.put("username", blogItem.getUsername());
-            blogData.put("postDate", blogItem.getPostDate());
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }*/
 
         // Request a string response from the provided URL.
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, null,
