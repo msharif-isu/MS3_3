@@ -2,27 +2,29 @@ package com.example.itinerarybuddy.activities;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.itinerarybuddy.R;
 import com.example.itinerarybuddy.data.BlogItem;
 import com.example.itinerarybuddy.ui.notifications.NotificationsFragment;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
+
 
 public class BlogCardAdapter extends RecyclerView.Adapter<BlogCardAdapter.ViewHolder> {
 
@@ -61,36 +63,10 @@ public class BlogCardAdapter extends RecyclerView.Adapter<BlogCardAdapter.ViewHo
        GridLayoutManager.LayoutParams layoutParams = (GridLayoutManager.LayoutParams) holder.itemView.getLayoutParams();
         layoutParams.width = layoutParams.width * (position % 2 == 0 ? 2 : 1);
         holder.itemView.setLayoutParams(layoutParams);
-        
-
-       /* if (uploadImageUri != null) {
-            try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), uploadImageUri);
-                holder.blogMainImage.setImageBitmap(bitmap);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }else {
-            // Set a default image or clear the ImageView if no image is selected
-            holder.blogMainImage.setImageResource(R.drawable.add_a_photo); // Change this to your default image resource
-        }
 
 
-        // Set OnClickListener for blogMainImage ImageView
-        holder.blogMainImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openImagePicker();
-            }
-        });
+        downloadCoverImageById(cardItem.getBlogID(), holder.blogMainImage);
 
-        holder.iconMore.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showPopupMenu(v, position);
-            }
-
-        });*/
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -102,52 +78,30 @@ public class BlogCardAdapter extends RecyclerView.Adapter<BlogCardAdapter.ViewHo
         });
     }
 
-    /**
-     * Displays a popup menu for the options related to a post.
-     *
-     * @param view The anchor view for the popup menu.
-     * @param position The position of the post in the RecyclerView.
-     */
-    private void showPopupMenu(View view, int position) {
-        PopupMenu popupMenu = new PopupMenu(context, view);
-        popupMenu.getMenuInflater().inflate(R.menu.itinerary_menu, popupMenu.getMenu());
-        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
+    private void downloadCoverImageById(int blogId, final ImageView imageView) {
+        // Replace "YOUR_API_ENDPOINT" with your actual API endpoint for downloading cover images
+        String url = "http://coms-309-035.class.las.iastate.edu:8080/BlogPost/CoverImage/" + blogId;
 
-                if (item.getItemId() == R.id.action_edit) {
-                    fragment.EditClicked(position);
-                    return true;
-                } else if (item.getItemId() == R.id.action_delete) {
-                    fragment.DeleteClicked(position);
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        });
-        popupMenu.show();
+        ImageRequest imageRequest = new ImageRequest(url,
+                new Response.Listener<Bitmap>() {
+                    @Override
+                    public void onResponse(Bitmap response) {
+                        // Set the downloaded image to the ImageView
+                        imageView.setImageBitmap(response);
+                    }
+                }, 0, 0, null,
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // Handle error response
+                        Log.e("Volley Error", "Error downloading cover image: " + error.toString());
+                    }
+                });
+
+        // Add the request to the RequestQueue
+        Volley.newRequestQueue(context).add(imageRequest);
     }
 
-
-    public byte[] uriToImage(Uri imageUri) {
-        byte[] bytes = null;
-        try {
-            InputStream inputStream = context.getContentResolver().openInputStream(imageUri);
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            byte[] buffer = new byte[1024];
-            int len;
-            while ((len = inputStream.read(buffer)) != -1) {
-                byteArrayOutputStream.write(buffer, 0, len);
-            }
-            bytes = byteArrayOutputStream.toByteArray();
-            inputStream.close();
-            byteArrayOutputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return bytes;
-    }
 
 
     // Method to set the click listener

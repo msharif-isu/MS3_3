@@ -43,7 +43,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Random;
 
 public class NotificationsFragment extends Fragment implements BlogCardAdapter.OnEditClickListener,BlogCardAdapter.OnDeleteClickListener {
 
@@ -107,27 +106,6 @@ public class NotificationsFragment extends Fragment implements BlogCardAdapter.O
         return root;
     }
 
-    public static String generateBlogID(){
-
-        String letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        String numbers = "0123456789";
-
-        Random random = new Random();
-
-        StringBuilder postIDBuilder = new StringBuilder();
-
-        //Generate 3 random letters
-        for(int i = 0; i < 3; i++){
-            postIDBuilder.append(letters.charAt(random.nextInt(letters.length())));
-        }
-
-        for(int i = 0; i < 4; i++){
-            postIDBuilder.append(numbers.charAt(random.nextInt(numbers.length())));
-        }
-
-        return postIDBuilder.toString();
-    }
-
     private void showPostBlogDialog() {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
@@ -143,13 +121,13 @@ public class NotificationsFragment extends Fragment implements BlogCardAdapter.O
             public void onClick(DialogInterface dialog, int which) {
 
                 Date currentDate = new Date();
-                SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault()); // Use Locale.getDefault() for consistent formatting across devices
+                SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy", Locale.getDefault()); // Use Locale.getDefault() for consistent formatting across devices
                 String formattedDate = dateFormat.format(currentDate);
 
                 String BlogTitle = titleEditText.getText().toString();
-                String blogId = generateBlogID();
 
-                BlogItem newBlogItem = new BlogItem(BlogTitle, UserData.getUsername(), formattedDate, blogId);
+
+                BlogItem newBlogItem = new BlogItem(BlogTitle, UserData.getUsername(), formattedDate);
                 cardItems.add(0, newBlogItem);
 
                 POST_BlogItem(newBlogItem);
@@ -183,22 +161,24 @@ public class NotificationsFragment extends Fragment implements BlogCardAdapter.O
 
     private void POST_BlogItem(BlogItem blogItem) {
 
-        String url = "https://ff1e6a32-8cf4-4764-9239-e2a66d09085e.mock.pstmn.io/Blog";
+        //String url = "https://ff1e6a32-8cf4-4764-9239-e2a66d09085e.mock.pstmn.io/Blog";
+
+        String url = "http://coms-309-035.class.las.iastate.edu:8080/BlogPost/"+ blogItem.getUsername() + "/" + blogItem.getTitle() + "/" + blogItem.getPostDate();
 
         // Create a JSON object to hold the blog item data
-        JSONObject blogData = new JSONObject();
+       /* JSONObject blogData = new JSONObject();
 
         try {
             blogData.put("title", blogItem.getTitle());
             blogData.put("username", blogItem.getUsername());
             blogData.put("postDate", blogItem.getPostDate());
-            blogData.put("blogID", blogItem.getBlogID());
+
         } catch (JSONException e) {
             e.printStackTrace();
-        }
+        }*/
 
         // Request a string response from the provided URL.
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, blogData,
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -218,6 +198,7 @@ public class NotificationsFragment extends Fragment implements BlogCardAdapter.O
         });
 
         Singleton.getInstance(requireContext()).addRequest(jsonObjectRequest);
+        GET_previousBlogPosts();
     }
 
 
@@ -230,8 +211,7 @@ public class NotificationsFragment extends Fragment implements BlogCardAdapter.O
 
     private void GET_previousBlogPosts() {
         // URL for fetching previous blog posts
-        String url = "https://ff1e6a32-8cf4-4764-9239-e2a66d09085e.mock.pstmn.io/Blog";
-
+        String url = "http://coms-309-035.class.las.iastate.edu:8080/BlogPost/Username/" + UserData.getUsername();
         // Create a GET request
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONArray>() {
@@ -240,8 +220,7 @@ public class NotificationsFragment extends Fragment implements BlogCardAdapter.O
                         // Handle successful response
                         try {
                             // Clear the existing cardItems list
-                            cardItems.clear();
-
+                           // cardItems.clear();
                             // Iterate through the JSON array of blog posts
                             for (int i = 0; i < response.length(); i++) {
                                 JSONObject postObject = response.getJSONObject(i);
@@ -271,12 +250,16 @@ public class NotificationsFragment extends Fragment implements BlogCardAdapter.O
     }
 
     private BlogItem parseBlogItemFromJson(JSONObject jsonObject) throws JSONException {
-        String title = jsonObject.getString("title");
-        String username = jsonObject.getString("username");
+        String title = jsonObject.getString("blogPostTitle");
+        String username = jsonObject.getString("userName");
         String postDate = jsonObject.getString("postDate");
-        String blogID = jsonObject.getString("blogID");
+        int blogID = jsonObject.getInt("id");
         // Parse other properties if necessary
-        return new BlogItem(title, username, postDate, blogID);
+
+        BlogItem newCard = new BlogItem(title, username, postDate);
+        newCard.setBlogID(blogID);
+        return newCard;
+
     }
 
     @Override
@@ -340,13 +323,13 @@ public class NotificationsFragment extends Fragment implements BlogCardAdapter.O
 
     private void PUT_editTitle(BlogItem blog, String newTitle){
 
-        String url = "https://ff1e6a32-8cf4-4764-9239-e2a66d09085e.mock.pstmn.io/Blog";
-        // String url = "http://coms-309-035.class.las.iastate.edu:8080/Blog/" + blog.getPostID();
+       // String url = "https://ff1e6a32-8cf4-4764-9239-e2a66d09085e.mock.pstmn.io/Blog";
+         String url = "http://coms-309-035.class.las.iastate.edu:8080/BlogPost/" + blog.getBlogID() + "/" + newTitle + "/" + blog.getPostDate();
 
         JSONObject captionData = new JSONObject();
 
         try{
-            captionData.put("title", newTitle);
+            captionData.put("blogPostTitle", newTitle);
 
         }catch (JSONException e){
             e.printStackTrace();
@@ -398,7 +381,7 @@ public class NotificationsFragment extends Fragment implements BlogCardAdapter.O
         // Remove the post from the list
 
         BlogItem deleting_post = cardItems.get(position);
-        String blogId = deleting_post.getBlogID();
+        int blogId = deleting_post.getBlogID();
 
         cardItems.remove(position);
 
@@ -414,10 +397,10 @@ public class NotificationsFragment extends Fragment implements BlogCardAdapter.O
      *
      * @param blogID The ID of the post to be deleted.
      */
-    private void DELETE_post(String blogID){
+    private void DELETE_post(int blogID){
 
-        //String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary/Share/" + username + postID;
-        String url = "https://ff1e6a32-8cf4-4764-9239-e2a66d09085e.mock.pstmn.io/Blog";
+        String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary/BlogPost/"  + blogID;
+       // String url = "https://ff1e6a32-8cf4-4764-9239-e2a66d09085e.mock.pstmn.io/Blog";
 
         //  String url = "http://coms-309-035.class.las.iastate.edu:8080/Blog/" + blogID;
 
