@@ -1,5 +1,6 @@
-package MS3_3.Backend.FileUpload;
+package MS3_3.Backend.AmbassadorBlogPost.Images;
 
+import MS3_3.Backend.AmbassadorBlogPost.BlogPost;
 import MS3_3.Backend.TravelGroups.TravelGroup;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -8,21 +9,20 @@ import lombok.Builder;
 import lombok.Data;
 
 @Entity
-@Table(name = "ImageData")
+@Table(name = "BlogImageData")
 @Data
 @AllArgsConstructor
 @Builder
-public class Image {
+public class BlogPostImage {
 
+    @ManyToOne
+    @JoinColumn(name = "blogPostId")
+    @JsonIgnore
+    private BlogPost blogPost;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @OneToOne
-    @JsonIgnore
-    private TravelGroup travelGroup;
-
+    private int id;
 
     private String name;
     private String type;
@@ -32,17 +32,24 @@ public class Image {
     @Column(name = "imagedata", columnDefinition="LONGBLOB")
     private byte[] imageData;
 
-    public Image(String name, String type, byte[] imageData) {
+    public BlogPostImage(String name, String type, byte[] imageData) {
         this.name = name;
         this.type = type;
         this.imageData = imageData;
     }
 
-    public Image() {
+    public BlogPostImage() {
     }
 
+    public BlogPost getBlogPost() {
+        return blogPost;
+    }
 
-    public Long getId() {
+    public void setBlogPost(BlogPost blogPost) {
+        this.blogPost = blogPost;
+    }
+
+    public int getId() {
         return id;
     }
 
@@ -72,5 +79,6 @@ public class Image {
 
 
 }
+
 
 

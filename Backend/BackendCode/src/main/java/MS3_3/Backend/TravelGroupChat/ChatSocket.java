@@ -4,10 +4,8 @@ import java.io.IOException;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
-import MS3_3.Backend.Groups.TravelGroup;
-import MS3_3.Backend.Groups.TravelGroupRepository;
+import MS3_3.Backend.TravelGroups.TravelGroupRepository;
 import jakarta.websocket.OnClose;
 import jakarta.websocket.OnError;
 import jakarta.websocket.OnMessage;
@@ -47,7 +45,6 @@ public class ChatSocket {
      * There are other ways to set this. However, this approach is
      * easiest.
      */
-
     @Autowired
     public void setMessageRepository(MessageRepository repo) {
         msgRepo = repo;  // we are setting the static variable
