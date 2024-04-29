@@ -17,6 +17,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.itinerarybuddy.R;
 import com.example.itinerarybuddy.data.ScheduleItem;
+import com.example.itinerarybuddy.data.UserData;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
@@ -116,10 +117,13 @@ public class ScheduleTemplate extends AppCompatActivity {
          */
         private void POST_schedule(String day, List<ScheduleItem> scheduleData){
 
-            String day_url = day.replace(" ", "");
-            // String url = "http://coms-309-035.class.las.iastate.edu:8080/Schedule/" + username + tripCode + day_url;
+            String[] parts = day.split(" ");
+            String numericPart = parts[1];
+            int dayInt = Integer.parseInt(numericPart);
 
-            String url = "https://7557e865-ef05-4e77-beaf-a69fca370355.mock.pstmn.io/Schedule/Post/" + tripCode + day_url;
+            String url = "http://coms-309-035.class.las.iastate.edu:8080/Schedule";
+
+            //String url = "https://7557e865-ef05-4e77-beaf-a69fca370355.mock.pstmn.io/Schedule/Post/" + tripCode + day_url;
 
 
             RequestQueue queue = Volley.newRequestQueue(this);
@@ -189,12 +193,13 @@ public class ScheduleTemplate extends AppCompatActivity {
         //UPDATE the schedule data
         private void PUT_schedule (String day, List < ScheduleItem > scheduleData){
 
-            String day_url = day.replace(" ", "");
+            String[] parts = day.split(" ");
+            String numericPart = parts[1];
 
             // String url = "http://coms-309-035.class.las.iastate.edu:8080/Schedule/" + username + tripCode + day_url;
-            //String url = "https://7557e865-ef05-4e77-beaf-a69fca370355.mock.pstmn.io/Schedule/Update/" + day_url;
+            String url = "https://7557e865-ef05-4e77-beaf-a69fca370355.mock.pstmn.io/Schedule/Update/";
 
-            String url = "http://coms-309-035.class.las.iastate.edu:8080/Schedule/" + tripCode + day_url;
+            //String url = "http://coms-309-035.class.las.iastate.edu:8080/Schedule/" + tripCode + "/" + numericPart;
 
             RequestQueue queue = Volley.newRequestQueue(this);
 
@@ -261,12 +266,13 @@ public class ScheduleTemplate extends AppCompatActivity {
 
         private void GET_schedule (String day){
 
-            String day_url = day.replace(" ", "");
+            String[] parts = day.split(" ");
+            String numericPart = parts[1];
 
             //String url = "http://coms-309-035.class.las.iastate.edu:8080/Schedule/" + username + tripCode + day_url;
-            // String url = "https://7557e865-ef05-4e77-beaf-a69fca370355.mock.pstmn.io/Schedule/Get/" + day_url;
+             String url = "https://7557e865-ef05-4e77-beaf-a69fca370355.mock.pstmn.io/Schedule/Get/";
 
-            String url = "http://coms-309-035.class.las.iastate.edu:8080/Schedule/" + tripCode + day_url;
+            //String url = "http://coms-309-035.class.las.iastate.edu:8080/Schedule/" + tripCode + "/" + numericPart;
 
             // Initialize a RequestQueue for the Volley library
             RequestQueue queue = Volley.newRequestQueue(this);

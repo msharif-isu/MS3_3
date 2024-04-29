@@ -46,6 +46,7 @@
             android:name=".activities.personalPage1"
             android:exported="true"
             android:label="@string/title_activity_personal_page1" />
+
         <activity
             android:name=".ui.home.ListGroups"
             android:exported="false" />
