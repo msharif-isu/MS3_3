@@ -5,14 +5,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.itinerarybuddy.R;
-import com.example.itinerarybuddy.data.UserData;
 
 /**
  * Custom adapter made for the chat list for improved layout and design.

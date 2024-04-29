@@ -1,11 +1,17 @@
 package com.example.itinerarybuddy.activities;
 
-import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
-import android.util.Log;
-import android.view.*;
-import android.widget.*;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -14,7 +20,9 @@ import com.example.itinerarybuddy.R;
 import com.example.itinerarybuddy.data.UserData;
 import com.example.itinerarybuddy.ui.notifications.BlogPhotoAlbum;
 import com.example.itinerarybuddy.util.Singleton;
+
 import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -80,7 +88,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 // Save user JSON and proceed to homepage
                 UserData.userInfo = response;
-                startActivity(new Intent(getApplicationContext(), BlogPhotoAlbum.class));
+                startActivity(new Intent(getApplicationContext(), personalPage1.class));
             }
         }, new Response.ErrorListener() {
             @Override

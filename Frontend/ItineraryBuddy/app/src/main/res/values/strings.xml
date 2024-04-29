@@ -80,6 +80,10 @@
     <string name="photo">Photo</string>
     <string name="add_a_photo">Add a Photo</string>
     <string name="photo_gallery">Photo Gallery</string>
+    <string name="logout">Logout</string>
+    <string name="your_itineraries">YOUR ITINERARIES</string>
+    <string name="create_itinerary">Create Itinerary</string>
+
 
 
 </resources>

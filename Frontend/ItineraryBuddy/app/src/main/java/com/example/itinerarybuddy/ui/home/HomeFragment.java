@@ -1,60 +1,61 @@
 package com.example.itinerarybuddy.ui.home;
 
+import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.DatePicker;
-
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.StringRequest;
-import com.example.itinerarybuddy.activities.DayCard;
-import com.example.itinerarybuddy.activities.ScheduleTemplate;
-import com.example.itinerarybuddy.data.Itinerary;
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-
-import android.app.AlertDialog;
-import android.app.DatePickerDialog;
-import android.content.DialogInterface;
-import android.widget.EditText;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 
-import java.text.ParseException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-import java.util.HashSet;
-import java.util.Set;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
-import java.util.concurrent.TimeUnit;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.itinerarybuddy.R;
+import com.example.itinerarybuddy.activities.DayCard;
+import com.example.itinerarybuddy.activities.LoginActivity;
+import com.example.itinerarybuddy.activities.ScheduleTemplate;
+import com.example.itinerarybuddy.data.Itinerary;
 import com.example.itinerarybuddy.data.UserData;
 import com.example.itinerarybuddy.databinding.FragmentHomeBinding;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -92,6 +93,8 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
+
         ListView list = root.findViewById(R.id.listViewItineraries);
         itineraryAdapter = new CustomAdapter(requireContext(), R.layout. list_item_layout, homeViewModel.getItineraries(), this, this);
         list.setAdapter(itineraryAdapter);
@@ -119,7 +122,7 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
             }
         });
 
-        FloatingActionButton fab = root.findViewById(R.id.addItinerary);
+        ImageButton fab = root.findViewById(R.id.addItinerary);
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -133,6 +136,32 @@ public class HomeFragment extends Fragment implements CustomAdapter.OnEditClickL
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(requireContext(), ListGroups.class));
+            }
+        });
+
+        ImageButton settings = root.findViewById(R.id.mainpage_settings);
+        settings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Display a menu with three options given XML resource
+                PopupMenu menu = new PopupMenu(requireContext(), v);
+                MenuInflater inflater = menu.getMenuInflater();
+
+                inflater.inflate(R.menu.mainpage_menu, menu.getMenu());
+
+                // Set click listener for each option
+                menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        if(item.getItemId() == R.id.action_logout){
+                            UserData.userInfo = null;
+                            startActivity(new Intent(requireContext(), LoginActivity.class));
+                            return true;
+                        }
+                        return false;
+                    }
+                });
+                menu.show();
             }
         });
 

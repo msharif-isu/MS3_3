@@ -1,24 +1,16 @@
 package com.example.itinerarybuddy.activities;
 
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.ViewGroup;
-import android.view.View;
-
-import android.widget.LinearLayout;
-
-import com.example.itinerarybuddy.R;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.example.itinerarybuddy.R;
 import com.example.itinerarybuddy.databinding.ActivityPersonalPage1Binding;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class personalPage1 extends AppCompatActivity {
 

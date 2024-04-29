@@ -1,7 +1,5 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -20,6 +18,7 @@
             android:scaleType="centerCrop"
             android:src="@drawable/airplane_trip"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -27,131 +26,110 @@
             android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="119dp"
+            android:layout_marginTop="15dp"
             android:gravity="center"
-            android:letterSpacing="0.8"
+            android:letterSpacing="0.6"
             android:text="TRIPS"
             android:textAlignment="center"
             android:textColor="@color/white"
             android:textSize="42dp"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/mainpage_settings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="12dp"
+            android:background="@android:color/transparent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.652"
+            app:layout_constraintStart_toEndOf="@+id/textView"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0" />
+            app:srcCompat="@drawable/options_icon" />
+
+        <TextView
+            android:id="@+id/textView7"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:layout_marginStart="140dp"
+            android:layout_marginTop="18dp"
+            android:fontFamily="@font/dm_sans"
+            android:text="Travel Groups"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView" />
 
         <ImageButton
             android:id="@+id/group_button"
-            android:layout_width="50dp"
-            android:layout_height="40dp"
-            android:layout_marginTop="80dp"
-            android:layout_marginEnd="16dp"
-            android:background="@color/green"
+            android:layout_width="55dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="82dp"
+            android:background="@drawable/round_button_white"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/textView7"
+            app:layout_constraintTop_toBottomOf="@+id/textView"
             app:srcCompat="@drawable/groups" />
 
         <TextView
-            android:id="@+id/textView2"
-            android:layout_width="192dp"
-            android:layout_height="34dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="84dp"
-            android:fontFamily="@font/dm_sans"
-            android:text="Enter trip code:"
-            android:textColor="#FFFFFF"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@+id/imageViewPersonal"
-            app:layout_constraintTop_toTopOf="@+id/imageViewPersonal" />
-
-        <TextView
-            android:id="@+id/textView3"
-            android:layout_width="213dp"
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
             android:layout_height="32dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="140dp"
+            android:layout_marginStart="104dp"
+            android:layout_marginBottom="16dp"
             android:fontFamily="@font/dm_sans"
             android:text="Create a new itinerary"
             android:textColor="@color/white"
-            android:textSize="18sp"
+            android:textSize="20sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@+id/addItinerary"
-            app:layout_constraintHorizontal_bias="0.776"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/imageViewPersonal" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
-        <Button
-            android:id="@+id/button2"
-            android:layout_width="85dp"
-            android:layout_height="40dp"
-            android:layout_marginTop="80dp"
-            android:layout_marginEnd="16dp"
-            android:text="Enter"
-            app:layout_constraintEnd_toStartOf="@+id/group_button"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <EditText
-            android:id="@+id/editTextNumber"
-            android:layout_width="111dp"
-            android:layout_height="43dp"
-            android:layout_marginBottom="64dp"
-            android:ems="10"
-            android:hint="********"
-            android:inputType="number"
-            android:textColorHint="#CDC6C6"
-            app:layout_constraintBottom_toBottomOf="@+id/imageViewPersonal"
-            app:layout_constraintEnd_toStartOf="@+id/button2" />
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
+        <ImageButton
             android:id="@+id/addItinerary"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="128dp"
-            android:layout_marginEnd="60dp"
-            android:clickable="true"
-            android:contentDescription="Add new itinerary"
-            android:src="@drawable/add_circle"
-            app:backgroundTint="#FFFFFF"
+            android:layout_width="55dp"
+            android:layout_height="45dp"
+            android:layout_marginEnd="40dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/round_button_white"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintHorizontal_bias="0.8"
+            app:layout_constraintStart_toEndOf="@+id/textView4"
+            app:srcCompat="@drawable/add_circle"
+            android:contentDescription="@string/create_itinerary" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-
     <TextView
         android:id="@+id/textView5"
-        android:layout_width="311dp"
-        android:layout_height="60dp"
-        android:layout_marginStart="55dp"
-        android:layout_marginTop="19dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:letterSpacing="0.2"
         android:gravity="center"
-        android:letterSpacing="0.5"
-        android:text="ITINERARY"
+        android:text="@string/your_itineraries"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textSize="28sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/textHome"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:ignore="MissingConstraints" />
-
+        android:textStyle="bold" />
 
     <ListView
         android:id="@+id/listViewItineraries"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="20dp"
         android:layout_weight="1"
         android:divider="@android:color/darker_gray"
         android:dividerHeight="1dp"
-       android:paddingBottom="50dp"></ListView>
+        android:paddingBottom="50dp"/>
 
 
 </LinearLayout>
-
