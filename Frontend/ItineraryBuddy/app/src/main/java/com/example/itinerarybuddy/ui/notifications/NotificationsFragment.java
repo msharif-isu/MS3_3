@@ -64,7 +64,7 @@ public class NotificationsFragment extends Fragment implements BlogCardAdapter.O
 
         ImageView postButton = root.findViewById(R.id.postBlog);
 
-           /* postButton.setOnClickListener(new View.OnClickListener() {
+            postButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick (View v){
                         if(UserData.getUsertype().equals("Ambassador")){
@@ -74,7 +74,7 @@ public class NotificationsFragment extends Fragment implements BlogCardAdapter.O
                              Toast.makeText(requireContext(), "Only Travel Ambassadors can post picture blog.", Toast.LENGTH_LONG).show();
                         }
                 }
-            });*/
+            });
 
 
         postBlogAdapter.setOnItemClickListener(new BlogCardAdapter.OnItemClickListener() {
@@ -91,14 +91,6 @@ public class NotificationsFragment extends Fragment implements BlogCardAdapter.O
             }
         });
 
-        postButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick (View v){
-
-                showPostBlogDialog();
-
-            }
-        });
 
         loadPosts();
 
@@ -130,7 +122,11 @@ public class NotificationsFragment extends Fragment implements BlogCardAdapter.O
                 BlogItem newBlogItem = new BlogItem(BlogTitle, UserData.getUsername(), formattedDate);
                 cardItems.add(0, newBlogItem);
 
-                POST_BlogItem(newBlogItem);
+                try {
+                    POST_BlogItem(newBlogItem);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
 
                 postBlogAdapter.notifyItemInserted(0);
                 postBlogAdapter.notifyDataSetChanged();
@@ -159,7 +155,7 @@ public class NotificationsFragment extends Fragment implements BlogCardAdapter.O
     }
 
 
-    private void POST_BlogItem(BlogItem blogItem) {
+    private void POST_BlogItem(BlogItem blogItem) throws InterruptedException {
 
         //String url = "https://ff1e6a32-8cf4-4764-9239-e2a66d09085e.mock.pstmn.io/Blog";
 
@@ -198,6 +194,7 @@ public class NotificationsFragment extends Fragment implements BlogCardAdapter.O
         });
 
         Singleton.getInstance(requireContext()).addRequest(jsonObjectRequest);
+        Thread.sleep(500);
         GET_previousBlogPosts();
     }
 
@@ -211,7 +208,7 @@ public class NotificationsFragment extends Fragment implements BlogCardAdapter.O
 
     private void GET_previousBlogPosts() {
         // URL for fetching previous blog posts
-        String url = "http://coms-309-035.class.las.iastate.edu:8080/BlogPost/Username/" + UserData.getUsername();
+        String url = "http://coms-309-035.class.las.iastate.edu:8080/BlogPost";
         // Create a GET request
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONArray>() {
@@ -220,7 +217,7 @@ public class NotificationsFragment extends Fragment implements BlogCardAdapter.O
                         // Handle successful response
                         try {
                             // Clear the existing cardItems list
-                           // cardItems.clear();
+                            cardItems.clear();
                             // Iterate through the JSON array of blog posts
                             for (int i = 0; i < response.length(); i++) {
                                 JSONObject postObject = response.getJSONObject(i);

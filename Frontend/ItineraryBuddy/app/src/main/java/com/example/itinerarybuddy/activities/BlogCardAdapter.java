@@ -6,9 +6,11 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -21,6 +23,7 @@ import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.itinerarybuddy.R;
 import com.example.itinerarybuddy.data.BlogItem;
+import com.example.itinerarybuddy.data.UserData;
 import com.example.itinerarybuddy.ui.notifications.NotificationsFragment;
 
 import java.util.List;
@@ -76,6 +79,45 @@ public class BlogCardAdapter extends RecyclerView.Adapter<BlogCardAdapter.ViewHo
                 }
             }
         });
+
+
+        if(UserData.getUsername().equals(cardItem.getUsername())) {
+            holder.iconMore.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showPopupMenu(v, position);
+                }
+
+            });
+        }
+
+    }
+
+    /**
+     * Displays a popup menu for the options related to a post.
+     *
+     * @param view The anchor view for the popup menu.
+     * @param position The position of the post in the RecyclerView.
+     */
+    private void showPopupMenu(View view, int position) {
+        PopupMenu popupMenu = new PopupMenu(context, view);
+        popupMenu.getMenuInflater().inflate(R.menu.itinerary_menu, popupMenu.getMenu());
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+
+                if (item.getItemId() == R.id.action_edit) {
+                    fragment.EditClicked(position);
+                    return true;
+                } else if (item.getItemId() == R.id.action_delete) {
+                    fragment.DeleteClicked(position);
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        });
+        popupMenu.show();
     }
 
     private void downloadCoverImageById(int blogId, final ImageView imageView) {
