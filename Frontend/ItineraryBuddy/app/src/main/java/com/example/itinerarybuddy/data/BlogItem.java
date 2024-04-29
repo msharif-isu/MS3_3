@@ -7,14 +7,14 @@ public class BlogItem {
     private String postDate;
     private String imageUrl;
 
-    private String blogID;
+    private int blogID;
 
-    public BlogItem(String title, String username, String postDate, String blogID){
+    public BlogItem(String title, String username, String postDate){
 
         this.title = title;
         this.username = username;
         this.postDate = postDate;
-        this.blogID = blogID;
+
     }
 
     public String getTitle(){
@@ -26,7 +26,14 @@ public class BlogItem {
         title = changedTitle;
     }
 
-    public String getBlogID() {
+    public void setBlogID(int blogID){
+
+        this.blogID = blogID;
+
+
+    }
+
+    public int getBlogID() {
         return blogID;
     }
 

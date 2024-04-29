@@ -65,7 +65,7 @@ public class BlogPhotoAlbum extends AppCompatActivity {
     /**
      * The ID for this blog post.
      */
-    String id;
+    int id;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,7 +74,7 @@ public class BlogPhotoAlbum extends AppCompatActivity {
         this.getSupportActionBar().hide();
         setContentView(R.layout.blog_album);
 
-        id = getIntent().getStringExtra("ID");
+        id = getIntent().getIntExtra("ID", 0);
         String poster = getIntent().getStringExtra("USER");
 
         grid = findViewById(R.id.grid);
