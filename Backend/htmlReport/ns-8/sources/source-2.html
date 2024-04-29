@@ -5,7 +5,7 @@
 <html id="htmlId">
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
-  <title>Coverage Report > PlaceController</title>
+  <title>Coverage Report > PersonalItineraryEventRepository</title>
   <style type="text/css">
     @import "../../css/coverage.css";
     @import "../../css/idea.min.css";
@@ -19,65 +19,17 @@
 <div class="breadCrumbs">
 Current scope:     <a href="../../index.html">all classes</a>
     <span class="separator">|</span>
-    <a href="../index.html">MS3_3.Backend.Place</a>
+    <a href="../index.html">MS3_3.Backend.PersonalItinerary.Events</a>
 </div>
 
-<h1>Coverage Summary for Class: PlaceController (MS3_3.Backend.Place)</h1>
+<h1>Coverage Summary for Class: PersonalItineraryEventRepository (MS3_3.Backend.PersonalItinerary.Events)</h1>
 
 <table class="coverageStats">
 <tr>
   <th class="name">Class</th>
-<th class="coverageStat 
-">
-  Class, %
-</th>
-<th class="coverageStat 
-">
-  Method, %
-</th>
-<th class="coverageStat 
-">
-  Branch, %
-</th>
-<th class="coverageStat 
-">
-  Line, %
-</th>
 </tr>
 <tr>
-  <td class="name">PlaceController</td>
-<td class="coverageStat">
-  <span class="percent">
-    100%
-  </span>
-  <span class="absValue">
-    (1/1)
-  </span>
-</td>
-<td class="coverageStat">
-  <span class="percent">
-    16.7%
-  </span>
-  <span class="absValue">
-    (1/6)
-  </span>
-</td>
-<td class="coverageStat">
-  <span class="percent">
-    0%
-  </span>
-  <span class="absValue">
-    (0/2)
-  </span>
-</td>
-<td class="coverageStat">
-  <span class="percent">
-    7.1%
-  </span>
-  <span class="absValue">
-    (1/14)
-  </span>
-</td>
+  <td class="name">PersonalItineraryEventRepository</td>
 </tr>
 
 </table>
@@ -87,54 +39,17 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 
 <pre>
-<code class="sourceCode" id="sourceCode">&nbsp;package MS3_3.Backend.Place;
+<code class="sourceCode" id="sourceCode">&nbsp;package MS3_3.Backend.PersonalItinerary.Events;
 &nbsp;
-&nbsp;import org.springframework.beans.factory.annotation.Autowired;
-&nbsp;import org.springframework.web.bind.annotation.*;
+&nbsp;import jakarta.transaction.Transactional;
+&nbsp;import org.springframework.data.jpa.repository.JpaRepository;
 &nbsp;
-&nbsp;import java.util.List;
+&nbsp;public interface PersonalItineraryEventRepository extends JpaRepository&lt;PersonalItineraryEvent, Long&gt; {
+&nbsp;    @Transactional
+&nbsp;    void deleteByPersonalItineraryEventId(int personalItineraryEventId);
 &nbsp;
-&nbsp;@RestController
-<b class="fc">&nbsp;public class PlaceController {</b>
-&nbsp;    @Autowired
-&nbsp;    PlaceRepository placeRepository;
-&nbsp;
-&nbsp;    @PostMapping(&quot;/Place/Create&quot;)
-&nbsp;    public Place createPlace(@RequestBody Place place) {
-<b class="nc">&nbsp;        placeRepository.save(place);</b>
-<b class="nc">&nbsp;        return place;</b>
+&nbsp;    PersonalItineraryEvent findByPersonalItineraryEventId(int personalItineraryEventId);
 &nbsp;    }
-&nbsp;
-&nbsp;    @DeleteMapping(&quot;/Place/delete/{uniqueCode}&quot;)
-&nbsp;    public String deletePlace(@PathVariable int uniqueCode) {
-<b class="nc">&nbsp;        placeRepository.deleteByUniqueCode(uniqueCode);</b>
-<b class="nc">&nbsp;        return &quot;Place with name &quot; + uniqueCode + &quot; successfully deleted&quot;;</b>
-&nbsp;    }
-&nbsp;
-&nbsp;    @PutMapping(&quot;/Place/Update/{uniqueCode}&quot;)
-&nbsp;    public Place updatePlace(@PathVariable int uniqueCode, @RequestBody Place updatedPlace) {
-<b class="nc">&nbsp;        Place existingPlace = placeRepository.findByUniqueCode(uniqueCode);</b>
-<b class="nc">&nbsp;        if (existingPlace != null) {</b>
-<b class="nc">&nbsp;            existingPlace.setStartTime(updatedPlace.getStartTime());</b>
-<b class="nc">&nbsp;            existingPlace.setEndTime(updatedPlace.getEndTime());</b>
-<b class="nc">&nbsp;            placeRepository.save(existingPlace);</b>
-<b class="nc">&nbsp;            return existingPlace;</b>
-&nbsp;        } else {
-<b class="nc">&nbsp;            return null;</b>
-&nbsp;        }
-&nbsp;    }
-&nbsp;
-&nbsp;    @GetMapping(&quot;/Place/{uniqueCode}&quot;)
-&nbsp;    public Place getPlace(@PathVariable int uniqueCode) {
-<b class="nc">&nbsp;        return placeRepository.findByUniqueCode(uniqueCode);</b>
-&nbsp;    }
-&nbsp;
-&nbsp;    @GetMapping(&quot;/Place/List&quot;)
-&nbsp;    public List&lt;Place&gt; getAllPlaces() {
-<b class="nc">&nbsp;        return placeRepository.findAll();</b>
-&nbsp;    }
-&nbsp;}
-&nbsp;
 </code>
 </pre>
 </div>
@@ -158,7 +73,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2024-04-24 12:58</div>
+    <div style="float:right;">generated on 2024-04-28 20:55</div>
 </div>
 </body>
 </html>

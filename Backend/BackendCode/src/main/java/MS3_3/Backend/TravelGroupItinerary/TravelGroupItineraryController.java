@@ -47,12 +47,6 @@ public class TravelGroupItineraryController {
              },
              {
              "dayNumber": 1,
-             "time": "1:00 pm",
-             "place": "St James' Park",
-             "notes": "Halftime get a drink"
-             },
-             {
-             "dayNumber": 1,
              "time": "6:00 pm",
              "place": "Hotel Name",
              "notes": "Check in Time"
@@ -62,14 +56,8 @@ public class TravelGroupItineraryController {
              "time": "12:00 pm",
              "place": "Hotel Name",
              "notes": "Checkout Time"
-             },
-             {
-             "dayNumber": 2,
-             "time": "12:30 pm",
-             "place": "Train Station",
-             "notes": "Go somewhere and explore"
-             },
-         ]
+             }
+        ]
      }
      */
 

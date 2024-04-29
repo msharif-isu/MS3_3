@@ -5,7 +5,7 @@
 <html id="htmlId">
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
-  <title>Coverage Report > DayRepository</title>
+  <title>Coverage Report > BlogPostRepository</title>
   <style type="text/css">
     @import "../../css/coverage.css";
     @import "../../css/idea.min.css";
@@ -19,17 +19,17 @@
 <div class="breadCrumbs">
 Current scope:     <a href="../../index.html">all classes</a>
     <span class="separator">|</span>
-    <a href="../index.html">MS3_3.Backend.Day</a>
+    <a href="../index.html">MS3_3.Backend.AmbassadorBlogPost</a>
 </div>
 
-<h1>Coverage Summary for Class: DayRepository (MS3_3.Backend.Day)</h1>
+<h1>Coverage Summary for Class: BlogPostRepository (MS3_3.Backend.AmbassadorBlogPost)</h1>
 
 <table class="coverageStats">
 <tr>
   <th class="name">Class</th>
 </tr>
 <tr>
-  <td class="name">DayRepository</td>
+  <td class="name">BlogPostRepository</td>
 </tr>
 
 </table>
@@ -39,16 +39,19 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 
 <pre>
-<code class="sourceCode" id="sourceCode">&nbsp;package MS3_3.Backend.Day;
+<code class="sourceCode" id="sourceCode">&nbsp;package MS3_3.Backend.AmbassadorBlogPost;
 &nbsp;
+&nbsp;import MS3_3.Backend.AmbassadorBlogPost.Images.BlogPostImage;
+&nbsp;import MS3_3.Backend.FileUpload.Image;
+&nbsp;import MS3_3.Backend.TravelGroups.TravelGroup;
 &nbsp;import jakarta.transaction.Transactional;
 &nbsp;import org.springframework.data.jpa.repository.JpaRepository;
 &nbsp;
-&nbsp;public interface DayRepository extends JpaRepository&lt;Day, Integer&gt; {
-&nbsp;    @Transactional
-&nbsp;    void deleteByUniqueCode(int uniqueCode);
+&nbsp;public interface BlogPostRepository extends JpaRepository&lt;BlogPost, Long&gt; {
+&nbsp;    BlogPost findByBlogPostId(int blogPostId);
 &nbsp;
-&nbsp;    Day findByUniqueCode(int uniqueCode);
+&nbsp;    @Transactional
+&nbsp;    void deleteByBlogPostId(int blogPostId);
 &nbsp;}
 </code>
 </pre>
@@ -73,7 +76,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2024-04-24 12:58</div>
+    <div style="float:right;">generated on 2024-04-28 20:55</div>
 </div>
 </body>
 </html>

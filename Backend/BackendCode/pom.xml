@@ -5,7 +5,7 @@
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>coms309</groupId>
-	<artifactId>MainBranch</artifactId>
+	<artifactId>MainBranch429</artifactId>
 	<version>1.0.0</version>
 
     <!-- To make it a spring boot project -->
@@ -105,9 +105,10 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
-			<version>3.2.4</version>
+			<version>3.2.5</version>
 			<scope>test</scope>
 		</dependency>
+
 
 	</dependencies>
 

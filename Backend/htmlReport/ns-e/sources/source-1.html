@@ -1,0 +1,268 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > MavenWrapperDownloader</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">MS3_3.Backend.wrapper</a>
+</div>
+
+<h1>Coverage Summary for Class: MavenWrapperDownloader (MS3_3.Backend.wrapper)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">MavenWrapperDownloader</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/16)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/43)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">MavenWrapperDownloader$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/2)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/16)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/45)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package MS3_3.Backend.wrapper;/*
+&nbsp; * Copyright 2007-present the original author or authors.
+&nbsp; *
+&nbsp; * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+&nbsp; * you may not use this file except in compliance with the License.
+&nbsp; * You may obtain a copy of the License at
+&nbsp; *
+&nbsp; *      https://www.apache.org/licenses/LICENSE-2.0
+&nbsp; *
+&nbsp; * Unless required by applicable law or agreed to in writing, software
+&nbsp; * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+&nbsp; * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+&nbsp; * See the License for the specific language governing permissions and
+&nbsp; * limitations under the License.
+&nbsp; */
+&nbsp;
+&nbsp;import java.net.*;
+&nbsp;import java.io.*;
+&nbsp;import java.nio.channels.*;
+&nbsp;import java.util.Properties;
+&nbsp;
+<b class="nc">&nbsp;public class MavenWrapperDownloader {</b>
+&nbsp;
+&nbsp;    private static final String WRAPPER_VERSION = &quot;0.5.6&quot;;
+&nbsp;    /**
+&nbsp;     * Default URL to download the maven-wrapper.jar from, if no &#39;downloadUrl&#39; is provided.
+&nbsp;     */
+&nbsp;    private static final String DEFAULT_DOWNLOAD_URL = &quot;https://repo.maven.apache.org/maven2/io/takari/maven-wrapper/&quot;
+&nbsp;            + WRAPPER_VERSION + &quot;/maven-wrapper-&quot; + WRAPPER_VERSION + &quot;.jar&quot;;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Path to the maven-wrapper.properties file, which might contain a downloadUrl property to
+&nbsp;     * use instead of the default one.
+&nbsp;     */
+&nbsp;    private static final String MAVEN_WRAPPER_PROPERTIES_PATH =
+&nbsp;            &quot;.mvn/wrapper/maven-wrapper.properties&quot;;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Path where the maven-wrapper.jar will be saved to.
+&nbsp;     */
+&nbsp;    private static final String MAVEN_WRAPPER_JAR_PATH =
+&nbsp;            &quot;.mvn/wrapper/maven-wrapper.jar&quot;;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Name of the property which should be used to override the default download url for the wrapper.
+&nbsp;     */
+&nbsp;    private static final String PROPERTY_NAME_WRAPPER_URL = &quot;wrapperUrl&quot;;
+&nbsp;
+&nbsp;    public static void main(String[] args) {
+<b class="nc">&nbsp;        System.out.println(&quot;- Downloader started&quot;);</b>
+<b class="nc">&nbsp;        File baseDirectory = new File(args[0]);</b>
+<b class="nc">&nbsp;        System.out.println(&quot;- Using base directory: &quot; + baseDirectory.getAbsolutePath());</b>
+&nbsp;
+&nbsp;        // If the maven-wrapper.properties exists, read it and check if it contains a custom
+&nbsp;        // wrapperUrl parameter.
+<b class="nc">&nbsp;        File mavenWrapperPropertyFile = new File(baseDirectory, MAVEN_WRAPPER_PROPERTIES_PATH);</b>
+<b class="nc">&nbsp;        String url = DEFAULT_DOWNLOAD_URL;</b>
+<b class="nc">&nbsp;        if (mavenWrapperPropertyFile.exists()) {</b>
+<b class="nc">&nbsp;            FileInputStream mavenWrapperPropertyFileInputStream = null;</b>
+&nbsp;            try {
+<b class="nc">&nbsp;                mavenWrapperPropertyFileInputStream = new FileInputStream(mavenWrapperPropertyFile);</b>
+<b class="nc">&nbsp;                Properties mavenWrapperProperties = new Properties();</b>
+<b class="nc">&nbsp;                mavenWrapperProperties.load(mavenWrapperPropertyFileInputStream);</b>
+<b class="nc">&nbsp;                url = mavenWrapperProperties.getProperty(PROPERTY_NAME_WRAPPER_URL, url);</b>
+<b class="nc">&nbsp;            } catch (IOException e) {</b>
+<b class="nc">&nbsp;                System.out.println(&quot;- ERROR loading &#39;&quot; + MAVEN_WRAPPER_PROPERTIES_PATH + &quot;&#39;&quot;);</b>
+&nbsp;            } finally {
+<b class="nc">&nbsp;                try {</b>
+<b class="nc">&nbsp;                    if (mavenWrapperPropertyFileInputStream != null) {</b>
+<b class="nc">&nbsp;                        mavenWrapperPropertyFileInputStream.close();</b>
+&nbsp;                    }
+<b class="nc">&nbsp;                } catch (IOException e) {</b>
+&nbsp;                    // Ignore ...
+&nbsp;                }
+<b class="nc">&nbsp;            }</b>
+&nbsp;        }
+<b class="nc">&nbsp;        System.out.println(&quot;- Downloading from: &quot; + url);</b>
+&nbsp;
+<b class="nc">&nbsp;        File outputFile = new File(baseDirectory.getAbsolutePath(), MAVEN_WRAPPER_JAR_PATH);</b>
+<b class="nc">&nbsp;        if (!outputFile.getParentFile().exists()) {</b>
+<b class="nc">&nbsp;            if (!outputFile.getParentFile().mkdirs()) {</b>
+<b class="nc">&nbsp;                System.out.println(</b>
+<b class="nc">&nbsp;                        &quot;- ERROR creating output directory &#39;&quot; + outputFile.getParentFile().getAbsolutePath() + &quot;&#39;&quot;);</b>
+&nbsp;            }
+&nbsp;        }
+<b class="nc">&nbsp;        System.out.println(&quot;- Downloading to: &quot; + outputFile.getAbsolutePath());</b>
+&nbsp;        try {
+<b class="nc">&nbsp;            downloadFileFromURL(url, outputFile);</b>
+<b class="nc">&nbsp;            System.out.println(&quot;Done&quot;);</b>
+<b class="nc">&nbsp;            System.exit(0);</b>
+<b class="nc">&nbsp;        } catch (Throwable e) {</b>
+<b class="nc">&nbsp;            System.out.println(&quot;- Error downloading&quot;);</b>
+<b class="nc">&nbsp;            e.printStackTrace();</b>
+<b class="nc">&nbsp;            System.exit(1);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    private static void downloadFileFromURL(String urlString, File destination) throws Exception {
+<b class="nc">&nbsp;        if (System.getenv(&quot;MVNW_USERNAME&quot;) != null &amp;&amp; System.getenv(&quot;MVNW_PASSWORD&quot;) != null) {</b>
+<b class="nc">&nbsp;            String username = System.getenv(&quot;MVNW_USERNAME&quot;);</b>
+<b class="nc">&nbsp;            char[] password = System.getenv(&quot;MVNW_PASSWORD&quot;).toCharArray();</b>
+<b class="nc">&nbsp;            Authenticator.setDefault(new Authenticator() {</b>
+&nbsp;                @Override
+&nbsp;                protected PasswordAuthentication getPasswordAuthentication() {
+<b class="nc">&nbsp;                    return new PasswordAuthentication(username, password);</b>
+&nbsp;                }
+&nbsp;            });
+&nbsp;        }
+<b class="nc">&nbsp;        URL website = new URL(urlString);</b>
+&nbsp;        ReadableByteChannel rbc;
+<b class="nc">&nbsp;        rbc = Channels.newChannel(website.openStream());</b>
+<b class="nc">&nbsp;        FileOutputStream fos = new FileOutputStream(destination);</b>
+<b class="nc">&nbsp;        fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);</b>
+<b class="nc">&nbsp;        fos.close();</b>
+<b class="nc">&nbsp;        rbc.close();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-04-28 20:55</div>
+</div>
+</body>
+</html>

@@ -36,12 +36,12 @@ public class BlogPostController {
     private AmbassadorRepository ambassadorRepository;
 
     @GetMapping("/BlogPost/Username/{userName}")
-    public List<BlogPost> getBlogPostByUserName(@PathVariable String userName){
+    public List<BlogPost> getBlogByUserName(@PathVariable String userName){
         return ambassadorRepository.findByUserName(userName).getBlogPosts();
     }
 
     @GetMapping("BlogPost/Image/{Id}")
-    public ResponseEntity<?> downloadBlogPostImageByName(@PathVariable int Id){
+    public ResponseEntity<?> downloadBlogImageByName(@PathVariable int Id){
         byte[] imageData=service.downloadImageByImageId(Id);
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.valueOf("image/png"))
@@ -77,12 +77,12 @@ public class BlogPostController {
     }
 
     @GetMapping("/BlogPost/{blogId}")
-    public BlogPost downloadBlogPostImage(@PathVariable int blogId){
+    public BlogPost downloadBlogImage(@PathVariable int blogId){
         return blogPostRepository.findByBlogPostId(blogId);
     }
 
     @GetMapping("/BlogPost/Images/{blogId}")
-    public List<Integer> downloadImagesByBlogPostId(@PathVariable int blogId) {
+    public List<Integer> downloadImagesByBlogId(@PathVariable int blogId) {
         List<Integer> responses = new ArrayList<>();
         int i =0;
         while(i < blogPostRepository.findByBlogPostId(blogId).getBlogImageList().size()){
@@ -94,7 +94,7 @@ public class BlogPostController {
     }
 
     @PutMapping("/BlogPost/Image/{blogId}")
-    public ResponseEntity<?> addBlogPostImage(@PathVariable int blogId, @RequestParam("image")MultipartFile file) throws IOException {
+    public ResponseEntity<?> addBlogImage(@PathVariable int blogId, @RequestParam("image")MultipartFile file) throws IOException {
         String uploadImage = service.addBlogImage(file, blogId);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(uploadImage);
@@ -131,14 +131,14 @@ public class BlogPostController {
     }
 
     @PostMapping("/Blog/Image")
-    public ResponseEntity<?> uploadBlogImage(@RequestParam("image")MultipartFile file) throws IOException {
+    public ResponseEntity<?> uploadNewBlogImage(@RequestParam("image")MultipartFile file) throws IOException {
         String uploadImage = service.uploadImage(file);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(uploadImage);
     }
 
-    @GetMapping("/BlogImage/{Id}")
-    public ResponseEntity<?> downloadBlogImageByName(@PathVariable int Id){
+    @GetMapping("Blog/Image/{Id}")
+    public ResponseEntity<?> downloadNewBlogImageByName(@PathVariable int Id){
         byte[] imageData=service.downloadImageByImageId(Id);
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.valueOf("image/png"))
