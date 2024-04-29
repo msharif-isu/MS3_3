@@ -66,7 +66,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
         buttonReturn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(AdminDashboardActivity.this, MainActivity.class));
+                startActivity(new Intent(AdminDashboardActivity.this, personalPage1.class));
             }
         });
 
