@@ -1,10 +1,10 @@
 package com.example.itinerarybuddy.activities;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -63,18 +63,19 @@ public class BlogCardAdapter extends RecyclerView.Adapter<BlogCardAdapter.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         BlogItem cardItem = blogItems.get(position);
         holder.blogTitle.setText(cardItem.getTitle());
         holder.username.setText(cardItem.getUsername());
         holder.blogPostDate.setText(cardItem.getPostDate().toString());
 
         // Set span size based on position
-        GridLayoutManager.LayoutParams layoutParams = (GridLayoutManager.LayoutParams) holder.itemView.getLayoutParams();
+       GridLayoutManager.LayoutParams layoutParams = (GridLayoutManager.LayoutParams) holder.itemView.getLayoutParams();
         layoutParams.width = layoutParams.width * (position % 2 == 0 ? 2 : 1);
         holder.itemView.setLayoutParams(layoutParams);
+        
 
-        if (uploadImageUri != null) {
+       /* if (uploadImageUri != null) {
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), uploadImageUri);
                 holder.blogMainImage.setImageBitmap(bitmap);
@@ -101,7 +102,7 @@ public class BlogCardAdapter extends RecyclerView.Adapter<BlogCardAdapter.ViewHo
                 showPopupMenu(v, position);
             }
 
-        });
+        });*/
     }
 
     /**
@@ -130,6 +131,7 @@ public class BlogCardAdapter extends RecyclerView.Adapter<BlogCardAdapter.ViewHo
         });
         popupMenu.show();
     }
+
 
 
 
