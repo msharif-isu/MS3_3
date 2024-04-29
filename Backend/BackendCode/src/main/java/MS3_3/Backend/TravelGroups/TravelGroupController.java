@@ -46,7 +46,16 @@ public class TravelGroupController {
     public TravelGroup getGroupsByTravelGroupId(@PathVariable int GroupId) {
         return travelGroupRepository.findByTravelGroupId(GroupId);
     }
-
+/**
+ * Travel Group Json
+    {
+            "travelGroupName": "Test",
+            "travelGroupCode": "ABC123",
+            "travelGroupAmbassador": "Ambassador",
+            "travelGroupDestination": "Destination Name",
+            "travelGroupDescription": "Description of the group"
+    }
+*/
     @PostMapping("/Group")
     public TravelGroup createNewGroup(@RequestBody TravelGroup group) {
         if (ambassadorRepository.findByUserName(group.getTravelGroupAmbassador()) != null) {

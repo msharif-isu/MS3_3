@@ -41,7 +41,7 @@ public class BlogPostController {
     }
 
     @GetMapping("BlogPost/Image/{Id}")
-    public ResponseEntity<?> downloadImageByName(@PathVariable int Id){
+    public ResponseEntity<?> downloadBlogImagesByName(@PathVariable int Id){
         byte[] imageData=service.downloadImageByImageId(Id);
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.valueOf("image/png"))
@@ -128,6 +128,21 @@ public class BlogPostController {
     public String deleteBlogPostImage(@PathVariable int blogImageId) {
         imageRepository.deleteById(blogImageId);
         return "Image " + blogImageId + " deleted";
+    }
+
+    @PostMapping("/Blog/Image")
+    public ResponseEntity<?> uploadNewBlogImage(@RequestParam("image")MultipartFile file) throws IOException {
+        String uploadImage = service.uploadImage(file);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(uploadImage);
+    }
+
+    @GetMapping("Blog/Image/{Id}")
+    public ResponseEntity<?> downloadNewBlogImageByName(@PathVariable int Id){
+        byte[] imageData=service.downloadImageByImageId(Id);
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.valueOf("image/png"))
+                .body(imageData);
     }
 
 }

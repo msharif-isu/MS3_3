@@ -1,0 +1,247 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > TravelGroupController</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">MS3_3.Backend.TravelGroups</a>
+</div>
+
+<h1>Coverage Summary for Class: TravelGroupController (MS3_3.Backend.TravelGroups)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">TravelGroupController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    25%
+  </span>
+  <span class="absValue">
+    (2/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    33.3%
+  </span>
+  <span class="absValue">
+    (2/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    38.3%
+  </span>
+  <span class="absValue">
+    (23/60)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package MS3_3.Backend.TravelGroups;
+&nbsp;
+&nbsp;import MS3_3.Backend.AdminDashboard.AdminRepository;
+&nbsp;import MS3_3.Backend.Ambassador.Ambassador;
+&nbsp;import MS3_3.Backend.Ambassador.AmbassadorRepository;
+&nbsp;import MS3_3.Backend.FileUpload.Image;
+&nbsp;import MS3_3.Backend.FileUpload.ImageRepository;
+&nbsp;import MS3_3.Backend.TravelGroupItinerary.TravelGroupItinerary;
+&nbsp;import MS3_3.Backend.TravelGroupItinerary.TravelGroupItineraryRepository;
+&nbsp;import MS3_3.Backend.UserTypes.User;
+&nbsp;import MS3_3.Backend.UserTypes.UserRepository;
+&nbsp;import MS3_3.Backend.TravelGroupChat.MessageRepository;
+&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+&nbsp;import org.springframework.web.bind.annotation.*;
+&nbsp;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;@RestController
+<b class="fc">&nbsp;public class TravelGroupController {</b>
+&nbsp;    @Autowired
+&nbsp;    UserRepository userRepository;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    TravelGroupRepository travelGroupRepository;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    AdminRepository adminRepository;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    TravelGroupItineraryRepository travelGroupItineraryRepository;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    AmbassadorRepository ambassadorRepository;
+&nbsp;    @Autowired
+&nbsp;    MessageRepository messageRepository;
+&nbsp;
+&nbsp;    @Autowired
+&nbsp;    private ImageRepository imageRepository;
+&nbsp;
+&nbsp;    @GetMapping(&quot;/Group&quot;)
+&nbsp;    public List&lt;TravelGroup&gt; getAllGroups() {
+<b class="nc">&nbsp;        return travelGroupRepository.findAll();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @GetMapping(&quot;/Group/{GroupId}&quot;)
+&nbsp;    public TravelGroup getGroupsByTravelGroupId(@PathVariable int GroupId) {
+<b class="nc">&nbsp;        return travelGroupRepository.findByTravelGroupId(GroupId);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @PostMapping(&quot;/Group&quot;)
+&nbsp;    public TravelGroup createNewGroup(@RequestBody TravelGroup group) {
+<b class="fc">&nbsp;        if (ambassadorRepository.findByUserName(group.getTravelGroupAmbassador()) != null) {</b>
+<b class="fc">&nbsp;            TravelGroup savedGroup = group;</b>
+<b class="fc">&nbsp;            TravelGroupItinerary newItinerary = new TravelGroupItinerary(&quot;&quot;, &quot;&quot;, &quot;&quot;, 0);</b>
+<b class="fc">&nbsp;            travelGroupItineraryRepository.save(newItinerary);</b>
+<b class="fc">&nbsp;            Ambassador groupLeader = ambassadorRepository.findByUserName(group.getTravelGroupAmbassador());</b>
+<b class="fc">&nbsp;            User groupLeaderUserAccount = userRepository.findByUserName(group.getTravelGroupAmbassador());</b>
+<b class="fc">&nbsp;            savedGroup.addNewMember(groupLeaderUserAccount);</b>
+<b class="fc">&nbsp;            Image copy = new Image();</b>
+<b class="fc">&nbsp;            copy.setImageData(imageRepository.findById(1).getImageData());</b>
+<b class="fc">&nbsp;            copy.setType(imageRepository.findById(1).getType());</b>
+<b class="fc">&nbsp;            copy.setName(imageRepository.findById(1).getName());</b>
+<b class="fc">&nbsp;            imageRepository.save(copy);</b>
+<b class="fc">&nbsp;            savedGroup.setTravelGroupItinerary(newItinerary);</b>
+<b class="fc">&nbsp;            savedGroup.setGroupImage(copy);</b>
+<b class="fc">&nbsp;            groupLeader.addGroup(savedGroup);</b>
+<b class="fc">&nbsp;            groupLeaderUserAccount.addGroupCodes(group);</b>
+<b class="fc">&nbsp;            TravelGroup newGroup = travelGroupRepository.save(savedGroup);</b>
+<b class="fc">&nbsp;            groupLeaderUserAccount.addUserCodes(newGroup.getTravelGroupId());</b>
+<b class="fc">&nbsp;            ambassadorRepository.save(groupLeader);</b>
+<b class="fc">&nbsp;            userRepository.save(groupLeaderUserAccount);</b>
+<b class="fc">&nbsp;            return savedGroup;</b>
+&nbsp;        } else {
+<b class="fc">&nbsp;            return null;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    @PutMapping(&quot;/Group/{groupId}&quot;)
+&nbsp;    public TravelGroup updateGroup(@PathVariable int groupId, @RequestBody TravelGroup group) {
+<b class="nc">&nbsp;        TravelGroup existingGroup = travelGroupRepository.findByTravelGroupId(groupId);</b>
+<b class="nc">&nbsp;        existingGroup.setTravelGroupName(group.getTravelGroupName());</b>
+<b class="nc">&nbsp;        existingGroup.setTravelGroupCode(group.getTravelGroupCode());</b>
+<b class="nc">&nbsp;        existingGroup.setTravelGroupDescription(group.getTravelGroupDescription());</b>
+<b class="nc">&nbsp;        existingGroup.setTravelGroupDestination(group.getTravelGroupDestination());</b>
+<b class="nc">&nbsp;        travelGroupRepository.save(existingGroup);</b>
+<b class="nc">&nbsp;        return travelGroupRepository.findByTravelGroupId(groupId);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @PutMapping(&quot;/Group/AddUser/{groupId}/{username}&quot;)
+&nbsp;    public TravelGroup addMember(@PathVariable int groupId, @PathVariable String username) {
+<b class="nc">&nbsp;        TravelGroup group = travelGroupRepository.findByTravelGroupId(groupId);</b>
+<b class="nc">&nbsp;        User user = userRepository.findByUserName(username);</b>
+<b class="nc">&nbsp;        group.addNewMember(user);</b>
+<b class="nc">&nbsp;        user.addUserCodes(group.getTravelGroupId());</b>
+<b class="nc">&nbsp;        user.addGroupCodes(group);</b>
+<b class="nc">&nbsp;        userRepository.save(user);</b>
+<b class="nc">&nbsp;        travelGroupRepository.save(group);</b>
+<b class="nc">&nbsp;        return group;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @PutMapping(&quot;/Group/RemoveUser/{groupId}/{username}&quot;)
+&nbsp;    public TravelGroup removeMember(@PathVariable int groupId, @PathVariable String username) {
+<b class="nc">&nbsp;        TravelGroup group = travelGroupRepository.findByTravelGroupId(groupId);</b>
+<b class="nc">&nbsp;        User user = userRepository.findByUserName(username);</b>
+<b class="nc">&nbsp;        group.removeNewMember(user);</b>
+<b class="nc">&nbsp;        user.removeGroupCodes(group);</b>
+<b class="nc">&nbsp;        user.removeUserCodes(group.getTravelGroupId());</b>
+<b class="nc">&nbsp;        userRepository.save(user);</b>
+<b class="nc">&nbsp;        travelGroupRepository.save(group);</b>
+<b class="nc">&nbsp;        return group;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @DeleteMapping(&quot;/Group&quot;)
+&nbsp;    public TravelGroup deleteGroup(@PathVariable int groupId, @PathVariable String username) {
+<b class="nc">&nbsp;        TravelGroup group = travelGroupRepository.findByTravelGroupId(groupId);</b>
+<b class="nc">&nbsp;        if (adminRepository.findByUserName(username) == null) {</b>
+<b class="nc">&nbsp;            return group;</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;            int i = 0;</b>
+<b class="nc">&nbsp;            List&lt;User&gt; memberList = travelGroupRepository.findByTravelGroupId(groupId).getMembers();</b>
+<b class="nc">&nbsp;            while (memberList.size() &gt; i) {</b>
+<b class="nc">&nbsp;                User currUser = memberList.get(i);</b>
+<b class="nc">&nbsp;                userRepository.findByUserName(currUser.getUserName()).removeUserCodes(groupId);</b>
+<b class="nc">&nbsp;                userRepository.findByUserName(currUser.getUserName()).removeGroupCodes(travelGroupRepository.findByTravelGroupId(groupId));</b>
+<b class="nc">&nbsp;                i++;</b>
+&nbsp;            }
+&nbsp;        }
+<b class="nc">&nbsp;        travelGroupRepository.deleteByTravelGroupId(groupId);</b>
+<b class="nc">&nbsp;        return null;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-04-28 20:55</div>
+</div>
+</body>
+</html>
