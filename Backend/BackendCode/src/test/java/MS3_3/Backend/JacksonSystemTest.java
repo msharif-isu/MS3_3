@@ -202,5 +202,4 @@ public class JacksonSystemTest {
         assertThat(response.getBody().getBlogPostTitle()).isEqualTo("Test Blog");
         assertThat(response.getBody().getPostDate()).isEqualTo("Today");
     }
-
 }

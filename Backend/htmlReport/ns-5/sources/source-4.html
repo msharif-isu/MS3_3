@@ -5,7 +5,7 @@
 <html id="htmlId">
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
-  <title>Coverage Report > StorageService</title>
+  <title>Coverage Report > BlogPostImageRepository</title>
   <style type="text/css">
     @import "../../css/coverage.css";
     @import "../../css/idea.min.css";
@@ -19,65 +19,17 @@
 <div class="breadCrumbs">
 Current scope:     <a href="../../index.html">all classes</a>
     <span class="separator">|</span>
-    <a href="../index.html">MS3_3.Backend.FileUpload</a>
+    <a href="../index.html">MS3_3.Backend.AmbassadorBlogPost.Images</a>
 </div>
 
-<h1>Coverage Summary for Class: StorageService (MS3_3.Backend.FileUpload)</h1>
+<h1>Coverage Summary for Class: BlogPostImageRepository (MS3_3.Backend.AmbassadorBlogPost.Images)</h1>
 
 <table class="coverageStats">
 <tr>
   <th class="name">Class</th>
-<th class="coverageStat 
-">
-  Class, %
-</th>
-<th class="coverageStat 
-">
-  Method, %
-</th>
-<th class="coverageStat 
-">
-  Branch, %
-</th>
-<th class="coverageStat 
-">
-  Line, %
-</th>
 </tr>
 <tr>
-  <td class="name">StorageService</td>
-<td class="coverageStat">
-  <span class="percent">
-    100%
-  </span>
-  <span class="absValue">
-    (1/1)
-  </span>
-</td>
-<td class="coverageStat">
-  <span class="percent">
-    12.5%
-  </span>
-  <span class="absValue">
-    (1/8)
-  </span>
-</td>
-<td class="coverageStat">
-  <span class="percent">
-    0%
-  </span>
-  <span class="absValue">
-    (0/12)
-  </span>
-</td>
-<td class="coverageStat">
-  <span class="percent">
-    2.1%
-  </span>
-  <span class="absValue">
-    (1/48)
-  </span>
-</td>
+  <td class="name">BlogPostImageRepository</td>
 </tr>
 
 </table>
@@ -87,106 +39,20 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 
 <pre>
-<code class="sourceCode" id="sourceCode">&nbsp;package MS3_3.Backend.FileUpload;
+<code class="sourceCode" id="sourceCode">&nbsp;package MS3_3.Backend.AmbassadorBlogPost.Images;
 &nbsp;
-&nbsp;import MS3_3.Backend.Groups.TravelGroup;
-&nbsp;import MS3_3.Backend.Groups.TravelGroupRepository;
-&nbsp;import org.springframework.beans.factory.annotation.Autowired;
-&nbsp;import org.springframework.stereotype.Service;
-&nbsp;import org.springframework.web.multipart.MultipartFile;
+&nbsp;import MS3_3.Backend.FileUpload.Image;
+&nbsp;import jakarta.transaction.Transactional;
+&nbsp;import org.springframework.data.jpa.repository.JpaRepository;
 &nbsp;
-&nbsp;import java.io.IOException;
-&nbsp;import java.util.Optional;
+&nbsp;public interface BlogPostImageRepository extends JpaRepository&lt;BlogPostImage, Long&gt; {
+&nbsp;    BlogPostImage findByName(String fileName);
+&nbsp;    BlogPostImage findById(int id);
 &nbsp;
-&nbsp;@Service
-<b class="fc">&nbsp;public class StorageService {</b>
-&nbsp;    @Autowired
-&nbsp;    private ImageRepository repository;
-&nbsp;
-&nbsp;    @Autowired
-&nbsp;    private TravelGroupRepository travelGroupRepository;
-&nbsp;
-&nbsp;    public String uploadImage(MultipartFile file) throws IOException {
-&nbsp;
-<b class="nc">&nbsp;        Image imageData = repository.save(Image.builder()</b>
-<b class="nc">&nbsp;                .name(file.getOriginalFilename())</b>
-<b class="nc">&nbsp;                .type(file.getContentType())</b>
-<b class="nc">&nbsp;                .imageData(ImageUtils.compressImage(file.getBytes())).build()</b>
-&nbsp;        );
-<b class="nc">&nbsp;        if (imageData != null) {</b>
-<b class="nc">&nbsp;            return &quot;file uploaded successfully : &quot; + file.getOriginalFilename();</b>
-&nbsp;        }
-<b class="nc">&nbsp;        return null;</b>
-&nbsp;    }
-&nbsp;
-&nbsp;    public String uploadGroupImage(MultipartFile file, int groupId) throws IOException {
-&nbsp;
-<b class="nc">&nbsp;        Image imageData = repository.save(Image.builder()</b>
-<b class="nc">&nbsp;                .name(file.getOriginalFilename())</b>
-<b class="nc">&nbsp;                .type(file.getContentType())</b>
-<b class="nc">&nbsp;                .imageData(ImageUtils.compressImage(file.getBytes())).build()</b>
-&nbsp;        );
-<b class="nc">&nbsp;        long oldId = travelGroupRepository.findById(groupId).getGroupImage().getId();</b>
-<b class="nc">&nbsp;        travelGroupRepository.findById(groupId).setGroupImage(imageData);</b>
-<b class="nc">&nbsp;        if (imageData != null) {</b>
-<b class="nc">&nbsp;            return &quot;file uploaded successfully to Group &quot; + travelGroupRepository.findById(groupId).getTravelGroupName() + &quot; : &quot; + file.getOriginalFilename();</b>
-&nbsp;        }
-<b class="nc">&nbsp;        if(oldId != 38) {</b>
-<b class="nc">&nbsp;            repository.deleteById(oldId);</b>
-&nbsp;        }
-<b class="nc">&nbsp;        return null;</b>
-&nbsp;    }
-&nbsp;
-&nbsp;    public String changeGroupImage(MultipartFile file, int groupId) throws IOException {
-&nbsp;
-<b class="nc">&nbsp;        Image imageData = repository.save(Image.builder()</b>
-<b class="nc">&nbsp;                .name(file.getOriginalFilename())</b>
-<b class="nc">&nbsp;                .type(file.getContentType())</b>
-<b class="nc">&nbsp;                .imageData(ImageUtils.compressImage(file.getBytes())).build()</b>
-&nbsp;        );
-<b class="nc">&nbsp;        TravelGroup travelGroup =  travelGroupRepository.findById(groupId);</b>
-<b class="nc">&nbsp;        long oldId = travelGroup.getGroupImage().getId();</b>
-<b class="nc">&nbsp;        travelGroup.setGroupImage(imageData);</b>
-<b class="nc">&nbsp;        travelGroupRepository.save(travelGroup);</b>
-<b class="nc">&nbsp;        if (imageData != null) {</b>
-<b class="nc">&nbsp;            return &quot;file uploaded successfully to Group &quot; + travelGroupRepository.findById(groupId).getTravelGroupName() + &quot; : &quot; + file.getOriginalFilename();</b>
-&nbsp;        }
-<b class="nc">&nbsp;        if(travelGroup.getGroupImage().getId() != 38) {</b>
-<b class="nc">&nbsp;            repository.deleteById(oldId);</b>
-&nbsp;        }
-<b class="nc">&nbsp;        return null;</b>
-&nbsp;    }
-&nbsp;
-&nbsp;    public byte[] downloadImageByFileName(String fileName){
-<b class="nc">&nbsp;        Image dbImageData = repository.findByName(fileName);</b>
-<b class="nc">&nbsp;        byte[] images=ImageUtils.decompressImage(dbImageData.getImageData());</b>
-<b class="nc">&nbsp;        return images;</b>
-&nbsp;    }
-&nbsp;
-&nbsp;    public byte[] downloadImageByGroupId(int groupId){
-<b class="nc">&nbsp;        Image dbImageData = travelGroupRepository.findById(groupId).getGroupImage();</b>
-<b class="nc">&nbsp;        byte[] images=ImageUtils.decompressImage(dbImageData.getImageData());</b>
-<b class="nc">&nbsp;        return images;</b>
-&nbsp;    }
-&nbsp;
-&nbsp;    public byte[] downloadImageByImageId(int imageId){
-<b class="nc">&nbsp;        Image dbImageData = repository.findById(imageId);</b>
-<b class="nc">&nbsp;        byte[] images=ImageUtils.decompressImage(dbImageData.getImageData());</b>
-<b class="nc">&nbsp;        return images;</b>
-&nbsp;    }
-&nbsp;
-&nbsp;    public String changeImageByGroupId(int groupId, Image newImage){
-<b class="nc">&nbsp;        TravelGroup travelGroup =  travelGroupRepository.findById(groupId);</b>
-<b class="nc">&nbsp;        long oldId = travelGroup.getGroupImage().getId();</b>
-<b class="nc">&nbsp;        travelGroup.setGroupImage(newImage);</b>
-<b class="nc">&nbsp;        travelGroupRepository.save(travelGroup);</b>
-<b class="nc">&nbsp;        if(travelGroup.getGroupImage().getId() != 38) {</b>
-<b class="nc">&nbsp;            repository.deleteById(oldId);</b>
-&nbsp;        }
-<b class="nc">&nbsp;        return &quot;file successfully deleted from Group: &quot; + travelGroupRepository.findById(groupId).getTravelGroupName();</b>
-&nbsp;    }
-&nbsp;
+&nbsp;    @Transactional
+&nbsp;    void deleteById(int id);
 &nbsp;}
+&nbsp;
 </code>
 </pre>
 </div>
@@ -210,7 +76,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2024-04-24 12:58</div>
+    <div style="float:right;">generated on 2024-04-28 20:55</div>
 </div>
 </body>
 </html>

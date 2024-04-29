@@ -5,7 +5,7 @@
 <html id="htmlId">
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
-  <title>Coverage Report > Place</title>
+  <title>Coverage Report > PersonalItineraryEvent</title>
   <style type="text/css">
     @import "../../css/coverage.css";
     @import "../../css/idea.min.css";
@@ -19,10 +19,10 @@
 <div class="breadCrumbs">
 Current scope:     <a href="../../index.html">all classes</a>
     <span class="separator">|</span>
-    <a href="../index.html">MS3_3.Backend.Place</a>
+    <a href="../index.html">MS3_3.Backend.PersonalItinerary.Events</a>
 </div>
 
-<h1>Coverage Summary for Class: Place (MS3_3.Backend.Place)</h1>
+<h1>Coverage Summary for Class: PersonalItineraryEvent (MS3_3.Backend.PersonalItinerary.Events)</h1>
 
 <table class="coverageStats">
 
@@ -38,46 +38,46 @@ Current scope:     <a href="../../index.html">all classes</a>
 </th>
 </tr>
 <tr>
-  <td class="name">Place</td>
+  <td class="name">PersonalItineraryEvent</td>
 <td class="coverageStat">
   <span class="percent">
-    8.3%
+    6.7%
   </span>
   <span class="absValue">
-    (1/12)
+    (1/15)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    6.2%
+    3.7%
   </span>
   <span class="absValue">
-    (1/16)
+    (1/27)
   </span>
 </td>
 </tr>
   <tr>
-    <td class="name">Place$HibernateInstantiator$MG1qLRWS</td>
+    <td class="name">PersonalItineraryEvent$HibernateInstantiator$j2AqsZyf</td>
   </tr>
   <tr>
-    <td class="name">Place$HibernateProxy$1pwmHbYv</td>
+    <td class="name">PersonalItineraryEvent$HibernateProxy$MXzON5q7</td>
   </tr>
 <tr>
   <td class="name"><strong>Total</strong></td>
 <td class="coverageStat">
   <span class="percent">
-    8.3%
+    6.7%
   </span>
   <span class="absValue">
-    (1/12)
+    (1/15)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    6.2%
+    3.7%
   </span>
   <span class="absValue">
-    (1/16)
+    (1/27)
   </span>
 </td>
 </tr>
@@ -88,81 +88,102 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 
 <pre>
-<code class="sourceCode" id="sourceCode">&nbsp;package MS3_3.Backend.Place;
+<code class="sourceCode" id="sourceCode">&nbsp;package MS3_3.Backend.PersonalItinerary.Events;
 &nbsp;
-&nbsp;import MS3_3.Backend.Day.Day;
+&nbsp;
+&nbsp;import MS3_3.Backend.PersonalItinerary.PersonalItinerary;
 &nbsp;import com.fasterxml.jackson.annotation.JsonIgnore;
+&nbsp;import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 &nbsp;import jakarta.persistence.*;
 &nbsp;
 &nbsp;@Entity
-&nbsp;public class Place {
+&nbsp;public class PersonalItineraryEvent {
+&nbsp;
 &nbsp;    @Id
 &nbsp;    @GeneratedValue(strategy = GenerationType.IDENTITY)
-&nbsp;    private int uniqueCode;
+&nbsp;    private int personalItineraryEventId;
 &nbsp;
 &nbsp;    @ManyToOne
-&nbsp;    @JoinColumn(name = &quot;day_id&quot;)
+&nbsp;    @JoinColumn(name = &quot;personalItineraryId&quot;)
 &nbsp;    @JsonIgnore
-&nbsp;    private Day day;
+&nbsp;    private PersonalItinerary personalItinerary;
 &nbsp;
-&nbsp;    private String placeName;
+&nbsp;    private int dayNumber;
+&nbsp;    private String time;
 &nbsp;
-&nbsp;    private String startTime;
+&nbsp;    private String place;
 &nbsp;
-&nbsp;    private String endTime;
+&nbsp;    private String notes;
 &nbsp;
-&nbsp;
-<b class="fc">&nbsp;    public Place() {</b>
+<b class="nc">&nbsp;    public PersonalItineraryEvent(int dayNumber, String time, String place, String notes) {</b>
+<b class="nc">&nbsp;        this.dayNumber = dayNumber;</b>
+<b class="nc">&nbsp;        this.time = time;</b>
+<b class="nc">&nbsp;        this.place = place;</b>
+<b class="nc">&nbsp;        this.notes = notes;</b>
 &nbsp;    }
 &nbsp;
-<b class="nc">&nbsp;    public Place(String placeName, String startTime, String endTime, Day day) {</b>
-<b class="nc">&nbsp;        this.placeName = placeName;</b>
-<b class="nc">&nbsp;        this.startTime = startTime;</b>
-<b class="nc">&nbsp;        this.endTime = endTime;</b>
-<b class="nc">&nbsp;        this.day = day;</b>
+<b class="nc">&nbsp;    public PersonalItineraryEvent(PersonalItinerary groupsItinerary, int dayNumber, String time, String place, String notes) {</b>
+<b class="nc">&nbsp;        this.personalItinerary = groupsItinerary;</b>
+<b class="nc">&nbsp;        this.dayNumber = dayNumber;</b>
+<b class="nc">&nbsp;        this.time = time;</b>
+<b class="nc">&nbsp;        this.place = place;</b>
+<b class="nc">&nbsp;        this.notes = notes;</b>
 &nbsp;    }
 &nbsp;
-&nbsp;
-&nbsp;    public int getUniqueCode() {
-<b class="nc">&nbsp;        return uniqueCode;</b>
+&nbsp;    public PersonalItinerary getPersonalItinerary() {
+<b class="nc">&nbsp;        return personalItinerary;</b>
 &nbsp;    }
 &nbsp;
-&nbsp;    public Day getDay() {
-<b class="nc">&nbsp;        return day;</b>
+&nbsp;    public void setPersonalItinerary(PersonalItinerary groupItinerary) {
+<b class="nc">&nbsp;        this.personalItinerary = groupItinerary;</b>
 &nbsp;    }
 &nbsp;
-&nbsp;    public String getPlaceName() {
-<b class="nc">&nbsp;        return placeName;</b>
+&nbsp;    public int getDayNumber() {
+<b class="nc">&nbsp;        return dayNumber;</b>
 &nbsp;    }
 &nbsp;
-&nbsp;    public String getStartTime() {
-<b class="nc">&nbsp;        return startTime;</b>
+&nbsp;    public void setDayNumber(int dayNumber) {
+<b class="nc">&nbsp;        this.dayNumber = dayNumber;</b>
 &nbsp;    }
 &nbsp;
-&nbsp;    public String getEndTime() {
-<b class="nc">&nbsp;        return endTime;</b>
+<b class="fc">&nbsp;    public PersonalItineraryEvent() {</b>
 &nbsp;    }
 &nbsp;
-&nbsp;
-&nbsp;    public void setUniqueCode(int uniqueCode) {
-<b class="nc">&nbsp;        this.uniqueCode = uniqueCode;</b>
+&nbsp;    public int getId() {
+<b class="nc">&nbsp;        return personalItineraryEventId;</b>
 &nbsp;    }
 &nbsp;
-&nbsp;    public void setDay(Day day) {
-<b class="nc">&nbsp;        this.day = day;</b>
+&nbsp;    public String getTime() {
+<b class="nc">&nbsp;        return time;</b>
 &nbsp;    }
 &nbsp;
-&nbsp;    public void setPlaceName(String placeName) {
-<b class="nc">&nbsp;        this.placeName = placeName;</b>
+&nbsp;    public String getPlace() {
+<b class="nc">&nbsp;        return place;</b>
 &nbsp;    }
 &nbsp;
-&nbsp;    public void setStartTime(String startTime) {
-<b class="nc">&nbsp;        this.startTime = startTime;</b>
+&nbsp;    public String getNotes() {
+<b class="nc">&nbsp;        return notes;</b>
 &nbsp;    }
 &nbsp;
-&nbsp;    public void setEndTime(String endTime) {
-<b class="nc">&nbsp;        this.endTime = endTime;</b>
+&nbsp;    public void setTime(String time) {
+<b class="nc">&nbsp;        this.time = time;</b>
 &nbsp;    }
+&nbsp;
+&nbsp;    public void setPlace(String place) {
+<b class="nc">&nbsp;        this.place = place;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setNotes(String notes) {
+<b class="nc">&nbsp;        this.notes = notes;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void setEvent(PersonalItineraryEvent event) {
+<b class="nc">&nbsp;        this.dayNumber = dayNumber;</b>
+<b class="nc">&nbsp;        this.time = event.time;</b>
+<b class="nc">&nbsp;        this.notes = event.notes;</b>
+<b class="nc">&nbsp;        this.place = event.place;</b>
+&nbsp;    }
+&nbsp;
 &nbsp;}
 </code>
 </pre>
@@ -187,7 +208,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2024-04-24 12:58</div>
+    <div style="float:right;">generated on 2024-04-28 20:55</div>
 </div>
 </body>
 </html>

@@ -23,14 +23,14 @@ public class ImageController {
     private ImageRepository imageRepository;
 
     @PostMapping("/Image")
-    public ResponseEntity<?> uploadImage(@RequestParam("image")MultipartFile file) throws IOException {
+    public ResponseEntity<?> uploadFileImage(@RequestParam("image")MultipartFile file) throws IOException {
         String uploadImage = service.uploadImage(file);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(uploadImage);
     }
 
     @GetMapping("/Image/{Id}")
-    public ResponseEntity<?> downloadTravelGroupImageById(@PathVariable int Id){
+    public ResponseEntity<?> downloadFileImageByName(@PathVariable int Id){
         byte[] imageData=service.downloadImageByImageId(Id);
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.valueOf("image/png"))
@@ -38,18 +38,14 @@ public class ImageController {
     }
 
     @PostMapping("/Group/Image/{groupId}")
-    public ResponseEntity<?> uploadTravelGroupImage(@PathVariable int groupId, @RequestParam("image")MultipartFile file) throws IOException {
-        if(file != null) {
-            String uploadImage = service.uploadGroupImage(file, groupId);
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(uploadImage);
-        }else{
-            return null;
-        }
+    public ResponseEntity<?> uploadGroupImage(@PathVariable int groupId, @RequestParam("image")MultipartFile file) throws IOException {
+        String uploadImage = service.uploadGroupImage(file, groupId);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(uploadImage);
     }
 
     @GetMapping("/Group/Image/{groupId}")
-    public ResponseEntity<?> downloadTravelGroupImage(@PathVariable int groupId){
+    public ResponseEntity<?> downloadGroupImage(@PathVariable int groupId){
         byte[] imageData=service.downloadImageByGroupId(groupId);
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(MediaType.valueOf("image/png"))
@@ -57,14 +53,14 @@ public class ImageController {
     }
 
     @PutMapping("/Group/Image/{groupId}")
-    public ResponseEntity<?> changeTravelGroupImage(@PathVariable int groupId, @RequestParam("image")MultipartFile file) throws IOException {
+    public ResponseEntity<?> changeGroupImage(@PathVariable int groupId, @RequestParam("image")MultipartFile file) throws IOException {
         String uploadImage = service.changeGroupImage(file, groupId);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(uploadImage);
     }
 
     @DeleteMapping("/Group/Image/{groupId}")
-    public ResponseEntity<?> deleteTravelGroupImage(@PathVariable int groupId) {
+    public ResponseEntity<?> deleteGroupImage(@PathVariable int groupId) {
         Image copy = new Image();
         copy.setImageData(imageRepository.findById(1).getImageData());
         copy.setType(imageRepository.findById(1).getType());

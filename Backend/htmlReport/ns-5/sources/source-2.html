@@ -5,7 +5,7 @@
 <html id="htmlId">
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
-  <title>Coverage Report > ImageController</title>
+  <title>Coverage Report > BlogPostImageUtils</title>
   <style type="text/css">
     @import "../../css/coverage.css";
     @import "../../css/idea.min.css";
@@ -19,10 +19,10 @@
 <div class="breadCrumbs">
 Current scope:     <a href="../../index.html">all classes</a>
     <span class="separator">|</span>
-    <a href="../index.html">MS3_3.Backend.FileUpload</a>
+    <a href="../index.html">MS3_3.Backend.AmbassadorBlogPost.Images</a>
 </div>
 
-<h1>Coverage Summary for Class: ImageController (MS3_3.Backend.FileUpload)</h1>
+<h1>Coverage Summary for Class: BlogPostImageUtils (MS3_3.Backend.AmbassadorBlogPost.Images)</h1>
 
 <table class="coverageStats">
 <tr>
@@ -37,33 +37,45 @@ Current scope:     <a href="../../index.html">all classes</a>
 </th>
 <th class="coverageStat 
 ">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
   Line, %
 </th>
 </tr>
 <tr>
-  <td class="name">ImageController</td>
+  <td class="name">BlogPostImageUtils</td>
 <td class="coverageStat">
   <span class="percent">
-    100%
+    0%
   </span>
   <span class="absValue">
-    (1/1)
+    (0/1)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    14.3%
+    0%
   </span>
   <span class="absValue">
-    (1/7)
+    (0/3)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    3.8%
+    0%
   </span>
   <span class="absValue">
-    (1/26)
+    (0/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/23)
   </span>
 </td>
 </tr>
@@ -75,82 +87,53 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 
 <pre>
-<code class="sourceCode" id="sourceCode">&nbsp;package MS3_3.Backend.FileUpload;
+<code class="sourceCode" id="sourceCode">&nbsp;package MS3_3.Backend.AmbassadorBlogPost.Images;
 &nbsp;
-&nbsp;import MS3_3.Backend.Groups.TravelGroupRepository;
-&nbsp;import org.springframework.beans.factory.annotation.Autowired;
-&nbsp;import org.springframework.http.HttpStatus;
-&nbsp;import org.springframework.http.MediaType;
-&nbsp;import org.springframework.http.ResponseEntity;
-&nbsp;import org.springframework.web.bind.annotation.*;
-&nbsp;import org.springframework.web.multipart.MultipartFile;
+&nbsp;import java.io.ByteArrayOutputStream;
+&nbsp;import java.util.zip.Deflater;
+&nbsp;import java.util.zip.Inflater;
 &nbsp;
-&nbsp;import java.io.File;
-&nbsp;import java.io.IOException;
-&nbsp;import java.nio.file.Files;
+<b class="nc">&nbsp;public class BlogPostImageUtils {</b>
 &nbsp;
-&nbsp;@RestController
-<b class="fc">&nbsp;public class ImageController {</b>
 &nbsp;
-&nbsp;    @Autowired
-&nbsp;    private StorageService service;
+&nbsp;    public static byte[] compressImage(byte[] data) {
+<b class="nc">&nbsp;        Deflater deflater = new Deflater();</b>
+<b class="nc">&nbsp;        deflater.setLevel(Deflater.BEST_COMPRESSION);</b>
+<b class="nc">&nbsp;        deflater.setInput(data);</b>
+<b class="nc">&nbsp;        deflater.finish();</b>
 &nbsp;
-&nbsp;    @Autowired
-&nbsp;    private TravelGroupRepository travelGroupRepository;
-&nbsp;
-&nbsp;    @Autowired
-&nbsp;    private ImageRepository imageRepository;
-&nbsp;
-&nbsp;    @PostMapping(&quot;/Image&quot;)
-&nbsp;    public ResponseEntity&lt;?&gt; uploadImage(@RequestParam(&quot;image&quot;)MultipartFile file) throws IOException {
-<b class="nc">&nbsp;        String uploadImage = service.uploadImage(file);</b>
-<b class="nc">&nbsp;        return ResponseEntity.status(HttpStatus.OK)</b>
-<b class="nc">&nbsp;                .body(uploadImage);</b>
+<b class="nc">&nbsp;        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);</b>
+<b class="nc">&nbsp;        byte[] tmp = new byte[4*1024];</b>
+<b class="nc">&nbsp;        while (!deflater.finished()) {</b>
+<b class="nc">&nbsp;            int size = deflater.deflate(tmp);</b>
+<b class="nc">&nbsp;            outputStream.write(tmp, 0, size);</b>
+&nbsp;        }
+&nbsp;        try {
+<b class="nc">&nbsp;            outputStream.close();</b>
+<b class="nc">&nbsp;        } catch (Exception ignored) {</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return outputStream.toByteArray();</b>
 &nbsp;    }
 &nbsp;
-&nbsp;    @GetMapping(&quot;/Image/{Id}&quot;)
-&nbsp;    public ResponseEntity&lt;?&gt; downloadImageByName(@PathVariable int Id){
-<b class="nc">&nbsp;        byte[] imageData=service.downloadImageByImageId(Id);</b>
-<b class="nc">&nbsp;        return ResponseEntity.status(HttpStatus.OK)</b>
-<b class="nc">&nbsp;                .contentType(MediaType.valueOf(&quot;image/png&quot;))</b>
-<b class="nc">&nbsp;                .body(imageData);</b>
+&nbsp;
+&nbsp;
+&nbsp;    public static byte[] decompressImage(byte[] data) {
+<b class="nc">&nbsp;        Inflater inflater = new Inflater();</b>
+<b class="nc">&nbsp;        inflater.setInput(data);</b>
+<b class="nc">&nbsp;        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);</b>
+<b class="nc">&nbsp;        byte[] tmp = new byte[4*1024];</b>
+&nbsp;        try {
+<b class="nc">&nbsp;            while (!inflater.finished()) {</b>
+<b class="nc">&nbsp;                int count = inflater.inflate(tmp);</b>
+<b class="nc">&nbsp;                outputStream.write(tmp, 0, count);</b>
+&nbsp;            }
+<b class="nc">&nbsp;            outputStream.close();</b>
+<b class="nc">&nbsp;        } catch (Exception ignored) {</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return outputStream.toByteArray();</b>
 &nbsp;    }
 &nbsp;
-&nbsp;    @PostMapping(&quot;/Group/Image/{groupId}&quot;)
-&nbsp;    public ResponseEntity&lt;?&gt; uploadGroupImage(@PathVariable int groupId, @RequestParam(&quot;image&quot;)MultipartFile file) throws IOException {
-<b class="nc">&nbsp;        String uploadImage = service.uploadGroupImage(file, groupId);</b>
-<b class="nc">&nbsp;        return ResponseEntity.status(HttpStatus.OK)</b>
-<b class="nc">&nbsp;                .body(uploadImage);</b>
-&nbsp;    }
-&nbsp;
-&nbsp;    @GetMapping(&quot;/Group/Image/{groupId}&quot;)
-&nbsp;    public ResponseEntity&lt;?&gt; downloadGroupImage(@PathVariable int groupId){
-<b class="nc">&nbsp;        byte[] imageData=service.downloadImageByGroupId(groupId);</b>
-<b class="nc">&nbsp;        return ResponseEntity.status(HttpStatus.OK)</b>
-<b class="nc">&nbsp;                .contentType(MediaType.valueOf(&quot;image/png&quot;))</b>
-<b class="nc">&nbsp;                .body(imageData);</b>
-&nbsp;    }
-&nbsp;
-&nbsp;    @PutMapping(&quot;/Group/Image/{groupId}&quot;)
-&nbsp;    public ResponseEntity&lt;?&gt; changeGroupImage(@PathVariable int groupId, @RequestParam(&quot;image&quot;)MultipartFile file) throws IOException {
-<b class="nc">&nbsp;        String uploadImage = service.changeGroupImage(file, groupId);</b>
-<b class="nc">&nbsp;        return ResponseEntity.status(HttpStatus.OK)</b>
-<b class="nc">&nbsp;                .body(uploadImage);</b>
-&nbsp;    }
-&nbsp;
-&nbsp;    @DeleteMapping(&quot;/Group/Image/{groupId}&quot;)
-&nbsp;    public ResponseEntity&lt;?&gt; deleteGroupImage(@PathVariable int groupId) {
-<b class="nc">&nbsp;        Image copy = new Image();</b>
-<b class="nc">&nbsp;        copy.setImageData(imageRepository.findById(38).getImageData());</b>
-<b class="nc">&nbsp;        copy.setType(imageRepository.findById(38).getType());</b>
-<b class="nc">&nbsp;        copy.setName(imageRepository.findById(38).getName());</b>
-<b class="nc">&nbsp;        imageRepository.save(copy);</b>
-<b class="nc">&nbsp;        String uploadImage = service.changeImageByGroupId(groupId,copy);</b>
-<b class="nc">&nbsp;        return ResponseEntity.status(HttpStatus.OK)</b>
-<b class="nc">&nbsp;                .body(uploadImage);</b>
-&nbsp;    }
 &nbsp;}
-&nbsp;
 </code>
 </pre>
 </div>
@@ -174,7 +157,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2024-04-24 12:58</div>
+    <div style="float:right;">generated on 2024-04-28 20:55</div>
 </div>
 </body>
 </html>
