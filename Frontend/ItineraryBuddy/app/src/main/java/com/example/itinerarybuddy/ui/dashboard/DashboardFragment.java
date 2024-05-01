@@ -352,8 +352,8 @@ public class DashboardFragment extends Fragment implements WebSocketListener, On
     private void GET_previousPosts() {
         // URL for fetching previous posts
 
-        //String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary/Share" + username;
         String url = "https://1064bd8c-7f0f-4802-94f1-71b8b5568975.mock.pstmn.io/Itinerary/Share";
+        //String url = "https://5569939f-7918-4af9-937a-86edcfe9bc7f.mock.pstmn.io";
 
      //   String url = "http://coms-309-035.class.las.iastate.edu:8080/PostedItinerary/List";
 
@@ -580,7 +580,7 @@ public class DashboardFragment extends Fragment implements WebSocketListener, On
     private void DELETE_post(String postID){
 
         //String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary/Share/" + username + postID;
-        String url = "https://1064bd8c-7f0f-4802-94f1-71b8b5568975.mock.pstmn.io/Itinerary/Share" + postID;
+        String url = "https://1064bd8c-7f0f-4802-94f1-71b8b5568975.mock.pstmn.io/Itinerary/Share";
 
       //  String url = "http://coms-309-035.class.las.iastate.edu:8080/PostedItinerary/" + postID;
 
@@ -609,7 +609,7 @@ public class DashboardFragment extends Fragment implements WebSocketListener, On
      */
     private void GET_fetch_Destinations_TripCode(){
 
-        String url = "https://5569939f-7918-4af9-937a-86edcfe9bc7f.mock.pstmn.io/Itinerary/GetInfo";
+        String url = "https://5569939f-7918-4af9-937a-86edcfe9bc7f.mock.pstmn.io";
 
 //        String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary/List/" + UserData.getUsername();
 
@@ -659,11 +659,6 @@ public class DashboardFragment extends Fragment implements WebSocketListener, On
      * Loads posts from the server or database.
      */
     private void loadPosts() {
-        // Fetch posts from backend or database
-        // For demo, let's add some sample posts
-        posts.add(new Post_Itinerary("user1", "post1.jpg", "12345678", 2, "This is the first post.", "ABC1234"));
-        //posts.add(new Post_Itinerary("user2", "1 hour ago", "post2.jpg", "This is the second post."));
-        //posts.add(new Post_Itinerary("user3", "30 minutes ago", "post3.jpg", "This is the third post."));
 
         GET_previousPosts();
 

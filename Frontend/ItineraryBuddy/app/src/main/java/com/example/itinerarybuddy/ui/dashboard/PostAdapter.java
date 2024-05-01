@@ -27,6 +27,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.itinerarybuddy.R;
 import com.example.itinerarybuddy.activities.DayCard;
 import com.example.itinerarybuddy.data.Post_Itinerary;
+import com.example.itinerarybuddy.data.UserData;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -262,13 +263,15 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
         });
 
-        holder.moreView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showPopupMenu(v, position);
-            }
-        });
+        if(posts.get(position).getUsername() == UserData.getUsername()) {
+            holder.moreView.setOnClickListener(new View.OnClickListener() {
 
+                @Override
+                public void onClick(View v) {
+                    showPopupMenu(v, position);
+                }
+            });
+        }
     }
 
     /**
@@ -279,9 +282,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     private void POST_updateSavedPost(Post_Itinerary post) {
 
         //String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary/Share/" + username + post.getPostID();
-        //String url = "https://1064bd8c-7f0f-4802-94f1-71b8b5568975.mock.pstmn.io/Itinerary/Share/SavedPost";
+        String url = "https://1064bd8c-7f0f-4802-94f1-71b8b5568975.mock.pstmn.io/Itinerary/Share/SavedPost";
 
-        String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary/Share/" + post.getPostID();
+        //String url = "http://coms-309-035.class.las.iastate.edu:8080/Itinerary/Share/" + post.getPostID();
 
         JSONObject postData = new JSONObject();
 

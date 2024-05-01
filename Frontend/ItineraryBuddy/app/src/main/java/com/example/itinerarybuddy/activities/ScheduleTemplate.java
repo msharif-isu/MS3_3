@@ -116,8 +116,9 @@ public class ScheduleTemplate extends AppCompatActivity {
          */
         private void POST_schedule(String day, List<ScheduleItem> scheduleData) {
             // Construct the URL for the POST request
-            String url = "http://coms-309-035.class.las.iastate.edu:8080/Personal/Itinerary/" + tripCode;
+            //String url = "http://coms-309-035.class.las.iastate.edu:8080/Personal/Itinerary/" + tripCode;
 
+            String url = "https://7557e865-ef05-4e77-beaf-a69fca370355.mock.pstmn.io";
             // Create a RequestQueue for the Volley library
             RequestQueue queue = Volley.newRequestQueue(this);
 
@@ -175,7 +176,9 @@ public class ScheduleTemplate extends AppCompatActivity {
     //UPDATE the schedule data
     private void PUT_schedule(String day, List<ScheduleItem> scheduleData) {
         // Construct the URL for the PUT request
-        String url = "http://coms-309-035.class.las.iastate.edu:8080/Personal/Itinerary/" + tripCode;
+        //String url = "http://coms-309-035.class.las.iastate.edu:8080/Personal/Itinerary/" + tripCode;
+
+        String url = "https://7557e865-ef05-4e77-beaf-a69fca370355.mock.pstmn.io";
 
         // Create a RequestQueue for the Volley library
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -239,8 +242,8 @@ public class ScheduleTemplate extends AppCompatActivity {
             String[] parts = day.split(" ");
             String numericPart = parts[1];
 
-            String url = "http://coms-309-035.class.las.iastate.edu:8080/Personal/Itinerary/" + tripCode;
-            //String url = "https://7557e865-ef05-4e77-beaf-a69fca370355.mock.pstmn.io/Schedule/Get/";
+         //   String url = "http://coms-309-035.class.las.iastate.edu:8080/Personal/Itinerary/" + tripCode;
+            String url = "https://7557e865-ef05-4e77-beaf-a69fca370355.mock.pstmn.io/" + numericPart;
 
             //String url = "http://coms-309-035.class.las.iastate.edu:8080/Schedule/" + tripCode + "/" + numericPart;
 
