@@ -16,19 +16,19 @@ public class BlogPostImageController {
     @Autowired
     private BlogPostImageRepository imageRepository;
 
-//    @PostMapping("/Blog/Image")
-//    public ResponseEntity<?> uploadImage(@RequestParam("image")MultipartFile file) throws IOException {
-//        String uploadImage = service.uploadImage(file);
-//        return ResponseEntity.status(HttpStatus.OK)
-//                .body(uploadImage);
-//    }
-//
-//    @GetMapping("/Image/{Id}")
-//    public ResponseEntity<?> downloadImageByName(@PathVariable int Id){
-//        byte[] imageData=service.downloadImageByImageId(Id);
-//        return ResponseEntity.status(HttpStatus.OK)
-//                .contentType(MediaType.valueOf("image/png"))
-//                .body(imageData);
-//    }
+   @PostMapping("/Blog/Image")
+   public ResponseEntity<?> uploadImage(@RequestParam("image")MultipartFile file) throws IOException {
+       String uploadImage = service.uploadImage(file);
+       return ResponseEntity.status(HttpStatus.OK)
+               .body(uploadImage);
+   }
+
+   @GetMapping("/Image/{Id}")
+   public ResponseEntity<?> downloadImageByName(@PathVariable int Id){
+       byte[] imageData=service.downloadImageByImageId(Id);
+       return ResponseEntity.status(HttpStatus.OK)
+               .contentType(MediaType.valueOf("image/png"))
+               .body(imageData);
+   }
 }
 
