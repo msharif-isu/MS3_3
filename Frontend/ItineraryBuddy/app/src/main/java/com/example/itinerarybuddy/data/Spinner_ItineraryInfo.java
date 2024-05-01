@@ -3,13 +3,15 @@ package com.example.itinerarybuddy.data;
 public class Spinner_ItineraryInfo{
 
     public String destination;
-    public String tripCode;
+
     public int numDays;
 
-    public Spinner_ItineraryInfo(String destination, String tripCode, int numDays){
+    public int id;
+
+    public Spinner_ItineraryInfo(String destination, int numDays, int id){
         this.destination = destination;
-        this.tripCode = tripCode;
         this.numDays = numDays;
+        this.id = id;
 
     }
 
@@ -17,16 +19,10 @@ public class Spinner_ItineraryInfo{
         return destination;
     }
 
-    public String getTripCode(){
-        return tripCode;
-    }
 
     public int getNumDays(){
         return numDays;
     }
 
-    @Override
-    public String toString(){
-        return destination + ", " + tripCode ;
-    }
+
 }

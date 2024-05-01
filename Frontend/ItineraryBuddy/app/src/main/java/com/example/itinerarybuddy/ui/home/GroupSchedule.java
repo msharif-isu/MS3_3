@@ -1,13 +1,13 @@
 package com.example.itinerarybuddy.ui.home;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -75,7 +75,6 @@ public class GroupSchedule extends AppCompatActivity {
         dayString = getIntent().getStringExtra("TITLE");
         isEditable = getIntent().getBooleanExtra("IS_EDITABLE", false);
         groupID = getIntent().getStringExtra("GROUPID");
-
 
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);

@@ -66,7 +66,7 @@ public class WebSocketManager {
             jsonObject.put("likeValue", post.isLiked());
             jsonObject.put("saveCount", post.getSaveCount());
             jsonObject.put("saveValue", post.isSaved());
-            jsonObject.put("tripCode", post.getTripCode());
+            jsonObject.put("id", post.getItineraryID());
             jsonObject.put("numDays", post.getDays());
             jsonObject.put("postID", post.getPostID());
 

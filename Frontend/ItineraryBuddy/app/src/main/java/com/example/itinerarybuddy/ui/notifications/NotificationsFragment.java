@@ -45,7 +45,6 @@ import java.util.List;
 import java.util.Locale;
 
 public class NotificationsFragment extends Fragment implements BlogCardAdapter.OnEditClickListener,BlogCardAdapter.OnDeleteClickListener {
-
     private FragmentNotificationsBinding binding;
     private RecyclerView recyclerView;
     private BlogCardAdapter postBlogAdapter;
@@ -63,7 +62,7 @@ public class NotificationsFragment extends Fragment implements BlogCardAdapter.O
 
         ImageView postButton = root.findViewById(R.id.postBlog);
 
-           /* postButton.setOnClickListener(new View.OnClickListener() {
+            postButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick (View v){
                         if(UserData.getUsertype().equals("Ambassador")){
@@ -73,7 +72,7 @@ public class NotificationsFragment extends Fragment implements BlogCardAdapter.O
                              Toast.makeText(requireContext(), "Only Travel Ambassadors can post picture blog.", Toast.LENGTH_LONG).show();
                         }
                 }
-            });*/
+            });
 
 
         postBlogAdapter.setOnItemClickListener(new BlogCardAdapter.OnItemClickListener() {
@@ -90,14 +89,14 @@ public class NotificationsFragment extends Fragment implements BlogCardAdapter.O
             }
         });
 
-        postButton.setOnClickListener(new View.OnClickListener() {
+       /* postButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick (View v){
 
                 showPostBlogDialog();
 
             }
-        });
+        });*/
 
         loadPosts();
 
@@ -160,8 +159,6 @@ public class NotificationsFragment extends Fragment implements BlogCardAdapter.O
 
     private void POST_BlogItem(BlogItem blogItem) {
 
-        //String url = "https://ff1e6a32-8cf4-4764-9239-e2a66d09085e.mock.pstmn.io/Blog";
-
         String url = "http://coms-309-035.class.las.iastate.edu:8080/BlogPost/"+ blogItem.getUsername() + "/" + blogItem.getTitle() + "/" + blogItem.getPostDate();
 
         // Request a string response from the provided URL.
@@ -169,8 +166,7 @@ public class NotificationsFragment extends Fragment implements BlogCardAdapter.O
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        // Handle successful response from the server
-                        // You can update UI or take other actions based on the response
+
                         Log.d("POST Response", response.toString());
                         Toast.makeText(requireContext(), "Posted!", Toast.LENGTH_SHORT).show();
 
@@ -198,7 +194,7 @@ public class NotificationsFragment extends Fragment implements BlogCardAdapter.O
 
     private void GET_previousBlogPosts() {
         // URL for fetching previous blog posts
-        String url = "http://coms-309-035.class.las.iastate.edu:8080/BlogPost/Username/" + UserData.getUsername();
+        String url = "http://coms-309-035.class.las.iastate.edu:8080/BlogPost/Username";
         // Create a GET request
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONArray>() {

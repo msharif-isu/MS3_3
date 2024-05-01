@@ -14,12 +14,13 @@
             android:id="@+id/grant_admin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            android:text="@string/grant_admin_access"
+            android:layout_marginTop="20dp"
             android:labelFor="@id/id_input4"
+            android:text="@string/grant_admin_access"
             android:textColor="@color/black"
             android:textSize="25sp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/id_input3" />
 
@@ -51,8 +52,8 @@
 
         <Button
             android:id="@+id/confirm4"
-            android:layout_width="100sp"
-            android:layout_height="wrap_content"
+            android:layout_width="145dp"
+            android:layout_height="48dp"
             android:layout_marginTop="8dp"
             android:background="#7a9143"
             android:text="@string/confirm"
@@ -64,8 +65,8 @@
 
         <Button
             android:id="@+id/confirm3"
-            android:layout_width="100sp"
-            android:layout_height="wrap_content"
+            android:layout_width="145dp"
+            android:layout_height="48dp"
             android:layout_marginTop="8dp"
             android:background="#7a9143"
             android:text="@string/confirm"
@@ -106,13 +107,13 @@
             android:id="@+id/revoke_admin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="20dp"
             android:labelFor="@id/id_input3"
             android:text="@string/revoke_admin_access"
             android:textColor="@color/black"
             android:textSize="25sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_bias="0.496"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/id_input2" />
 
@@ -199,8 +200,8 @@
 
         <Button
             android:id="@+id/confirm1"
-            android:layout_width="100sp"
-            android:layout_height="wrap_content"
+            android:layout_width="149dp"
+            android:layout_height="48dp"
             android:layout_marginTop="8dp"
             android:background="#7a9143"
             android:text="@string/confirm"
@@ -214,13 +215,13 @@
             android:id="@+id/grant_ambassador_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            android:text="@string/grant_ambassador_status"
+            android:layout_marginTop="20dp"
             android:labelFor="@id/id_input2"
+            android:text="@string/grant_ambassador_status"
             android:textColor="@color/black"
             android:textSize="25sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_bias="0.495"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/id_input1" />
 
@@ -239,8 +240,8 @@
 
         <Button
             android:id="@+id/confirm2"
-            android:layout_width="100sp"
-            android:layout_height="wrap_content"
+            android:layout_width="144dp"
+            android:layout_height="48dp"
             android:layout_marginTop="8dp"
             android:background="#7a9143"
             android:text="@string/confirm"

@@ -149,7 +149,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         });
 
 
-    // Show only first 2 comments initially
+        // Show only first 2 comments initially
         StringBuilder seeComment = new StringBuilder();
         List<Post_Itinerary.Comment> showComment = post.getComments();
         int numCommentsToShow = Math.min(2, showComment.size());
@@ -290,7 +290,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             postData.put("username", post.getUsername());
             postData.put("postFile", post.getPostFile());
             postData.put("postID", post.getPostID());
-            postData.put("tripCode", post.getTripCode());
+            postData.put("id", post.getItineraryID());
             postData.put("number of days", post.getDays());
             postData.put("caption", post.getCaption());
             postData.put("likeCount", post.getLikeCount());
@@ -336,7 +336,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
         else{
 
-           // url += post.getPostID();
+            // url += post.getPostID();
 
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.DELETE, url, postData,
                     new Response.Listener<JSONObject>() {
@@ -367,7 +367,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
      */
     private void PUT_updateSaveCount(Post_Itinerary post) {
 
-       // String url = "https://1064bd8c-7f0f-4802-94f1-71b8b5568975.mock.pstmn.io/Itinerary/Share/SaveCount" + post.getPostID();
+        // String url = "https://1064bd8c-7f0f-4802-94f1-71b8b5568975.mock.pstmn.io/Itinerary/Share/SaveCount" + post.getPostID();
 
         //String url = "https://1064bd8c-7f0f-4802-94f1-71b8b5568975.mock.pstmn.io/Itinerary/Share/SaveCount";
 

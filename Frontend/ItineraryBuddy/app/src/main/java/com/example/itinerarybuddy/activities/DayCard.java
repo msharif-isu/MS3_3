@@ -36,7 +36,6 @@ public class DayCard extends AppCompatActivity {
 
         // Retrieve the number of days from the intent extra
         int numOfDays = getIntent().getIntExtra("NUM_OF_DAYS", 0);
-
         source = getIntent().getStringExtra("SOURCE");
         isEditable = getIntent().getBooleanExtra("IS_EDITABLE", true);
 

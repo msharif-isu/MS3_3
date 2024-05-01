@@ -33,7 +33,10 @@
         android:id="@+id/password_input"
         android:layout_width="300dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="300dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="442dp"
+        android:layout_marginEnd="61dp"
+        android:layout_marginBottom="241dp"
         android:autofillHints="password"
         android:background="@drawable/rounded_edittext"
         android:fontFamily="sans-serif-condensed-medium"
@@ -45,8 +48,8 @@
         android:textSize="25sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/password_text"
@@ -67,7 +70,10 @@
         android:id="@+id/username_input"
         android:layout_width="300dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="72dp"
+        android:layout_marginStart="55dp"
+        android:layout_marginTop="341dp"
+        android:layout_marginEnd="56dp"
+        android:layout_marginBottom="342dp"
         android:autofillHints="username"
         android:background="@drawable/rounded_edittext"
         android:fontFamily="sans-serif-condensed-medium"
@@ -77,27 +83,28 @@
         android:paddingBottom="8dp"
         android:text=""
         android:textSize="25sp"
-        app:layout_constraintBottom_toTopOf="@+id/password_input"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.503"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/gradient"
-        app:layout_constraintVertical_bias="0.952" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
 
     <Button
         android:id="@+id/login_button"
         android:layout_width="280sp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="65dp"
+        android:layout_marginEnd="66dp"
+        android:layout_marginBottom="162dp"
         android:background="@drawable/round_button_green"
         android:fontFamily="sans-serif-condensed-medium"
         android:text="@string/login_text"
         android:textColor="@color/white"
         android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.503"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/password_input" />
+        tools:ignore="MissingConstraints" />
 
     <TextView
         android:id="@+id/username_text"
@@ -119,7 +126,9 @@
         style="?android:attr/borderlessButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
+        android:layout_marginStart="93dp"
+        android:layout_marginEnd="94dp"
+        android:layout_marginBottom="45dp"
         android:background="@drawable/round_button_green"
         android:fontFamily="sans-serif-condensed-medium"
         android:text="@string/create_account_text"
@@ -128,22 +137,23 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/new_user_text"
-        app:layout_constraintVertical_bias="0.0" />
+        tools:ignore="MissingConstraints" />
 
     <TextView
         android:id="@+id/new_user_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="52dp"
+        android:layout_marginStart="158dp"
+        android:layout_marginEnd="159dp"
+        android:layout_marginBottom="108dp"
         android:fontFamily="sans-serif-condensed-medium"
         android:text="@string/new_user_text"
         android:textColor="@color/black"
         android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/login_button" />
+        tools:ignore="MissingConstraints" />
 
     <ImageView
         android:id="@+id/imageView2"

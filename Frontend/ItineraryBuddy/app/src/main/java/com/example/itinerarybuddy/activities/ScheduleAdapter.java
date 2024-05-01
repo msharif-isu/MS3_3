@@ -30,10 +30,8 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHo
 
     private static final int VIEW_TYPE_HEADER = 0;
     private static final int VIEW_TYPE_DATA = 1;
-
     private final String dayTitle;
     private static List<ScheduleItem> scheduleData;
-
     private final boolean isEditable;
 
 

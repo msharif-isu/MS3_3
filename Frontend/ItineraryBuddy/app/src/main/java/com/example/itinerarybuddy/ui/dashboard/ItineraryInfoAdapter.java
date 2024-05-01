@@ -10,14 +10,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.example.itinerarybuddy.data.Spinner_ItineraryInfo;
+import com.example.itinerarybuddy.data.Itinerary;
 
 import java.util.List;
 
-public class ItineraryInfoAdapter extends ArrayAdapter<Spinner_ItineraryInfo> {
+public class ItineraryInfoAdapter extends ArrayAdapter<Itinerary> {
     private final LayoutInflater inflater;
 
-    public ItineraryInfoAdapter(Context context, List<Spinner_ItineraryInfo> itineraryInfos) {
+    public ItineraryInfoAdapter(Context context, List<Itinerary> itineraryInfos) {
         super(context, 0, itineraryInfos);
         inflater = LayoutInflater.from(context);
     }
@@ -31,9 +31,9 @@ public class ItineraryInfoAdapter extends ArrayAdapter<Spinner_ItineraryInfo> {
 
         // Customize how each item in the spinner is displayed
         TextView textView = convertView.findViewById(android.R.id.text1);
-        Spinner_ItineraryInfo itineraryInfo = getItem(position);
+        Itinerary itineraryInfo = getItem(position);
         if (itineraryInfo != null) {
-            textView.setText(itineraryInfo.toString());
+            textView.setText(itineraryInfo.getDestination());
         }
 
         return convertView;

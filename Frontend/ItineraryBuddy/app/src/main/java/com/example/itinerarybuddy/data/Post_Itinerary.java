@@ -5,26 +5,23 @@ import java.util.ArrayList;
 public class Post_Itinerary {
 
     public String username;
-
     public String postFile;
     public String caption;
     public int likeCount;
     public boolean likeValue;
     public int saveCount;
     public boolean saveValue;
-    public String tripCode;
+    public int itineraryID;
     public int numDays;
-
     public String postID;
 
     private final ArrayList<Comment> comments;
-    public Post_Itinerary(String username, String postFile, String tripCode, int numDays, String caption, String postID){
+    public Post_Itinerary(String username, String postFile, int numDays, String caption, String postID){
 
         this.username = username;
-        //this.timePosted = timePosted;
 
         this.postFile = postFile;
-        this.tripCode  = tripCode;
+        this.itineraryID  = itineraryID;
         this.numDays = numDays;
 
         this.caption = caption;
@@ -49,12 +46,14 @@ public class Post_Itinerary {
 
     public String getPostFile(){
 
-        String shown = postFile.split(",")[0];
-        return shown;
+        return postFile;
     }
 
-    public String getTripCode(){
-        return tripCode;
+    public void setItineraryID(int id){
+        this.itineraryID = id;
+    }
+    public int getItineraryID(){
+        return itineraryID;
     }
 
     public int getDays(){

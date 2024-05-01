@@ -18,7 +18,6 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.itinerarybuddy.R;
 import com.example.itinerarybuddy.data.Post_Itinerary;
-import com.example.itinerarybuddy.data.UserData;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -122,7 +121,7 @@ public class SavedPost extends AppCompatActivity {
             String username = jsonObject.getString("username");
             String postFile = jsonObject.getString("postFile");
             String postID = jsonObject.getString("postID");
-            String tripCode = jsonObject.getString("tripCode");
+            int itineraryID = jsonObject.getInt("id");
             int numOfDays = jsonObject.getInt("number of days");
             String caption = jsonObject.getString("caption");
             int likeCount = jsonObject.getInt("likeCount");
@@ -141,7 +140,8 @@ public class SavedPost extends AppCompatActivity {
                 comments.add(new Post_Itinerary.Comment(commenterUsername, commentText));
             }
 
-            Post_Itinerary postItinerary = new Post_Itinerary(username, postFile, tripCode, numOfDays, caption, postID);
+            Post_Itinerary postItinerary = new Post_Itinerary(username, postFile, numOfDays, caption, postID);
+            postItinerary.setItineraryID(itineraryID);
 
             postItinerary.setLikeCount(likeCount);
             postItinerary.setSaveCount(saveCount);

@@ -13,6 +13,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.example.itinerarybuddy.R;
+import com.example.itinerarybuddy.data.Itinerary;
 
 import java.util.List;
 
@@ -20,9 +21,9 @@ import java.util.List;
  * CustomAdapter is an ArrayAdapter implementation for displaying a list of itineraries
  * in a ListView with customized layout.
  */
-public class CustomAdapter extends ArrayAdapter<String> {
+public class CustomAdapter extends ArrayAdapter<Itinerary> {
 
-    private final List<String> itineraries; //List of itineraries to display
+    private final List<Itinerary> itineraries; //List of itineraries to display
     private final Context context;          //Context of the application
     private final OnEditClickListener editClickListener; //Listener for edit button click events
     private final OnDeleteClickListener deleteClickListener; //Listener for delete button click events
@@ -37,7 +38,7 @@ public class CustomAdapter extends ArrayAdapter<String> {
      * @param editClickListener Listener for edit button click events.
      * @param deleteClickListener Listener for delete button click events.
      */
-    public CustomAdapter(@NonNull Context context, int resource, @NonNull List<String> objects, OnEditClickListener editClickListener, OnDeleteClickListener deleteClickListener) {
+    public CustomAdapter(@NonNull Context context, int resource, @NonNull List<Itinerary> objects, OnEditClickListener editClickListener, OnDeleteClickListener deleteClickListener) {
         super(context, resource);
         this.context = context;
         this.itineraries = objects;
@@ -72,22 +73,20 @@ public class CustomAdapter extends ArrayAdapter<String> {
             });
 
             convertView.setTag(viewHolder);
+
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        String itineraryInfo = getItem(position);
-        if (itineraryInfo != null) {
-            String[] itineraryData = itineraryInfo.split("\n");
+        Itinerary itinerary = getItem(position);
+        if (itinerary != null) {
+            String itineraryInfo = "Destination: " + itinerary.getDestination() +
+                    "\nStart Date: " + itinerary.getStartDate() +
+                    "\nEnd Date: " + itinerary.getEndDate() +
+                    "\nNumber of Days: " + itinerary.getNumDays();
 
-            // Set itinerary information
-            StringBuilder fullItinerary = new StringBuilder();
-            for (String data : itineraryData) {
-                fullItinerary.append(data).append("\n");
-            }
-            viewHolder.textViewItinerary.setText(fullItinerary.toString().trim());
+            viewHolder.textViewItinerary.setText(itineraryInfo);
         }
-
 
         return convertView;
     }

@@ -10,13 +10,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.itinerarybuddy.R;
+import com.example.itinerarybuddy.data.Itinerary;
 import com.example.itinerarybuddy.data.ScheduleItem;
+import com.example.itinerarybuddy.ui.home.HomeFragment;
+import com.example.itinerarybuddy.util.Singleton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
@@ -28,9 +29,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Locale;
+import java.util.Objects;
 
 /**
  * The ScheduleTemplate class represents the activity for managing and displaying the schedule template.
@@ -39,9 +40,13 @@ import java.util.Map;
 public class ScheduleTemplate extends AppCompatActivity {
 
     private boolean isEditable;
-    private String tripCode;
+    private int itinerary_ID;
     private boolean isFirstClick = true;
+    private int dayInt;
+    private String dayString;
     private ScheduleAdapter adapter;
+
+    private Itinerary selectedItinerary;
 
     /**
      * Called when the activity is starting. This is where most initialization should go.
@@ -56,22 +61,31 @@ public class ScheduleTemplate extends AppCompatActivity {
         setContentView(R.layout.activity_schedule_template);
 
         // Retrieve the day title from the intent
-        String day = getIntent().getStringExtra("TITLE");
+        dayInt = Integer.parseInt(Objects.requireNonNull(getIntent().getStringExtra("TITLE")).substring(4));
+        dayString = getIntent().getStringExtra("TITLE");
         isEditable = getIntent().getBooleanExtra("IS_EDITABLE", true);
-        tripCode = getIntent().getStringExtra("TRIPCODE");
+        selectedItinerary = getIntent().getParcelableExtra("SELECTED_ITINERARY");
 
+        itinerary_ID = selectedItinerary.getItineraryID();
 
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
         // Generate sample schedule data
-        List<ScheduleItem> data = generateData();
+        List<ScheduleItem> list = new ArrayList<>();
+        for (int i = 0; i < 20; i++) {
+            list.add(new ScheduleItem());
+        }
 
-        adapter = new ScheduleAdapter(data, day, isEditable);
+        adapter = new ScheduleAdapter(list, dayString, isEditable);
         recyclerView.setAdapter(adapter);
 
-        GET_schedule(day);
+        try {
+            GET_schedule();
+        } catch (JSONException | ParseException e) {
+            Log.e("Error fetching schedule: ", e.toString());
+        }
 
 
         // Set click listener for the save/update button
@@ -85,21 +99,11 @@ public class ScheduleTemplate extends AppCompatActivity {
             btnSaveUpdate.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
-                    List<ScheduleItem> scheduleItems = adapter.getScheduleData();
-
-                    if (isFirstClick) {
-
-                        POST_schedule(day, scheduleItems);
-                        Toast.makeText(ScheduleTemplate.this, "Data saved!", Toast.LENGTH_SHORT).show();
-                    } else {
-
-                        PUT_schedule(day, scheduleItems);
-                        Toast.makeText(ScheduleTemplate.this, "Data updated!", Toast.LENGTH_SHORT).show();
+                    try {
+                        PUT_schedule();
+                    } catch (JSONException | ParseException e) {
+                        Log.e("JSON Exception: ", e.toString());
                     }
-
-                    isFirstClick = false;
-
                 }
             });
 
@@ -108,218 +112,103 @@ public class ScheduleTemplate extends AppCompatActivity {
 
     }
 
-        /**
-         * Sends a POST request to save schedule data for the specified day.
-         *
-         * @param day The day for which the schedule data is being saved.
-         * @param scheduleData The list of schedule items to be saved.
-         */
-        private void POST_schedule(String day, List<ScheduleItem> scheduleData) {
-            // Construct the URL for the POST request
-            String url = "http://coms-309-035.class.las.iastate.edu:8080/Personal/Itinerary/" + tripCode;
+    private void PUT_schedule() throws JSONException, ParseException {
+        List<ScheduleItem> data = adapter.getScheduleData();
+        for(ScheduleItem s: data){
+            if(s.getPlaces() != null)
+                Log.d("Data", s.getPlaces());
+        }
 
-            // Create a RequestQueue for the Volley library
-            RequestQueue queue = Volley.newRequestQueue(this);
+        JSONArray events =  HomeFragment.personalItinerary.getJSONArray(" ");
+        for(int i = events.length() - 1; i >= 0; i--){
+            if(events.getJSONObject(i).getInt("dayNumber") == dayInt){
+                events.remove(i);
+            }
+        }
+        Log.d("Events:", events.toString());
 
-            // Convert ScheduleItem list to JSONArray
-            JSONArray jsonArray = new JSONArray();
-            for (ScheduleItem item : scheduleData) {
-                JSONObject jsonItem = new JSONObject();
-                try {
-                    jsonItem.put("time", item.getTime());
-                    jsonItem.put("place", item.getPlaces());
-                    jsonItem.put("note", item.getNotes());
-                    jsonArray.put(jsonItem);
-                } catch (JSONException e) {
-                    e.printStackTrace();
+        int index = events.length() - 1;
+        for(int i = 0; i < events.length(); i++){
+            if(events.getJSONObject(i).getInt("dayNumber") > dayInt){
+                index = i;
+                break;
+            }
+        }
+
+        for(int i = 0; i < data.size(); i++){
+            if(data.get(i).getTime() != null && data.get(i).getPlaces() != null && data.get(i).getNotes() != null) {
+                if(!data.get(i).getPlaces().isEmpty() && !data.get(i).getNotes().isEmpty()){
+                    JSONObject item = new JSONObject();
+                    item.put("dayNumber", dayInt);
+                    item.put("time", data.get(i).getTime().toString());
+                    item.put("place", data.get(i).getPlaces());
+                    item.put("notes", data.get(i).getNotes());
+
+                    events.put(item);
                 }
             }
-
-            // Construct the request body
-            JSONObject requestBody = new JSONObject();
-            try {
-                requestBody.put("scheduleData", jsonArray);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            // Create a JsonObjectRequest for the POST request
-            JsonObjectRequest jsonObject = new JsonObjectRequest(Request.Method.POST, url, requestBody,
-                    new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            Toast.makeText(ScheduleTemplate.this, "Data saved!", Toast.LENGTH_SHORT).show();
-                        }
-                    },
-                    new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Toast.makeText(ScheduleTemplate.this, "Error saving data", Toast.LENGTH_SHORT).show();
-                        }
-                    }) {
-                @Override
-                public Map<String, String> getHeaders() {
-                    Map<String, String> headers = new HashMap<>();
-                    headers.put("Content-Type", "application/json");
-                    return headers;
-                }
-            };
-
-            // Add the JsonObjectRequest to the request queue
-            queue.add(jsonObject);
         }
+        Log.d("Events:", events.toString());
 
+        JSONObject oldItinerary =  HomeFragment.personalItinerary;
+        JSONObject newItinerary = new JSONObject();
+        newItinerary.put("itineraryName", oldItinerary.getString("itineraryName"));
+        newItinerary.put("startDate", oldItinerary.getString("startDate"));
+        newItinerary.put("endDate", oldItinerary.getString("endDate"));
+        newItinerary.put("numDays", oldItinerary.getString("numDays"));
+        newItinerary.put("personalItineraryEventsList", events);
+        newItinerary.put("startDate", oldItinerary.getString("startDate"));
+        Log.d("Itinerary:", newItinerary.toString());
 
-
-
-    //UPDATE the schedule data
-    private void PUT_schedule(String day, List<ScheduleItem> scheduleData) {
-        // Construct the URL for the PUT request
-        String url = "http://coms-309-035.class.las.iastate.edu:8080/Personal/Itinerary/" + tripCode;
-
-        // Create a RequestQueue for the Volley library
-        RequestQueue queue = Volley.newRequestQueue(this);
-
-        // Convert ScheduleItem list to JSONArray
-        JSONArray jsonArray = new JSONArray();
-        for (ScheduleItem item : scheduleData) {
-            JSONObject jsonItem = new JSONObject();
-            try {
-                jsonItem.put("time", item.getTime());
-                jsonItem.put("place", item.getPlaces());
-                jsonItem.put("note", item.getNotes());
-                jsonArray.put(jsonItem);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-
-        // Construct the request body
-        JSONObject requestBody = new JSONObject();
-        try {
-            requestBody.put("scheduleData", jsonArray);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        // Create a JsonObjectRequest for the PUT request
-        JsonObjectRequest jsonObject = new JsonObjectRequest(Request.Method.PUT, url, requestBody,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Toast.makeText(ScheduleTemplate.this, "Data updated!", Toast.LENGTH_SHORT).show();
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(ScheduleTemplate.this, "Error updating data", Toast.LENGTH_SHORT).show();
-                    }
-                }) {
+        final String url = "http://coms-309-035.class.las.iastate.edu:8080/Personal/Itinerary/" + selectedItinerary.getItineraryID() ; //TODO
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.PUT, url, newItinerary, new Response.Listener<JSONObject>() {
             @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Content-Type", "application/json");
-                return headers;
+            public void onResponse(JSONObject jsonObject) {
+                Log.d("Volley Response:", jsonObject.toString());
+                HomeFragment.personalItinerary = jsonObject;
+                Toast.makeText(getApplicationContext(), "Schedule Updated", Toast.LENGTH_LONG).show();
             }
-        };
-
-        // Add the JsonObjectRequest to the request queue
-        queue.add(jsonObject);
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                Log.e("Volley Error:", volleyError.toString());
+                Toast.makeText(getApplicationContext(), "Error Updating Data", Toast.LENGTH_LONG).show();
+            }
+        });
+        Singleton.getInstance(getApplicationContext()).addRequest(request);
     }
-
-
     /**
          * Retrieves schedule data from the server using a GET request.
          * Parses the JSON response and updates the RecyclerView with the fetched data.
          */
 
-        private void GET_schedule (String day){
+    private void GET_schedule() throws JSONException, ParseException {
+        JSONArray schedule = HomeFragment.personalItinerary.getJSONArray("personalItineraryEventsList");
+        List<ScheduleItem> scheduleItems = new ArrayList<>();
+        for (int i = 0; i < schedule.length(); i++) {
+            JSONObject event = schedule.getJSONObject(i);
+            Log.d("Event:", event.toString());
+            if(event.getString("dayNumber").equals(Integer.toString(dayInt))){
+                String timeString = event.getString("time");
+                String places = event.getString("place");
+                String notes = event.getString("notes");
 
-            String[] parts = day.split(" ");
-            String numericPart = parts[1];
+                SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss", Locale.US);
+                Date parsedDate = dateFormat.parse(timeString);
+                assert parsedDate != null;
+                Time time = new Time(parsedDate.getTime());
 
-            String url = "http://coms-309-035.class.las.iastate.edu:8080/Personal/Itinerary/" + tripCode;
-            //String url = "https://7557e865-ef05-4e77-beaf-a69fca370355.mock.pstmn.io/Schedule/Get/";
+                ScheduleItem scheduleItem = new ScheduleItem();
+                scheduleItem.setDay(dayInt);
+                scheduleItem.setTime(time);
+                scheduleItem.setPlaces(places);
+                scheduleItem.setNotes(notes);
 
-            //String url = "http://coms-309-035.class.las.iastate.edu:8080/Schedule/" + tripCode + "/" + numericPart;
-
-            // Initialize a RequestQueue for the Volley library
-            RequestQueue queue = Volley.newRequestQueue(this);
-
-            // Create a JsonObjectRequest for the GET request
-            JsonObjectRequest jsonObject = new JsonObjectRequest(Request.Method.GET, url, null,
-                    new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            try {
-
-                                JSONArray scheduleDataArray = response.getJSONArray("scheduleData");
-                                List<ScheduleItem> scheduleItems = new ArrayList<>();
-
-                                for (int i = 0; i < scheduleDataArray.length(); i++) {
-                                    JSONObject scheduleItemJson = scheduleDataArray.getJSONObject(i);
-
-                                    //Extract properties from JSON and create scheduleItem
-                                    String timeString = scheduleItemJson.getString("time");
-                                    String places = scheduleItemJson.getString("place");
-                                    String notes = scheduleItemJson.getString("note");
-
-                                    //Parse time string to Time object
-                                    SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
-                                    Date parsedDate = dateFormat.parse(timeString);
-                                    Time time = new Time(parsedDate.getTime());
-
-
-                                    ScheduleItem scheduleItem = new ScheduleItem();
-                                    scheduleItem.setTime(time);
-                                    scheduleItem.setPlaces(places);
-                                    scheduleItem.setNotes(notes);
-
-                                    scheduleItems.add(scheduleItem);
-                                }
-
-                                adapter.prependData(scheduleItems);
-
-                                Toast.makeText(ScheduleTemplate.this, "Data fetched!", Toast.LENGTH_SHORT).show();
-                            } catch (JSONException | ParseException e) {
-                                Toast.makeText(ScheduleTemplate.this, "Error parsing JSON", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    },
-
-                    new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-
-                            if (error.networkResponse != null) {
-                                int statusCode = error.networkResponse.statusCode;
-                                Log.e("Volley Error", "HTTP Status Code: " + statusCode);
-                            }
-                            Toast.makeText(ScheduleTemplate.this, "Error fetching data", Toast.LENGTH_SHORT).show();
-
-                        }
-                    });
-
-            queue.add(jsonObject);
+                scheduleItems.add(scheduleItem);
+            }
         }
 
-        /**
-         * Generates dummy schedule data for testing purposes.
-         *
-         * @return A list of ScheduleItem objects containing dummy data.
-         */
-    private List<ScheduleItem> generateData() {
-
-        List<ScheduleItem> data = new ArrayList<>();
-
-        for (int i = 0; i <= 50; i++) {
-
-            ScheduleItem item = new ScheduleItem();
-            data.add(item);
-        }
-
-        return data;
+        adapter.prependData(scheduleItems);
     }
 
 }

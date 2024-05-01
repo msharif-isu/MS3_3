@@ -1,7 +1,9 @@
 package com.example.itinerarybuddy.activities;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.itinerarybuddy.R;
+import com.example.itinerarybuddy.data.Itinerary;
 
 import java.util.ArrayList;
 
@@ -25,6 +28,8 @@ public class DayCardAdapter extends RecyclerView.Adapter<DayCardAdapter.ViewHold
     private final Context context;
     private final ArrayList<String> dayTitles;
     private final ArrayList<String> dayContents;
+
+    private int itinerary_ID;
 
     /**
      * Constructs a new DayCardAdapter.
@@ -114,22 +119,29 @@ public class DayCardAdapter extends RecyclerView.Adapter<DayCardAdapter.ViewHold
             int position = getAdapterPosition();
             if (position != RecyclerView.NO_POSITION) {
                 String title = dayTitles.get(position);
-                Intent intent;
-                if(source.equals("GROUP")) {
-                    intent = new Intent(context, com.example.itinerarybuddy.ui.home.GroupSchedule.class);
-                }
-                else{
-                    intent = new Intent(context, ScheduleTemplate.class);
-                }
-                intent.putExtra("TITLE", title);
+                Intent intent = null;
 
-                //Retrieve extras from the intent that started DayCard
+                if (source.equals("GROUP")) {
+                    intent = new Intent(context, com.example.itinerarybuddy.ui.home.GroupSchedule.class);
+                } else if (source.equals("PERSONAL")) {
+                    intent = new Intent(context, ScheduleTemplate.class);
+
+                    Bundle bundle = ((Activity) context).getIntent().getExtras();
+                    if (bundle != null) {
+                        Itinerary selectedItinerary = bundle.getParcelable("SELECTED_ITINERARY");
+                        intent.putExtra("SELECTED_ITINERARY", selectedItinerary);
+                    }
+                }
+
+                intent.putExtra("TITLE", title);
+                // Retrieve extras from the intent that started DayCard
                 intent.putExtra("IS_EDITABLE", isEditable);
                 intent.putExtra("SOURCE", source);
 
                 context.startActivity(intent);
             }
         }
+
     }
 }
 
