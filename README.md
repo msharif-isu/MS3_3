@@ -50,7 +50,8 @@ https://github.com/msharif-isu/MS3_3/assets/169219030/0c667bc0-f9d9-4c9c-a910-3f
     </td>
     <td align="center" style="word-wrap: break-word; width: 150px; height: 150px">
         <a href="https://github.com/JSeb14">
-          <img src="https://github.com/msharif-isu/MS3_3/assets/169219030/36457207-cfd2-4fc1-a9d4-aa84e3d975b4" width="100" height="95" style="border-radius:50%; align-items:center; justify-content:center; overflow:hidden; padding-top:10px" alt=""/>
+          <img src="https://github.com/msharif-isu/MS3_3/assets/169219030/36457207-cfd2-4fc1-a9d4-aa84e3d975b4" width="100" style="border-radius:50%; align-items:center; justify-content:center; overflow:hidden; padding-top:10px" alt=""/>
+             <br />
           <sub style="font-size:14px"><b>Justin Sebahar</b></sub>
         </a>
     </td>
